@@ -16,14 +16,14 @@ export function baseOptions(locale: string): BaseLayoutProps {
           >
             <circle cx={12} cy={12} r={12} fill="currentColor" />
           </svg>
-          My App [{locale}]
+          TEN Framework
         </>
       ),
     },
     links: [
       {
-        text: 'Documentation',
-        url: '/docs',
+        text: locale === 'cn' ? '文档' : 'Documentation',
+        url: `/${locale}/docs`,
         active: 'nested-url',
       },
     ],
