@@ -35,6 +35,11 @@ export function baseOptions(locale: string): BaseLayoutProps {
         url: `/${locale}/docs`,
         active: 'nested-url',
       },
+      {
+        text: locale === 'cn' ? '博客' : 'Blog',
+        url: `/${locale}/blog`,
+        active: 'nested-url',
+      },
     ],
   }
 }
