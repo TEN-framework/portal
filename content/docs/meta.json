@@ -1,3 +1,10 @@
 {
-  "pages": ["index", "goal", "key_concepts", "application_scenarios", "ten_agent"]
+  "pages": [
+    "index",
+    "goal",
+    "key_concepts",
+    "application_scenarios",
+    "ten_agent",
+    "ten_framework"
+  ]
 }
