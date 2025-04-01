@@ -1,8 +1,21 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 
 import { i18n } from '@/lib/i18n'
+import en from '@/messages/en.json'
+import cn from '@/messages/cn.json'
+
+const getMessages = (locale?: string) => {
+  switch (locale) {
+    case 'cn':
+      return cn
+    case 'en':
+    default:
+      return en
+  }
+}
 
 export function baseOptions(locale: string): BaseLayoutProps {
+  const messages = getMessages(locale)
   return {
     i18n,
     nav: {
@@ -24,19 +37,19 @@ export function baseOptions(locale: string): BaseLayoutProps {
               </g>
             </g>
           </svg>
-          TEN
+          {messages.nav.title}
         </>
       ),
       url: `/${locale}`,
     },
     links: [
       {
-        text: locale === 'cn' ? '文档' : 'Documentation',
+        text: messages.nav.docs,
         url: `/${locale}/docs`,
         active: 'nested-url',
       },
       {
-        text: locale === 'cn' ? '博客' : 'Blog',
+        text: messages.nav.blog,
         url: `/${locale}/blog`,
         active: 'nested-url',
       },
