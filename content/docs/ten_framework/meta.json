@@ -1,0 +1,29 @@
+{
+  "title": "TEN framework",
+  "description": "TEN framework",
+  "root": true,
+  "pages": [
+    "concept_overview",
+    "development_process",
+    "preparation",
+    "addon_system",
+    "version_system",
+    "metadata_system",
+    "message_system",
+    "type_system",
+    "schema_system",
+    "build_system",
+    "graph",
+    "cloud_store",
+    "debugging",
+    "profiling",
+    "dependencies",
+    "ten_testing",
+    "binding",
+    "api",
+    "ten_packages",
+    "ten_manager",
+    "ten_designer",
+    "tutorials"
+  ]
+}

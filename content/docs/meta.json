@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "index",
+    "goal",
+    "key_concepts",
+    "application_scenarios",
+    "ten_agent",
+    "ten_framework",
+    "ten_framework/ten_testing",
+    "ten_framework/binding",
+    "ten_framework/api",
+    "ten_framework/ten_packages",
+    "ten_framework/ten_manager",
+    "ten_framework/ten_designer",
+    "ten_framework/tutorials"
+  ]
+}

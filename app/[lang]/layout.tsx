@@ -11,8 +11,16 @@ const inter = Inter({
 })
 
 const cn: Partial<Translations> = {
-  search: 'Translated Content',
-  // other translations
+  search: '搜索',
+  searchNoResult: '未找到结果',
+  toc: '目录',
+  tocNoHeadings: '没有标题',
+  lastUpdate: '最后更新',
+  chooseLanguage: '选择语言',
+  nextPage: '下一页',
+  previousPage: '上一页',
+  chooseTheme: '选择主题',
+  editOnGithub: '在 GitHub 上编辑'
 }
 
 // available languages that will be displayed on UI
@@ -23,7 +31,7 @@ const locales = [
     locale: 'en',
   },
   {
-    name: 'Chinese',
+    name: '中文',
     locale: 'cn',
   },
 ]

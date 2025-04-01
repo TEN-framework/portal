@@ -1,0 +1,354 @@
+---
+title: 接口
+---
+
+TEN 框架的消息系统提供了一种以单条消息为粒度的交互机制。 然而，在实际应用中，一个完整的功能通常涉及多个消息，例如多个命令、数据交换等。 例如，语音转文本（STT）功能可能需要多个命令和数据消息。 这些固定的消息组合构成了所谓的**接口** (interface)。 如果扩展支持某个接口定义的所有消息，则它可以在任何需要该接口的场景中使用。
+
+为了避免扩展在其清单文件中显式声明对接口中每条消息的支持（这将非常繁琐），TEN 框架引入了**聚合**这些消息的概念。 这允许扩展声明它们提供或使用特定的接口，从而简化流程。
+
+TEN 框架提供的以下 API 是原始 API：
+
+- `cmd_in`
+- `cmd_out`
+- `data_in`
+- `data_out`
+- `audio_frame_in`
+- `audio_frame_out`
+- `video_frame_in`
+- `video_frame_out`
+
+除了这些之外，该框架还支持复合 API 机制：
+
+- `interface_in`
+- `interface_out`
+
+## 接口语法
+
+定义接口的基本语法包括一个强制性的 `name` 字段。 此 `name` 的作用与 `cmd_in` 和 `cmd_out` 中的 `name` 字段相同，表示接口的名称。 它仅在扩展的上下文中有效，并且在该范围内必须唯一。
+
+```json title=".json"
+{
+  "api": {
+    "interface_in": [
+      {
+        "name": "foo"
+      }
+    ],
+    "interface_out": [
+      {
+        "name": "foo"
+      }
+    ]
+  }
+}
+```
+
+## 在图中使用接口
+
+接口的 `name` 主要用于在图中指定路由。 在以下示例中，`src_extension` 使用由 `dest_extension` 提供的 `foo` 接口。 `src_extension` 从其 `interface_out` 定义中识别 `foo` 接口，而 `dest_extension` 从其 `interface_in` 定义中识别 `foo` 接口。
+
+```json title=".json"
+{
+  "predefined_graphs": [
+    {
+      "name": "default",
+      "auto_start": true,
+      "nodes": [
+        {
+          "type": "extension_group",
+          "name": "default_extension_group",
+          "addon": "default_extension_group"
+        },
+        {
+          "type": "extension",
+          "name": "src_extension",
+          "addon": "src_extension",
+          "extension_group": "default_extension_group"
+        },
+        {
+          "type": "extension",
+          "name": "dest_extension",
+          "addon": "dest_extension",
+          "extension_group": "default_extension_group"
+        }
+      ],
+      "connections": [
+        {
+          "extension": "src_extension",
+          "interface": [
+            {
+              "name": "foo",
+              "dest": [
+                {
+                  "extension": "dest_extension"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+## `interface_in` 和 `interface_out` 的含义
+
+1. **`interface_in`**
+
+   表示扩展支持指定接口的功能。
+
+```json title=".json"
+{
+  "api": {
+    "interface_in": [
+      {
+        "name": "foo"
+        // 接口内容
+      }
+    ]
+  }
+}
+```
+
+2. **`interface_out`**
+
+   表示扩展需要另一个扩展来提供指定接口的功能。
+
+```json title=".json"
+{
+  "api": {
+    "interface_out": [
+      {
+        "name": "foo"
+        // 接口内容
+      }
+    ]
+  }
+}
+```
+
+## 接口与消息声明
+
+当扩展在其清单文件中声明一个接口时，它会隐式声明该接口中定义的所有消息。例如，如果一个接口 `foo` 定义了三个命令，那么：
+
+- **`interface_in`**：该扩展作为接口的一部分提供这三个命令。
+- **`interface_out`**：该扩展需要从另一个扩展中获取这三个命令。
+
+从这个意义上讲，接口机制充当**语法糖**，允许将预定义的消息集合捆绑在一起并在多个扩展中重用。
+
+如果扩展在其清单文件中定义了一个接口，则无需单独定义该接口中包含的消息。当扩展发送或接收类似于 `foo` 的命令时，TEN 运行平台将查找该扩展清单中相关的接口定义并相应地使用该命令。
+
+例如，如果一个接口定义了三个命令和一个数据消息，那么声明了此接口的 `interface_in` 的扩展将隐式地将这三个命令包含在 `cmd_in` 中，并将数据消息包含在 `data_in` 中。类似地，如果该接口在 `interface_out` 中声明，则这些命令会包含在 `cmd_out` 中，并且数据消息会包含在 `data_out` 中。
+
+## 支持具有相同消息名称的多个接口
+
+在当前设计中，一个扩展无法在单个 API 项目下声明支持两个具有相同消息名称的接口。例如，如果 `foo` 和 `bar` 接口都定义了一个名为 `xxx` 的命令，则允许或不允许以下组合：
+
+- 不允许
+
+```json title=".json"
+{
+  "api": {
+    "interface_in": [
+      {
+        "name": "foo"
+        // 接口 foo 内容
+      },
+      {
+        "name": "bar"
+        // 接口 bar 内容
+      }
+    ]
+  }
+}
+```
+
+- 允许
+
+```json title=".json"
+{
+  "api": {
+    "interface_out": [
+      {
+        "name": "foo"
+        // 接口 foo 内容
+      },
+      {
+        "name": "bar"
+        // 接口 bar 内容
+      }
+    ]
+  }
+}
+```
+
+```json title=".json"
+{
+  "api": {
+    "interface_in": [
+      {
+        "name": "foo"
+        // 接口 foo 内容
+      }
+    ],
+    "interface_out": [
+      {
+        "name": "bar"
+        // 接口 bar 内容
+      }
+    ]
+  }
+}
+```
+
+## 接口定义内容
+
+`interface` 的定义类似于清单中的 `api` 字段。 以下是一个 `interface` 定义的示例：
+
+```json title=".json"
+{
+  "cmd": [
+    {
+      "name": "cmd_foo",
+      "property": {
+        "foo": {
+          "type": "int8"
+        },
+        "bar": {
+          "type": "string"
+        }
+      },
+      "result": {
+        "property": {
+          "aaa": {
+            "type": "int8"
+          },
+          "bbb": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  ],
+  "data": [
+    {
+      "name": "data_foo",
+      "property": {
+        "foo": {
+          "type": "int8"
+        },
+        "bar": {
+          "type": "string"
+        }
+      }
+    }
+  ],
+  "video_frame": [],
+  "audio_frame": []
+}
+```
+
+TEN 框架通过将此接口的定义集成到扩展清单的 `api` 字段下，从而处理此接口。例如，`interface_in` 中定义的命令被集成到 `cmd_in` 中，而 `interface_out` 中定义的命令被集成到 `cmd_out` 中。
+
+## 指定接口内容
+
+有两种方法可以指定接口的内容：
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+
+<Tabs items={['直接嵌入内容', '引用内容']} defaultIndex={0}>
+  <Tab>
+
+直接在清单中嵌入接口定义。示例：
+
+```json title=".json"
+{
+  "api": {
+    "interface_in": [
+      {
+        "name": "foo",
+        "cmd": [],
+        "data": [],
+        "video_frame": [],
+        "audio_frame": []
+      }
+    ]
+  }
+}
+```
+
+  </Tab>
+  <Tab>
+
+使用引用来指定接口定义，类似于 JSON 模式中的 `$ref` 语法。
+
+```json title=".json"
+{
+  "api": {
+    "interface_in": [
+      {
+        "name": "foo",
+        "$ref": "http://www.github.com/darth_vader/fight.json"
+      }
+    ]
+  }
+}
+```
+
+  </Tab>
+</Tabs>
+
+## 确定接口兼容性
+
+由于接口本质上是语法糖，两个接口是否可以连接取决于底层消息的兼容性。当源扩展指定一个输出接口 `foo`，而目标扩展指定一个输入接口 `bar` 时，TEN 运行平台会检查源的 `foo` 接口是否可以连接到目标的 `bar` 接口。
+
+```json title=".json"
+{
+  "api": {
+    "interface_out": "foo"
+    // 接口内容
+  }
+}
+```
+
+```json title=".json"
+{
+  "api": {
+    "interface_in": "bar"
+    // 接口内容
+  }
+}
+```
+
+```json title=".json"
+{
+  "extension_group": {
+    "addon": "default_extension_group",
+    "name": "default_extension_group"
+  },
+  "extension": {
+    "addon": "extension_A",
+    "name": "extension_A"
+  },
+  "interface": [
+    {
+      "name": "foo",
+      "dest": [
+        {
+          "extension_group": {
+            "addon": "default_extension_group",
+            "name": "default_extension_group"
+          },
+          "extension": {
+            "addon": "dest_extension",
+            "name": "dest_extension"
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+TEN 框架将在源扩展的清单的 `interface_out` 部分中查找 `foo` 的定义。然后，它会根据 TEN 框架的模式检查规则，检查此接口中定义的每条消息是否与目标扩展的清单中的消息定义以及其 `interface_in` 中声明的任何接口相匹配。如果任何消息无法匹配，则图配置将被视为无效。
