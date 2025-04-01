@@ -15,6 +15,19 @@ yarn dev
 
 Open http://localhost:3000 with your browser to see the result.
 
+## Structure
+
+The content is organized into the following folders:
+
+- `content/docs`: The documentation for TEN.
+
+### Documentation
+
+The `content/docs` folder contains the documentation for TEN.
+
+- `ten_agent`: The documentation for TEN Agent.
+- `ten_framework`: The documentation for TEN Framework.
+
 ## Learn More
 
 To learn more about Next.js and Fumadocs, take a look at the following
