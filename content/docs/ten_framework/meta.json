@@ -20,6 +20,10 @@
     "dependencies",
     "ten_testing",
     "binding",
-    "api"
+    "api",
+    "ten_packages",
+    "ten_manager",
+    "ten_designer",
+    "tutorials"
   ]
 }
