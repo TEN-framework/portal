@@ -1,0 +1,7 @@
+{
+  "title": "搭建开发环境",
+  "pages": [
+    "setting_up_development_inside_codespace",
+    "setting_up_vscode_for_development_inside_container"
+  ]
+}
