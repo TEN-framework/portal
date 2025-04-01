@@ -17,6 +17,9 @@
     "cloud_store",
     "debugging",
     "profiling",
-    "dependencies"
+    "dependencies",
+    "ten_testing",
+    "binding",
+    "api"
   ]
 }

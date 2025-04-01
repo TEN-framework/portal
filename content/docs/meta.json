@@ -5,6 +5,9 @@
     "key_concepts",
     "application_scenarios",
     "ten_agent",
-    "ten_framework"
+    "ten_framework",
+    "ten_framework/ten_testing",
+    "ten_framework/binding",
+    "ten_framework/api"
   ]
 }
