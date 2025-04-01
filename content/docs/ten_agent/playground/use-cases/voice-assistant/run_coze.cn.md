@@ -6,7 +6,7 @@ title: Coze 聊天机器人
 
 ## 前提条件
 
-- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](https://doc.theten.ai/ten-agent/quickstart) 指南启动 Playground。
+- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](../../demo) 指南启动 Playground。
 - 您需要准备以下信息：
   - Coze 信息：
     - Coze Bot ID

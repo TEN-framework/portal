@@ -19,7 +19,7 @@ Prepare your environment by installing the necessary software and dependencies:
 
 1. **Install Ollama**: Download and install Ollama on your local machine. Refer to [Ollama](https://ollama.com/).
 2. **Download the Model**: Use the command `ollama pull {model name}` to download the desired LLM model. For example, `ollama pull deepseek-r1`
-3. **Set Up Ten Agent**: Ensure Ten Agent Dev and Ten Agent Playground are properly configured. Refer to [Ten Agent: Getting Started](../ten_agent/getting_started.md)
+3. **Set Up Ten Agent**: Ensure Ten Agent Dev and Ten Agent Playground are properly configured. Refer to [Ten Agent: Getting Started](../getting_started)
 
 ## Step 3: Start the Ollama Server
 

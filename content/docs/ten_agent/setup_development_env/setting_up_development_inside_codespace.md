@@ -14,7 +14,7 @@ Navigate to TEN-Agent github repository, and click on the `Code` button. Then, s
 
 Once the Codespace is ready, you will see the VSCode editor in the browser. You can start working with the TEN-Agent repository in the Codespace. You can open the terminal, create new files, and run commands just like you would in a local development environment.
 
-The steps are similar to the process outlined in the [Quick Start](https://doc.theten.ai/ten-agent/getting_started) guide. However, there's no need to run `docker compose up` command with Codespace. You can directly start building agent using,
+The steps are similar to the process outlined in the [Quick Start](./getting_started) guide. However, there's no need to run `docker compose up` command with Codespace. You can directly start building agent using,
 
 ```bash
 # Prepare .env file from .env.example and set your api keys inside it

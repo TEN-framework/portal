@@ -8,7 +8,7 @@ title: 故事讲述者
 
 ### 前提条件
 
-- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](https://doc.theten.ai/ten-agent/quickstart) 指南启动 Playground。
+- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](../../demo) 指南启动 Playground。
 - 您需要准备以下信息：
   - STT 信息，可以使用任何支持的 STT。[Deepgram](https://deepgram.com/) 相对容易注册和上手。
   - TTS 信息，可以使用任何支持的 TTS。[Fish.Audio](https://fish.audio/) 相对容易注册和上手。
@@ -41,7 +41,7 @@ Azure STT 集成在 RTC 扩展模块中。因此，如果您想使用 Azure STT�
 
 ### 前提条件
 
-- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](https://doc.theten.ai/ten-agent/quickstart) 指南启动 Playground。
+- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](../../demo) 指南启动 Playground。
 - 您需要准备以下信息：
   - 实时 API 密钥
 - RTC 信息，目前仅支持 Agora RTC。您可以在 [Agora](https://www.agora.io/) 注册您的帐户。我们假设您在配置 `.env` 文件时已准备好您的 App ID 和 App Certificate。

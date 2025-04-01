@@ -8,7 +8,7 @@ This guide will help you to run the Story Teller usecase with Large Language Mod
 
 ### Prerequisites
 
-- Make sure you have the TEN-Agent playground running. If not, follow the [Run Playground](https://doc.theten.ai/ten-agent/quickstart) guide to start the playground.
+- Make sure you have the TEN-Agent playground running. If not, follow the [Run Playground](../../demo) guide to start the playground.
 - You will need following information prepared:
   - STT info, any supported STT can be used. [Deepgram](https://deepgram.com/) is relatively easy to register and get started with.
   - TTS info, any supported TTS can be used. [Fish.Audio](https://fish.audio/) is relatively easy to register and get started with.
@@ -41,7 +41,7 @@ The story_teller use case is preconfigured to use `openai_image_generate_tool`, 
 
 ### Prerequisites
 
-- Make sure you have the TEN-Agent playground running. If not, follow the [Run Playground](https://doc.theten.ai/ten-agent/quickstart) guide to start the playground.
+- Make sure you have the TEN-Agent playground running. If not, follow the [Run Playground](../../demo) guide to start the playground.
 - You will need following information prepared:
   - Realtime API Key
 - RTC info, currently only Agora RTC is supported. You can register your account at [Agora](https://www.agora.io/). We assume you have your App ID and App Certificate ready when you configure your `.env` file.

@@ -6,7 +6,7 @@ This guide will help you to run the TEN-Agent demo. The demo is a web-based inte
 
 ## Run demo from pre-built Docker image
 
-The easiest way to run the demo is to use the pre-built Docker image. The image contains the latest version of the TEN-Agent and the demo. The project docker compose file already contains the pre-built image, so you can start by following the steps in [getting started guide](https://doc.theten.ai/ten-agent/getting_started).
+The easiest way to run the demo is to use the pre-built Docker image. The image contains the latest version of the TEN-Agent and the demo. The project docker compose file already contains the pre-built image, so you can start by following the steps in [getting started guide](./getting_started).
 
 After you successfully setup, you will need to run an additional command to switch graph folder to demo folder,
 
@@ -33,4 +33,4 @@ pnpm dev
 
 Once the demo is started, you can access it by opening the browser and navigating to `http://localhost:3001`.
 
-> **Note:** The demo depends on the golang web server (located in `server` directory). The web server will start when you run `task run` command in the container after you follow the steps in the [getting started guide](https://doc.theten.ai/ten-agent/getting_started).
+> **Note:** The demo depends on the golang web server (located in `server` directory). The web server will start when you run `task run` command in the container after you follow the steps in the [getting started guide](./getting_started).

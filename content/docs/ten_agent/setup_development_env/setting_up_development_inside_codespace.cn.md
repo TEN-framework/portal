@@ -14,7 +14,7 @@ Github Codespace 是一个基于云的开发环境，允许您直接在云中开
 
 一旦 Codespace 准备就绪，您将在浏览器中看到 VSCode 编辑器。您可以开始在 Codespace 中使用 TEN-Agent 库。您可以像在本地开发环境中一样打开终端、创建新文件和运行命令。
 
-这些步骤类似于[快速入门](https://doc.theten.ai/ten-agent/getting_started)指南中概述的过程。但是，无需使用 Codespace 运行 `docker compose up` 命令。您可以直接使用以下命令开始构建智能体：
+这些步骤类似于[快速入门](./getting_started)指南中概述的过程。但是，无需使用 Codespace 运行 `docker compose up` 命令。您可以直接使用以下命令开始构建智能体：
 
 ```bash
 # 从 .env.example 准备 .env 文件并在其中设置您的 API 密钥

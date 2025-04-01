@@ -2,7 +2,7 @@
 title: TEN Agent Project Overview
 ---
 
-The TEN Agent project is built on top of the TEN Framework. For basic concepts of a TEN Framework project, please refer to the [TEN Framework Project Overview](https://doc.theten.ai/ten-framework/concept_overview).
+The TEN Agent project is built on top of the TEN Framework. For basic concepts of a TEN Framework project, please refer to the [TEN Framework Project Overview](../ten_framework/concept_overview).
 
 Below is the folder structure of TEN Agent project,
 

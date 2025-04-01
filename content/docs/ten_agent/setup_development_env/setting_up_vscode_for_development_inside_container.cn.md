@@ -16,7 +16,7 @@ title: VSCode 开发容器
 
 ## 步骤 3：使用 Docker Compose 启动开发环境
 
-此步骤类似于[快速入门](https://doc.theten.ai/ten-agent/getting_started)指南中概述的过程。但是，请勿运行：
+此步骤类似于[快速入门](./getting_started)指南中概述的过程。但是，请勿运行：
 
 ```shell title="终端"
 docker compose up

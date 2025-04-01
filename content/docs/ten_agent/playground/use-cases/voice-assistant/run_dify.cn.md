@@ -6,7 +6,7 @@ title: Dify 聊天机器人
 
 ## 前提条件
 
-- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](https://doc.theten.ai/ten-agent/getting_started) 指南启动 Playground。
+- 确保您已运行 TEN-Agent Playground。如果没有，请按照[运行 Playground](./getting_started) 指南启动 Playground。
 - 您需要准备以下信息：
   - Dify 信息：
     - Dify API 密钥
