@@ -1,4 +1,3 @@
-import { source } from '@/lib/source'
 import {
   DocsPage,
   DocsBody,
@@ -8,12 +7,14 @@ import {
 import { notFound } from 'next/navigation'
 import defaultMdxComponents, { createRelativeLink } from 'fumadocs-ui/mdx'
 
+import { source } from '@/lib/source'
+
 export default async function Page(props: {
   params: Promise<{ lang: string; slug?: string[] }>
 }) {
   const params = await props.params
   const page = source.getPage(params.slug, params.lang)
-  source.getPages(params.lang)
+
   if (!page) notFound()
 
   const MDXContent = page.data.body

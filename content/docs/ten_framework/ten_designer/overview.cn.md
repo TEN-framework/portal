@@ -9,7 +9,7 @@ TEN Framework 具有高度灵活性，提供了丰富的功能，包括 TEN 云�
 您可以通过以下链接获取 TEN Designer：
 
 ```text
-https://github.com/TEN-framework/TEN-Designer/releases
+https://github.com/TEN-framework/ten_framework/releases
 ```
 
 TEN Designer 支持以下操作系统及架构，请根据您的平台获取对应版本：

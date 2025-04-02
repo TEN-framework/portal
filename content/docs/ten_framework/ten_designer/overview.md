@@ -9,7 +9,7 @@ Since command-line tools are not as user-friendly as graphical user interfaces, 
 You can get TEN Designer from the following link:
 
 ```text
-https://github.com/TEN-framework/TEN-Designer/releases
+https://github.com/TEN-framework/ten_framework/releases
 ```
 
 TEN Designer supports the following operating systems and architectures. Please obtain the appropriate version for your platform:
