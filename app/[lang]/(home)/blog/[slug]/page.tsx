@@ -60,5 +60,6 @@ export default async function Page(props: {
 export function generateStaticParams(): { slug: string }[] {
   return blog.getPages().map((page) => ({
     slug: page.slugs[0],
+    lang: page.locale,
   }))
 }
