@@ -1,0 +1,32 @@
+---
+title: Deepgram  DeepSeek Fish.Audio Build Your Own Voice Assistant with TEN-Agent
+author: Plutoless
+date: 2025-01-29
+---
+
+Over the past couple of days, everyone has been talking about DeepSeek. On January 20th, they released their AI model, R1, which delivers performance comparable to OpenAI’s latest model at an incredibly low cost. Remarkably, their AI assistant app has even surpassed ChatGPT in rankings, becoming the most downloaded app. We’ve been closely following this and are eager to explore if it’s possible to integrate DeepSeek into TEN. DeepSeek also offers a free usage quota upon registration, so you can try out its API. If you’re interested, why not see how you can use DeepSeek to create your own voice assistant?
+
+Today, we’ll walk you through how to use Deepgram, DeepSeek, and Fish.Audio to build a free voice assistant in TEN-Agent. We’ll use:
+
+Deepgram as the STT (Speech-to-Text) service,
+DeepSeek as the LLM (Large Language Model) service,
+Fish.Audio as the TTS (Text-to-Speech) service,
+Agora for real-time voice communication between users and cloud-based AI.
+
+Prerequisites
+
+First, we need to prepare the API keys for each service. Each platform provides a free usage quota. Here’s how to obtain the API keys:
+
+Deepgram: Sign up to get your API Key.
+DeepSeek: Sign up to get your API Key.
+Fish.Audio: Sign up to get your API Key.
+Agora.io: Sign up to get your App ID and App Certificate.
+TEN-Agent relies on Docker for its development environment, so make sure to install Docker beforehand.
+
+Setting Up TEN-Agent
+
+Next, set up TEN-Agent by following the TEN-Agent Quick Start Guide.
+
+Once properly launched, you should see a screen like this:
+
+
