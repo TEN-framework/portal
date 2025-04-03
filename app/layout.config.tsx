@@ -58,6 +58,6 @@ export function baseOptions(locale: string): BaseLayoutProps {
       enabled: true,
       mode: 'light-dark-system',
     },
-    githubUrl: 'https://github.com/TEN-framework/ten_framework',
+    githubUrl: 'https://github.com/TEN-framework',
   }
 }
