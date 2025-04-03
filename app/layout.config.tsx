@@ -54,5 +54,10 @@ export function baseOptions(locale: string): BaseLayoutProps {
         active: 'nested-url',
       },
     ],
+    themeSwitch: {
+      enabled: true,
+      mode: 'light-dark-system',
+    },
+    githubUrl: 'https://github.com/TEN-framework',
   }
 }

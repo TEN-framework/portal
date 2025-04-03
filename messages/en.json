@@ -15,5 +15,13 @@
     "previousPage": "Previous Page",
     "chooseTheme": "Choose Theme",
     "editOnGithub": "Edit on GitHub"
+  },
+  "blog": {
+    "latestPosts": "Latest Blog Posts",
+    "discoverLatestArticles": "Discover our latest articles about TEN Framework, AI development, and more",
+    "readMore": "Read more",
+    "backToBlog": "Back to Blog",
+    "writtenBy": "Written by",
+    "publishedOn": "Published on"
   }
 }
