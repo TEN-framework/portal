@@ -1,13 +1,13 @@
 {
   "title": "TEN Framework",
-  "description": "TEN Framework",
+  "description": "TEN Framework", 
   "root": true,
   "pages": [
     "concept_overview",
     "development_process",
     "preparation",
     "addon_system",
-    "version_system",
+    "version_system", 
     "metadata_system",
     "message_system",
     "type_system",
@@ -18,11 +18,17 @@
     "debugging",
     "profiling",
     "dependencies",
+    "---TEN Testing System---",
     "ten_testing",
+    "---TEN Binding---",
     "binding",
+    "---TEN API---",
     "api",
+    "---TEN Packages---",
     "ten_packages",
+    "---TEN Manager---",
     "ten_manager",
+    "---TMAN Designer---",
     "ten_designer",
     "tutorials"
   ]
