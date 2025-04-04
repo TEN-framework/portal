@@ -34,7 +34,7 @@ docker compose up -d
 
 ## 步骤 4：连接到容器
 
-在 VSCode 中的 Docker 扩展中，在列表中找到 `astra_agents_dev` 容器，然后单击“Attach Visual Studio Code”以连接到容器。然后，VSCode 将打开一个连接到容器的新窗口，您可以在其中继续进行开发。
+在 VSCode 中的 Docker 扩展中，在列表中找到 `ten_agent_dev` 容器，然后单击“Attach Visual Studio Code”以连接到容器。然后，VSCode 将打开一个连接到容器的新窗口，您可以在其中继续进行开发。
 
 在连接到容器的 Dev Container 环境中，不会应用您的本地扩展和设置，因为此环境位于容器内。因此，您需要在容器内安装扩展并配置设置。要在容器内安装扩展，请打开新启动的 VSCode 窗口，单击左侧边栏中的“Extensions”，搜索所需的扩展，然后按照提示在容器内安装它。
 
