@@ -1,4 +1,7 @@
 {
   "title": "TEN Designer",
-  "pages": ["overview"]
+  "pages": [
+    "overview",
+    "doc_window"
+  ]
 }
