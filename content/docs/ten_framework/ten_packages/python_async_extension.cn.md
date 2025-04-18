@@ -10,7 +10,7 @@ title: Python 异步扩展
 
 ```python
 import asyncio
-from ten import AsyncExtension, AsyncTenEnv
+from ten_runtime import AsyncExtension, AsyncTenEnv
 
 class DefaultAsyncExtension(AsyncExtension):
     async def on_configure(self, ten_env: AsyncTenEnv) -> None:
@@ -55,7 +55,7 @@ class DefaultAsyncExtension(AsyncExtension):
 
 ```python
 import asyncio
-from ten import AsyncExtension, AsyncTenEnv
+from ten_runtime import AsyncExtension, AsyncTenEnv
 
 class DefaultAsyncExtension(AsyncExtension):
     queue = asyncio.Queue()

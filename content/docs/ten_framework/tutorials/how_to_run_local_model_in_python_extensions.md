@@ -37,7 +37,7 @@ Below is an example of how to implement a basic text generation feature using th
 First, initialize the local model within the extension:
 
 ```python
-from ten import (
+from ten_runtime import (
     Extension,
     TenEnv,
     Cmd,

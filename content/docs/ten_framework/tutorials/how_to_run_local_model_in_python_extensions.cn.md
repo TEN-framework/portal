@@ -37,7 +37,7 @@ title: 如何在 Python 扩展中运行本地 AI 模型
 首先，在扩展中初始化本地模型：
 
 ```python
-from ten import (
+from ten_runtime import (
     Extension,
     TenEnv,
     Cmd,

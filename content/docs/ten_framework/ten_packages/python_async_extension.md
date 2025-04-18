@@ -10,7 +10,7 @@ Here’s how a Python async extension is structured:
 
 ```python
 import asyncio
-from ten import AsyncExtension, AsyncTenEnv
+from ten_runtime import AsyncExtension, AsyncTenEnv
 
 class DefaultAsyncExtension(AsyncExtension):
     async def on_configure(self, ten_env: AsyncTenEnv) -> None:
@@ -56,7 +56,7 @@ Here is the sample code:
 
 ```python
 import asyncio
-from ten import AsyncExtension, AsyncTenEnv
+from ten_runtime import AsyncExtension, AsyncTenEnv
 
 class DefaultAsyncExtension(AsyncExtension):
     queue = asyncio.Queue()
