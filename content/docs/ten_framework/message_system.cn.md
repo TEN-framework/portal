@@ -205,7 +205,7 @@ TEN 客户端和 TEN 扩展可以向其他 TEN 扩展发送命令。
 
 ```json
 {
-  "_ten": {
+  "ten": {
     "status_code": 400
   }
 }

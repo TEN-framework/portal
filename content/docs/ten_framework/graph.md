@@ -270,7 +270,7 @@ Essentially, you place the complete graph definition above under the `ten` field
 
 ```json
 {
-  "_ten": {
+  "ten": {
     "type": "start_graph",
     "seq_id": "55"
     // Place the complete graph definition here.
@@ -282,7 +282,7 @@ The following is a complete definition of the `start_graph` command:
 
 ```json
 {
-  "_ten": {
+  "ten": {
     "type": "start_graph",
     "seq_id": "55",
     "nodes": [
@@ -352,7 +352,7 @@ The following is a complete definition of the `start_graph` command:
   The `nodes` array is mandatory in a graph definition. Conversely, the `connections` array is optional but encouraged for defining inter-node communication.
 
 - **Validation of Node `app` Field**:
-  The `app` field must never be set to `localhost` under any circumstances. In a single-app graph, the `app` URI should not be specified. In a multi-app graph, the value of the `app` field must match the `_ten::uri` value defined in each app's `property.json`.
+  The `app` field must never be set to `localhost` under any circumstances. In a single-app graph, the `app` URI should not be specified. In a multi-app graph, the value of the `app` field must match the `ten::uri` value defined in each app's `property.json`.
 
 - **Node Uniqueness and Identification**:
   Each node in the `nodes` array represents a specific extension instance within a group of an app, created by a specified addon. Therefore, each extension instance should be uniquely represented by a single node. A node must be uniquely identified by the combination of `app`, `extension_group`, and `name`. Multiple entries for the same extension instance are not allowed. The following example is invalid because it defines multiple nodes for the same extension instance:

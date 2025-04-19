@@ -56,7 +56,7 @@ Used to set the initial values of the extension's properties. This allows the `g
     // Set the initial values of the extension's properties.
     ten_env.init_property_from_json(
       R"({
-           "_ten": {
+           "ten": {
              "uri": "msgpack://127.0.0.1:8001/",
              "log_level": 2
            }

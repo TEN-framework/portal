@@ -66,7 +66,7 @@ $ tman check graph -h
 
 - **预定义图定义要求：** 如果指定了预定义图的名称，则将从第一个 `--app` 参数指定的应用程序的 `property.json` 文件中提取其定义。
 - **包安装要求：** 在运行 `check graph` 命令之前，必须使用 `tman install` 命令安装应用程序依赖的所有扩展。这是必需的，因为验证过程需要有关图中每个扩展的信息，例如其 `manifest.json` 文件中定义的 API。
-- **唯一应用程序 URI 要求：** 在多应用程序图中，每个应用程序的 `property.json` 必须定义唯一的 `_ten::uri`。此外，`uri` 值不能设置为 `"localhost"`。
+- **唯一应用程序 URI 要求：** 在多应用程序图中，每个应用程序的 `property.json` 必须定义唯一的 `ten::uri`。此外，`uri` 值不能设置为 `"localhost"`。
 
 ## 验证规则
 
@@ -143,7 +143,7 @@ $ tman check graph -h
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -197,7 +197,7 @@ $ tman check graph -h
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -264,13 +264,13 @@ $ tman check graph -h
 
 ### 4. 在 `nodes` 中声明的插件必须安装在应用中
 
-- **示例（`property.json` 中的 `_ten::uri` 与 `nodes` 中的 `app` 字段不相等）：**
+- **示例（`property.json` 中的 `ten::uri` 与 `nodes` 中的 `app` 字段不相等）：**
 
   假设一个 TEN 应用程序的 `property.json` 文件的内容如下。
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -312,7 +312,7 @@ $ tman check graph -h
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -601,7 +601,7 @@ $ tman check graph -h
 
 每个节点中的 `app` 字段必须满足以下规则。
 
-- `app` 字段必须等于相应 TEN 应用程序的 `_ten::uri`。
+- `app` 字段必须等于相应 TEN 应用程序的 `ten::uri`。
 - 要么所有节点都应该声明 `app`，要么都不应该声明。
 - `app` 字段不能为 `localhost`。
 - `app` 字段不能为空字符串。
@@ -734,7 +734,7 @@ $ tman check graph -h
     connections[0].cmd[0].dest[0]: the 'app' should not be declared, as not any node has declared it
   ```
 
-- **示例 (节点中的 `app` 字段与应用程序的 `_ten::uri` 不相等)：**
+- **示例 (节点中的 `app` 字段与应用程序的 `ten::uri` 不相等)：**
 
   与 [规则 4](#id-4.-the-addons-declared-in-the-nodes-must-be-installed-in-the-app) 相同。
 
@@ -827,5 +827,5 @@ $ tman check graph -h
   **输出：**
 
   ```text
-  ❌  Error: Failed to parse graph string, nodes[1]: 'localhost' is not allowed in graph definition, change the content of 'app' field to be consistent with '_ten::uri'
+  ❌  Error: Failed to parse graph string, nodes[1]: 'localhost' is not allowed in graph definition, change the content of 'app' field to be consistent with 'ten::uri'
   ```

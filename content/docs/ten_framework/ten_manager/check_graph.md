@@ -68,7 +68,7 @@ The `check graph` command is designed to handle graphs that may span multiple ap
 
 - **Package Installation Requirement**: Before running the `check graph` command, all extensions that the app depends on must be installed using the `tman install` command. This is necessary because the validation process requires information about each extension in the graph, such as APIs defined in their `manifest.json` files.
 
-- **Unique App URI Requirement**: In a multi-app graph, each app's `property.json` must define a unique `_ten::uri`. Additionally, the `uri` value cannot be set to `"localhost"`.
+- **Unique App URI Requirement**: In a multi-app graph, each app's `property.json` must define a unique `ten::uri`. Additionally, the `uri` value cannot be set to `"localhost"`.
 
 ## Validation Rules
 
@@ -145,7 +145,7 @@ All extension instances referenced in the `connections` field, whether as a sour
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -199,7 +199,7 @@ All extension instances referenced in the `connections` field, whether as a sour
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -266,13 +266,13 @@ All extension instances referenced in the `connections` field, whether as a sour
 
 ### 4. The addons declared in the `nodes` must be installed in the app
 
-- **Example (The `_ten::uri` in property.json is not equal to the `app` field in nodes)**:
+- **Example (The `ten::uri` in property.json is not equal to the `app` field in nodes)**:
 
   Imagine that the content of property.json of a TEN app is as follows.
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -314,7 +314,7 @@ All extension instances referenced in the `connections` field, whether as a sour
 
   ```json
   {
-    "_ten": {
+    "ten": {
       "predefined_graphs": [
         {
           "name": "default",
@@ -603,7 +603,7 @@ The message declared in each message flow in the connections will be checked if 
 
 The `app` field in each node must met the following rules.
 
-- The `app` field must be equal to the `_ten::uri` of the corresponding TEN app.
+- The `app` field must be equal to the `ten::uri` of the corresponding TEN app.
 - Either all nodes should have `app` declared, or none should.
 - The `app` field can not be `localhost`.
 - The `app` field can not be an empty string.
@@ -737,7 +737,7 @@ The `app` field in each node must met the following rules.
     connections[0].cmd[0].dest[0]: the 'app' should not be declared, as not any node has declared it
   ```
 
-- **Example (The `app` field in nodes is not equal to the `_ten::uri` of app)**:
+- **Example (The `app` field in nodes is not equal to the `ten::uri` of app)**:
 
   Same as [Rule 4](#id-4.-the-addons-declared-in-the-nodes-must-be-installed-in-the-app).
 
@@ -830,5 +830,5 @@ The `app` field in each node must met the following rules.
   **Output**:
 
   ```text
-  ❌  Error: Failed to parse graph string, nodes[1]: 'localhost' is not allowed in graph definition, change the content of 'app' field to be consistent with '_ten::uri'
+  ❌  Error: Failed to parse graph string, nodes[1]: 'localhost' is not allowed in graph definition, change the content of 'app' field to be consistent with 'ten::uri'
   ```
