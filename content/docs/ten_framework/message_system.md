@@ -205,7 +205,7 @@ A typical result's JSON representation might look like this:
 
 ```json
 {
-  "_ten": {
+  "ten": {
     "status_code": 400
   }
 }

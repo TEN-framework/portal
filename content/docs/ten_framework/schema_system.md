@@ -78,7 +78,7 @@ The TEN framework uses a schema system to define and validate data structures, k
    The schema defines only metadata, not actual data values. This separation ensures that the schema remains a template for validation and does not mix with data content.
 
 3. **Conflict Prevention Principle**
-   In any JSON level containing a TEN schema, all fields must be user-defined, except for reserved fields like `_ten`. This prevents conflicts between user-defined fields and system-defined fields.
+   In any JSON level containing a TEN schema, all fields must be user-defined, except for reserved fields like `ten`. This prevents conflicts between user-defined fields and system-defined fields.
 
    Example with user-defined fields:
 
@@ -89,11 +89,11 @@ The TEN framework uses a schema system to define and validate data structures, k
    }
    ```
 
-   Example with reserved `_ten` field:
+   Example with reserved `ten` field:
 
    ```json
    {
-     "_ten": {
+     "ten": {
        "xxx": {}
      },
      "foo": "int8",
@@ -222,7 +222,7 @@ Example type definitions:
 
 ```json
 {
-  "_ten": {
+  "ten": {
     "name": "cmd_foo",
     "seq_id": "123",
     "dest": [
@@ -247,7 +247,7 @@ Example type definitions:
     "cmd_in": [
       {
         "name": "cmd_foo",
-        "_ten": {
+        "ten": {
           "name": {
             "type": "string"
           },
@@ -289,7 +289,7 @@ Example type definitions:
 }
 ```
 
-To avoid redundancy, the TEN framework allows you to exclude the `_ten` field from your schema definition, as it is reserved and defined by the runtime.
+To avoid redundancy, the TEN framework allows you to exclude the `ten` field from your schema definition, as it is reserved and defined by the runtime.
 
 ### Defining Command Results
 

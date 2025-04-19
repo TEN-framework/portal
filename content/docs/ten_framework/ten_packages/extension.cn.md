@@ -56,7 +56,7 @@ graph TD;
     // 设置扩展属性的初始值。
     ten_env.init_property_from_json(
       R"({
-           "_ten": {
+           "ten": {
              "uri": "msgpack://127.0.0.1:8001/",
              "log_level": 2
            }
