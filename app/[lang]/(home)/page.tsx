@@ -1,7 +1,11 @@
+import { AuroraBackground, Hero } from '@/app/[lang]/(home)/_components'
+
 export default function HomePage() {
   return (
-    <div className="flex flex-1 flex-col justify-center text-center">
-      <h1 className="mb-4 text-8xl font-bold">COMING SOON</h1>
-    </div>
+    <>
+      <AuroraBackground className="flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center text-center">
+        <Hero className="z-1" />
+      </AuroraBackground>
+    </>
   )
 }

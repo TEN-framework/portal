@@ -23,5 +23,17 @@
     "backToBlog": "返回博客",
     "writtenBy": "作者",
     "publishedOn": "发布于"
+  },
+  "homePage": {
+    "titlePrefix": "TEN 是一个",
+    "titleAmazing": "令人惊叹的",
+    "titleNew": "全新的",
+    "titleWonderful": "精彩的",
+    "titleBeautiful": "优雅的",
+    "titleSmart": "智能的",
+    "readLaunchArticle": "阅读我们的发布文章",
+    "heroDescription": "TEN 是一个用于构建对话式 AI 应用的框架。它提供了一套工具和库，帮助您构建、训练和部署自己的 AI 模型。",
+    "heroBtnTryTenAgent": "试用 TEN Agent",
+    "heroBtnTryTenFramework": "体验 TEN 框架"
   }
 }

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import { RootProvider } from 'fumadocs-ui/provider'
-import { I18nProvider, type Translations } from 'fumadocs-ui/i18n'
+import { type Translations } from 'fumadocs-ui/i18n'
 import { Inter } from 'next/font/google'
-import { NextProvider } from 'fumadocs-core/framework/next'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
+import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 
 import { nextIntlRouting } from '@/lib/i18n'
@@ -40,6 +40,9 @@ export default async function Layout({
   children: ReactNode
 }) {
   const lang = (await params).lang
+  const messages = await getMessages({
+    locale: lang,
+  })
 
   if (!hasLocale(nextIntlRouting.locales, lang)) {
     notFound()
@@ -48,16 +51,16 @@ export default async function Layout({
   return (
     <html lang={lang} className={inter.className} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
-          <NextProvider>
-            <I18nProvider
-              locale={lang}
-              locales={locales}
-              translations={{ cn, en }[lang]}
-            >
-              <RootProvider>{children}</RootProvider>
-            </I18nProvider>
-          </NextProvider>
+        <NextIntlClientProvider locale={lang} messages={messages}>
+          <RootProvider
+            i18n={{
+              locale: lang,
+              locales: locales,
+              translations: { cn, en }[lang],
+            }}
+          >
+            {children}
+          </RootProvider>
         </NextIntlClientProvider>
       </body>
     </html>
