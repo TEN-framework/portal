@@ -3,24 +3,12 @@
 This is a Next.js application generated with
 [Create Fumadocs](https://github.com/fuma-nama/fumadocs).
 
-Run development server:
-
-```bash
-npm run dev
-# or
-pnpm dev
-# or
-yarn dev
-```
-
-Open http://localhost:3000 with your browser to see the result.
-
 ## Structure
 
 The content is organized into the following folders:
 
-- `content/docs`: [i18n ✅] The documentation for TEN.
-- `content/blog`: [i18n ❌] The blog posts for TEN.
+- `content/docs`: [i18n ✓] The documentation for TEN.
+- `content/blog`: [i18n △] The blog posts for TEN.
 
 ### Documentation
 
@@ -38,11 +26,31 @@ The `content/docs` folder contains the documentation for TEN.
 
 > [!NOTE]
 > The blog is written in MDX and uses Fumadocs to generate the blog posts.
-> i18n should **_not_** be enabled for the blog posts.
+> UI components are i18n enabled, but content remains in original language.
 
 The `content/blog` folder contains the blog posts for TEN.
 
-- `hello`: The blog post for TEN.
+## Development
+
+To run the development server, use the following command:
+
+```bash
+# install dependencies
+# refer to https://bun.sh/ for bun installation
+bun i
+# run the development server
+bun dev
+```
+
+### Deployment
+
+Currently, the deployment is set up to use Netlify.
+
+Config: `netlify.toml`
+
+Rules:
+
+- `/` -> `/docs`, waiting for new home page
 
 ## Learn More
 

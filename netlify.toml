@@ -1,0 +1,17 @@
+[[redirects]]
+  from = "/"
+  to = "/docs"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/en"
+  to = "/en/docs"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/cn"
+  to = "/cn/docs"
+  status = 302
+  force = true
