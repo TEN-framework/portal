@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/"
+  to = "/docs"
+  status = 302
+  force = true
