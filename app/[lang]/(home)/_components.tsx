@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { motion } from 'motion/react'
 import { MoveRightIcon, BotMessageSquareIcon } from 'lucide-react'
-import { useTranslations, useLocale } from 'next-intl'
+import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
