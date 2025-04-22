@@ -26,15 +26,15 @@
   },
   "homePage": {
     "titlePrefix": "TEN Framework creates",
-    "titleAmazing": "Realtime",
-    "titleNew": "Multimodal",
-    "titleWonderful": "Low-latency",
-    "titleBeautiful": "High-performance",
-    "titleSmart": "Edge-Cloud",
+    "titleRealtime": "Realtime",
+    "titleMultimodel": "Multimodal",
+    "titleLowlantency": "Low-latency",
+    "titleHighperformance": "High-performance",
+    "titleEdgeCloud": "Edge-Cloud",
     "titleSuffix": "Voice AI Agent",
     "readLaunchArticle": "Read more at our blog",
     "heroDescription": "The world’s best Voice AI Agent framework for building Conversational AI",
     "heroBtnTryTenAgent": "Try TEN Agent",
-    "heroBtnTryTenFramework": "Documentation"
+    "heroBtnReadDoc": "Documentation"
   }
 }

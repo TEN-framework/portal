@@ -11,11 +11,11 @@ import { Link } from '@/lib/next-intl-navigation'
 import { URL_TEN_AGENT, URL_TEN_FRAMEWORK_DOC, BLOG } from '@/constants'
 
 const TITLES = [
-  'titleAmazing',
-  'titleNew',
-  'titleWonderful',
-  'titleBeautiful',
-  'titleSmart',
+  'titleRealtime',
+  'titleMultimodel',
+  'titleLowlantency',
+  'titleHighperformance',
+  'titleEdgeCloud',
 ]
 
 export function Hero(props: { className?: string }) {
@@ -90,7 +90,7 @@ export function Hero(props: { className?: string }) {
             </Button>
             <Button size="lg" className="gap-4" asChild>
               <Link href={URL_TEN_FRAMEWORK_DOC}>
-                {t('heroBtnTryTenFramework')}
+                {t('heroBtnReadDoc')}
                 <MoveRightIcon className="size-4" />
               </Link>
             </Button>
