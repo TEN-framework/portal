@@ -25,15 +25,16 @@
     "publishedOn": "Published on"
   },
   "homePage": {
-    "titlePrefix": "TEN is something",
-    "titleAmazing": "Amazing",
-    "titleNew": "New",
-    "titleWonderful": "Wonderful",
-    "titleBeautiful": "Beautiful",
-    "titleSmart": "Smart",
-    "readLaunchArticle": "Read our launch article",
-    "heroDescription": "TEN is a framework for building conversational AI applications. It provides a set of tools and libraries to help you build, train, and deploy your own AI models.",
+    "titlePrefix": "TEN Framework creates",
+    "titleAmazing": "Realtime",
+    "titleNew": "Multimodal",
+    "titleWonderful": "Low-latency",
+    "titleBeautiful": "High-performance",
+    "titleSmart": "Edge-Cloud",
+    "titleSuffix": "Voice AI Agent",
+    "readLaunchArticle": "Read more at our blog",
+    "heroDescription": "The world’s best Voice AI Agent framework for building Conversational AI",
     "heroBtnTryTenAgent": "Try TEN Agent",
-    "heroBtnTryTenFramework": "TEN Framework here"
+    "heroBtnTryTenFramework": "Documentation"
   }
 }

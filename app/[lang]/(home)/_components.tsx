@@ -12,6 +12,7 @@ import {
   URL_TEN_AGENT,
   URL_FIRST_BLOG,
   URL_TEN_FRAMEWORK_DOC,
+  BLOG,
 } from '@/constants'
 
 const TITLES = [
@@ -43,10 +44,10 @@ export function Hero(props: { className?: string }) {
   return (
     <div className={cn('text-foreground w-full', className)}>
       <div className="container mx-auto">
-        <div className="flex flex-col items-center justify-center gap-8 py-20 lg:py-40">
+        <div className="flex flex-col items-center justify-center gap-8 pt-16 pb-20 lg:pt-32 lg:pb-60">
           <div>
             <Button variant="secondary" size="sm" className="gap-4" asChild>
-              <Link href={URL_FIRST_BLOG}>
+              <Link href={BLOG}>
                 {t('readLaunchArticle')} <MoveRightIcon className="h-4 w-4" />
               </Link>
             </Button>
@@ -54,7 +55,7 @@ export function Hero(props: { className?: string }) {
           <div className="flex flex-col gap-4">
             <h1 className="font-regular max-w-2xl text-center text-5xl tracking-tighter md:text-7xl">
               <span className="text-spektr-cyan-50">{t('titlePrefix')}</span>
-              <span className="relative flex w-full justify-center overflow-hidden text-center md:pt-1 md:pb-4">
+              <span className="relative flex w-full justify-center overflow-hidden text-center md:pt-2 md:pb-5">
                 &nbsp;
                 {TITLES.map((title, index) => (
                   <motion.span
@@ -78,6 +79,7 @@ export function Hero(props: { className?: string }) {
                   </motion.span>
                 ))}
               </span>
+              <span className="text-spektr-cyan-50">{t('titleSuffix')}</span>
             </h1>
 
             <p className="text-muted-foreground max-w-2xl text-center text-lg leading-relaxed tracking-tight md:text-xl">
