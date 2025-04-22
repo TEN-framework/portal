@@ -1,14 +1,14 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
-@import "tw-animate-css";
+@import 'tw-animate-css';
+@plugin "tailwindcss-motion";
 
 @custom-variant dark (&:is(.dark *));
 
 @source '../node_modules/fumadocs-ui/dist/**/*.js';
 
 :root {
-
   --radius: 0.625rem;
 
   --background: oklch(1 0 0);
@@ -75,7 +75,6 @@
 }
 
 .dark {
-
   --background: oklch(0.145 0 0);
 
   --foreground: oklch(0.985 0 0);
@@ -140,7 +139,6 @@
 }
 
 @theme inline {
-
   --radius-sm: calc(var(--radius) - 4px);
 
   --radius-md: calc(var(--radius) - 2px);
@@ -218,5 +216,33 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@theme static {
+  --transparent: transparent;
+  --white: var(--color-white);
+  --black: var(--color-black);
+  --blue-300: var(--color-blue-300);
+  --blue-400: var(--color-blue-400);
+  --blue-500: var(--color-blue-500);
+  --indigo-300: var(--color-indigo-300);
+  --violet-200: var(--color-violet-200);
+}
+
+@theme {
+  --animate-aurora: aurora 60s linear infinite;
+
+  @keyframes aurora {
+    from {
+      background-position:
+        50% 50%,
+        50% 50%;
+    }
+    to {
+      background-position:
+        350% 50%,
+        350% 50%;
+    }
   }
 }

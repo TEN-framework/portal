@@ -42,16 +42,6 @@ bun i
 bun dev
 ```
 
-### Deployment
-
-Currently, the deployment is set up to use Netlify.
-
-Config: `netlify.toml`
-
-Rules:
-
-- `/` -> `/docs`, waiting for new home page
-
 ## Learn More
 
 To learn more about Next.js and Fumadocs, take a look at the following

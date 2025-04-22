@@ -23,5 +23,18 @@
     "backToBlog": "返回博客",
     "writtenBy": "作者",
     "publishedOn": "发布于"
+  },
+  "homePage": {
+    "titlePrefix": "TEN 框架创建",
+    "titleRealtime": "实时",
+    "titleMultimodel": "多模态",
+    "titleLowlantency": "低延迟",
+    "titleHighperformance": "高性能",
+    "titleEdgeCloud": "边缘云",
+    "titleSuffix": "语音 AI 助手",
+    "readLaunchArticle": "阅读我们的博客了解更多",
+    "heroDescription": "世界上最优秀的语音 AI 助手框架，用于构建会话式 AI",
+    "heroBtnTryTenAgent": "试用 TEN Agent",
+    "heroBtnReadDoc": "文档"
   }
 }

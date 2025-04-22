@@ -41,7 +41,7 @@ export default async function BlogHomePage(props: {
   })
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto mt-14 px-4 py-12">
       <div className="mb-12 text-center">
         <h1 className="from-primary to-primary/70 mb-4 bg-gradient-to-r bg-clip-text text-5xl leading-normal font-bold tracking-tight text-transparent">
           {t('latestPosts')}
