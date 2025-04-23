@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { motion } from 'motion/react'
-import { MoveRightIcon, BotMessageSquareIcon } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 import { Button } from '@/components/ui/button'
@@ -43,7 +43,7 @@ export function Hero(props: { className?: string }) {
           <div>
             <Button variant="secondary" size="sm" className="gap-4" asChild>
               <Link href={BLOG}>
-                {t('readLaunchArticle')} <MoveRightIcon className="h-4 w-4" />
+                {t('readLaunchArticle')}
               </Link>
             </Button>
           </div>
@@ -85,13 +85,12 @@ export function Hero(props: { className?: string }) {
             <Button size="lg" className="gap-4" variant="outline" asChild>
               <Link href={URL_TEN_AGENT} target="_blank">
                 {t('heroBtnTryTenAgent')}
-                <BotMessageSquareIcon className="size-4" />
+                <ExternalLink className="size-4" />
               </Link>
             </Button>
             <Button size="lg" className="gap-4" asChild>
               <Link href={URL_TEN_FRAMEWORK_DOC}>
                 {t('heroBtnReadDoc')}
-                <MoveRightIcon className="size-4" />
               </Link>
             </Button>
           </div>
