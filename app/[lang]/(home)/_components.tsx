@@ -48,7 +48,7 @@ export function Hero(props: { className?: string }) {
             </Button>
           </div>
           <div className="flex flex-col gap-4">
-            <h1 className="font-regular max-w-2xl text-center text-5xl tracking-tighter md:text-7xl">
+            <h1 className="font-regular text-center text-5xl tracking-tighter md:text-7xl">
               <span className="text-spektr-cyan-50">{t('titlePrefix')}</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pt-2 md:pb-5">
                 &nbsp;
