@@ -62,6 +62,7 @@ export default async function Layout({
             {children}
           </RootProvider>
         </NextIntlClientProvider>
+        <img referrerPolicy="no-referrer-when-downgrade" src="https://static.scarf.sh/a.png?x-pxid=1295f95b-eaaa-4f5c-8861-825c0e350978" />
       </body>
     </html>
   )
