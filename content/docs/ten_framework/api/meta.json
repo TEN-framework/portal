@@ -1,4 +1,7 @@
 {
   "title": "API Reference",
-  "pages": ["required", "interface", "log"]
+  "pages": [
+    "required",
+    "log"
+  ]
 }
