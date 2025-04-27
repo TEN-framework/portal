@@ -10,6 +10,7 @@ import { nextIntlRouting } from '@/lib/i18n'
 import cnMessages from '@/messages/cn.json'
 import enMessages from '@/messages/en.json'
 
+import Script from 'next/script'
 import '../global.css'
 
 const inter = Inter({
@@ -60,13 +61,12 @@ export default async function Layout({
             }}
           >
             {children}
+            <Script
+            src="/scarf-analytics.js"
+            strategy="afterInteractive"
+            />
           </RootProvider>
         </NextIntlClientProvider>
-        <img
-          referrerPolicy="no-referrer-when-downgrade"
-          src="https://static.scarf.sh/a.png?x-pxid=1295f95b-eaaa-4f5c-8861-825c0e350978"
-          style={{ display: 'none' }}
-        />
       </body>
     </html>
   )
