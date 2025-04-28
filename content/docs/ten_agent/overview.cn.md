@@ -7,7 +7,7 @@ TEN Agent 是一个由 TEN 驱动的对话式 AI 代理，集成了 Gemini 2.0 L
 ## 链接
 
 - [TEN Agent](https://github.com/TEN-framework/TEN-Agent)
-- [TEN Framework](https://github.com/TEN-framework/ten_framework)
+- [TEN Framework](https://github.com/TEN-framework/ten-framework)
 
 ## 架构
 
