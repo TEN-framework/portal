@@ -9,7 +9,7 @@ TEN Framework 具有高度灵活性，提供了丰富的功能，包括 TEN 云�
 您可以通过以下链接获取 TEN Designer：
 
 ```text
-https://github.com/TEN-framework/ten_framework/releases
+https://github.com/TEN-framework/ten-framework/releases
 ```
 
 TEN Designer 支持以下操作系统及架构，请根据您的平台获取对应版本：
@@ -54,7 +54,7 @@ http://127.0.0.1:49483/
 
 - 最右侧按钮显示当前 TEN Designer 的版本号，并自动检测是否有新版本发布。如有更新，会显示一个向上的箭头，点击后将打开新版本的下载页面。
 - 左侧第一个按钮是 [TEN Agent](https://agent.theten.ai/) 按钮，点击后将打开 TEN Agent 页面。TEN Agent 是使用 TEN Framework 构建的完整 AI Agent 实现，TEN Designer 的主要目标之一是让开发者能够轻松地通过 TEN Designer 开发、调试和定制 TEN Agent。
-- 左侧第二个按钮是 [TEN Framework](https://github.com/TEN-framework/ten_framework) 的 GitHub 页面，点击后将打开 TEN Framework 的 GitHub 仓库。如需了解更多关于 TEN Framework 的信息、源代码或提交问题，可以访问此页面。
+- 左侧第二个按钮是 [TEN Framework](https://github.com/TEN-framework/ten-framework) 的 GitHub 页面，点击后将打开 TEN Framework 的 GitHub 仓库。如需了解更多关于 TEN Framework 的信息、源代码或提交问题，可以访问此页面。
 - 最左侧有两个按钮，分别用于切换明暗模式和选择语言。
 
 在 TEN Designer 的左上方有几个下拉菜单，开发者可以通过这些菜单使用 TEN Designer 的各项功能。

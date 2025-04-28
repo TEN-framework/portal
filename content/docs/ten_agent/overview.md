@@ -7,7 +7,7 @@ TEN Agent is a conversational AI agent powered by the TEN, integrating Gemini 2.
 ## Links
 
 - [TEN Agent](https://github.com/TEN-framework/TEN-Agent)
-- [TEN Framework](https://github.com/TEN-framework/ten_framework)
+- [TEN Framework](https://github.com/TEN-framework/ten-framework)
 
 ## Architecture
 
