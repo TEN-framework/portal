@@ -26,14 +26,13 @@
   },
   "homePage": {
     "titlePrefix": "TEN Framework creates",
-    "titleRealtime": "Realtime",
-    "titleMultimodel": "Multimodal",
     "titleLowlantency": "Low-latency",
+    "titleMultimodal": "Multimodal",
     "titleHighperformance": "High-performance",
     "titleEdgeCloud": "Edge-cloud",
-    "titleSuffix": "Voice AI Agent",
+    "titleSuffix": "Voice AI Agents",
     "readLaunchArticle": "Read more on our blog",
-    "heroDescription": "The world’s best Voice AI Agent framework for building Conversational AI",
+    "heroDescription": "TEN stands for transformative extensions network. It is an open-source framework for real-time, multimodal conversational AI.",
     "heroBtnTryTenAgent": "Try TEN Agent",
     "heroBtnReadDoc": "Documentation"
   }

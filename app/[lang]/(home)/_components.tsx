@@ -11,9 +11,8 @@ import { Link } from '@/lib/next-intl-navigation'
 import { URL_TEN_AGENT, URL_TEN_FRAMEWORK_DOC, BLOG } from '@/constants'
 
 const TITLES = [
-  'titleRealtime',
-  'titleMultimodel',
   'titleLowlantency',
+  'titleMultimodal',
   'titleHighperformance',
   'titleEdgeCloud',
 ]
@@ -40,13 +39,13 @@ export function Hero(props: { className?: string }) {
     <div className={cn('text-foreground w-full', className)}>
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center gap-8 pt-16 pb-20 lg:pt-32 lg:pb-60">
-          <div>
+          {/* <div>
             <Button variant="secondary" size="sm" className="gap-4" asChild>
               <Link href={BLOG}>
                 {t('readLaunchArticle')}
               </Link>
             </Button>
-          </div>
+          </div> */}
           <div className="flex flex-col gap-4">
             <h1 className="font-regular text-center text-5xl tracking-tighter md:text-7xl">
               <span className="text-spektr-cyan-50">{t('titlePrefix')}</span>
