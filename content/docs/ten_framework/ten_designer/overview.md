@@ -9,7 +9,7 @@ Since command-line tools are not as user-friendly as graphical user interfaces, 
 You can get TEN Designer from the following link:
 
 ```text
-https://github.com/TEN-framework/ten_framework/releases
+https://github.com/TEN-framework/ten-framework/releases
 ```
 
 TEN Designer supports the following operating systems and architectures. Please obtain the appropriate version for your platform:
@@ -54,7 +54,7 @@ In the upper right corner of TEN Designer, you can see several function buttons:
 
 - The rightmost button displays the current version of TEN Designer and automatically checks for new version releases. If an update is available, an upward arrow will be displayed. Clicking it will open the download page for the new version.
 - The first button on the left is the [TEN Agent](https://agent.theten.ai/) button. Clicking it will open the TEN Agent page. TEN Agent is a complete AI Agent implementation built using TEN Framework. One of the main goals of TEN Designer is to enable developers to easily develop, debug, and customize TEN Agent through TEN Designer.
-- The second button on the left is the [TEN Framework](https://github.com/TEN-framework/ten_framework) GitHub page. Clicking it will open the GitHub repository for TEN Framework. You can visit this page to learn more about TEN Framework, view source code, or submit issues.
+- The second button on the left is the [TEN Framework](https://github.com/TEN-framework/ten-framework) GitHub page. Clicking it will open the GitHub repository for TEN Framework. You can visit this page to learn more about TEN Framework, view source code, or submit issues.
 - On the far left, there are two buttons for switching between light and dark modes and selecting languages.
 
 In the upper left corner of TEN Designer, there are several dropdown menus that developers can use to access various functions of TEN Designer.

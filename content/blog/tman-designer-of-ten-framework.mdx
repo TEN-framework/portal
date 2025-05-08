@@ -6,8 +6,9 @@ date: 2025-03-31
 ---
 
 ![](../../public/assets/blog/tman-designer/tman-1.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-TEN Designer Overview
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>
+  TEN Designer Overview
 </div>
 
 TEN framework github : https://github.com/TEN-framework
@@ -27,10 +28,11 @@ TEN Framework offers high flexibility and provides rich functionalities, includi
 Since command-line tools are not as user-friendly as graphical user interfaces, TEN Manager includes a web UI-based visual development interface called TEN Designer, in addition to the command-line interface. It provides rich functionality to help developers develop and debug TEN Apps and TEN Extensions. This means that developers only need to obtain the TEN Manager tool to access a complete TEN Framework development environment with both command-line and graphical user interfaces.
 
 ---
+
 You can get TEN Designer from the following link:
 
 ```
-https://github.com/TEN-framework/ten_framework/releases/tag/0.9.0
+https://github.com/TEN-framework/ten-framework/releases/tag/0.9.0
 ```
 
 TEN Designer supports the following operating systems and architectures. Please obtain the appropriate version for your platform:
@@ -66,12 +68,13 @@ Note: If your TEN Designer is running on a remote machine, please use the IP add
 ---
 
 ## Overview
+
 After opening the TEN Designer page in your browser, you will see the following interface:
 
-
 ![](../../public/assets/blog/tman-designer/tman-1.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-TEN Designer Overview
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>
+  TEN Designer Overview
 </div>
 
 In the upper right corner of TEN Designer, you can see several function buttons:
@@ -88,11 +91,13 @@ In the upper left corner of TEN Designer, there are several dropdown menus that 
 ## Working with TEN Apps
 
 ### Loading an Existing TEN App
+
 You can load an existing TEN App using the Load App button in the App menu. After clicking the button, you will see the following interface:
 
 ![](../../public/assets/blog/tman-designer/tman-3.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-Loading an Existing TEN App
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>
+  Loading an Existing TEN App
 </div>
 
 Through this file browser dialog, developers can specify the root directory of an existing TEN App to load it.
@@ -100,11 +105,13 @@ Through this file browser dialog, developers can specify the root directory of a
 ---
 
 ### Managing Loaded TEN Apps
+
 You can manage loaded TEN Apps using the Manage Loaded App(s) button in the App menu. After clicking the button, you will see the following Apps Manager interface:
 
 ![](../../public/assets/blog/tman-designer/tman-4.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-Managing Loaded TEN Apps
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>
+  Managing Loaded TEN Apps
 </div>
 
 ---
@@ -120,6 +127,7 @@ Developers can use this dialog to:
 ---
 
 ### Installing All Dependencies for an App
+
 Developers can install various TEN packages in a TEN App. All TEN packages that a TEN App depends on are recorded in the manifest.json file. Here is an example of a manifest.json file:
 
 ```json
@@ -189,29 +197,30 @@ It’s worth noting that even though it’s not explicitly declared in the manif
 Through the Apps Manager interface in TEN Designer, developers can perform the Install All operation on a specified App to easily complete the installation of all dependencies. After clicking the button, you will see the following interface showing the installation progress:
 
 ![](../../public/assets/blog/tman-designer/tman-5.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-Installing All Dependencies for an App
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>
+  Installing All Dependencies for an App
 </div>
 
 ---
 
 ## Installing TEN Extensions from the Cloud Store
+
 You can open the TEN Cloud Store and install TEN Extensions to the current TEN App using the Open Extension Store button in the Graph menu. After clicking the button, you will see the following interface:
 
 ![](../../public/assets/blog/tman-designer/tman-6.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-TEN Cloud Store
-</div>
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>TEN Cloud Store</div>
 
 In the TEN Cloud Store, developers can search for the required TEN Extensions and click the Install button to install them to the current TEN App. After installation, you can view the installed TEN Extensions in the current TEN App.
 
 ## Running a TEN App
+
 In the Apps Manager, you can perform preset runtime operations on the specified App. After clicking the Run button in the Apps Manager, you will see the following interface:
 
 ![](../../public/assets/blog/tman-designer/tman-7.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>  
-Running a TEN App
-</div>
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>Running a TEN App</div>
 
 In the dialog, developers can select the preset operation to execute from the dropdown menu. These typically include the following operations:
 
@@ -220,24 +229,25 @@ In the dialog, developers can select the preset operation to execute from the dr
 
 Below is the build interface for a TEN App developed in C++:
 
-
 ![](../../public/assets/blog/tman-designer/tman-8.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-Building a TEN App
-</div>
-After the build is complete, you can continue with the startup operation for the TEN App. The system will display a window showing the TEN App’s runtime logs in real-time:
 
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>Building a TEN App</div>
+After the build is complete, you can continue with the startup operation for the
+TEN App. The system will display a window showing the TEN App’s runtime logs in
+real-time:
 
 ![](../../public/assets/blog/tman-designer/tman-9.webp)
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-Starting a TEN App
-</div>
+
+<div style={{ textAlign: "center", fontSize: "0.9em" }}>Starting a TEN App</div>
 
 ## Working with TEN Graphs
+
 ## Loading an Existing TEN Graph
+
 You can load an existing TEN Graph using the Open Existing Graph button in the Graph menu. After successful loading, you will see an interface similar to the following:
 
 ![TEN Graph](../../public/assets/blog/tman-designer/tman-10.webp)
+
 <div style={{ textAlign: 'center', fontSize: '0.9em' }}>
 
 TEN Graph
@@ -260,6 +270,7 @@ Each TEN Extension has its corresponding inputs and outputs. For example, `ffmpe
 Clicking on the number buttons for inputs and outputs opens a dialog like the following, which is used to manage input and output connections:
 
 ![TEN Message Input/Output Dialog](../../public/assets/blog/tman-designer/tman-11.webp)
+
 <div style={{ textAlign: 'center', fontSize: '0.9em' }}>
 
 TEN Message Input/Output Dialog
@@ -271,8 +282,8 @@ TEN Message Input/Output Dialog
 After manually adjusting the positions of TEN Extensions in the TEN Graph, developers can click the Auto Layout button in the Graph menu to automatically arrange the TEN Extensions in the TEN Graph.
 
 ## Opening the Context Menu for TEN Extensions
-In the Graph, right-clicking on each TEN Extension opens the TEN Extension’s context menu:
 
+In the Graph, right-clicking on each TEN Extension opens the TEN Extension’s context menu:
 
 ![Context menu showing options for TEN Extension configuration](../../public/assets/blog/tman-designer/tman-12.webp)
 
