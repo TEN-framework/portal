@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Link } from '@/lib/next-intl-navigation'
-import { URL_TEN_AGENT, URL_TEN_FRAMEWORK_DOC, BLOG } from '@/constants'
+import { URL_TEN_AGENT, URL_TEN_FRAMEWORK_DOC } from '@/constants'
 
 const TITLES = [
   'titleLowlantency',
@@ -88,9 +88,7 @@ export function Hero(props: { className?: string }) {
               </Link>
             </Button>
             <Button size="lg" className="gap-4" asChild>
-              <Link href={URL_TEN_FRAMEWORK_DOC}>
-                {t('heroBtnReadDoc')}
-              </Link>
+              <Link href={URL_TEN_FRAMEWORK_DOC}>{t('heroBtnReadDoc')}</Link>
             </Button>
           </div>
         </div>
