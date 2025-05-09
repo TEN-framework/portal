@@ -225,6 +225,8 @@ A grounder and solver for logic programs.
 
 Please refer to `third_party/clingo` for details.
 
+ten_manager actually uses the clingo-sys crate to call clingo, and clingo-sys includes its own clingo source code. However, this included clingo source code is version 5.6.2, which has compilation errors in a cmake 4 environment. Therefore, we need to use cargo's patch feature to use the latest local version of clingo source code (which has fixed the cmake 4 compilation errors). Additionally, since clingo-sys already includes clingo source code, we don't actually need the third_party/clingo folder. However, because clingo-sys still compiles clingo as a shared library on Windows, we currently still need to use the third_party/clingo folder to compile clingo's shared library on Windows, and then use gn scripts to copy the Windows shared library to the final output folder of ten_manager. In the future, we should directly use the Windows shared library compiled from the clingo source code included in clingo-sys for copying, which would allow us to remove the third_party/clingo folder.
+
 ## FFmpeg
 
 Version: 6.0
