@@ -217,7 +217,7 @@ CURL_EXTERN void Curl_ws_done(struct Curl_easy *data);
 
 ## clingo
 
-Version: 5.6.2
+Version: 5.8.0
 
 [MIT license](https://github.com/potassco/clingo/blob/master/LICENSE.md)
 
