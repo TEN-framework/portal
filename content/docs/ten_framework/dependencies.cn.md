@@ -217,13 +217,15 @@ CURL_EXTERN void Curl_ws_done(struct Curl_easy *data);
 
 ## clingo
 
-版本：5.6.2
+版本：5.8.0
 
 [MIT 许可证](https://github.com/potassco/clingo/blob/master/LICENSE.md)
 
 一种用于逻辑程序的接地器和求解器。
 
 有关详细信息，请参阅 `third_party/clingo`。
+
+ten_manager 实际上使用 clingo-sys crate 来调用 clingo，而 clingo-sys 包含了自己的 clingo 源代码。然而，这个包含的 clingo 源代码是 5.6.2 版本，在 cmake 4 环境中存在编译错误。因此，我们需要使用 cargo 的 patch 功能来使用最新的本地版本 clingo 源代码（已修复了 cmake 4 编译错误）。此外，由于 clingo-sys 已经包含了 clingo 源代码，我们实际上并不需要 third_party/clingo 文件夹。但是，由于 clingo-sys 在 Windows 上仍然将 clingo 编译为共享库，我们目前仍然需要使用 third_party/clingo 文件夹在 Windows 上编译 clingo 的共享库，然后使用 gn 脚本将 Windows 共享库复制到 ten_manager 的最终输出文件夹。未来，我们应该直接使用从 clingo-sys 中包含的 clingo 源代码编译的 Windows 共享库进行复制，这样就可以移除 third_party/clingo 文件夹。
 
 ## FFmpeg
 
