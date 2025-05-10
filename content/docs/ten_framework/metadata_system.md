@@ -168,6 +168,30 @@ You can define a TEN schema for properties in the `manifest.json` file, enabling
 
 The TEN runtime provides APIs for extensions to access various properties.
 
+### Accessing App Properties from an Extension
+
+> ⚠️ **Note:** The behavior described in this section has not yet been implemented and is part of the future roadmap.
+
+The TEN framework provides a powerful property access mechanism that allows extensions to read and modify app properties. Through the get/set property API, you can access all properties, including app properties. When the API parameter begins with the `app:` prefix, the system identifies this as a request to operate on app properties.
+
+API design considerations for different language implementations:
+
+- **Go**: Providing a synchronous version without callbacks is sufficient, making it concise and efficient.
+- **Node.js**: Implemented as an async function without callbacks, aligning with Node.js's asynchronous programming model.
+- **Python**: Ideally, versions both with and without callbacks should be provided. Currently, a synchronous version without callbacks can be implemented first, but accessing `app:` properties will use event wait, which may impact performance.
+- **Async Python**: Implemented as an async function without callbacks, consistent with Python's asynchronous model.
+- **C++**: Both versions with and without callbacks should be provided. Currently, a synchronous version without callbacks can be implemented first, but accessing `app:` properties will use event wait, which may impact performance.
+
+This design enables read/write operations on app properties through the unified get/set_property API, maintaining interface consistency without affecting message property-related APIs.
+
+Regarding the handling of `ten:` namespace fields, the following rules are adopted:
+
+1. `get/set_property_to/from_json(nullptr)` operations do not process `ten:` fields
+2. To access `ten:` fields, you must explicitly specify the complete path such as `get/set_property("ten:xxx")`
+3. When using `get/set_property_to/from_json()`, `ten:` fields are only processed when a key in the form of `"ten:xxx"` is explicitly specified
+
+This design maintains API simplicity while avoiding the complexity of creating additional commands for specific requirements.
+
 ### Specifying Property Values in the `start_graph` Command
 
 Property values related to the TEN package can be specified in the `start_graph` command. The TEN runtime processes these properties according to the TEN schema (if defined) and stores them within the corresponding TEN package instance.
