@@ -326,6 +326,153 @@ TEN 的核心运作机制是图（graph），一个图可以包含多个节点�
 }
 ```
 
+### 包含 msg_conversion 的例子
+
+底下是一个包含了 msg_conversion 机制的例子，展示了如何将 msg_conversion 机制应用到子图的连接上。
+
+```json
+{
+  "nodes": [
+    {
+      // 该图包含一个名为 ext_a 的 extension
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "addon_a"
+    },
+    {
+      // 该图包含一个名为 ext_b 的 extension
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "addon_b"
+    },
+    {
+      // 该图包含一个子图，在此图中称为 graph_any_name
+      // 该子图的实际定义在 subgraph.json 中
+      "type": "graph",
+      "name": "graph_any_name",
+      "ref": "subgraph.json"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_b",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            },
+            {
+              // 第二个目标是 graph_any_name 所代表的图内的 ext_d
+              "extension": "graph_any_name:ext_d",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+开发工具可以借由 `expose_msgs` 信息，在开发者构建连接的时候，提示是否是 compatible 的 msgs，并且按需的跳出 msg_conversion 的配置界面。如果开发者选择不进行 msg_conversion，则保持原 msg 不变。反之，在开发者完成了 msg_conversion 的配置后，开发工具会自动将 msg_conversion 的配置写入最终的图定义中。
+
+上图经过展平后，会得到如下的完整图定义：
+
+```json
+{
+  "nodes": [
+    {
+      // 该图包含一个名为 ext_a 的 extension
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "addon_a"
+    },
+    {
+      // 该图包含一个名为 ext_b 的 extension
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "addon_b"
+    },
+    {
+      // 将子图的 ext_c 节点定义展平纳入
+      "type": "extension",
+      "name": "graph_any_name_ext_c",
+      "addon": "addon_c"
+    },
+    {
+      // 将子图的 ext_d 节点定义展平纳入
+      "type": "extension",
+      "name": "graph_any_name_ext_d",
+      "addon": "addon_d"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_b",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            },
+            {
+              // 第二个目标是 graph_any_name 所代表的图内的 ext_d
+              "extension": "graph_any_name_ext_d",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
 ### 在应用中使用图
 
 以下是将图放入应用程序的 `property.json` 中的方法：
