@@ -160,7 +160,7 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
       ]
     }
   ],
-  "expose_msgs": [
+  "exposed_messages": [
     // 表示该图向外部暴露的消息接口
     // 主要供开发工具使用，便于查找消息定义并提供智能提示
     {
@@ -196,7 +196,7 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
       // 引用子图，在此图中命名为 graph_any_name
       "type": "graph",
       "name": "graph_any_name",
-      "ref": "subgraph.json"
+      "source_uri": "./ten_packages/extension/aaa/subgraph.json"
     }
   ],
   "connections": [
@@ -236,7 +236,7 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
 }
 ```
 
-虽然引用语法（如 `"extension": "graph_any_name:ext_d"`）看似暴露了子图内部细节，但实际上开发工具可以借助 `expose_msgs` 信息，使开发者无需了解这些细节。开发工具可以：
+虽然引用语法（如 `"extension": "graph_any_name:ext_d"`）看似暴露了子图内部细节，但实际上开发工具可以借助 `exposed_messages` 信息，使开发者无需了解这些细节。开发工具可以：
 
 1. 呈现子图暴露的命令接口
 2. 让开发者直接连接到这些暴露的接口
@@ -246,8 +246,8 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
 
 子图机制引入了三个关键概念：
 
-1. **消息暴露**（expose_msgs）：
-   - 子图通过 `expose_msgs` 字段声明对外暴露的消息接口
+1. **消息暴露**（exposed_messages）：
+   - 子图通过 `exposed_messages` 字段声明对外暴露的消息接口
    - 主要供开发工具使用，实现智能提示和检查
    - 隐藏子图内部细节，提升开发体验
 
@@ -335,7 +335,7 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
       ]
     }
   ]
-  // expose_msgs 字段在展平过程中被舍弃，因为它仅用于辅助工具
+  // exposed_messages 字段在展平过程中被舍弃，因为它仅用于辅助工具
 }
 ```
 
@@ -369,7 +369,7 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
     {
       "type": "graph",
       "name": "graph_any_name",
-      "ref": "subgraph.json"
+      "source_uri": "http://a.b.c.d/subgraph.json"
     }
   ],
   "connections": [
@@ -415,7 +415,7 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
 }
 ```
 
-开发工具可以借助 `expose_msgs` 信息，在开发者构建连接时提示兼容性，并按需提供消息转换配置界面。配置完成后，开发工具会自动将转换规则写入图定义中。
+开发工具可以借助 `exposed_messages` 信息，在开发者构建连接时提示兼容性，并按需提供消息转换配置界面。配置完成后，开发工具会自动将转换规则写入图定义中。
 
 展平后，消息转换规则也会被正确保留：
 
@@ -498,11 +498,11 @@ TEN 的核心运作机制是图（Graph），图结构由节点（Nodes）和连
       {
         "name": "default",
         "auto_start": false,
-        "ref": "graph.json"
+        "source_uri": "../graph.json"
       }
     ]
   }
 }
 ```
 
-此配置指定了一个名为 "default" 的预置图，引用自 "graph.json" 文件，设置为不自动启动。
+此配置指定了一个名为 "default" 的预置图，引用自 `graph.json` 文件，设置为不自动启动。
