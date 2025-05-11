@@ -1,22 +1,30 @@
 ---
-title: Subgraph
+title: 子图（Subgraph）
 ---
 
-## Subgraph
+## 子图概述
 
-The core operating mechanism of TEN is a graph, which can contain multiple nodes and multiple connections. Below is an example of a graph definition involving a single TEN app:
+TEN 框架的核心运作机制是基于图（Graph）结构，该结构由节点（Nodes）和连接（Connections）组成。子图（Subgraph）是一种强大的复用机制，允许将复杂的图结构拆分成多个可重用的模块，从而提高代码组织性和可维护性。
+
+### 基本图结构
+
+在深入了解子图之前，我们首先需要掌握 TEN 框架的基本图结构。
+
+#### 单应用图示例
+
+以下是一个简单的单应用图定义示例，它仅涉及一个 TEN App：
 
 ```json
 {
   "nodes": [
     {
-      // This graph contains an extension named ext_a.
+      // 定义一个名为 ext_a 的 extension
       "type": "extension",
       "name": "ext_a",
       "addon": "addon_a"
     },
     {
-      // This graph contains an extension named ext_b.
+      // 定义一个名为 ext_b 的 extension
       "type": "extension",
       "name": "ext_b",
       "addon": "addon_b"
@@ -24,7 +32,7 @@ The core operating mechanism of TEN is a graph, which can contain multiple nodes
   ],
   "connections": [
     {
-      // This graph contains a connection with ext_a as the source, ext_b as the destination, and transmits a command named cmd_1 on this connection.
+      // 创建一个连接：ext_a 向 ext_b 发送 cmd_1 命令
       "extension": "ext_a",
       "cmd": [
         {
@@ -41,20 +49,22 @@ The core operating mechanism of TEN is a graph, which can contain multiple nodes
 }
 ```
 
-Below is an example of a graph definition involving multiple TEN apps:
+#### 多应用图示例
+
+当需要跨多个 TEN App 构建连接时，图定义会更加复杂，如下所示：
 
 ```json
 {
   "nodes": [
     {
-      // This graph contains an extension named ext_a.
+      // 定义一个名为 ext_a 的 extension，位于 app_a 上
       "type": "extension",
       "name": "ext_a",
       "addon": "addon_a",
       "app": "http://app_a"
     },
     {
-      // This graph contains an extension named ext_b.
+      // 定义一个名为 ext_b 的 extension，位于 app_b 上
       "type": "extension",
       "name": "ext_b",
       "addon": "addon_b",
@@ -63,7 +73,7 @@ Below is an example of a graph definition involving multiple TEN apps:
   ],
   "connections": [
     {
-      // This graph contains a connection with ext_a as the source, ext_b as the destination, and transmits a command named cmd_1 on this connection.
+      // 创建一个跨应用连接：app_a 上的 ext_a 向 app_b 上的 ext_b 发送 cmd_1 命令
       "app": "http://app_a",
       "extension": "ext_a",
       "cmd": [
@@ -82,26 +92,55 @@ Below is an example of a graph definition involving multiple TEN apps:
 }
 ```
 
-However, sometimes we want to split a graph into multiple graphs and want these graphs to be reusable. This is where the concept of a subgraph is introduced. Subgraphs are specifically designed as a syntax sugar; the introduction of subgraphs does not change the original operating mechanism of graphs. Several design principles for subgraphs are as follows:
+### 子图设计思想
 
-1. Subgraphs provide additional information that allows tools to more easily understand the structure of the subgraph. Tools can display and use this information to enhance the development experience and make it easier to operate on subgraphs. However, this information is only for tool use and does not make the overall structure of the graph more complex.
-2. Subgraphs are ultimately flattened by tools or the TEN runtime into the same graph structure as existing graphs, and then use the same running mechanism to start the entire graph.
-3. Although subgraphs can be embedded in other graphs, they are normal graphs themselves and can be started independently if needed.
-4. The introduction of subgraphs does not make the JSON structure of the graph more complex. Instead, it keeps the JSON of the graph in a simple form, using tools to enhance the developer experience and development efficiency.
+子图本质上是一种语法糖（Syntax Sugar），它最终会被展平到所属的大图中，然后使用与普通图相同的机制启动。这种设计既简化了复杂系统的开发，又不增加运行时的复杂度。
 
-Below is an example of a `subgraph.json`, note that it is also a normal graph that can be used independently:
+#### 设计原则
+
+子图的设计遵循以下核心原则：
+
+1. **独立性**：子图本身是一个完整的图，既可以单独启动，也可以作为组件嵌入到其他图中。
+
+2. **工具友好**：子图提供额外信息帮助开发工具理解图结构，提升开发体验，同时不增加运行时的复杂度。
+
+3. **展平机制**：子图最终会被展平为标准图结构，使用相同的运行机制，确保性能和兼容性。
+
+4. **简洁性**：引入子图的目的是简化，而非复杂化。因此，子图机制尽量避免增加图的 JSON 结构复杂度，而是通过工具提升开发效率。
+
+#### 黑盒原则
+
+子图的设计目的是让开发者能够将一个图当作黑盒使用，无需关注其内部复杂性。为此，我们制定了以下准则：
+
+- **不提供特殊修补机制**：子图设计不专门为调整子图内部状态提供特殊机制，避免增加整体图结构的复杂性。
+
+- **直接修改原始定义**：当需要修改子图内部（如更改节点的 addon, app, extension_group 等），应直接修改子图定义文件，而非在引用处提供修补机制。
+
+- **避免连锁反应**：在引用处修补子图定义会导致复杂性蔓延，增加理解和维护成本。
+
+例如，当将子图 A（包含多个 extensions 和 connections）引入到图 B 中时，如果需要调整子图 A 内的某个 extension 属性，正确做法是直接修改子图 A 的定义文件，而不是在引用处进行修补。这保持了子图作为黑盒的特性，简化了整体图的结构。
+
+虽然未来可能会考虑简单的子图修补机制，但这需要谨慎设计，避免过度复杂化。因为很难制定一个明确的原则来区分哪些修改应通过修补机制实现，哪些应直接修改子图定义。理想情况下，开发工具应该提供便捷方式直接修改子图定义，而不是通过复杂的引用修补机制。
+
+### 子图实现机制
+
+接下来，我们将详细介绍子图的实现机制，包括子图定义、引用方式和展平过程。
+
+#### 子图定义示例
+
+以下是一个 `subgraph.json` 示例，它既可作为独立图使用，也可作为子图被其他图引用：
 
 ```json
 {
   "nodes": [
     {
-      // This graph contains an ext_c.
+      // 定义一个名为 ext_c 的 extension
       "type": "extension",
       "name": "ext_c",
       "addon": "extension_c"
     },
     {
-      // This graph contains an ext_d.
+      // 定义一个名为 ext_d 的 extension
       "type": "extension",
       "name": "ext_d",
       "addon": "extension_d"
@@ -109,7 +148,7 @@ Below is an example of a `subgraph.json`, note that it is also a normal graph th
   ],
   "connections": [
     {
-      // Indicates that ext_c transmits command B to ext_d.
+      // ext_c 将 B 命令传输到 ext_d
       "extension": "ext_c",
       "cmd": [
         {
@@ -123,10 +162,11 @@ Below is an example of a `subgraph.json`, note that it is also a normal graph th
       ]
     }
   ],
-  "expose_msgs": [
-    // Indicates which messages this graph exposes to the outside for connection. Mainly for use by development tools (such as tman), which can find the actual message definitions based on these expose_msgs, and then use these message definitions for relevant checks and prompts as in normal cases.
+  "exposed_messages": [
+    // 表示该图向外部暴露的消息接口
+    // 主要供开发工具使用，便于查找消息定义并提供智能提示
     {
-      // Indicates that ext_d's command B is a message exposed by this graph to the outside. Development tools can choose to display only type and name by default, and display extension information through certain mechanisms.
+      // ext_d 的 B 命令是该图暴露给外部的消息接口
       "type": "cmd_in",
       "name": "B",
       "extension": "ext_d"
@@ -135,34 +175,32 @@ Below is an example of a `subgraph.json`, note that it is also a normal graph th
 }
 ```
 
-The design purpose of subgraphs is to allow developers to treat a graph as a black box, using the functionality represented by the subgraph without having to deal with its internal complexity. Therefore, the entire design principle of subgraphs is not to make additional designs specifically for adjusting the internal state of the subgraph, as this would increase the complexity of the entire graph structure, which in turn would decrease the development experience. For example, if a node within a subgraph wants to change from addon A to addon B, then the definition of the subgraph itself should be modified directly, rather than providing a method to modify the content of the subgraph in the JSON when referencing the subgraph from another graph. This approach of patching the subgraph definition would increase the complexity of the graph, thus degrading the development experience.
+特别注意 `exposed_messages` 字段，它声明了子图对外部暴露的消息接口，主要用于辅助开发工具提供更好的用户体验。
 
-For instance, when introducing a subgraph A into another graph B, assuming that subgraph A contains 3 extensions and 6 connections, if a developer wants to adjust the addon of extension 1 within subgraph A, the appropriate approach is to directly modify the graph definition of the subgraph, rather than patching it at the reference point. This is because it contradicts the original intention of subgraphs, which is to allow developers to view them as black boxes without touching their internal complexity. If there is indeed a need to touch the internal complexity, it means the subgraph is no longer being viewed as a black box.
+#### 子图引用示例
 
-With the assistance of tools, modifying the content of a subgraph, such as adjusting the property of an extension, adjusting the name of an extension, and other actions that no longer view the subgraph as a black box, can also be easily accomplished by developers. The subgraph mechanism does not specifically design for these adjustments to the definitions within the subgraph.
-
-Below is a `graph.json` that references a subgraph:
+以下是引用子图的 `graph.json` 示例，展示了如何在一个图中引用和使用子图：
 
 ```json
 {
   "nodes": [
     {
-      // This graph contains an ext_a.
+      // 定义一个名为 ext_a 的 extension
       "type": "extension",
       "name": "ext_a",
       "addon": "extension_a"
     },
     {
-      // This graph contains an ext_b.
+      // 定义一个名为 ext_b 的 extension
       "type": "extension",
       "name": "ext_b",
       "addon": "extension_b"
     },
     {
-      // This graph contains a subgraph, referred to as graph_any_name in this graph, with its actual definition in subgraph.json.
+      // 引用子图，在此图中命名为 graph_any_name
       "type": "graph",
       "name": "graph_any_name",
-      "ref": "subgraph.json"
+      "source_uri": "./ten_packages/extension/aaa/subgraph.json"
     }
   ],
   "connections": [
@@ -172,13 +210,12 @@ Below is a `graph.json` that references a subgraph:
         {
           "name": "B",
           "dest": [
-            // Indicates that ext_a will transmit cmd B to two destinations.
             {
-              // The first destination is ext_b.
+              // 第一个目标是 ext_b
               "extension": "ext_b"
             },
             {
-              // The second destination is ext_d within the graph represented by graph_any_name.
+              // 第二个目标是子图中的 ext_d
               "extension": "graph_any_name:ext_d"
             }
           ]
@@ -186,7 +223,7 @@ Below is a `graph.json` that references a subgraph:
       ]
     },
     {
-      // This connection indicates that ext_c of graph_any_name will transmit cmd H to ext_a.
+      // 子图中的 ext_c 将 cmd H 传输给 ext_a
       "extension": "graph_any_name:ext_c",
       "cmd": [
         {
@@ -203,43 +240,58 @@ Below is a `graph.json` that references a subgraph:
 }
 ```
 
-Although the graph definition uses descriptions like `"extension": "graph_any_name:ext_d"`, which seems to expose developers to the internal details of the subgraph, with the help of the `expose_msgs` information of the graph and the assistance of development tools, developers can use tools without needing to touch the internal details of the subgraph. When the tool operates according to the developer's intention, it will automatically handle these details for the developer and generate the correct graph definition. This also aligns with the original intention of subgraphs, which are more of a syntax sugar that does not increase the complexity of the graph definition itself but provides information for tools to complete sufficient encapsulation and enhance the development experience.
+虽然引用语法（如 `"extension": "graph_any_name:ext_d"`）看似暴露了子图内部细节，但实际上开发工具可以借助 `exposed_messages` 信息，使开发者无需了解这些细节。开发工具可以：
 
-For example, when a developer sees a graph in a tool, the tool can present the expose_msgs information of the graph, such as a cmd named B exposed by the graph. When the developer uses the tool to connect cmd B of a certain extension to the B cmd exposed by the graph, the tool, through the information in expose_msgs, understands that the target of this command B is actually an extension within the graph, and writes this information into the final graph definition, which is the form shown in the JSON above.
+1. 呈现子图暴露的命令接口
+2. 让开发者直接连接到这些暴露的接口
+3. 自动处理内部细节并生成正确的图定义
 
-In summary, the subgraph mechanism does not provide a mechanism to patch the subgraph definition at the reference point, because this amounts to touching the content of the subgraph, violating the original intention of subgraphs, and would also make the use of subgraphs complex, which is not necessarily a good thing. Therefore, if developers want to adjust the content of a subgraph, they should directly modify the definition of the subgraph itself, rather than patching it at the reference point.
+这大大简化了开发过程，让开发者能够专注于功能逻辑而非底层细节。
 
-The subgraph mechanism introduces the following new concepts:
+#### 关键概念
 
-1. A graph can expose which messages are open for external connection (i.e., the `expose_msgs` field).
-2. The `nodes` field of a graph can reference other graphs and give them a unique identifier name within this graph.
-3. The `connections` field of a graph can use extensions within a graph as its source or destination.
+子图机制引入了三个关键概念，理解这些概念对于正确使用子图至关重要：
 
-Therefore, the above graph that references a subgraph will ultimately be flattened by tools or the TEN runtime into the following definition:
+1. **消息暴露**（exposed_messages）：
+   - 子图通过 `exposed_messages` 字段声明对外暴露的消息接口
+   - 主要供开发工具使用，实现智能提示和检查
+   - 隐藏子图内部细节，提升开发体验
+
+2. **子图引用与命名**：
+   - 通过 `type: "graph"` 引用其他图文件
+   - 每个子图有唯一标识名称，作为命名空间
+   - 防止不同子图中的同名元素冲突
+
+3. **跨图连接**：
+   - 通过命名空间语法（如 `graph_any_name:ext_d`）引用子图内的元素
+   - 使子图内的元素可以与主图进行交互
+   - 构建复杂的跨图消息流
+
+#### 展平机制
+
+最终，引用子图的图会被展平为普通图结构，以保证运行时的统一性和高效性。以下是展平后的示例：
 
 ```json
 {
   "nodes": [
     {
-      // This graph contains an ext_a.
       "type": "extension",
       "name": "ext_a",
       "addon": "extension_a"
     },
     {
-      // This graph contains an ext_b.
       "type": "extension",
       "name": "ext_b",
       "addon": "extension_b"
     },
     {
-      // Flatten the node definition of ext_c from the subgraph.
+      // 子图中的 ext_c 被展平，名称前缀为子图名称
       "type": "extension",
       "name": "graph_any_name_ext_c",
       "addon": "extension_c"
     },
     {
-      // Flatten the node definition of ext_d from the subgraph.
+      // 子图中的 ext_d 被展平，名称前缀为子图名称
       "type": "extension",
       "name": "graph_any_name_ext_d",
       "addon": "extension_d"
@@ -252,13 +304,10 @@ Therefore, the above graph that references a subgraph will ultimately be flatten
         {
           "name": "B",
           "dest": [
-            // Indicates that ext_a will transmit cmd B to two destinations.
             {
-              // The first destination is ext_b.
               "extension": "ext_b"
             },
             {
-              // The second destination is ext_d within the graph represented by graph_any_name.
               "extension": "graph_any_name_ext_d"
             }
           ]
@@ -266,7 +315,6 @@ Therefore, the above graph that references a subgraph will ultimately be flatten
       ]
     },
     {
-      // This connection indicates that ext_c of graph_any_name will transmit cmd H to ext_a.
       "extension": "graph_any_name_ext_c",
       "cmd": [
         {
@@ -280,7 +328,7 @@ Therefore, the above graph that references a subgraph will ultimately be flatten
       ]
     },
     {
-      // Flatten the connection definition from the subgraph.
+      // 子图内部连接也被展平纳入
       "extension": "graph_any_name_ext_c",
       "cmd": [
         {
@@ -294,11 +342,166 @@ Therefore, the above graph that references a subgraph will ultimately be flatten
       ]
     }
   ]
-  // Discard the expose_msgs field of the subgraph, as this field is only used to assist tools and is a kind of syntax sugar.
+  // exposed_messages 字段在展平过程中被舍弃，因为它仅用于辅助工具
 }
 ```
 
-Here is how to place a graph in the `predefined_graphs` of an application's `property.json`:
+展平机制遵循以下规则：
+
+1. 展平前的图定义中，冒号（`:`）符号表示该元素位于子图中（如 `graph_any_name:ext_d`）。
+
+2. 展平后，子图中元素的名称添加子图名称作为前缀（如 `graph_any_name_ext_c`），以确保全局唯一性。
+
+3. 展平后的图定义不再包含冒号（`:`）符号，以此区分展平前后的状态。
+
+4. 子图中的内部连接会被保留并纳入展平后的图中，保证功能完整性。
+
+### 高级功能与应用
+
+随着项目复杂度的增加，子图的高级功能可以帮助开发者更好地组织和管理系统。
+
+#### 消息转换与子图
+
+子图完全支持消息转换（msg_conversion）机制，用于处理不同接口之间的消息格式转换：
+
+```json
+{
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "addon_a"
+    },
+    {
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "addon_b"
+    },
+    {
+      "type": "graph",
+      "name": "graph_any_name",
+      "source_uri": "http://a.b.c.d/subgraph.json"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_b",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            },
+            {
+              "extension": "graph_any_name:ext_d",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+开发工具可以借助 `exposed_messages` 信息，在开发者构建连接时提示兼容性，并按需提供消息转换配置界面。配置完成后，开发工具会自动将转换规则写入图定义中，简化开发流程。
+
+展平后，消息转换规则也会被正确保留，确保运行时行为与设计意图一致：
+
+```json
+{
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "addon_a"
+    },
+    {
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "addon_b"
+    },
+    {
+      "type": "extension",
+      "name": "graph_any_name_ext_c",
+      "addon": "addon_c"
+    },
+    {
+      "type": "extension",
+      "name": "graph_any_name_ext_d",
+      "addon": "addon_d"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_b",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            },
+            {
+              "extension": "graph_any_name_ext_d",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+通过这种方式，开发者可以灵活处理不同组件之间的消息格式差异，而无需关心底层实现细节。
+
+### 附录：在应用中使用图
+
+最后，让我们了解如何在实际应用中使用图定义。在 TEN app 的 `property.json` 中可以定义预置图（predefined_graphs）并设置启动方式：
 
 ```json
 {
@@ -308,9 +511,13 @@ Here is how to place a graph in the `predefined_graphs` of an application's `pro
       {
         "name": "default",
         "auto_start": false,
-        "ref": "graph.json"
+        "source_uri": "../graph.json"
       }
     ]
   }
 }
 ```
+
+此配置指定了一个名为 "default" 的预置图，引用自 "graph.json" 文件，设置为不自动启动。TEN app 可以根据需要控制图的启动时机，实现更灵活的功能组织。
+
+通过合理使用子图机制，开发者可以构建模块化、可重用的组件，大幅提升开发效率和代码质量。
