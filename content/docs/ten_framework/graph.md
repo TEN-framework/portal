@@ -4,50 +4,50 @@ title: Graph
 
 In the TEN framework, there are two types of graphs:
 
-1. Flexible
-2. Predefined
+1. Dynamic graph
+2. Predefined graph
 
-|                         | Flexible                                             | Predefined                                                                       |
-| ----------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
-| Time to start the graph | When the TEN app receives the `start_graph` command. | When the TEN app starts, or when the TEN app receives the `start_graph` command. |
-| Graph content           | Specified in the `start_graph` command.              | Specified in the TEN app's properties.                                           |
-| Graph ID                | A random UUID.                                       | A random UUID                                                                    |
+|               | Dynamic Graph                                     | Predefined Graph                                                              |
+| ------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Start Time    | When the TEN app receives a `start_graph` command | When the TEN app starts, or when the TEN app receives a `start_graph` command |
+| Graph Content | Specified in the `start_graph` command            | Predefined in the TEN app's properties                                        |
+| Graph ID      | Randomly generated UUID                           | Randomly generated UUID                                                       |
 
-![Two Types of Graph](/assets/png/two_types_of_graph.png)
+![Two Types of Graphs](/assets/png/two_types_of_graph.png)
 
-For predefined graphs, there is an `auto_start` attribute that determines whether the predefined graph will start automatically when the TEN app starts.
+Predefined graphs have an `auto_start` property that determines whether the graph starts automatically when the TEN app launches.
 
-There is also another `singleton` attribute used to indicate whether the predefined graph can only generate _one_ corresponding engine instance within the TEN app.
+Additionally, predefined graphs have a `singleton` property that indicates whether the graph can only have _one_ corresponding instance within the TEN app.
 
 ## Graph ID and Graph Name
 
-For each graph instance generated from a graph definition, that is, an engine instance, within the TEN app, there is a unique UUID4 string representing each graph instance. This UUID4 string is called the **graph ID** of that graph.
+For each graph instance, the TEN app internally uses a unique UUID4 string as an identifier, called the **Graph ID**.
 
-For each predefined graph, a meaningful or easy-to-remember name can be assigned, known as the **graph name** of the predefined graph. When specifying a particular predefined graph, the graph name can be used to represent it. If a predefined graph has the singleton attribute, it means that the graph instance generated from this predefined graph can only exist once within the TEN app. Therefore, the TEN runtime will use the graph name to uniquely identify the single graph instance generated from the singleton predefined graph.
+For predefined graphs, a meaningful and easy-to-remember name can be assigned, called the **Graph Name**. When specifying a particular predefined graph, you can directly use its graph name. If a predefined graph has the `singleton` property, it means that only one instance of this predefined graph can exist within the TEN app. In this case, the TEN runtime platform uses the graph name to uniquely identify the single instance generated from that predefined graph.
 
-## Flexible Graph
+## Dynamic Graph
 
-When the TEN app receives the `start_graph` command and creates this type of graph, it will assign a random UUID value as the ID of the newly started graph. If other clients obtain this graph's ID, they can also connect to this graph.
+When a TEN app receives a `start_graph` command and creates a dynamic graph, the system assigns a random UUID as the graph's ID. If other clients obtain this graph ID, they can also connect to this graph.
 
-Example of a flexible graph ID:
+Example of a dynamic graph ID:
 
 `123e4567-e89b-12d3-a456-426614174000`
 
 ## Predefined Graph
 
-Predefined graphs are very similar to flexible graphs. The content of a flexible graph is included in the `start_graph` command, while the content of a predefined graph is defined by the TEN app. Clients only need to specify the name of the predefined graph they want to start in the `start_graph` command.
+Predefined graphs work similarly to dynamic graphs, with the main difference being how the content is defined. The content of a dynamic graph is included in the `start_graph` command, while the content of a predefined graph is predefined by the TEN app. Clients only need to specify the name of the predefined graph in the `start_graph` command to start it.
 
-The main purpose of predefined graphs is for ease of use and information protection. Predefined graphs allow the client to avoid knowing the detailed content of the graph, which might be due to usability considerations or to prevent the client from accessing certain information that the graph contains.
+The main advantage of predefined graphs is that they simplify usage and protect sensitive information. With predefined graphs, clients don't need to understand the detailed structure of the graph, which improves usability and avoids exposing potentially sensitive information contained in the graph.
 
 Example of a predefined graph name:
 
-`http-server`
+`http_server`
 
-When a TEN app starts, predefined graphs that are set to auto-start will also be initiated.
+When the TEN app starts, all predefined graphs with the `auto_start` property set will start automatically.
 
 ## Graph Definition
 
-The definition of a graph, whether flexible or predefined, is the same. The following is the definition of a graph:
+Whether it's a dynamic graph or a predefined graph, their definition structure is the same:
 
 ```json
 {
@@ -55,42 +55,20 @@ The definition of a graph, whether flexible or predefined, is the same. The foll
     // Definition of nodes
   ],
   "connections": [
-    // Definition of connections
+    // Definition of communication links
   ]
 }
 ```
 
 Key points:
 
-1. If there is only one app, the app field can be omitted. Otherwise, it must be specified. If there is only one app and the app field is not specified, the TEN runtime will default to using `localhost` as the app field.
+1. If there is only one TEN app, the `app` field can be omitted. In this case, the TEN runtime platform will use `localhost` as the default value for the `app` field. If there are multiple applications, the `app` field must be explicitly specified.
 
-2. The nodes field specifies the nodes within the graph, such as extensions, extension groups, etc.
+2. The `nodes` field defines the nodes in the graph, such as various extensions.
 
-3. For each node within the graph, it can only appear once in the nodes field. If it appears multiple times, the TEN framework will throw an error, either during graph validation by the TEN manager or during graph validation by the TEN runtime.
+3. Each node can only appear once in the `nodes` field. If the same node appears multiple times, the TEN framework will report an error during validation.
 
-4. The way to specify an extension group within the nodes field is as follows.
-
-   The property field is optional.
-
-   ```json
-   {
-     "type": "extension_group",
-     "name": "default_extension_group",
-     "addon": "default_extension_group",
-     "app": "msgpack://127.0.0.1:8001/",
-     "property": {
-       "root_key": "player",
-       "extra_keys": ["playerName"]
-     }
-   }
-   ```
-
-5. The way to specify an extension within the nodes field is as follows.
-
-   The property field is optional. The addon field is also optional.
-
-   - If the addon field is present, it indicates that the extension is an instance generated by that addon.
-   - If the addon field is not present, it indicates that the extension is not generated by an addon but is created by the corresponding extension group. In such cases, it generally does not need to be explicitly defined in the nodes field, but if you want to specify its property field, it must be explicitly defined in the nodes field.
+4. The way to define an extension in the `nodes` field is as follows, where the `property` field is optional:
 
    ```json
    {
@@ -106,23 +84,18 @@ Key points:
    }
    ```
 
-6. The connections field specifies the connections between nodes within the graph.
+   The `addon` field indicates that the extension is an instance generated by the corresponding plugin.
 
-   In each connection, the values for extension and extension group are strings representing the names of the corresponding nodes.
+5. The `connections` field defines the communication links between nodes in the graph, where the `extension` value represents the name of the corresponding node.
 
-A complete example is as follows:
+Complete example:
 
 ```json
 {
   "nodes": [
     {
-      "type": "extension_group",
-      "name": "default_extension_group",
-      "addon": "default_extension_group",
-      "app": "msgpack://127.0.0.1:8001/"
-    },
-    {
       "type": "extension",
+      "app": "msgpack://127.0.0.1:8001/",
       "name": "simple_http_server_cpp",
       "addon": "simple_http_server_cpp",
       "extension_group": "default_extension_group",
@@ -178,82 +151,84 @@ A complete example is as follows:
 
 ## Definition of Predefined Graph
 
-Essentially, you place the complete graph definition above under the `predefined_graphs` field in the app's properties. The `predefined_graphs` field will also have its attributes, such as name, auto_start, etc.
+Predefined graphs are defined in the `predefined_graphs` field of the TEN app's configuration file (`property.json`), including properties like `name`, `auto_start`, `singleton`, etc.:
 
 ```json
-"predefined_graphs": [
-  {
-    "name": "default",
-    "auto_start": true,
-    "singleton": true,
-    // Place the complete graph definition here.
+{
+  "ten": {
+    "predefined_graphs": [
+      {
+        "name": "default",
+        "auto_start": true,
+        "singleton": true,
+        // Complete graph definition
+      }
+    ]
   }
-]
+}
 ```
 
-So it looks like this:
+Complete example:
 
 ```json
-"predefined_graphs": [
-  {
-    "name": "default",
-    "auto_start": true,
-    "singleton": true,
-    "nodes": [
+{
+  "ten": {
+    "predefined_graphs": [
       {
-        "type": "extension_group",
-        "name": "default_extension_group",
-        "addon": "default_extension_group",
-        "app": "msgpack://127.0.0.1:8001/"
-      },
-      {
-        "type": "extension",
-        "name": "simple_http_server_cpp",
-        "addon": "simple_http_server_cpp",
-        "extension_group": "default_extension_group",
-        "property": {
-          "root_key": "player",
-          "extra_keys": [
-            "playerName"
-          ]
-        }
-      }
-    ],
-    "connections": [
-      {
-        "app": "msgpack://127.0.0.1:8001/",
-        "extension": "simple_http_server_cpp",
-        "cmd": [
+        "name": "default",
+        "auto_start": true,
+        "singleton": true,
+        "nodes": [
           {
-            "name": "start",
-            "dest": [
+            "type": "extension",
+            "name": "simple_http_server_cpp",
+            "addon": "simple_http_server_cpp",
+            "extension_group": "default_extension_group",
+            "property": {
+              "root_key": "player",
+              "extra_keys": [
+                "playerName"
+              ]
+            }
+          }
+        ],
+        "connections": [
+          {
+            "app": "msgpack://127.0.0.1:8001/",
+            "extension": "simple_http_server_cpp",
+            "cmd": [
               {
-                "app": "msgpack://127.0.0.1:8001/",
-                "extension": "gateway"
+                "name": "start",
+                "dest": [
+                  {
+                    "app": "msgpack://127.0.0.1:8001/",
+                    "extension": "gateway"
+                  }
+                ]
+              },
+              {
+                "name": "stop",
+                "dest": [
+                  {
+                    "app": "msgpack://127.0.0.1:8001/",
+                    "extension": "gateway"
+                  }
+                ]
               }
             ]
           },
           {
-            "name": "stop",
-            "dest": [
+            "app": "msgpack://127.0.0.1:8001/",
+            "extension": "gateway",
+            "cmd": [
               {
-                "app": "msgpack://127.0.0.1:8001/",
-                "extension": "gateway"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "app": "msgpack://127.0.0.1:8001/",
-        "extension": "gateway",
-        "cmd": [
-          {
-            "name": "push_status_online",
-            "dest": [
-              {
-                "app": "msgpack://127.0.0.1:8001/",
-                "extension": "uap"
+                "name": "push_status_online",
+                "dest": [
+                  {
+                    "app": "msgpack://127.0.0.1:8001/",
+                    "extension": "uap"
+                  }
+                ]
               }
             ]
           }
@@ -261,24 +236,24 @@ So it looks like this:
       }
     ]
   }
-]
+}
 ```
 
 ## Definition of the `start_graph` Command
 
-Essentially, you place the complete graph definition above under the `ten` field in the `start_graph` command. The `start_graph` command will also have its attributes, such as type, seq_id, etc.
+Dynamic graphs are created by sending a `start_graph` command to the TEN app, placing the graph definition in the `ten` field of the command:
 
 ```json
 {
   "ten": {
     "type": "start_graph",
     "seq_id": "55"
-    // Place the complete graph definition here.
+    // Complete graph definition
   }
 }
 ```
 
-The following is a complete definition of the `start_graph` command:
+Complete example:
 
 ```json
 {
@@ -286,12 +261,6 @@ The following is a complete definition of the `start_graph` command:
     "type": "start_graph",
     "seq_id": "55",
     "nodes": [
-      {
-        "type": "extension_group",
-        "name": "default_extension_group",
-        "addon": "default_extension_group",
-        "app": "msgpack://127.0.0.1:8001/"
-      },
       {
         "type": "extension",
         "name": "simple_http_server_cpp",
@@ -346,16 +315,38 @@ The following is a complete definition of the `start_graph` command:
 }
 ```
 
-## Specification for Graph Definition
+### Using `source_uri` to Reference Graph Definition
 
-- **Requirement for `nodes` Field**:
-  The `nodes` array is mandatory in a graph definition. Conversely, the `connections` array is optional but encouraged for defining inter-node communication.
+When defining a predefined graph, you can use the `source_uri` field to reference an external graph definition file:
 
-- **Validation of Node `app` Field**:
-  The `app` field must never be set to `localhost` under any circumstances. In a single-app graph, the `app` URI should not be specified. In a multi-app graph, the value of the `app` field must match the `ten::uri` value defined in each app's `property.json`.
+```json
+{
+  "ten": {
+    "uri": "http://localhost:8001",
+    "predefined_graphs": [
+      {
+        "name": "default",
+        "auto_start": false,
+        "source_uri": "../graph.json"
+      }
+    ]
+  }
+}
+```
 
-- **Node Uniqueness and Identification**:
-  Each node in the `nodes` array represents a specific extension instance within a group of an app, created by a specified addon. Therefore, each extension instance should be uniquely represented by a single node. A node must be uniquely identified by the combination of `app`, `extension_group`, and `name`. Multiple entries for the same extension instance are not allowed. The following example is invalid because it defines multiple nodes for the same extension instance:
+`source_uri` can be a relative path, absolute path, or URL:
+
+- Relative path: Relative to the directory where the `property.json` file is located
+- Absolute path: Relative to the root directory of the environment where the TEN app is located
+- URL: Treated directly as a URL path
+
+## Specifications for Graph Definition
+
+- **`nodes` Field**: The `nodes` array must be provided in the graph definition. In contrast, while the `connections` array is optional, it is recommended to provide it to define communication between nodes.
+
+- **Node's `app` Field**: The `app` field cannot be set to `localhost`. In single-app graphs, the `app` URI should be omitted; in multi-app graphs, the value of the `app` field must match the `ten.uri` value in each app's `property.json`.
+
+- **Node Uniqueness**: Each node in the `nodes` array represents a specific extension instance and must be uniquely identified by the combination of `app` and `name`. Duplicate definitions are not allowed, as in the following invalid example:
 
   ```json
   {
@@ -376,10 +367,7 @@ The following is a complete definition of the `start_graph` command:
   }
   ```
 
-- **Consistency of Extension Instance Definition in Connections**:
-  All extension instances referenced in the `connections` field, whether as a source or destination, must be explicitly defined in the `nodes` field. Any instance not defined in the `nodes` array will cause validation errors.
-
-  For example, the following is invalid because the extension instance `ext_2` is used in the `connections` field but is not defined in the `nodes` field:
+- **Consistency of Connection Definitions**: All extension instances referenced in `connections` must be explicitly defined in `nodes`. The following example is invalid because `ext_2` is not defined in `nodes`:
 
   ```json
   {
@@ -409,10 +397,7 @@ The following is a complete definition of the `start_graph` command:
   }
   ```
 
-- **Consolidation of Connection Definitions**:
-  Within the `connections` array, all messages related to the same source extension instance must be grouped within a single section. Splitting the information across multiple sections for the same source extension instance leads to inconsistencies and errors.
-
-  For example, the following is incorrect because the messages from `ext_1` are divided into separate sections:
+- **Integration of Communication Links**: All messages from the same source extension should be grouped in a single section and not scattered across multiple definitions. The following example is incorrect:
 
   ```json
   {
@@ -447,7 +432,7 @@ The following is a complete definition of the `start_graph` command:
   }
   ```
 
-  The correct approach is to consolidate all messages for the same source extension instance into one section:
+  The correct approach is to integrate all messages from the same source extension together:
 
   ```json
   {
@@ -479,10 +464,7 @@ The following is a complete definition of the `start_graph` command:
   }
   ```
 
-- **Consolidation of Destinations for Unique Messages**:
-  For each message within a specific type (e.g., `cmd` or `data`), the destination extension instances must be grouped under a single entry for that message. Repeating the same message name with separate destinations leads to inconsistency and validation errors.
-
-  For example, the following is incorrect due to separate entries for the message named `hello`:
+- **Integration of Message Destinations**: For each specific message type, all target extensions should be categorized under a single entry. The following example is incorrect:
 
   ```json
   {
@@ -512,7 +494,7 @@ The following is a complete definition of the `start_graph` command:
   }
   ```
 
-  The correct approach is to consolidate all destinations for the same message under a single entry:
+  The correct approach is to integrate all destinations for the same message together:
 
   ```json
   {
@@ -537,6 +519,556 @@ The following is a complete definition of the `start_graph` command:
   }
   ```
 
-  However, messages with the same name can exist across different types, such as `cmd` and `data`, without causing conflicts.
+  Note that messages with the same name can coexist in different types (such as `cmd` and `data`) without causing conflicts.
 
-For further examples, refer to the `check graph` command documentation within the TEN framework's `tman`.
+For more examples and detailed information, please refer to the documentation for the `check graph` command in `tman` in the TEN framework.
+
+## Subgraph
+
+The core mechanism of the TEN framework is based on a graph structure composed of nodes and connections. Subgraphs are a powerful reuse mechanism that allows complex graph structures to be broken down into reusable modules, improving code organization and maintainability.
+
+### Subgraph Design Philosophy
+
+Graphs are essentially a mechanism for defining how data flows between extensions. Subgraphs don't change this fundamental principle but act as syntactic sugar that ultimately gets flattened into the larger graph they belong to, using the same mechanism to start as regular graphs. This design both simplifies complex system development and doesn't increase runtime complexity.
+
+#### Design Principles
+
+Subgraph design follows these core principles:
+
+1. **Independence**: A subgraph itself is a complete graph that can be started individually or embedded as a component in other graphs.
+
+2. **Tool-friendly**: Subgraphs provide additional information to help development tools understand graph structures, enhancing the development experience without increasing runtime complexity.
+
+3. **Flattening Mechanism**: Subgraphs are ultimately flattened into standard graph structures, ensuring performance and compatibility.
+
+4. **Simplicity**: Subgraphs aim to simplify rather than complicate development, avoiding increased complexity in JSON structures.
+
+#### Black Box Principle
+
+The purpose of subgraph design is to allow developers to use a graph as a black box without concerning themselves with internal complexity:
+
+- **No Special Patching Mechanisms**: Avoid providing special mechanisms for adjusting the internal state of subgraphs, reducing complexity.
+
+- **Direct Modification of Original Definitions**: When modifications to the internals of a subgraph are needed, the subgraph definition file should be modified directly, rather than providing patching mechanisms at the reference point.
+
+- **Avoiding Chain Reactions**: Patching subgraphs at the reference point would lead to complexity spreading, increasing maintenance costs.
+
+For example, when introducing subgraph A into graph B, if adjustments to internal extension properties of subgraph A are needed, the definition file of subgraph A should be modified directly, maintaining the black box nature and simplifying the overall structure.
+
+### Subgraph Implementation Mechanism
+
+Next, we'll detail the implementation mechanism of subgraphs, including subgraph definitions, reference methods, and the flattening process.
+
+#### Subgraph Definition Example
+
+Here's an example of `subgraph.json`, which can be used as a standalone graph or referenced as a subgraph by other graphs:
+
+```json
+{
+  "nodes": [
+    {
+      // Define extension named ext_c
+      "type": "extension",
+      "name": "ext_c",
+      "addon": "extension_c"
+    },
+    {
+      // Define extension named ext_d
+      "type": "extension",
+      "name": "ext_d",
+      "addon": "extension_d"
+    }
+  ],
+  "connections": [
+    {
+      // ext_c transmits command B to ext_d
+      "extension": "ext_c",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_d"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "exposed_messages": [
+    // Indicates message interfaces exposed by the graph to the outside
+    // Mainly for development tools to use, providing intelligent prompts
+    {
+      // Command B of ext_d is exposed to the outside
+      "type": "cmd_in",
+      "name": "B",
+      "extension": "ext_d"
+    }
+  ]
+}
+```
+
+Special attention should be paid to the `exposed_messages` field, which declares the message interfaces exposed by the subgraph, mainly used to assist development tools in providing a better user experience.
+
+#### Subgraph Reference Example
+
+Example of `graph.json` referencing a subgraph:
+
+```json
+{
+  "nodes": [
+    {
+      // Define extension named ext_a
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "extension_a"
+    },
+    {
+      // Define extension named ext_b
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "extension_b"
+    },
+    {
+      // Reference subgraph, named graph_any_name
+      "type": "subgraph",
+      "name": "graph_any_name",
+      "source_uri": "./ten_packages/extension/aaa/subgraph.json"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              // First destination is ext_b
+              "extension": "ext_b"
+            },
+            {
+              // Second destination is ext_d in the subgraph
+              "extension": "graph_any_name:ext_d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      // ext_c in the subgraph transmits cmd H to ext_a
+      "extension": "graph_any_name:ext_c",
+      "cmd": [
+        {
+          "name": "H",
+          "dest": [
+            {
+              "extension": "ext_a"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Although the reference syntax (such as `"extension": "graph_any_name:ext_d"`) seems to expose the internal details of the subgraph, development tools can use the `exposed_messages` information so that developers don't need to understand these details. Development tools can:
+
+1. Present the command interfaces exposed by the subgraph
+2. Allow developers to connect directly to these interfaces
+3. Automatically handle internal details to generate the correct graph definition
+
+This greatly simplifies the development process, allowing developers to focus on functional logic rather than underlying details.
+
+#### Key Concepts
+
+The subgraph mechanism introduces three key concepts:
+
+1. **Message Exposure** (exposed_messages):
+   - Subgraphs declare their exposed interfaces through the `exposed_messages` field
+   - Mainly for development tools to use, implementing intelligent prompts and checks
+   - Hiding internal details of subgraphs, enhancing development experience
+
+2. **Subgraph Reference and Naming**:
+   - Reference other graph files via `"type": "subgraph"`
+   - Each subgraph has a unique identifying name, serving as a namespace
+   - Prevents conflicts between elements with the same name in different subgraphs
+
+3. **Cross-graph Connections**:
+   - Reference elements within subgraphs via namespace syntax (e.g., `graph_any_name:ext_d`)
+   - Allow elements in subgraphs to interact with the main graph
+   - Build complex cross-graph message flows
+
+In summary, the `exposed_messages` field describes how messages flow into the graph from its boundaries, and development tools use this field to provide smart prompts, making it easier for developers to specify how messages flow to the graph boundaries.
+
+#### Flattening Mechanism
+
+Eventually, the graph referencing subgraphs is flattened into a normal graph structure, ensuring runtime uniformity and efficiency:
+
+```json
+{
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "extension_a"
+    },
+    {
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "extension_b"
+    },
+    {
+      // ext_c in the subgraph is flattened, with the subgraph name as prefix
+      "type": "extension",
+      "name": "graph_any_name_ext_c",
+      "addon": "extension_c"
+    },
+    {
+      // ext_d in the subgraph is flattened, with the subgraph name as prefix
+      "type": "extension",
+      "name": "graph_any_name_ext_d",
+      "addon": "extension_d"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_b"
+            },
+            {
+              "extension": "graph_any_name_ext_d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "extension": "graph_any_name_ext_c",
+      "cmd": [
+        {
+          "name": "H",
+          "dest": [
+            {
+              "extension": "ext_a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      // Internal connections in the subgraph are also flattened and included
+      "extension": "graph_any_name_ext_c",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "graph_any_name_ext_d"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  // The exposed_messages field is discarded during the flattening process
+}
+```
+
+The subgraph flattening mechanism follows these rules:
+
+1. Before flattening, the colon (`:`) symbol indicates that an element is located in a subgraph (e.g., `graph_any_name:ext_d`).
+
+2. After flattening, elements in the subgraph have the subgraph name added as a prefix (e.g., `graph_any_name_ext_c`), ensuring global uniqueness.
+
+3. The flattened graph definition no longer contains colon symbols, distinguishing between pre- and post-flattening states.
+
+4. Internal connections in the subgraph are preserved and included in the flattened graph, ensuring functional completeness.
+
+### Advanced Features and Applications
+
+As project complexity increases, advanced features of subgraphs can help better organize and manage the system.
+
+#### Message Conversion and Subgraphs
+
+Subgraphs fully support the message conversion (msg_conversion) mechanism, used to handle message format conversion between different interfaces:
+
+```json
+{
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "addon_a"
+    },
+    {
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "addon_b"
+    },
+    {
+      "type": "subgraph",
+      "name": "graph_any_name",
+      "source_uri": "http://a.b.c.d/subgraph.json"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_b",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            },
+            {
+              "extension": "graph_any_name:ext_d",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Development tools can use the `exposed_messages` information to prompt compatibility and provide a message conversion configuration interface. Once configured, the conversion rules are automatically written into the graph definition, simplifying the development process.
+
+After flattening, the message conversion rules are correctly preserved, ensuring runtime behavior consistent with design intent:
+
+```json
+{
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "addon_a"
+    },
+    {
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "addon_b"
+    },
+    {
+      "type": "extension",
+      "name": "graph_any_name_ext_c",
+      "addon": "addon_c"
+    },
+    {
+      "type": "extension",
+      "name": "graph_any_name_ext_d",
+      "addon": "addon_d"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              "extension": "ext_b",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            },
+            {
+              "extension": "graph_any_name_ext_d",
+              "msg_conversion": {
+                "type": "per_property",
+                "rules": [
+                  {
+                    "path": "extra_data",
+                    "conversion_mode": "fixed_value",
+                    "value": "tool_call"
+                  }
+                ],
+                "keep_original": true
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+This way, developers can flexibly handle message format differences between different components without concerning themselves with underlying implementation details.
+
+## The Meaning of "graph_any_name:ext_c"
+
+In the previous examples, `graph_any_name` in `graph_any_name:ext_c` does not represent the subgraph itself, but references an element in the `nodes` field. In subgraph applications, `graph_any_name` can be viewed as a namespace.
+
+Through this mechanism, extensions from different locations can be specified as sources or destinations in graph connections, enabling connections across multiple graphs.
+
+The core concept is: graph connections are essentially connections between extensions. Through this mechanism, different types of elements in the `nodes` field can be specified as sources or destinations of connections, enabling connections across multiple subgraphs or even multiple graphs.
+
+## Connections Across Multiple Graphs
+
+In addition to subgraphs, connections between different graphs can be established through similar mechanisms.
+
+### Connecting to Predefined Graphs in the Same TEN App
+
+Example: How to connect to a predefined graph in the same TEN app from a graph:
+
+```json
+{
+  "nodes": [
+    {
+      // Define extension named ext_a
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "extension_a"
+    },
+    {
+      // Define extension named ext_b
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "extension_b"
+    },
+    {
+      // Reference other graph, named graph_any_name
+      "type": "predefined_graph",
+      "name": "graph_any_name",
+      "predefined_graph_name": "default"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              // First destination is ext_b
+              "extension": "ext_b"
+            },
+            {
+              // Second destination is ext_d in the subgraph
+              "extension": "graph_any_name:ext_d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      // ext_c in the subgraph transmits cmd H to ext_a
+      "extension": "graph_any_name:ext_c",
+      "cmd": [
+        {
+          "name": "H",
+          "dest": [
+            {
+              "extension": "ext_a"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Connecting to Predefined Graphs in Other TEN Apps
+
+Example: How to connect to a predefined graph in another TEN app from a graph:
+
+```json
+{
+  "nodes": [
+    {
+      // Define extension named ext_a
+      "type": "extension",
+      "name": "ext_a",
+      "addon": "extension_a"
+    },
+    {
+      // Define extension named ext_b
+      "type": "extension",
+      "name": "ext_b",
+      "addon": "extension_b"
+    },
+    {
+      // Reference graph in another app, named graph_any_name
+      "type": "predefined_graph",
+      "name": "graph_any_name",
+      "app": "msgpack://127.0.0.1:8002/",
+      "predefined_graph_name": "default"
+    }
+  ],
+  "connections": [
+    {
+      "extension": "ext_a",
+      "cmd": [
+        {
+          "name": "B",
+          "dest": [
+            {
+              // First destination is ext_b
+              "extension": "ext_b"
+            },
+            {
+              // Second destination is ext_d in subgraph of another app
+              "extension": "graph_any_name:ext_d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      // ext_c in subgraph of another app transmits cmd H to ext_a
+      "extension": "graph_any_name:ext_c",
+      "cmd": [
+        {
+          "name": "H",
+          "dest": [
+            {
+              "extension": "ext_a"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
