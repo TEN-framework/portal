@@ -13,7 +13,7 @@ title: 图（Graph）
 | 图的内容 | 在 `start_graph` 命令中指定          | 在 TEN 应用的属性中预先定义                               |
 | 图的 ID  | 随机生成的 UUID                      | 随机生成的 UUID                                           |
 
-![两种类型的图](/assets/png/two_types_of_graph.png)
+![两种类型的图](https://ten-framework-assets.s3.amazonaws.com/doc-assets/two_types_of_graph.png)
 
 预定义图具有 `auto_start` 属性，用于确定该图是否在 TEN 应用启动时自动启动。
 

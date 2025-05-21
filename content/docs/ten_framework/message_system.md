@@ -58,7 +58,7 @@ Naming rules for message names are as follows:
 
 ## Message Flow
 
-![Message Flow](/assets/png/message_flow.png)
+![Message Flow](https://ten-framework-assets.s3.amazonaws.com/doc-assets/message_flow.png)
 
 The TEN framework supports three message flow patterns:
 
@@ -153,7 +153,7 @@ Although the TEN framework provides a language-agnostic calling mechanism at the
 
 In the TEN framework, once a message is successfully sent, the extension that sent the message can no longer use it. This concept is crucial for maintaining message safety and thread safety within the framework.
 
-![Message Processing Follows the Concept of Ownership](/assets/png/message_ownership.png)
+![Message Processing Follows the Concept of Ownership](https://ten-framework-assets.s3.amazonaws.com/doc-assets/message_ownership.png)
 
 There are two directions in which messages can be sent: **send** and **return**. Only command messages have a return direction; data, audio_frame, and video_frame messages do not. After a message is sent, it may go through various processing steps, and allowing an extension to continue using the message could lead to thread safety issues. For instance, another extension handling the message might be running in a different thread. Even if the initial extension continues to use the message without any visible issues, this behavior is undefined and should not be relied upon by developers.
 

@@ -135,7 +135,7 @@ In the TEN framework, there are two types of properties:
 
 Both types of properties are managed within the TEN framework but serve different purposes, one focuses on the communication between components (message properties), while the other pertains to the configuration and operation of the components themselves (TEN package properties).
 
-<figure><img src="../assets/png/property_system.png" alt=""><figcaption><p>Property system</p></figcaption></figure>
+<figure><img src="..https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_system.png" alt=""><figcaption><p>Property system</p></figcaption></figure>
 
 ### Defining TEN Package Properties
 

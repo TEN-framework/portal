@@ -4,7 +4,7 @@ title: 理解 property.json
 
 此文件包含扩展的编排配置。它是主要的运行时配置文件。
 
-![图表概览](/assets/png/graph_at_a_glance.png?raw=true)
+![图表概览](https://ten-framework-assets.s3.amazonaws.com/doc-assets/graph_at_a_glance.png?raw=true)
 
 `property.json` 文件包含以下编排信息：
 
@@ -40,7 +40,7 @@ title: 理解 property.json
 }
 ```
 
-![Property JSON 节点](/assets/png/property_json_connections.png?raw=true)
+![Property JSON 节点](https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_json_connections.png?raw=true)
 
 #### 读取环境变量
 
@@ -78,6 +78,6 @@ title: 理解 property.json
 }
 ```
 
-![Property JSON 连接](/assets/png/property_json_nodes.png?raw=true)
+![Property JSON 连接](https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_json_nodes.png?raw=true)
 
 在上面的示例中，我们将 `agora_rtc` 扩展连接到 `deepgram_asr` 扩展。`agora_rtc` 扩展正在向 `deepgram_asr` 扩展发送 `pcm_frame` 数据。

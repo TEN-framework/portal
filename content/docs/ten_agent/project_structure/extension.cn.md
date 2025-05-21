@@ -8,7 +8,7 @@ title: 理解扩展文件夹
 
 以下是扩展文件夹的示例结构：
 
-![扩展文件夹结构](/assets/png/extension_folder_struct.png?raw=true)
+![扩展文件夹结构](https://ten-framework-assets.s3.amazonaws.com/doc-assets/extension_folder_struct.png?raw=true)
 
 ## 扩展通用文件
 

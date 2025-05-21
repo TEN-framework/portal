@@ -8,7 +8,7 @@ The extension folder name is often the same as the extension module name, while 
 
 Below is a sample structure of the extension folder:
 
-![Extension Folder Structure](/assets/png/extension_folder_struct.png?raw=true)
+![Extension Folder Structure](https://ten-framework-assets.s3.amazonaws.com/doc-assets/extension_folder_struct.png?raw=true)
 
 ## Extension Common Files
 

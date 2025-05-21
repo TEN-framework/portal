@@ -6,7 +6,7 @@ TEN Agent 项目构建于 TEN 框架之上。有关 TEN 框架项目基本概念
 
 以下是 TEN Agent 项目的文件夹结构：
 
-![项目结构](/assets/png/folder_structure.png)
+![项目结构](https://ten-framework-assets.s3.amazonaws.com/doc-assets/folder_structure.png)
 
 它包含以下重要的文件夹和文件：
 

@@ -148,7 +148,7 @@ Within the TEN framework, extensions can be implemented in various languages suc
 
 ## Asynchronous Message Processing in Extensions
 
-<figure><img src="../../../assets/png/asynchronous_message_processing.png" alt=""><figcaption><p>Asynchronous Message Processing</p></figcaption></figure>
+<figure><img src="../../..https://ten-framework-assets.s3.amazonaws.com/doc-assets/asynchronous_message_processing.png" alt=""><figcaption><p>Asynchronous Message Processing</p></figcaption></figure>
 
 Extensions process messages asynchronously. When the TEN runtime delivers a message to an extension through callbacks like `on_cmd`, `on_data`, `on_audio_frame`, or `on_video_frame`, the extension is not required to process the message immediately within the callback. Instead, the extension can delegate the message to other threads, processes, or even machines for processing. This allows for full utilization of multi-core and distributed computing resources.
 
