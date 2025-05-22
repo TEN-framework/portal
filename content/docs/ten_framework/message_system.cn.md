@@ -58,7 +58,7 @@ title: 消息系统
 
 ## 消息流
 
-![消息流](/assets/png/message_flow.png)
+![消息流](https://ten-framework-assets.s3.amazonaws.com/doc-assets/message_flow.png)
 
 TEN 框架支持三种消息流模式：
 
@@ -153,7 +153,7 @@ TEN 框架中不同扩展之间的消息配对机制类似于传统编程语言�
 
 在 TEN 框架中，一旦消息成功发送，发送消息的扩展将无法再使用它。此概念对于维护框架内的消息安全和线程安全至关重要。
 
-![消息处理遵循所有权概念](/assets/png/message_ownership.png)
+![消息处理遵循所有权概念](https://ten-framework-assets.s3.amazonaws.com/doc-assets/message_ownership.png)
 
 消息可以沿两个方向发送：**发送 (send)** 和 **返回 (return)**。只有命令消息具有返回方向；数据、音频帧和视频帧消息则没有。消息发送后，可能会经过各种处理步骤，允许扩展继续使用该消息可能会导致线程安全问题。例如，处理消息的另一个扩展可能在不同的线程中运行。即使初始扩展继续使用该消息没有任何明显问题，此行为也是未定义的，开发人员不应依赖它。
 

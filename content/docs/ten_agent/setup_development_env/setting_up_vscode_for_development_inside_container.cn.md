@@ -30,7 +30,7 @@ docker compose up -d
 
 执行此命令后，容器应启动。打开 VSCode，切换到 Docker 扩展，您应该会看到正在运行的容器。
 
-![Docker 容器](/assets/png/docker_containers.png)
+![Docker 容器](https://ten-framework-assets.s3.amazonaws.com/doc-assets/docker_containers.png)
 
 ## 步骤 4：连接到容器
 
@@ -42,13 +42,13 @@ docker compose up -d
 
 在代码中设置断点是调试时常用的做法。要在代码中设置断点，请单击要设置断点的行号的左侧边距。将出现一个红色圆点，表示已设置断点。
 
-![设置断点](/assets/png/setting_breakpoint.png)
+![设置断点](https://ten-framework-assets.s3.amazonaws.com/doc-assets/setting_breakpoint.png)
 
 如果无法设置断点，通常意味着您尚未在容器中安装语言扩展。您可以通过单击左侧边栏中的“Extensions”图标，搜索所需的扩展，然后按照提示安装它来安装语言扩展。
 
 设置断点后，您可以通过单击左侧边栏中的“Run and Debug”图标，选择“debug python”配置，然后单击绿色播放按钮开始调试来开始调试。
 
-![调试配置](/assets/png/debug_config.png?raw=true)
+![调试配置](https://ten-framework-assets.s3.amazonaws.com/doc-assets/debug_config.png?raw=true)
 
 通过这种方式，VSCode 直接启动智能体应用程序，这意味着 Golang Web 服务器不参与运行。因此，您需要注意以下几点：
 

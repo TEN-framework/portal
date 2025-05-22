@@ -48,7 +48,7 @@ http://127.0.0.1:49483/
 
 After opening the TEN Designer page in your browser, you will see the following interface:
 
-![TEN Designer Overview](/assets/png/ten_designer_overview.png)
+![TEN Designer Overview](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_overview.png)
 
 In the upper right corner of TEN Designer, you can see several function buttons:
 
@@ -65,7 +65,7 @@ In the upper left corner of TEN Designer, there are several dropdown menus that 
 
 You can load an existing TEN App using the Load App button in the App menu. After clicking the button, you will see the following interface:
 
-![Loading an Existing TEN App](/assets/png/ten_designer_load_app.png)
+![Loading an Existing TEN App](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_load_app.png)
 
 Through this file browser dialog, developers can specify the root directory of an existing TEN App to load it.
 
@@ -73,7 +73,7 @@ Through this file browser dialog, developers can specify the root directory of a
 
 You can manage loaded TEN Apps using the Manage Loaded App(s) button in the App menu. After clicking the button, you will see the following Apps Manager interface:
 
-![Managing Loaded TEN Apps](/assets/png/ten_designer_manage_loaded_apps.png)
+![Managing Loaded TEN Apps](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_manage_loaded_apps.png)
 
 Developers can use this dialog to:
 
@@ -153,13 +153,13 @@ It's worth noting that even though it's not explicitly declared in the `manifest
 
 Through the Apps Manager interface in TEN Designer, developers can perform the Install All operation on a specified App to easily complete the installation of all dependencies. After clicking the button, you will see the following interface showing the installation progress:
 
-![Installing All Dependencies for an App](/assets/png/ten_designer_app_install_all.png)
+![Installing All Dependencies for an App](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_install_all.png)
 
 ### Installing TEN Extensions from the Cloud Store
 
 You can open the TEN Cloud Store and install TEN Extensions to the current TEN App using the Open Extension Store button in the Graph menu. After clicking the button, you will see the following interface:
 
-![TEN Cloud Store](/assets/png/ten_designer_extension_store.png)
+![TEN Cloud Store](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_extension_store.png)
 
 In the TEN Cloud Store, developers can search for the required TEN Extensions and click the Install button to install them to the current TEN App. After installation, you can view the installed TEN Extensions in the current TEN App.
 
@@ -167,7 +167,7 @@ In the TEN Cloud Store, developers can search for the required TEN Extensions an
 
 In the Apps Manager, you can perform preset runtime operations on the specified App. After clicking the Run button in the Apps Manager, you will see the following interface:
 
-![Running a TEN App](/assets/png/ten_designer_app_run.png)
+![Running a TEN App](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_run.png)
 
 In the dialog, developers can select the preset operation to execute from the dropdown menu. These typically include the following operations:
 
@@ -176,11 +176,11 @@ In the dialog, developers can select the preset operation to execute from the dr
 
 Below is the build interface for a TEN App developed in C++:
 
-![Building a TEN App](/assets/png/ten_designer_app_build.png)
+![Building a TEN App](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_build.png)
 
 After the build is complete, you can continue with the startup operation for the TEN App. The system will display a window showing the TEN App's runtime logs in real-time:
 
-![Starting a TEN App](/assets/png/ten_designer_app_start.png)
+![Starting a TEN App](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_start.png)
 
 ## Working with TEN Graphs
 
@@ -188,7 +188,7 @@ After the build is complete, you can continue with the startup operation for the
 
 You can load an existing TEN Graph using the Open Existing Graph button in the Graph menu. After successful loading, you will see an interface similar to the following:
 
-![TEN Graph](/assets/png/ten_designer_graph_overview.png)
+![TEN Graph](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_graph_overview.png)
 
 Using this Graph as an example, it contains 3 TEN Extensions, namely:
 
@@ -205,7 +205,7 @@ Each TEN Extension has its corresponding inputs and outputs. For example, `ffmpe
 
 Clicking on the number buttons for inputs and outputs opens a dialog like the following, which is used to manage input and output connections:
 
-![TEN Message Input/Output Dialog](/assets/png/ten_designer_msg_info_dialog.png)
+![TEN Message Input/Output Dialog](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_msg_info_dialog.png)
 
 ### Auto-Layout Graph
 
@@ -215,8 +215,8 @@ After manually adjusting the positions of TEN Extensions in the TEN Graph, devel
 
 In the Graph, right-clicking on each TEN Extension opens the TEN Extension's context menu:
 
-![TEN Extension Context Menu](/assets/png/ten_designer_extension_context_menu.png)
+![TEN Extension Context Menu](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_extension_context_menu.png)
 
 In the context menu, you can open the TEN Extension's `manifest.json` file, `property.json` file, or directly start a terminal in the root directory of the TEN Extension, making it convenient for developers to modify and customize the TEN Extension:
 
-![Opening Manifest](/assets/png/ten_designer_context_menu_effect.png)
+![Opening Manifest](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_context_menu_effect.png)

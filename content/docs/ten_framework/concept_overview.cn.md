@@ -2,7 +2,7 @@
 title: 概述
 ---
 
-![TEN 框架](/assets/png/ten_framework.png)
+![TEN 框架](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_framework.png)
 
 ## TEN 运行平台（TEN Runtime）
 
@@ -53,11 +53,11 @@ TEN 框架支持扩展之间的四种主要类型的数据流：
 
   框架中的每个扩展都分配有一个唯一的 ID，其结构为：`app-uri/graph-name/group-name/extension-name`
 
-![概念的层次关系](/assets/png/hierarchical_relationship_of_concepts.png)
+![概念的层次关系](https://ten-framework-assets.s3.amazonaws.com/doc-assets/hierarchical_relationship_of_concepts.png)
 
 ## TEN 云商店
 
-![TEN 云商店](/assets/png/ten_cloud_store.png)
+![TEN 云商店](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_cloud_store.png)
 
 TEN 云商店的功能类似于 Google Play 商店或 Apple 的 App Store，为扩展提供了一个市场。 开发人员可以共享他们的扩展或下载其他人创建的扩展。 这些扩展可以集成到 TEN 应用程序中，从而促进开发并扩展功能。
 

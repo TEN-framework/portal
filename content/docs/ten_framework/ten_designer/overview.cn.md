@@ -48,7 +48,7 @@ http://127.0.0.1:49483/
 
 使用浏览器打开 TEN Designer 页面后，会看到如下界面：
 
-![TEN designer 概观](/assets/png/ten_designer_overview.png)
+![TEN designer 概观](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_overview.png)
 
 在 TEN Designer 右上方可以看到几个功能按钮：
 
@@ -65,7 +65,7 @@ http://127.0.0.1:49483/
 
 通过 App 菜单的 Load App 按钮，可以载入已有的 TEN App。点击按钮后，会看到如下界面：
 
-![载入已有的 TEN app](/assets/png/ten_designer_load_app.png)
+![载入已有的 TEN app](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_load_app.png)
 
 通过此文件浏览对话框，开发者可以指定已有 TEN App 的根目录来载入应用。
 
@@ -73,7 +73,7 @@ http://127.0.0.1:49483/
 
 通过 App 菜单的 Manage Loaded App(s) 按钮，可以管理已载入的 TEN App。点击按钮后，会看到如下 Apps Manager 界面：
 
-![管理已经载入的 TEN app](/assets/png/ten_designer_manage_loaded_apps.png)
+![管理已经载入的 TEN app](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_manage_loaded_apps.png)
 
 开发者可以通过此对话框：
 
@@ -153,13 +153,13 @@ http://127.0.0.1:49483/
 
 通过 TEN Designer 的 Apps Manager 界面，开发者可以对指定的 App 执行 Install All 操作，轻松完成上述所有依赖的安装过程。点击按钮后，会看到如下界面，显示安装进度：
 
-![安装指定 App 的所有依赖](/assets/png/ten_designer_app_install_all.png)
+![安装指定 App 的所有依赖](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_install_all.png)
 
 ### 从云商店安装 TEN Extension
 
 通过 Graph 菜单的 Open Extension Store 按钮，可以打开 TEN 云商店，并从云商店安装 TEN Extension 到当前的 TEN App。点击按钮后，会看到如下界面：
 
-![TEN 云商店](/assets/png/ten_designer_extension_store.png)
+![TEN 云商店](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_extension_store.png)
 
 在 TEN 云商店中，开发者可以搜索所需的 TEN Extension，并点击 Install 按钮安装到当前的 TEN App。安装完成后，可以在当前 TEN App 中查看已安装的 TEN Extension。
 
@@ -167,7 +167,7 @@ http://127.0.0.1:49483/
 
 在 Apps Manager 中，可以对指定的 App 执行预设的运行操作。在 Apps Manager 中点击 Run 按钮后，会看到如下界面：
 
-![运行 TEN app](/assets/png/ten_designer_app_run.png)
+![运行 TEN app](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_run.png)
 
 在对话框中，开发者可以从下拉菜单中选择要执行的预设操作。通常包括以下几种操作：
 
@@ -176,11 +176,11 @@ http://127.0.0.1:49483/
 
 以下是一个基于 C++ 开发的 TEN App 的编译界面：
 
-![编译 TEN app](/assets/png/ten_designer_app_build.png)
+![编译 TEN app](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_build.png)
 
 编译完成后，可以继续执行 TEN App 的启动操作，系统会弹出一个窗口，实时显示 TEN App 的运行日志：
 
-![启动 TEN app](/assets/png/ten_designer_app_start.png)
+![启动 TEN app](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_start.png)
 
 ## 处理 TEN Graph
 
@@ -188,7 +188,7 @@ http://127.0.0.1:49483/
 
 通过 Graph 菜单的 Open Existing Graph 按钮，可以载入已有的 TEN Graph。载入成功后，会看到类似如下界面：
 
-![TEN Graph](/assets/png/ten_designer_graph_overview.png)
+![TEN Graph](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_graph_overview.png)
 
 以这个 Graph 为例，它包含 3 个 TEN Extensions，分别是：
 
@@ -205,7 +205,7 @@ http://127.0.0.1:49483/
 
 点击输入输出的数字按钮，可以打开如下对话框，用于管理输入输出的连接：
 
-![TEN Message Input/Output Dialog](/assets/png/ten_designer_msg_info_dialog.png)
+![TEN Message Input/Output Dialog](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_msg_info_dialog.png)
 
 ### 自动排布 Graph
 
@@ -215,8 +215,8 @@ http://127.0.0.1:49483/
 
 在 Graph 中，对每个 TEN Extension 右键点击，可以打开 TEN Extension 的上下文菜单：
 
-![TEN extension context menu](/assets/png/ten_designer_extension_context_menu.png)
+![TEN extension context menu](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_extension_context_menu.png)
 
 在上下文菜单中，可以打开 TEN Extension 的 `manifest.json` 文件、`property.json` 文件，也可以直接在 TEN Extension 的根目录下启动终端，方便开发者对该 TEN Extension 进行修改和定制：
 
-![Open Manifest](/assets/png/ten_designer_context_menu_effect.png)
+![Open Manifest](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_context_menu_effect.png)

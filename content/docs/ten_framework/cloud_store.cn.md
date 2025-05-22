@@ -4,7 +4,7 @@ title: 云商店
 
 TEN 云商店类似于 Android 上的 Google Play 和 iOS 上的 App Store，提供各种 TEN 软件包。 可以将这些软件包下载到 TEN 应用程序中，以帮助和增强开发。
 
-![TEN 云商店](/assets/png/ten_cloud_store.png)
+![TEN 云商店](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_cloud_store.png)
 
 ## 数据库中存储的 TEN 软件包的信息
 

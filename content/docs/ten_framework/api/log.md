@@ -10,4 +10,4 @@ This logging API primarily has two parameters: one for the log level and another
 
 The overall effect is shown in the image below:
 
-![Unified log output for multi-language extensions](/assets/png/log.png)
+![Unified log output for multi-language extensions](https://ten-framework-assets.s3.amazonaws.com/doc-assets/log.png)

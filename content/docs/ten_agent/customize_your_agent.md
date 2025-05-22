@@ -4,8 +4,6 @@ title: Customize TEN Agent
 
 ## Using Playground
 
-![Customize your agent](/assets/gif/module-example.gif?raw=true)
-
 Once you have the playground running at [ localhost:3000 ](http://localhost:3000), you can customize your agent through three simple steps:
 
 1. Graph Type Selection

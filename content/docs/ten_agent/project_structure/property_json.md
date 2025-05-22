@@ -4,7 +4,7 @@ title: Understand property.json
 
 This file contains the orchestration of extensions. It is the main runtime configuration file.
 
-![Graph at a glance](/assets/png/graph_at_a_glance.png?raw=true)
+![Graph at a glance](https://ten-framework-assets.s3.amazonaws.com/doc-assets/graph_at_a_glance.png?raw=true)
 
 The `property.json` file contains the following orchestration info,
 
@@ -40,7 +40,7 @@ The `property` section of a node contains the configuration of the extension. It
 }
 ```
 
-![Property JSON nodes](/assets/png/property_json_connections.png?raw=true)
+![Property JSON nodes](https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_json_connections.png?raw=true)
 
 #### Read environment variables
 
@@ -78,6 +78,6 @@ The `connections` section contains the list of connections between nodes. Each c
 }
 ```
 
-![Property JSON Connections](/assets/png/property_json_nodes.png?raw=true)
+![Property JSON Connections](https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_json_nodes.png?raw=true)
 
 In the above example, we are connecting `agora_rtc` extension to `deepgram_asr` extension. The `agora_rtc` extension is sending `pcm_frame` data to `deepgram_asr` extension.

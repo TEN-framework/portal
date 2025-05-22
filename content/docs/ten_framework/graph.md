@@ -13,7 +13,7 @@ In the TEN framework, there are two types of graphs:
 | Graph Content | Specified in the `start_graph` command              | Predefined in the TEN app's properties                                 |
 | Graph ID      | Randomly generated UUID                             | Randomly generated UUID                                                |
 
-![Two types of graphs](/assets/png/two_types_of_graph.png)
+![Two types of graphs](https://ten-framework-assets.s3.amazonaws.com/doc-assets/two_types_of_graph.png)
 
 Predefined graphs have an `auto_start` property to determine whether the graph automatically starts when the TEN app launches.
 

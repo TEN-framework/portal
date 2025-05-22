@@ -4,8 +4,6 @@ title: 自定义 TEN Agent
 
 ## 使用 Playground
 
-![自定义智能体](/assets/gif/module-example.gif?raw=true)
-
 一旦您在 [localhost:3000](http://localhost:3000) 上运行了 playground，您可以通过三个简单的步骤自定义您的智能体：
 
 1. **图表类型选择**

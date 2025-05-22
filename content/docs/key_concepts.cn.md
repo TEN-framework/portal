@@ -20,7 +20,7 @@ title: 核心概念
 
 2. **跨进程和线程编排**：支持跨不同进程和线程的模块实例协调，形成完整的服务场景。
 
-   ![跨进程和线程编排](/assets/png/cross_process_and_thread_orchestration.png)
+   ![跨进程和线程编排](https://ten-framework-assets.s3.amazonaws.com/doc-assets/cross_process_and_thread_orchestration.png)
 
 3. **动态编排配置**：编排可以在运行时动态配置，也可以在服务执行前预配置。
 
@@ -82,7 +82,7 @@ title: 核心概念
 
 1. **支持多种编程语言**：框架支持使用多种语言（如 C/C++、Go、Java、Python）编写模块，实现多样化的开发环境。
 
-   ![编程语言支持](/assets/png/various_language_support.png)
+   ![编程语言支持](https://ten-framework-assets.s3.amazonaws.com/doc-assets/various_language_support.png)
 
 2. **跨语言模块集成**：使用不同语言编写的模块可以在同一进程中运行。
 

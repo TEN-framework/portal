@@ -148,7 +148,7 @@ sequenceDiagram
 
 ## 扩展中的异步消息处理
 
-<figure><img src="../../../assets/png/asynchronous_message_processing.png" alt=""><figcaption><p>异步消息处理</p></figcaption></figure>
+<figure><img src="../../..https://ten-framework-assets.s3.amazonaws.com/doc-assets/asynchronous_message_processing.png" alt=""><figcaption><p>异步消息处理</p></figcaption></figure>
 
 扩展以异步方式处理消息。当 TEN 运行平台通过 `on_cmd`、`on_data`、`on_audio_frame` 或 `on_video_frame` 等回调函数将消息传递给扩展时，并不要求扩展立即在回调函数内处理该消息。相反，扩展可以将消息委托给其他线程、进程，甚至其他机器进行处理。这可以充分利用多核和分布式计算资源。
 

@@ -4,7 +4,7 @@ title: Cloud Store
 
 The TEN Cloud Store, similar to Google Play on Android and the App Store on iOS, offers a variety of TEN packages. These packages can be downloaded into a TEN app to aid and enhance development.
 
-![TEN Cloud Store](/assets/png/ten_cloud_store.png)
+![TEN Cloud Store](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_cloud_store.png)
 
 ## Information Stored in the Database for TEN Packages
 

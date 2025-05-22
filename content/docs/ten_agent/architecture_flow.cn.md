@@ -10,4 +10,4 @@ title: 架构
 
 系统的流程如下：
 
-![架构流程](/assets/png/architecture_flow.png?raw=true)
+![架构流程](https://ten-framework-assets.s3.amazonaws.com/doc-assets/architecture_flow.png?raw=true)

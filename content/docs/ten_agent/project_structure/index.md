@@ -6,7 +6,7 @@ The TEN Agent project is built on top of the TEN Framework. For basic concepts o
 
 Below is the folder structure of TEN Agent project,
 
-![Project structure](/assets/png/folder_structure.png)
+![Project structure](https://ten-framework-assets.s3.amazonaws.com/doc-assets/folder_structure.png)
 
 It contains the following important folders and files:
 

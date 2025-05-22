@@ -10,4 +10,4 @@ TEN 框架允许使用不同语言开发的扩展在同一进程中运行。这�
 
 整体效果如下图所示：
 
-![多语言扩展的统一日志输出](/assets/png/log.png)
+![多语言扩展的统一日志输出](https://ten-framework-assets.s3.amazonaws.com/doc-assets/log.png)

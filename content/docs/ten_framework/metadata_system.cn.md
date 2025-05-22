@@ -136,7 +136,7 @@ TEN 框架在各种类型的包（包括：
 
 这两种类型的属性都在 TEN 框架中进行管理，但服务于不同的目的，一种侧重于组件之间的通信（消息属性），另一种侧重于组件本身的配置和操作（TEN 包属性）。
 
-![属性系统](/assets/png/property_system.png)
+![属性系统](https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_system.png)
 
 ### 定义 TEN 包属性
 

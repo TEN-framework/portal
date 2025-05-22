@@ -38,7 +38,7 @@ docker compose up -d
 
 After executing this command, the container should start. Open VSCode, switch to the Docker extension, and you should see the running container.
 
-![Docker Containers](/assets/png/docker_containers.png)
+![Docker Containers](https://ten-framework-assets.s3.amazonaws.com/doc-assets/docker_containers.png)
 
 ## Step 4: Connect to the Container
 
@@ -50,13 +50,13 @@ In the Dev Container environment connected to the container, your local extensio
 
 Setting breakpoints in the code is a common practice when debugging. To set a breakpoint in the code, click on the left margin of the line number where you want to set the breakpoint. A red dot will appear, indicating that a breakpoint has been set.
 
-![Setting Breakpoint](/assets/png/setting_breakpoint.png)
+![Setting Breakpoint](https://ten-framework-assets.s3.amazonaws.com/doc-assets/setting_breakpoint.png)
 
 if you cannot set the breakpoint, it usually means you have not installed the language extension in the container. You can install the language extension by clicking on the `Extensions` icon in the left sidebar, searching for the required extension, and following the prompts to install it.
 
 Once you have set the breakpoint, you can start debugging by clicking on the `Run and Debug` icon in the left sidebar, selecting the `debug python` configuration, and clicking on the green play button to start debugging.
 
-![Debug Configuration](/assets/png/debug_config.png?raw=true)
+![Debug Configuration](https://ten-framework-assets.s3.amazonaws.com/doc-assets/debug_config.png?raw=true)
 
 In this way, VSCode is directly starting the agent application, which means Golang web server is not paticipating in the run. Therefore, you will need to pay attention to below points:
 

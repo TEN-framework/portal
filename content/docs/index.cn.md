@@ -4,14 +4,6 @@ title: 🌟 欢迎使用 TEN
 
 欢迎使用 TEN！TEN（Transformative Extensions Network）是一个用于创建对话式 AI 的语音代理框架。
 
-![star_ten_w_confetti](/assets/gif/star_ten_w_confetti.gif)
-
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-
-给我们点个星星，持续关注 TEN 的更新
-
-</div>
-
 TEN 框架具有以下优势：
 
 1. **原生支持高性能实时多模态交互**

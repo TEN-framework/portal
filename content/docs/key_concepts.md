@@ -20,7 +20,7 @@ title: 📚 Key Concepts
 
 2. **Cross-Process and Thread Orchestration**: Allows coordination of module instances across different processes and threads to form complete service scenarios.
 
-   ![cross_process_and_thread_orchestration](/assets/png/cross_process_and_thread_orchestration.png)
+![cross_process_and_thread_orchestration](https://ten-framework-assets.s3.amazonaws.com/doc-assets/cross_process_and_thread_orchestration.png)
 
 3. **Dynamic Orchestration Configuration**: Orchestration can be configured dynamically at runtime or pre-configured before service execution.
 
@@ -82,7 +82,7 @@ title: 📚 Key Concepts
 
 1. **Support for Multiple Programming Languages**: The framework supports modules written in various languages (e.g., C/C++, Go, Java, Python), enabling diverse development environments.
 
-   ![Programming Language Support](/assets/png/various_language_support.png)
+   ![Programming Language Support](https://ten-framework-assets.s3.amazonaws.com/doc-assets/various_language_support.png)
 
 2. **Cross-language Module Integration**: Modules written in different languages can run together within the same process.
 

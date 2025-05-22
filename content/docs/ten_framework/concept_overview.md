@@ -2,7 +2,7 @@
 title: Overview
 ---
 
-![TEN Framework](/assets/png/ten_framework.png)
+![TEN Framework](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_framework.png)
 
 ## TEN Runtime
 
@@ -53,11 +53,11 @@ By defining these data flows within a graph, developers can create inter-extensi
 
   Each extension within the framework is assigned a unique ID, structured as: `app-uri/graph-name/group-name/extension-name`
 
-![Hierarchical Relationship of Concepts](/assets/png/hierarchical_relationship_of_concepts.png)
+![Hierarchical Relationship of Concepts](https://ten-framework-assets.s3.amazonaws.com/doc-assets/hierarchical_relationship_of_concepts.png)
 
 ## TEN Cloud Store
 
-![TEN Cloud Store](/assets/png/ten_cloud_store.png)
+![TEN Cloud Store](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_cloud_store.png)
 
 The TEN Cloud Store functions similarly to Google Play Store or Apple’s App Store, providing a marketplace for extensions. Developers can share their extensions or download those created by others. These extensions can be integrated into TEN apps, facilitating development and expanding functionality.
 

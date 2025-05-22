@@ -10,4 +10,4 @@ The whole system contains multiple components that work together to provide a se
 
 The flow of the system is as follows:
 
-![Architecture Flow](/assets/png/architecture_flow.png?raw=true)
+![Architecture Flow](https://ten-framework-assets.s3.amazonaws.com/doc-assets/architecture_flow.png?raw=true)
