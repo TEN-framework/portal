@@ -40,7 +40,7 @@ TEN is a collection of open-source projects for building real-time, multimodal c
 
 <br>
 
-# portal
+# Portal
 
 This is a Next.js application generated with
 [Create Fumadocs](https://github.com/fuma-nama/fumadocs).
@@ -57,6 +57,7 @@ The content is organized into the following folders:
 ### Documentation
 
 > [!NOTE]
+>
 > The documentation is written in Markdown and uses Fumadocs to generate the
 > documentation.
 > i18n is supported.
@@ -69,10 +70,13 @@ The `content/docs` folder contains the documentation for TEN.
 ### Blog
 
 > [!NOTE]
+>
 > The blog is written in MDX and uses Fumadocs to generate the blog posts.
 > UI components are i18n enabled, but content remains in original language.
 
 The `content/blog` folder contains the blog posts for TEN.
+
+<br>
 
 ## Development
 
