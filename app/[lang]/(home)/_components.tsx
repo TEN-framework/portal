@@ -90,7 +90,7 @@ export function Hero(props: { className?: string }) {
               <Link href={URL_TEN_FRAMEWORK_DOC}>{t('heroBtnReadDoc')}</Link>
             </Button>
           </div>
-            <p className="text-muted-foreground max-w-2xl text-center tx-sm leading-relaxed tracking-tight md:text-xl font-regular">
+            <p className="text-muted-foreground/100 max-w-2xl text-center text-sm leading-relaxed tracking-tight md:text-base font-normal">
               {t('supportedBy')}
             </p>
         </div>
