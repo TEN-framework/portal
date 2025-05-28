@@ -37,7 +37,7 @@ export const Logo = ({ height = 32, width }: LogoProps) => (
       </g>
       <g className="cls-2">
         <g className="cls-2">
-          <text className="cls-1" transform="translate(190 126.32)">
+          <text className="cls-1" transform="translate(200 126.32)">
             <tspan x="0" y="0">TEN</tspan>
           </text>
         </g>

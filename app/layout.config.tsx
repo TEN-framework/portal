@@ -22,8 +22,8 @@ export function baseOptions(locale: string): BaseLayoutProps {
     i18n,
     nav: {
       title: (
-        <div className="flex items-center gap-2">
-          <Logo height={33} width={65} />
+        <div className="flex items-center gap-2 mt-0.5">
+          <Logo height={33} width={66} />
         </div>
       ),
       url: `/${locale}`,
