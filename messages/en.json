@@ -34,6 +34,7 @@
     "heroDescription": "TEN is an open-source framework designed for building multimodal conversational AI",
     "supportedBy": "supported by the TEN community and Agora",
     "heroBtnTryTenAgent": "Try TEN Agent",
+    "huggingFaceSpace": "Visit TEN on Hugging Face",
     "heroBtnReadDoc": "Documentation"
   }
 }
