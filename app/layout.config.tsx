@@ -1,4 +1,5 @@
 import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
+import { GitHubStarButton } from '@/components/ui/github-star-button'
 
 import { i18n } from '@/lib/i18n'
 import en from '@/messages/en.json'
@@ -23,6 +24,8 @@ export function baseOptions(locale: string): BaseLayoutProps {
         <>
           <svg
             xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-labelledby="logo-title"
             id="_图层_2"
             data-name="图层_2"
             viewBox="0 0 159.66 114.89"
@@ -53,11 +56,15 @@ export function baseOptions(locale: string): BaseLayoutProps {
         url: `/${locale}/blog`,
         active: 'nested-url',
       },
+      {
+        text: <GitHubStarButton repo="TEN-framework/ten-framework" />,
+        url: 'https://github.com/TEN-framework/ten-framework',
+        active: 'none',
+      },
     ],
     themeSwitch: {
       enabled: true,
       mode: 'light-dark-system',
     },
-    githubUrl: 'https://github.com/TEN-framework',
   }
 }

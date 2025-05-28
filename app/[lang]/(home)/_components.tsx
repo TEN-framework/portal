@@ -13,7 +13,6 @@ import { URL_TEN_AGENT, URL_TEN_FRAMEWORK_DOC } from '@/constants'
 const TITLES = [
   'titleLowlantency',
   'titleMultimodal',
-  'titleHighperformance',
   'titleEdgeCloud',
 ]
 
@@ -48,15 +47,15 @@ export function Hero(props: { className?: string }) {
           </div> */}
           <div className="flex flex-col gap-4">
             <h1 className="font-regular text-center text-5xl tracking-tighter md:text-7xl">
-              <span className="text-spektr-cyan-50">{t('titlePrefix')}</span>
+              <span className="text-spektr-cyan-50 font-medium">{t('titlePrefix')}</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pt-2 md:pb-5">
                 &nbsp;
                 {TITLES.map((title, index) => (
                   <motion.span
                     key={index}
-                    className="absolute font-semibold"
+                    className="absolute font-bold"
                     initial={{ opacity: 0, y: '-100' }}
-                    transition={{ type: 'spring', stiffness: 50 }}
+                    transition={{ type: 'spring', stiffness: 35, duration: 0.5 }}
                     animate={
                       titleNumber === index
                         ? {
@@ -73,10 +72,10 @@ export function Hero(props: { className?: string }) {
                   </motion.span>
                 ))}
               </span>
-              <span className="text-spektr-cyan-50">{t('titleSuffix')}</span>
+              <span className="text-spektr-cyan-50 font-medium">{t('titleSuffix')}</span>
             </h1>
 
-            <p className="text-muted-foreground max-w-2xl text-center text-lg leading-relaxed tracking-tight md:text-xl">
+            <p className="text-muted-foreground max-w-2xl text-center text-lg leading-relaxed tracking-tight md:text-xl font-medium">
               {t('heroDescription')}
             </p>
           </div>
@@ -91,6 +90,9 @@ export function Hero(props: { className?: string }) {
               <Link href={URL_TEN_FRAMEWORK_DOC}>{t('heroBtnReadDoc')}</Link>
             </Button>
           </div>
+            <p className="text-muted-foreground max-w-2xl text-center tx-sm leading-relaxed tracking-tight md:text-xl font-regular">
+              {t('supportedBy')}
+            </p>
         </div>
       </div>
     </div>
