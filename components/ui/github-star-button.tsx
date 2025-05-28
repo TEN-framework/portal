@@ -77,7 +77,6 @@ function useCountAnimation(endValue: number | null, duration: number = 2500, ini
 
 export function GitHubStarButton({ repo, className = "" }: GitHubStarButtonProps) {
   const [starCount, setStarCount] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
   const animatedCount = useCountAnimation(starCount);
 
   useEffect(() => {
@@ -90,8 +89,6 @@ export function GitHubStarButton({ repo, className = "" }: GitHubStarButtonProps
         }
       } catch (error) {
         console.error('Failed to fetch star count:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
