@@ -4,15 +4,15 @@ title: Overview
 
 TEN Framework offers high flexibility and provides rich functionalities, including TEN Cloud Store, package management, multi-language support, and multi-platform support. However, these features may require a longer learning period and higher technical threshold to master TEN Framework for AI Agent development and customization. To facilitate developers' use, TEN Framework provides a command-line tool called TEN Manager, which enables developers to easily modify and customize AI Agents built with TEN Framework.
 
-Since command-line tools are not as user-friendly as graphical user interfaces, TEN Manager includes a web UI-based visual development interface called TEN Designer, in addition to the command-line interface. It provides rich functionality to help developers develop and debug TEN Apps and TEN Extensions. This means that developers only need to obtain the TEN Manager tool to access a complete TEN Framework development environment with both command-line and graphical user interfaces.
+Since command-line tools are not as user-friendly as graphical user interfaces, TEN Manager includes a web UI-based visual development interface called TMAN Designer, in addition to the command-line interface. It provides rich functionality to help developers develop and debug TEN Apps and TEN Extensions. This means that developers only need to obtain the TEN Manager tool to access a complete TEN Framework development environment with both command-line and graphical user interfaces.
 
-You can get TEN Designer from the following link:
+You can get TMAN Designer from the following link:
 
 ```text
 https://github.com/TEN-framework/ten-framework/releases
 ```
 
-TEN Designer supports the following operating systems and architectures. Please obtain the appropriate version for your platform:
+TMAN Designer supports the following operating systems and architectures. Please obtain the appropriate version for your platform:
 
 - Windows
   - x86_64
@@ -22,42 +22,42 @@ TEN Designer supports the following operating systems and architectures. Please 
   - x86_64
   - arm64
 
-After downloading and extracting, use the following command to start TEN Designer:
+After downloading and extracting, use the following command to start TMAN Designer:
 
 ```shell
 tman designer
 ```
 
-You can execute this command in the root directory of any TEN App, or in any location. If executed in the root directory of a TEN App, TEN Designer will load that TEN App by default. You can also manually load any TEN App in TEN Designer. Therefore, starting TEN Designer in the root directory of a specific TEN App is not mandatory, but it simplifies the initial step of manually loading a TEN App.
+You can execute this command in the root directory of any TEN App, or in any location. If executed in the root directory of a TEN App, TMAN Designer will load that TEN App by default. You can also manually load any TEN App in TMAN Designer. Therefore, starting TMAN Designer in the root directory of a specific TEN App is not mandatory, but it simplifies the initial step of manually loading a TEN App.
 
-After startup, you will see information like the following, indicating that TEN Designer starts on port 49483 by default:
+After startup, you will see information like the following, indicating that TMAN Designer starts on port 49483 by default:
 
 ```text
 🏆  Starting server at http://0.0.0.0:49483
 ```
 
-You can interact with TEN Designer using the following URL:
+You can interact with TMAN Designer using the following URL:
 
 ```text
 http://127.0.0.1:49483/
 ```
 
-> Note: If your TEN Designer is running on a remote machine, please use the IP address of the remote machine to access TEN Designer.
+> Note: If your TMAN Designer is running on a remote machine, please use the IP address of the remote machine to access TMAN Designer.
 
 ## Overview
 
-After opening the TEN Designer page in your browser, you will see the following interface:
+After opening the TMAN Designer page in your browser, you will see the following interface:
 
-![TEN Designer Overview](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_overview.png)
+![TMAN Designer Overview](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_overview.png)
 
-In the upper right corner of TEN Designer, you can see several function buttons:
+In the upper right corner of TMAN Designer, you can see several function buttons:
 
-- The rightmost button displays the current version of TEN Designer and automatically checks for new version releases. If an update is available, an upward arrow will be displayed. Clicking it will open the download page for the new version.
-- The first button on the left is the [TEN Agent](https://agent.theten.ai/) button. Clicking it will open the TEN Agent page. TEN Agent is a complete AI Agent implementation built using TEN Framework. One of the main goals of TEN Designer is to enable developers to easily develop, debug, and customize TEN Agent through TEN Designer.
+- The rightmost button displays the current version of TMAN Designer and automatically checks for new version releases. If an update is available, an upward arrow will be displayed. Clicking it will open the download page for the new version.
+- The first button on the left is the [TEN Agent](https://agent.theten.ai/) button. Clicking it will open the TEN Agent page. TEN Agent is a complete AI Agent implementation built using TEN Framework. One of the main goals of TMAN Designer is to enable developers to easily develop, debug, and customize TEN Agent through TMAN Designer.
 - The second button on the left is the [TEN Framework](https://github.com/TEN-framework/ten-framework) GitHub page. Clicking it will open the GitHub repository for TEN Framework. You can visit this page to learn more about TEN Framework, view source code, or submit issues.
 - On the far left, there are two buttons for switching between light and dark modes and selecting languages.
 
-In the upper left corner of TEN Designer, there are several dropdown menus that developers can use to access various functions of TEN Designer.
+In the upper left corner of TMAN Designer, there are several dropdown menus that developers can use to access various functions of TMAN Designer.
 
 ## Working with TEN Apps
 
@@ -151,7 +151,7 @@ After completing the installation of all dependencies for the TEN App, the TEN p
 
 It's worth noting that even though it's not explicitly declared in the `manifest.json`, there is an additional `ffmpeg` system package in the system. This is because `ffmpeg_demuxer` and `ffmpeg_muxer` depend on the `ffmpeg` system package, and TEN Manager automatically identifies and installs these transitive dependencies.
 
-Through the Apps Manager interface in TEN Designer, developers can perform the Install All operation on a specified App to easily complete the installation of all dependencies. After clicking the button, you will see the following interface showing the installation progress:
+Through the Apps Manager interface in TMAN Designer, developers can perform the Install All operation on a specified App to easily complete the installation of all dependencies. After clicking the button, you will see the following interface showing the installation progress:
 
 ![Installing All Dependencies for an App](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_designer_app_install_all.png)
 
@@ -171,7 +171,7 @@ In the Apps Manager, you can perform preset runtime operations on the specified 
 
 In the dialog, developers can select the preset operation to execute from the dropdown menu. These typically include the following operations:
 
-- Run App: Start the App and display the App's output information in the TEN Designer message window.
+- Run App: Start the App and display the App's output information in the TMAN Designer message window.
 - Build App: Compile the App. Since TEN Framework supports multiple programming languages, some languages need to be compiled while others do not. For example, TEN Apps developed in C++ need to be compiled, while TEN Apps developed in Python do not.
 
 Below is the build interface for a TEN App developed in C++:
