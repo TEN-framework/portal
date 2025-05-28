@@ -20,7 +20,7 @@ export const Logo = ({ height = 32, width }: LogoProps) => (
           .cls-1 {
             font-family: "Audiowide-Regular", "Audiowide";
             font-size: ${height * 4.5}px;
-            fill: #333333;
+            fill: currentColor;
           }
           .cls-1, .cls-2 {
             isolation: isolate;
@@ -32,7 +32,7 @@ export const Logo = ({ height = 32, width }: LogoProps) => (
       <g id="logo-shape">
         <polygon 
           points="153.1 3.22 153.3 3.22 150.5 .72 147.3 .72 147.3 .72 34.2 .52 33.4 2.82 0 99.72 28 130.42 63.5 130.32 98.9 27.42 61.5 27.22 36.6 2.82 149.9 3.22 177.5 29.82 133.8 28.22 98.6 130.32 146.2 129.82 180.6 29.92 153.1 3.22"
-          fill="#333333"
+          fill="currentColor"
         />
       </g>
       <g className="cls-2">
