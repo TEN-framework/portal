@@ -20,8 +20,6 @@ const inter = Inter({
 const cn: Partial<Translations> = cnMessages.fuma
 const en: Partial<Translations> = enMessages.fuma
 
-// available languages that will be displayed on UI
-// make sure `locale` is consistent with your i18n config
 const locales = [
   {
     name: 'English',
@@ -62,7 +60,7 @@ export default async function Layout({
           >
             {children}
             <Script
-            src="/scarf-analytics.js"
+            src="/analystics/scarf-analytics.js"
             strategy="afterInteractive"
             />
           </RootProvider>

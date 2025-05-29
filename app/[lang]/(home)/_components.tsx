@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Link } from '@/lib/next-intl-navigation'
-import { URL_TEN_AGENT, URL_TEN_FRAMEWORK_DOC } from '@/constants'
+import { URL_TEN_AGENT, HUGGING_FACE_SPACE } from '@/constants'
 
 const TITLES = [
   'titleLowlantency',
@@ -80,14 +80,16 @@ export function Hero(props: { className?: string }) {
             </p>
           </div>
           <div className="flex flex-row gap-3">
-            <Button size="lg" className="gap-4" variant="outline" asChild>
+            <Button size="lg" className="gap-4" asChild>
               <Link href={URL_TEN_AGENT} target="_blank">
                 {t('heroBtnTryTenAgent')}
                 <ExternalLink className="size-4" />
               </Link>
             </Button>
-            <Button size="lg" className="gap-4" asChild>
-              <Link href={URL_TEN_FRAMEWORK_DOC}>{t('heroBtnReadDoc')}</Link>
+            <Button size="lg" className="gap-4" variant="outline" asChild>
+              <Link href={HUGGING_FACE_SPACE} target="_blank">{t('huggingFaceSpace')}
+              <ExternalLink className="size-4" />
+              </Link>
             </Button>
           </div>
             <p className="text-muted-foreground/100 max-w-2xl text-center text-sm leading-relaxed tracking-tight md:text-base font-normal">

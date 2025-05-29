@@ -1,6 +1,5 @@
 {
   "nav": {
-    "title": "TEN",
     "docs": "Documentation",
     "blog": "Blog"
   },
@@ -26,15 +25,16 @@
   },
   "homePage": {
     "titlePrefix": "Build",
-    "titleLowlantency": "Low-latency",
-    "titleMultimodal": "Multimodal",
+    "titleLowlantency": "Real-Time",
+    "titleMultimodal": "Customizable",
     "titleHighperformance": "High-performance",
-    "titleEdgeCloud": "Edge-Cloud",
+    "titleEdgeCloud": "Low-latency",
     "titleSuffix": "Voice AI Agents",
     "readLaunchArticle": "Read more on our blog",
-    "heroDescription": "TEN is an open-source framework for real-time, multimodal conversational AI",
+    "heroDescription": "TEN is an open-source framework designed for building multimodal conversational AI",
     "supportedBy": "supported by the TEN community and Agora",
     "heroBtnTryTenAgent": "Try TEN Agent",
+    "huggingFaceSpace": "Visit TEN on Hugging Face",
     "heroBtnReadDoc": "Documentation"
   }
 }
