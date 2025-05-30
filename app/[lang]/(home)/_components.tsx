@@ -8,7 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Link } from '@/lib/next-intl-navigation'
-import { URL_TEN_AGENT, HUGGING_FACE_SPACE } from '@/constants'
+import { URL_TEN_AGENT, HUGGING_FACE_SPACE, URL_TEN_TURN_DETECTION } from '@/constants'
 
 const TITLES = [
   'titleLowlantency',
@@ -38,13 +38,15 @@ export function Hero(props: { className?: string }) {
     <div className={cn('text-foreground w-full', className)}>
       <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center gap-8 pt-16 pb-20 lg:pt-32 lg:pb-60">
-          {/* <div>
-            <Button variant="secondary" size="sm" className="gap-4" asChild>
-              <Link href={BLOG}>
-                {t('readLaunchArticle')}
+          <div>
+            <Button variant="secondary" size="sm" className="gap-2 bg-blue-600/[0.05] text-blue-600 hover:bg-blue-600/[0.08] hover:text-blue-500 transition-all duration-600 hover:scale-105" asChild>
+              <Link href={URL_TEN_TURN_DETECTION}>
+                <span className="flex items-center gap-2">
+                  🎉 <span className="text-blue-700 font-medium">welcome TEN Turn Detection and TEN VAD to the TEN family</span>
+                </span>
               </Link>
             </Button>
-          </div> */}
+          </div>
           <div className="flex flex-col gap-4">
             <h1 className="font-regular text-center text-5xl tracking-tighter md:text-7xl">
               <span className="text-spektr-cyan-50 font-medium">{t('titlePrefix')}</span>
@@ -93,7 +95,7 @@ export function Hero(props: { className?: string }) {
             </Button>
           </div>
             <p className="text-muted-foreground/100 max-w-2xl text-center text-sm leading-relaxed tracking-tight md:text-base font-normal">
-              {t('supportedBy')}
+              {t('supportedBy')} <Link href="https://www.agora.io/en/" target="_blank" className="text-spektr-cyan-100 underline underline-offset-5 decoration-gray-300 hover:text-[#13C2FF] hover:decoration-[#13C2FF]">Agora</Link>
             </p>
         </div>
       </div>

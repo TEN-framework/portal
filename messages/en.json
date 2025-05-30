@@ -28,11 +28,11 @@
     "titleLowlantency": "Real-Time",
     "titleMultimodal": "Customizable",
     "titleHighperformance": "High-performance",
-    "titleEdgeCloud": "Low-latency",
+    "titleEdgeCloud": "Low-Latency",
     "titleSuffix": "Voice AI Agents",
     "readLaunchArticle": "Read more on our blog",
     "heroDescription": "TEN is an open-source framework designed for building multimodal conversational AI",
-    "supportedBy": "supported by the TEN community and Agora",
+    "supportedBy": "supported by the TEN community and",
     "heroBtnTryTenAgent": "Try TEN Agent",
     "huggingFaceSpace": "Visit TEN on Hugging Face",
     "heroBtnReadDoc": "Documentation"
