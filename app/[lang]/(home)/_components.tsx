@@ -42,7 +42,7 @@ export function Hero(props: { className?: string }) {
             <Button variant="secondary" size="sm" className="gap-2 bg-blue-600/[0.05] text-blue-600 hover:bg-blue-600/[0.08] hover:text-blue-500 transition-all duration-600 hover:scale-105" asChild>
               <Link href={URL_TEN_TURN_DETECTION}>
                 <span className="flex items-center gap-2">
-                  🎉 <span className="text-blue-700 font-medium">welcome TEN Turn Detection and TEN VAD to the TEN family</span>
+                  🎉 <span className="text-blue-500 font-medium">welcome TEN Turn Detection and TEN VAD to the TEN family</span>
                 </span>
               </Link>
             </Button>
