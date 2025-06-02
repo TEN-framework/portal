@@ -52,7 +52,7 @@ export function Hero(props: { className?: string }) {
               <Link href={URL_TEN_FAMILY}>
                 <span className="flex items-center gap-2">
                   🎉{' '}
-                  <span className="font-medium text-blue-500">
+                  <span className="font-medium text-blue-500 dark:text-blue-300">
                     {t('bannerAnnouncement')}
                   </span>
                 </span>
@@ -89,7 +89,7 @@ export function Hero(props: { className?: string }) {
               </span>
             </h1>
 
-            <p className="text-muted-foreground max-w-2xl text-center text-lg leading-relaxed font-medium tracking-tight md:text-xl">
+            <p className="text-muted-foreground max-w-2xl text-center text-lg leading-relaxed font-medium tracking-tight md:text-xl dark:text-gray-300">
               {t('heroDescription')}
             </p>
           </div>
@@ -107,7 +107,7 @@ export function Hero(props: { className?: string }) {
               </Link>
             </Button>
           </div>
-          <p className="text-muted-foreground/100 max-w-2xl text-center text-sm leading-relaxed font-normal tracking-tight md:text-base">
+          <p className="text-muted-foreground/100 max-w-2xl text-center text-sm leading-relaxed font-normal tracking-tight md:text-base dark:text-gray-300">
             {t('supportedBy')}{' '}
             <Link
               href="https://www.agora.io/en/"

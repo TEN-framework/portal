@@ -14,14 +14,15 @@ const BackgroundVideo = () => {
   }, [])
 
   useEffect(() => {
-    setVideoKey(prev => prev + 1)
+    setVideoKey((prev) => prev + 1)
   }, [resolvedTheme])
 
   if (!mounted) return null
 
-  const videoSrc = resolvedTheme === 'dark'
-    ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
-    : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
+  const videoSrc =
+    resolvedTheme === 'dark'
+      ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
+      : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
 
   return (
     <video
@@ -30,7 +31,7 @@ const BackgroundVideo = () => {
       loop
       muted
       playsInline
-      className="absolute inset-0 w-full h-full object-cover z-0 opacity-37"
+      className="absolute inset-0 z-0 h-full w-full object-cover opacity-37 dark:opacity-57"
     >
       <source src={videoSrc} type="video/mp4" />
       Your browser does not support the video tag.
@@ -40,7 +41,7 @@ const BackgroundVideo = () => {
 
 export default function HomePage() {
   return (
-    <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center text-center overflow-hidden">
+    <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
       <BackgroundVideo />
       <Hero className="relative z-10" />
     </div>
