@@ -11,6 +11,7 @@ import { Link } from '@/lib/next-intl-navigation'
 import {
   URL_TEN_AGENT,
   HUGGING_FACE_SPACE,
+  URL_TEN_FAMILY,
   URL_TEN_TURN_DETECTION,
 } from '@/constants'
 
@@ -53,11 +54,11 @@ export function Hero(props: { className?: string }) {
               className="gap-2 bg-blue-600/[0.05] text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500"
               asChild
             >
-              <Link href={URL_TEN_TURN_DETECTION}>
+              <Link href={URL_TEN_FAMILY}>
                 <span className="flex items-center gap-2">
                   🎉{' '}
                   <span className="font-medium text-blue-500">
-                    welcome TEN Turn Detection and TEN VAD to the TEN family
+                    {t('bannerAnnouncement')}
                   </span>
                 </span>
               </Link>
