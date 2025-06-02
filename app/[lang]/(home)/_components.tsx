@@ -16,6 +16,14 @@ import {
 
 const TITLES = ['titleLowlantency', 'titleMultimodal', 'titleEdgeCloud']
 
+const titleVariants = {
+  visible: { y: 0, opacity: 1 },
+  hidden: (direction: number) => ({
+    y: direction > 0 ? -150 : 150,
+    opacity: 0,
+  }),
+}
+
 export function Hero(props: { className?: string }) {
   const { className } = props
 
@@ -66,23 +74,15 @@ export function Hero(props: { className?: string }) {
                   <motion.span
                     key={index}
                     className="absolute font-bold"
-                    initial={{ opacity: 0, y: '-100' }}
+                    initial="hidden"
+                    animate={titleNumber === index ? 'visible' : 'hidden'}
+                    variants={titleVariants}
+                    custom={titleNumber > index ? 1 : -1}
                     transition={{
                       type: 'spring',
                       stiffness: 35,
                       duration: 0.5,
                     }}
-                    animate={
-                      titleNumber === index
-                        ? {
-                            y: 0,
-                            opacity: 1,
-                          }
-                        : {
-                            y: titleNumber > index ? -150 : 150,
-                            opacity: 0,
-                          }
-                    }
                   >
                     {t(title)}
                   </motion.span>
