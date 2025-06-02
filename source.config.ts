@@ -2,7 +2,6 @@ import {
   defineDocs,
   defineConfig,
   defineCollections,
-  frontmatterSchema,
 } from 'fumadocs-mdx/config'
 import { z } from 'zod'
 
@@ -20,9 +19,10 @@ export default defineConfig({
 export const blogPosts = defineCollections({
   type: 'doc',
   dir: 'content/blog',
-  // add required frontmatter properties
-  schema: frontmatterSchema.extend({
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
     author: z.string(),
-    date: z.string().date().or(z.date()),
+    date: z.coerce.date(),
   }),
 })

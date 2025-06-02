@@ -60,7 +60,7 @@ export default async function Layout({
           >
             {children}
             <Script
-              src="/analystics/scarf-analytics.js"
+              src="/analytics/scarf-analytics.js"
               strategy="afterInteractive"
             />
           </RootProvider>
