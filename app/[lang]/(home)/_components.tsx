@@ -8,12 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Link } from '@/lib/next-intl-navigation'
-import {
-  URL_TEN_AGENT,
-  HUGGING_FACE_SPACE,
-  URL_TEN_FAMILY,
-  URL_TEN_TURN_DETECTION,
-} from '@/constants'
+import { URL_TEN_AGENT, HUGGING_FACE_SPACE, URL_TEN_FAMILY } from '@/constants'
 
 const TITLES = ['titleLowlantency', 'titleMultimodal', 'titleEdgeCloud']
 

@@ -27,15 +27,18 @@ export default async function BlogHomePage(props: {
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0 opacity-37"
+        className="absolute inset-0 z-0 h-full w-full object-cover opacity-37"
       >
-        <source src="https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4" type="video/mp4" />
+        <source
+          src="https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4"
+          type="video/mp4"
+        />
         Your browser does not support the video tag.
       </video>
-      
-      <div className="container relative z-10 mx-auto mt-14 px-4 py-12">
+
+      <div className="relative z-10 container mx-auto mt-14 px-4 py-12">
         <div className="mb-12 text-center">
-          <h1 className="mb-4 text-5xl font-bold leading-normal tracking-tight">
+          <h1 className="mb-4 text-5xl leading-normal font-bold tracking-tight">
             {t('latestPosts')}
           </h1>
           <p className="text-fd-muted-foreground mx-auto max-w-2xl text-lg">
@@ -49,7 +52,7 @@ export default async function BlogHomePage(props: {
               locale={locale}
               key={post.url}
               href={post.url}
-              className="group relative flex min-h-[320px] flex-col overflow-hidden rounded-xl border bg-background/80 backdrop-blur-sm p-6 shadow-md"
+              className="group bg-background/80 relative flex min-h-[320px] flex-col overflow-hidden rounded-xl border p-6 shadow-md backdrop-blur-sm"
             >
               <div className="grow">
                 <h2 className="mb-3 text-2xl font-semibold tracking-tight">
