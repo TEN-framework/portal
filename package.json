@@ -13,6 +13,7 @@
     "@orama/stopwords": "^3.1.4",
     "@orama/tokenizers": "^3.1.4",
     "@radix-ui/react-slot": "^1.2.0",
+    "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "fumadocs-core": "^15.2.8",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.4",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/lodash": "^4.17.16",
     "@types/mdx": "^2.0.13",
     "@types/node": "22.13.14",
