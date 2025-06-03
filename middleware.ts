@@ -5,5 +5,5 @@ import { i18n } from '@/lib/i18n'
 export default createI18nMiddleware(i18n)
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:js|css|png|jpg|jpeg|gif|svg|webp|ico)).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:js|css|png|jpg|jpeg|gif|svg|webp|ico|woff2)).*)'],
 }
