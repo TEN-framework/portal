@@ -7,31 +7,33 @@ import { Hero } from '@/app/[lang]/(home)/_components'
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [videoKey, setVideoKey] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
   useEffect(() => {
-    setVideoKey((prev) => prev + 1)
+    // Reset loaded state when theme changes
+    setIsLoaded(false)
   }, [resolvedTheme])
 
   if (!mounted) return null
 
-  const videoSrc =
-    resolvedTheme === 'dark'
-      ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
-      : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
+  const videoSrc = resolvedTheme === 'dark'
+    ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
+    : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
 
   return (
     <video
-      key={videoKey}
       autoPlay
       loop
       muted
       playsInline
-      className="absolute inset-0 z-0 h-full w-full object-cover opacity-37 dark:opacity-57"
+      onLoadedData={() => setIsLoaded(true)}
+      className={`absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 ${
+        isLoaded ? 'opacity-37 dark:opacity-57' : 'opacity-0'
+      }`}
     >
       <source src={videoSrc} type="video/mp4" />
       Your browser does not support the video tag.
