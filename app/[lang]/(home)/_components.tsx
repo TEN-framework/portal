@@ -4,6 +4,7 @@ import * as React from 'react'
 import { motion } from 'motion/react'
 import { ExternalLink } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import confetti from 'canvas-confetti'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -19,6 +20,50 @@ const titleVariants = {
     opacity: 0,
   }),
 }
+
+const createConfetti = (e: React.MouseEvent) => {
+  const count = 88;
+  const defaults = {
+    origin: {
+      x: e.clientX / window.innerWidth,
+      y: (e.clientY + 50) / window.innerHeight
+    },
+    scalar: 0.6
+  };
+
+  function fire(particleRatio: number, opts: confetti.Options = {}) {
+    confetti({
+      ...defaults,
+      ...opts,
+      particleCount: Math.floor(count * particleRatio)
+    });
+  }
+
+  fire(0.25, {
+    spread: 20,
+    startVelocity: 20,
+  });
+  fire(0.2, {
+    spread: 35,
+    startVelocity: 15,
+  });
+  fire(0.35, {
+    spread: 30,
+    decay: 0.91,
+    scalar: 0.4,
+    startVelocity: 15,
+  });
+  fire(0.1, {
+    spread: 40,
+    startVelocity: 10,
+    decay: 0.92,
+    scalar: 0.8
+  });
+  fire(0.1, {
+    spread: 40,
+    startVelocity: 10,
+  });
+};
 
 export function Hero(props: { className?: string }) {
   const { className } = props
@@ -48,6 +93,7 @@ export function Hero(props: { className?: string }) {
               size="sm"
               className="gap-2 bg-blue-600/[0.05] text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500"
               asChild
+              onMouseEnter={(e) => createConfetti(e)}
             >
               <Link href={URL_TEN_FAMILY}>
                 <span className="flex items-center gap-2">
