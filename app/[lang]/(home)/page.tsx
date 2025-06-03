@@ -1,21 +1,28 @@
 'use client'
 
 import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Hero } from '@/app/[lang]/(home)/_components'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
   useEffect(() => {
-    // Reset loaded state when theme changes
-    setIsLoaded(false)
+    if (videoRef.current) {
+      // Reset loaded state when theme changes
+      setIsLoaded(false)
+      // Reset the video to start playing from beginning
+      videoRef.current.currentTime = 0
+      videoRef.current.load()
+      videoRef.current.play()
+    }
   }, [resolvedTheme])
 
   if (!mounted) return null
@@ -26,6 +33,7 @@ const BackgroundVideo = () => {
 
   return (
     <video
+      ref={videoRef}
       autoPlay
       loop
       muted
