@@ -8,11 +8,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Link } from '@/lib/next-intl-navigation'
-import {
-  URL_TEN_AGENT,
-  HUGGING_FACE_SPACE,
-  URL_TEN_TURN_DETECTION,
-} from '@/constants'
+import { URL_TEN_AGENT, HUGGING_FACE_SPACE, URL_TEN_FAMILY } from '@/constants'
 
 const TITLES = ['titleLowlantency', 'titleMultimodal', 'titleEdgeCloud']
 
@@ -53,11 +49,11 @@ export function Hero(props: { className?: string }) {
               className="gap-2 bg-blue-600/[0.05] text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500"
               asChild
             >
-              <Link href={URL_TEN_TURN_DETECTION}>
+              <Link href={URL_TEN_FAMILY}>
                 <span className="flex items-center gap-2">
                   🎉{' '}
-                  <span className="font-medium text-blue-500">
-                    welcome TEN Turn Detection and TEN VAD to the TEN family
+                  <span className="font-medium text-blue-500 dark:text-blue-300">
+                    {t('bannerAnnouncement')}
                   </span>
                 </span>
               </Link>
@@ -93,7 +89,7 @@ export function Hero(props: { className?: string }) {
               </span>
             </h1>
 
-            <p className="text-muted-foreground max-w-2xl text-center text-lg leading-relaxed font-medium tracking-tight md:text-xl">
+            <p className="text-muted-foreground max-w-2xl text-center text-lg leading-relaxed font-medium tracking-tight md:text-xl dark:text-gray-300">
               {t('heroDescription')}
             </p>
           </div>
@@ -111,7 +107,7 @@ export function Hero(props: { className?: string }) {
               </Link>
             </Button>
           </div>
-          <p className="text-muted-foreground/100 max-w-2xl text-center text-sm leading-relaxed font-normal tracking-tight md:text-base">
+          <p className="text-muted-foreground/100 max-w-2xl text-center text-sm leading-relaxed font-normal tracking-tight md:text-base dark:text-gray-300">
             {t('supportedBy')}{' '}
             <Link
               href="https://www.agora.io/en/"

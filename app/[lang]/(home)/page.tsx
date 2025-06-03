@@ -7,14 +7,15 @@ import { Hero } from '@/app/[lang]/(home)/_components'
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const [videoKey, setVideoKey] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
   useEffect(() => {
-    setVideoKey(prev => prev + 1)
+    // Reset loaded state when theme changes
+    setIsLoaded(false)
   }, [resolvedTheme])
 
   if (!mounted) return null
@@ -25,12 +26,14 @@ const BackgroundVideo = () => {
 
   return (
     <video
-      key={videoKey}
       autoPlay
       loop
       muted
       playsInline
-      className="absolute inset-0 w-full h-full object-cover z-0 opacity-37"
+      onLoadedData={() => setIsLoaded(true)}
+      className={`absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 ${
+        isLoaded ? 'opacity-37 dark:opacity-57' : 'opacity-0'
+      }`}
     >
       <source src={videoSrc} type="video/mp4" />
       Your browser does not support the video tag.
@@ -40,7 +43,7 @@ const BackgroundVideo = () => {
 
 export default function HomePage() {
   return (
-    <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center text-center overflow-hidden">
+    <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
       <BackgroundVideo />
       <Hero className="relative z-10" />
     </div>

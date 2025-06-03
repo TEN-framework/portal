@@ -24,16 +24,19 @@
     "publishedOn": "发布于"
   },
   "homePage": {
-    "titlePrefix": "TEN 框架创建",
+    "titlePrefix": "搭建",
     "titleRealtime": "实时",
-    "titleMultimodel": "多模态",
+    "titleMultimodal": "可定制",
     "titleLowlantency": "低延迟",
     "titleHighperformance": "高性能",
-    "titleEdgeCloud": "边缘云",
-    "titleSuffix": "语音 AI 助手",
+    "titleEdgeCloud": "可边缘云",
+    "titleSuffix": "语音 AI Agent",
     "readLaunchArticle": "阅读我们的博客了解更多",
-    "heroDescription": "世界上最优秀的语音 AI 助手框架，用于构建会话式 AI",
-    "heroBtnTryTenAgent": "试用 TEN Agent",
-    "heroBtnReadDoc": "文档"
+    "heroDescription": "TEN 是一个用于搭建实时多模态的对话式 AI 引擎的开源框架",
+    "heroBtnTryTenAgent": "体验 TEN Agent",
+    "heroBtnReadDoc": "文档",
+    "bannerAnnouncement": "欢迎 TEN Turn Detection(语音检测)和 TEN VAD(打断检测)加入 TEN 大家庭",
+    "huggingFaceSpace": "体验语音检测和打断",
+    "supportedBy": "共同支持来自 TEN 社区"
   }
 }
