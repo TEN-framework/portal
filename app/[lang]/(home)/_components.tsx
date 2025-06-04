@@ -91,14 +91,14 @@ export function Hero(props: { className?: string }) {
             <Button
               variant="secondary"
               size="sm"
-              className="gap-2 bg-blue-600/[0.05] text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500"
+              className="gap-2 bg-blue-600/[0.05] text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 py-7 sm:py-0"
               asChild
               onMouseEnter={(e) => createConfetti(e)}
             >
               <Link href={URL_TEN_FAMILY}>
                 <span className="flex items-center gap-2">
                   🎉{' '}
-                  <span className="font-medium text-blue-500 dark:text-blue-300">
+                  <span className="font-medium text-blue-500 dark:text-blue-300 text-sm sm:text-base whitespace-normal">
                     {t('bannerAnnouncement')}
                   </span>
                 </span>
@@ -139,7 +139,7 @@ export function Hero(props: { className?: string }) {
               {t('heroDescription')}
             </p>
           </div>
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Button size="lg" className="gap-4" asChild>
               <Link href={URL_TEN_AGENT} target="_blank">
                 {t('heroBtnTryTenAgent')}
