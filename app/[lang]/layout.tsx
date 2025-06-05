@@ -5,10 +5,12 @@ import { Inter } from 'next/font/google'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 
 import { nextIntlRouting } from '@/lib/i18n'
 import cnMessages from '@/messages/cn.json'
 import enMessages from '@/messages/en.json'
+import { generateSiteMetadata } from '@/app/metadata.config'
 
 import Script from 'next/script'
 import '../global.css'
@@ -31,6 +33,15 @@ const locales = [
   },
 ]
 
+export async function generateMetadata({ 
+  params: paramsPromise 
+}: { 
+  params: Promise<{ lang: string }> 
+}): Promise<Metadata> {
+  const { lang } = await paramsPromise
+  return generateSiteMetadata({ lang })
+}
+
 export default async function Layout({
   params,
   children,
@@ -38,7 +49,7 @@ export default async function Layout({
   params: Promise<{ lang: string }>
   children: ReactNode
 }) {
-  const lang = (await params).lang
+  const { lang } = await params
   const messages = await getMessages({
     locale: lang,
   })
