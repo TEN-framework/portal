@@ -13,17 +13,18 @@ export const Logo = ({ height = 32, width }: LogoProps) => (
       height: `${height}px`,
       width: width ? `${width}px` : 'auto',
     }}
+    className="w-full h-full"
   >
     <defs>
       <style>
         {`
+          @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
           .cls-1 {
-            font-family: "Audiowide-Regular", "Audiowide";
-            font-size: ${height * 4.5}px;
+            font-family: 'Audiowide', cursive;
+            font-size: 144px;
             fill: currentColor;
-          }
-          .cls-1, .cls-2 {
-            isolation: isolate;
+            dominant-baseline: middle;
+            text-anchor: start;
           }
         `}
       </style>
@@ -35,15 +36,7 @@ export const Logo = ({ height = 32, width }: LogoProps) => (
           fill="currentColor"
         />
       </g>
-      <g className="cls-2">
-        <g className="cls-2">
-          <text className="cls-1" transform="translate(200 126.32)">
-            <tspan x="0" y="0">
-              TEN
-            </tspan>
-          </text>
-        </g>
-      </g>
+      <text className="cls-1" x="200" y="85">TEN</text>
     </g>
   </svg>
 )
