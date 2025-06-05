@@ -49,6 +49,21 @@ export default async function Layout({
 
   return (
     <html lang={lang} className={inter.className} suppressHydrationWarning>
+      <head>
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Audiowide&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider locale={lang} messages={messages}>
           <RootProvider
