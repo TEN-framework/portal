@@ -313,9 +313,9 @@ Complete example:
 }
 ```
 
-### Using `source_uri` to Reference Graph Definitions
+### Using `import_uri` to Reference Graph Definitions
 
-When defining a predefined graph, you can use the `source_uri` field to reference an external graph definition file:
+When defining a predefined graph, you can use the `import_uri` field to reference an external graph definition file:
 
 ```json
 {
@@ -325,14 +325,14 @@ When defining a predefined graph, you can use the `source_uri` field to referenc
       {
         "name": "default",
         "auto_start": false,
-        "source_uri": "../graph.json"
+        "import_uri": "../graph.json"
       }
     ]
   }
 }
 ```
 
-`source_uri` can be a relative path, an absolute path, or a URL:
+`import_uri` can be a relative path, an absolute path, or a URL:
 
 - Relative path: Relative to the directory where the `property.json` file is located
 - Absolute path: Relative to the root directory of the TEN app environment
@@ -626,7 +626,7 @@ Example of `graph.json` referencing subgraphs:
       // Reference a subgraph, named subgraph_1
       "type": "subgraph",
       "name": "subgraph_1",
-      "source_uri": "./ten_packages/extension/aaa/subgraph.json",
+      "import_uri": "./ten_packages/extension/aaa/subgraph.json",
       "property": {
         // The property field written here must exist in the exposed_properties field of the subgraph,
         // otherwise it will be an error condition
@@ -639,7 +639,7 @@ Example of `graph.json` referencing subgraphs:
       // Reference a subgraph, named subgraph_2
       "type": "subgraph",
       "name": "subgraph_2",
-      "source_uri": "./ten_packages/extension/bbb/subgraph.json"
+      "import_uri": "./ten_packages/extension/bbb/subgraph.json"
     }
   ],
   "connections": [
@@ -851,7 +851,7 @@ Subgraphs fully support the message conversion (msg_conversion) mechanism for ha
     {
       "type": "subgraph",
       "name": "subgraph_1",
-      "source_uri": "http://a.b.c.d/subgraph.json"
+      "import_uri": "http://a.b.c.d/subgraph.json"
     }
   ],
   "connections": [
@@ -1101,7 +1101,7 @@ Example: How to connect to a predefined graph in the same TEN app from another g
    {
      "type": "subgraph",
      "name": "subgraph_1", // meaning of namespace
-     "source_uri": "http://a.b.c.d/subgraph.json"
+     "import_uri": "http://a.b.c.d/subgraph.json"
    }
    ```
 

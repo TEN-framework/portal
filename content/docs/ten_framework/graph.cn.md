@@ -313,9 +313,9 @@ title: 图（Graph）
 }
 ```
 
-### 使用 `source_uri` 引用图定义
+### 使用 `import_uri` 引用图定义
 
-在定义预定义图时，可以使用 `source_uri` 字段引用外部图定义文件：
+在定义预定义图时，可以使用 `import_uri` 字段引用外部图定义文件：
 
 ```json
 {
@@ -325,14 +325,14 @@ title: 图（Graph）
       {
         "name": "default",
         "auto_start": false,
-        "source_uri": "../graph.json"
+        "import_uri": "../graph.json"
       }
     ]
   }
 }
 ```
 
-`source_uri` 可以是相对路径，绝对路径或 URL：
+`import_uri` 可以是相对路径，绝对路径或 URL：
 
 - 相对路径：相对于 `property.json` 文件所在目录
 - 绝对路径：相对于 TEN 应用所在环境的根目录
@@ -626,7 +626,7 @@ TEN 框架的核心机制是基于图结构，这种结构由节点和连接构�
       // 引用子图，命名为 subgraph_1
       "type": "subgraph",
       "name": "subgraph_1",
-      "source_uri": "./ten_packages/extension/aaa/subgraph.json",
+      "import_uri": "./ten_packages/extension/aaa/subgraph.json",
       "property": {
         // 可以写在这边的 property 字段, 必须要存在于子图的 exposed_properties 字段,
         // 不然会是一个错误情况
@@ -639,7 +639,7 @@ TEN 框架的核心机制是基于图结构，这种结构由节点和连接构�
       // 引用子图，命名为 subgraph_2
       "type": "subgraph",
       "name": "subgraph_2",
-      "source_uri": "./ten_packages/extension/bbb/subgraph.json"
+      "import_uri": "./ten_packages/extension/bbb/subgraph.json"
     }
   ],
   "connections": [
@@ -852,7 +852,7 @@ TEN 框架的核心机制是基于图结构，这种结构由节点和连接构�
     {
       "type": "subgraph",
       "name": "subgraph_1",
-      "source_uri": "http://a.b.c.d/subgraph.json"
+      "import_uri": "http://a.b.c.d/subgraph.json"
     }
   ],
   "connections": [
@@ -1102,7 +1102,7 @@ TEN 框架的核心机制是基于图结构，这种结构由节点和连接构�
    {
      "type": "subgraph",
      "name": "subgraph_1", // namespace 的意义
-     "source_uri": "http://a.b.c.d/subgraph.json"
+     "import_uri": "http://a.b.c.d/subgraph.json"
    }
    ```
 
