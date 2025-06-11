@@ -1,0 +1,41 @@
+{
+  "nav": {
+    "docs": "Documentation",
+    "blog": "Blog"
+  },
+  "fuma": {
+    "search": "Search",
+    "searchNoResult": "No results found",
+    "toc": "Table of Contents",
+    "tocNoHeadings": "No headings found",
+    "lastUpdate": "Last Updated",
+    "chooseLanguage": "Choose Language",
+    "nextPage": "Next Page",
+    "previousPage": "Previous Page",
+    "chooseTheme": "Choose Theme",
+    "editOnGithub": "Edit on GitHub"
+  },
+  "blog": {
+    "latestPosts": "Latest Blog Posts",
+    "discoverLatestArticles": "Discover our latest articles about TEN Framework, TEN Agent and Conversational AI",
+    "readMore": "Read more",
+    "backToBlog": "Back to Blog",
+    "writtenBy": "Written by",
+    "publishedOn": "Published on"
+  },
+  "homePage": {
+    "titlePrefix": "Build",
+    "titleLowlantency": "Real-Time",
+    "titleMultimodal": "Customizable",
+    "titleHighperformance": "High-performance",
+    "titleEdgeCloud": "Low-Latency",
+    "titleSuffix": "Voice AI Agents",
+    "readLaunchArticle": "Read more on our blog",
+    "heroDescription": "TEN is an open-source framework designed for building multimodal conversational AI",
+    "supportedBy": "supported by the TEN community and",
+    "heroBtnTryTenAgent": "Talk to TEN Agent",
+    "huggingFaceSpace": "Try Turn Detection and VAD",
+    "heroBtnReadDoc": "Documentation",
+    "bannerAnnouncement": "Welcome TEN Turn Detection and TEN VAD to the TEN family"
+  }
+}

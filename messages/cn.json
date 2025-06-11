@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "docs": "文档",
+    "blog": "博客"
+  },
+  "fuma": {
+    "search": "搜索",
+    "searchNoResult": "未找到结果",
+    "toc": "目录",
+    "tocNoHeadings": "没有标题",
+    "lastUpdate": "最后更新",
+    "chooseLanguage": "选择语言",
+    "nextPage": "下一页",
+    "previousPage": "上一页",
+    "chooseTheme": "选择主题",
+    "editOnGithub": "在 GitHub 上编辑"
+  },
+  "blog": {
+    "latestPosts": "最新博客文章",
+    "discoverLatestArticles": "发现我们关于 TEN 框架、AI 开发等方面的最新文章",
+    "readMore": "阅读更多",
+    "backToBlog": "返回博客",
+    "writtenBy": "作者",
+    "publishedOn": "发布于"
+  },
+  "homePage": {
+    "titlePrefix": "搭建",
+    "titleRealtime": "实时",
+    "titleMultimodal": "可定制",
+    "titleLowlantency": "低延迟",
+    "titleHighperformance": "高性能",
+    "titleEdgeCloud": "可边缘云",
+    "titleSuffix": "语音 AI Agent",
+    "readLaunchArticle": "阅读我们的博客了解更多",
+    "heroDescription": "TEN 是一个用于搭建实时多模态的对话式 AI 引擎的开源框架",
+    "heroBtnTryTenAgent": "体验 TEN Agent",
+    "heroBtnReadDoc": "文档",
+    "bannerAnnouncement": "欢迎 TEN Turn Detection(语音检测)和 TEN VAD(打断检测)加入 TEN 大家庭",
+    "huggingFaceSpace": "体验语音检测和打断",
+    "supportedBy": "共同支持来自 TEN 社区"
+  }
+}
