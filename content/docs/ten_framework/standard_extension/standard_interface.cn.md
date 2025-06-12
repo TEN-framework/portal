@@ -6,7 +6,7 @@ title: 标准接口
 
 总而言之，标准接口是一种语法糖，让 TEN 工具（例如 TEN Manager）能够更方便地协助开发者进行扩展的选择和替换等操作。
 
-TEN 的接口定义更像是 TypeScript 的 `.d.ts` 文件，让 TypeScript 编译器可以进行类型检查，但在实际运行过程中，这些接口定义并不会被使用。因此标准接口设计所导致的功能及代码新增，主要是在 TEN Manager 这种开发时期的工具上，而不是运行态的 TEN Runtime 上。例如，TEN Manager 需要提供相关的 RESTful API 给 TEN Designer Frontend 用来根据标准接口定义，通过 UI 进行扩展的选择和替换。
+TEN 的接口定义更像是 TypeScript 的 `.d.ts` 文件，让 TypeScript 编译器可以进行类型检查，但在实际运行过程中，这些接口定义并不会被使用。因此标准接口设计所导致的功能及代码新增，主要是在 TEN Manager 这种开发时期的工具上，而不是运行态的 TEN Runtime 上。例如，TEN Manager 需要提供相关的 RESTful API 给 TMAN Designer Frontend 用来根据标准接口定义，通过 UI 进行扩展的选择和替换。
 
 ## 什么是标准接口
 
@@ -30,7 +30,7 @@ TEN 的接口定义更像是 TypeScript 的 `.d.ts` 文件，让 TypeScript 编�
 
 标准接口就是将这些组成部分进行规范化定义，形成固定的接口标准。开发者可以参考这些接口标准来实现自己的扩展，同时扩展也可以声明自己支持特定的标准接口，这样开发工具可以根据扩展声明的标准接口提供更好的开发支持，使得用户能够根据标准接口来选择或替换所需的扩展。
 
-在标准接口中的 Command/Data/Audio frame/Video frame 用来规范扩展之间的交互，用来实现扩展的互换性和兼容性。而在标准接口中的 Properties 则用来规范扩展的配置参数，用来实现与 TEN Designer 的配置兼容性。
+在标准接口中的 Command/Data/Audio frame/Video frame 用来规范扩展之间的交互，用来实现扩展的互换性和兼容性。而在标准接口中的 Properties 则用来规范扩展的配置参数，用来实现与 TMAN Designer 的配置兼容性。
 
 这里需要注意的是，规范扩展之间的交互并不是接口的功能，这是 Command/Data/Audio frame/Video frame 的功能。接口只是一个用来完成聚合目的的语法糖，用来让开发者快速地指定扩展的接口定义。
 
@@ -40,7 +40,7 @@ TEN 的接口定义更像是 TypeScript 的 `.d.ts` 文件，让 TypeScript 编�
 
 由于 TEN 框架是一种运行与开发分离的框架（类似于 JavaScript 与 TypeScript 的 .d.ts 文件的关系），因此标准接口的检查与报错主要是在开发时期的工具上，而不是运行态的 TEN Runtime 上。因此在 TEN Runtime 在 start graph 的时候，不会因为接口的错误而报错。
 
-而在 TEN Designer 这个开发工具上，如果一个扩展的接口定义不完整，可以显示一些功能暂时无法使用在该扩展上的提示，例如用某个扩展取代另一个扩展的功能上，在接口定义不完整的情况下，需要显示这个功能暂时无法使用在这个扩展上，须等待接口定义完整了，方能使用。
+而在 TMAN Designer 这个开发工具上，如果一个扩展的接口定义不完整，可以显示一些功能暂时无法使用在该扩展上的提示，例如用某个扩展取代另一个扩展的功能上，在接口定义不完整的情况下，需要显示这个功能暂时无法使用在这个扩展上，须等待接口定义完整了，方能使用。
 
 另外，由于接口定义可以是一个被引用进来的独立文件，因此在 TEN Manager publish/install 的时候，如果接口定义不完整则不算错误。
 

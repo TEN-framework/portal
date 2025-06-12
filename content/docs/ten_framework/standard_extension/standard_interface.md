@@ -6,7 +6,7 @@ In the TEN framework, we encourage developers to create their own extensions and
 
 In summary, standard interfaces are syntactic sugar that enables TEN tools (such as TEN Manager) to more conveniently assist developers in operations like extension selection and replacement.
 
-TEN's interface definitions are more like TypeScript's `.d.ts` files, which allow the TypeScript compiler to perform type checking, but these interface definitions are not used during actual runtime. Therefore, the functionality and code additions caused by standard interface design are mainly in development-time tools like TEN Manager, rather than in the runtime TEN Runtime. For example, TEN Manager needs to provide related RESTful APIs for TEN Designer Frontend to perform extension selection and replacement through UI based on standard interface definitions.
+TEN's interface definitions are more like TypeScript's `.d.ts` files, which allow the TypeScript compiler to perform type checking, but these interface definitions are not used during actual runtime. Therefore, the functionality and code additions caused by standard interface design are mainly in development-time tools like TEN Manager, rather than in the runtime TEN Runtime. For example, TEN Manager needs to provide related RESTful APIs for TMAN Designer Frontend to perform extension selection and replacement through UI based on standard interface definitions.
 
 ## What is a Standard Interface
 
@@ -30,7 +30,7 @@ In the TEN framework, each extension's interface consists of the following core 
 
 Standard interfaces involve standardizing these components to form fixed interface standards. Developers can refer to these interface standards to implement their own extensions, and extensions can also declare their support for specific standard interfaces. This way, development tools can provide better development support based on the standard interfaces declared by extensions, enabling users to select or replace the required extensions based on standard interfaces.
 
-Command/Data/Audio frame/Video frame in standard interfaces are used to standardize interactions between extensions, achieving extension interchangeability and compatibility. Properties in standard interfaces are used to standardize extension configuration parameters, achieving configuration compatibility with TEN Designer.
+Command/Data/Audio frame/Video frame in standard interfaces are used to standardize interactions between extensions, achieving extension interchangeability and compatibility. Properties in standard interfaces are used to standardize extension configuration parameters, achieving configuration compatibility with TMAN Designer.
 
 It's important to note that standardizing interactions between extensions is not the function of interfaces - this is the function of Command/Data/Audio frame/Video frame. Interfaces are just syntactic sugar used for aggregation purposes, allowing developers to quickly specify extension interface definitions.
 
@@ -40,7 +40,7 @@ In an extension's Command/Data/Audio frame/Video frame definitions, if there are
 
 Since the TEN framework is a framework that separates runtime from development (similar to the relationship between JavaScript and TypeScript's .d.ts files), interface checking and error reporting mainly occur in development-time tools rather than in the runtime TEN Runtime. Therefore, TEN Runtime won't report errors due to interface issues when starting a graph.
 
-In development tools like TEN Designer, if an extension's interface definition is incomplete, it can display hints that certain functionalities are temporarily unavailable for that extension. For example, when replacing one extension with another, if the interface definition is incomplete, it should display that this functionality is temporarily unavailable for this extension until the interface definition is complete.
+In development tools like TMAN Designer, if an extension's interface definition is incomplete, it can display hints that certain functionalities are temporarily unavailable for that extension. For example, when replacing one extension with another, if the interface definition is incomplete, it should display that this functionality is temporarily unavailable for this extension until the interface definition is complete.
 
 Additionally, since interface definitions can be independent files referenced from elsewhere, incomplete interface definitions are not considered errors during TEN Manager publish/install operations.
 
