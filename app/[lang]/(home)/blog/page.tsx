@@ -21,13 +21,13 @@ export default async function BlogHomePage(props: {
   })
 
   return (
-    <div className="relative min-h-[calc(100dvh-56px)]">
+    <div className="relative min-h-[calc(100dvh-56px)] overflow-hidden">
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover opacity-37"
+        className="fixed inset-0 z-0 h-screen w-full object-cover opacity-37"
       >
         <source
           src="https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4"
@@ -52,33 +52,41 @@ export default async function BlogHomePage(props: {
               locale={locale}
               key={post.url}
               href={post.url}
-              className="group bg-background/80 relative flex min-h-[320px] flex-col overflow-hidden rounded-xl border p-6 shadow-md backdrop-blur-sm"
+              className="group bg-background/40 hover:bg-background/60 relative flex flex-col overflow-hidden rounded-lg backdrop-blur-sm transition-all duration-300"
             >
-              <div className="grow">
-                <h2 className="mb-3 text-2xl font-semibold tracking-tight">
+              <div className="flex flex-1 flex-col p-8">
+                <div className="text-fd-muted-foreground mb-3 text-xs">
+                  {formatter.dateTime(new Date(post.data.date), {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </div>
+                <h2 className="mb-4 text-2xl font-medium tracking-tight">
                   {post.data.title}
                 </h2>
-                <p className="text-fd-muted-foreground line-clamp-3">
+                <p className="text-fd-muted-foreground line-clamp-3 text-sm">
                   {post.data.description}
                 </p>
               </div>
 
-              <div className="mt-6 flex items-center justify-between border-t pt-4">
-                <div className="text-fd-muted-foreground flex flex-col text-sm">
-                  <span>
-                    {formatter.dateTime(new Date(post.data.date), {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
+              <div className="border-border/40 bg-background/20 flex items-center justify-between border-t px-8 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="bg-background/40 h-8 w-8 overflow-hidden rounded-full">
+                    <img
+                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${post.data.author}&backgroundColor=transparent&textColor=64748b`}
+                      alt={post.data.author}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <span className="text-fd-muted-foreground text-sm">
+                    {post.data.author}
                   </span>
-                  <span className="mt-1">{post.data.author}</span>
                 </div>
-
                 <div className="text-fd-muted-foreground flex items-center text-sm">
                   <span>{t('readMore')}</span>
                   <svg
-                    className="ml-2 h-4 w-4"
+                    className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
