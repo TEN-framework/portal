@@ -2,6 +2,7 @@ import { getTranslations, getFormatter } from 'next-intl/server'
 
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
+import { Button } from '@/components/ui/button'
 
 export default async function BlogHomePage(props: {
   params: Promise<{ lang: string }>
@@ -52,52 +53,64 @@ export default async function BlogHomePage(props: {
               locale={locale}
               key={post.url}
               href={post.url}
-              className="group bg-background/40 hover:bg-background/60 relative flex flex-col overflow-hidden rounded-lg backdrop-blur-sm transition-all duration-300"
+              className="group border-border/30 bg-background/90 hover:bg-background relative flex flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-sm transition-all duration-500 hover:shadow-2xl"
             >
+              <div className="border-border/30 relative h-56 w-full overflow-hidden border-b">
+                <div
+                  className="absolute inset-0 transition-all duration-700 group-hover:scale-110"
+                  style={{
+                    background: `linear-gradient(
+                      110deg,
+                      hsl(${(post.data.title.length * 7) % 360}, 40%, 45%),
+                      hsl(${(post.data.title.length * 13) % 360}, 40%, 40%),
+                      hsl(${(post.data.title.length * 19) % 360}, 40%, 42%)
+                    )`,
+                  }}
+                />
+                <div className="from-background/80 via-background/20 absolute inset-0 bg-gradient-to-b to-transparent" />
+                <div className="from-background/10 absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] via-transparent to-transparent" />
+                <div className="from-background/5 absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] via-transparent to-transparent" />
+              </div>
+
               <div className="flex flex-1 flex-col p-8">
-                <div className="text-fd-muted-foreground mb-3 text-xs">
-                  {formatter.dateTime(new Date(post.data.date), {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </div>
-                <h2 className="mb-4 text-2xl font-medium tracking-tight">
+                <h2 className="text-foreground mb-4 text-xl font-semibold tracking-tight">
                   {post.data.title}
                 </h2>
-                <p className="text-fd-muted-foreground line-clamp-3 text-sm">
+                <p className="text-fd-muted-foreground line-clamp-3 text-sm leading-relaxed">
                   {post.data.description}
                 </p>
               </div>
 
-              <div className="border-border/40 bg-background/20 flex items-center justify-between border-t px-8 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="bg-background/40 h-8 w-8 overflow-hidden rounded-full">
-                    <img
-                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${post.data.author}&backgroundColor=transparent&textColor=64748b`}
-                      alt={post.data.author}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <span className="text-fd-muted-foreground text-sm">
-                    {post.data.author}
-                  </span>
+              <div className="bg-background/30 flex flex-col px-8">
+                <div className="py-4">
+                  <Button size="lg" className="gap-2" asChild>
+                    <Link href={post.url} locale={locale}>
+                      Read more
+                    </Link>
+                  </Button>
                 </div>
-                <div className="text-fd-muted-foreground flex items-center text-sm">
-                  <span>{t('readMore')}</span>
-                  <svg
-                    className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17 8l4 4m0 0l-4 4m4-4H3"
-                    />
-                  </svg>
+                <div className="border-border/30 flex flex-col border-t py-5">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-background/60 ring-border/20 h-10 w-10 overflow-hidden rounded-full ring-1">
+                      <img
+                        src={`https://api.dicebear.com/7.x/initials/svg?seed=${post.data.author}&backgroundColor=transparent&textColor=1e293b`}
+                        alt={post.data.author}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-foreground text-sm font-medium">
+                        {post.data.author}
+                      </span>
+                      <span className="text-fd-muted-foreground text-xs">
+                        {formatter.dateTime(new Date(post.data.date), {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </Link>
