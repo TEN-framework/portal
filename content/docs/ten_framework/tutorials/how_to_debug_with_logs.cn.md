@@ -1,10 +1,10 @@
 ---
-title: How to Debug with Logs
+title: 如何使用日志进行调试
 ---
 
-We will introduce how to view logs, as they are now ported to stdout, making them very easy to view.
+我们将介绍如何查看日志，现在它们已移植到 stdout，因此查看它们非常容易。
 
-For example, if a TEN Agent is running on localhost:3000, you might see output similar to the following in the logs:
+例如，如果 TEN Agent 在 localhost:3000 上运行，您可能会在日志中看到类似于以下的输出：
 
 ```bash
 ...
@@ -21,7 +21,7 @@ For example, if a TEN Agent is running on localhost:3000, you might see output s
 ...
 ```
 
-Once you interact with the TEN Agent, you should see entries like the following:
+一旦您与 TEN Agent 交互，您应该会看到如下条目：
 
 ```bash title="Bash"
 [agora_5bnxv1] 09-29 09:35:25.049  7463  7505 I AZURE_TTS_EXTENSION SpeechText@tts.cc:182 task finished for text: [ and the World Cup in Russia.], text_recv_ts: 1727602522313774, read_bytes: 64000, sent_frames: 200, first_frame_latency: 418ms, finish_latency: 568ms, synthesis_first_byte_latency: 413ms, synthesis_finish_latency: 458ms
@@ -30,4 +30,4 @@ Once you interact with the TEN Agent, you should see entries like the following:
 [agora_5bnxv1] 09-29 09:35:27.029  7463  7505 I AZURE_TTS_EXTENSION SpeechText@tts.cc:182 task finished for text: [ Personally,], text_recv_ts: 1727602522468652, read_bytes: 34400, sent_frames: 108, first_frame_latency: 442ms, finish_latency: 524ms, synthesis_first_byte_latency: 436ms, synthesis_finish_latency: 463ms
 ```
 
-When you see logs like these, it means the system is working properly and is logging every sentence you speak.
+当您看到这样的日志时，这意味着系统工作正常并且正在记录您说的每句话。
