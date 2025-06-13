@@ -1,4 +1,8 @@
 {
   "title": "Tutorials",
-  "pages": ["how_to_run_local_model_in_python_extensions"]
+  "pages": [
+    "how_to_run_local_model_in_python_extensions",
+    "how_to_debug_with_logs",
+    "how_to_develop_with_ext"
+  ]
 }
