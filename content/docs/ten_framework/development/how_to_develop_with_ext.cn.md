@@ -603,7 +603,7 @@ Node.js 扩展提供了现代 JavaScript/TypeScript 开发体验，特别适合 
 使用 TEN 官方提供的 Node.js 扩展模板快速创建新项目：
 
 ```bash
-tman create extension my_example_ext_nodejs --template default_extension_nodejs
+tman create extension my_example_ext_nodejs --template default_extension_nodejs --template-data class_name_prefix=Example
 ```
 
 项目创建成功后，您会得到以下完整的项目结构：
@@ -666,15 +666,20 @@ tman install --standalone
 🏆  Install successfully in 1 second
 ```
 
+> **重要提示**：`tman install --standalone` 会在项目目录下创建 `.ten/app/ten_packages/extension/my_example_ext_nodejs/` 目录，后续的构建和测试操作都需要在这个目录下进行。
+
 ### 项目构建
 
-Node.js 扩展使用 TypeScript 进行开发，需要先编译为 JavaScript：
+Node.js 扩展使用 TypeScript 进行开发，需要先安装独立模式依赖，然后编译为 JavaScript：
 
 #### 方式一：手动构建
 
 ```bash
-# 安装 Node.js 依赖
-npm install
+# 进入扩展的安装目录
+cd .ten/app/ten_packages/extension/my_example_ext_nodejs
+
+# 安装独立模式的 Node.js 依赖
+npm run standalone-install
 
 # 编译 TypeScript 代码
 npm run build
@@ -689,7 +694,7 @@ tman run build
 构建完成后，检查生成的编译结果：
 
 ```bash
-ls -la build/
+ls -la .ten/app/ten_packages/extension/my_example_ext_nodejs/build/
 # 应该能看到：index.js 和相关映射文件
 ```
 
@@ -700,6 +705,10 @@ ls -la build/
 #### 方式一：使用启动脚本
 
 ```bash
+# 进入扩展的安装目录
+cd .ten/app/ten_packages/extension/my_example_ext_nodejs
+
+# 运行测试
 ./tests/bin/start
 ```
 
@@ -940,12 +949,48 @@ Node.js 扩展使用现代 TypeScript 配置，支持最新的语言特性：
 使用 Node.js 内置调试器进行命令行调试：
 
 ```bash
+# 进入扩展的安装目录
+cd .ten/app/ten_packages/extension/my_example_ext_nodejs
+
 # 启动调试模式
 node --inspect-brk ./tests/bin/start
 
 # 或者使用 Chrome DevTools
 node --inspect ./tests/bin/start
 ```
+
+### 完整开发流程总结
+
+为了帮助开发者快速上手，这里提供一个完整的 Node.js 扩展开发流程总结：
+
+```bash
+# 1. 创建扩展项目
+tman create extension my_example_ext_nodejs --template default_extension_nodejs --template-data class_name_prefix=Example
+
+# 2. 进入项目目录
+cd my_example_ext_nodejs
+
+# 3. 安装依赖
+tman install --standalone
+
+# 4. 进入扩展安装目录
+cd .ten/app/ten_packages/extension/my_example_ext_nodejs
+
+# 5. 安装独立模式依赖
+npm run standalone-install
+
+# 6. 构建项目
+npm run build
+
+# 7. 运行测试
+./tests/bin/start
+```
+
+> **工作目录说明**：
+>
+> - 扩展源代码位于项目根目录的 `src/` 文件夹
+> - 实际的构建、测试和运行操作都在 `.ten/app/ten_packages/extension/my_example_ext_nodejs/` 目录下进行
+> - 这种设计确保了扩展的独立性和依赖管理的正确性
 
 ### 开发最佳实践
 
@@ -996,7 +1041,7 @@ async onCmd(tenEnv: TenEnv, cmd: Cmd): Promise<void> {
 
 ## 开发总结
 
-通过遵循本指南提供的完整开发流程，您可以高效地进行 TEN 扩展的开发、测试和调试工作。无论选择 C++、Go、Python 还是 Node.js，TEN Framework 都为您提供了完整的工具链和最佳实践，帮助您充分发挥 TEN Framework 的强大功能，构建出高性能、高可靠性的扩展应用。
+通过遵循本指南提供的完整开发流程，您可以高效地进行 TEN 扩展的开发、测试和调试工作。无论选择 C++，Go，Python 还是 Node.js，TEN Framework 都为您提供了完整的工具链和最佳实践，帮助您充分发挥 TEN Framework 的强大功能，构建出高性能、高可靠性的扩展应用。
 
 每种语言都有其独特的优势和适用场景：
 
