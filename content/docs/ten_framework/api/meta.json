@@ -1,6 +1,8 @@
 {
-  "title": "API Reference",
+  "title": "API",
   "pages": [
+    "type_system",
+    "schema_system",
     "required",
     "log"
   ]
