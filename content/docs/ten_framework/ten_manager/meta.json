@@ -1,4 +1,7 @@
 {
   "title": "TEN Manager",
-  "pages": ["overview", "check_graph"]
+  "pages": [
+    "overview",
+    "check_graph"
+  ]
 }
