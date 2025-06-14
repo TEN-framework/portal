@@ -4,7 +4,6 @@
   "root": true,
   "pages": [
     "concept_overview",
-    "development_process",
     "preparation",
     "version_system",
     "metadata_system",
@@ -21,6 +20,6 @@
     "standard_extension",
     "ten_manager",
     "tman_designer",
-    "tutorials"
+    "ai_model"
   ]
 }
