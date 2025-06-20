@@ -2,13 +2,42 @@
 title: API
 ---
 
+在 TEN framework 中, 一个 extension 的 API 定义, 包含在 manifest.json 文件中. TEN framework 定义 API 的时候, 不使用 json schema, 而是使用一种类似 JSON 的语法来定义 API schema.
+
 ## 不使用 json schema 的理由
 
-- api 定义在 manifest.json 内, 而不是一个独立的 schema 文件中.
-- TEN framework 的 type system 天生不是 json schema 的类型系统. 它包含了很多 json schema 没有的类型. 例如 int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64, buf, ptr.
-- 在 TEN framework 的 API 定义中, 不少地方并不需要具有弹性的设定, 例如 msg schema 一定是 object 类型, 不能是其他类型, 这时候如果需要开发者明确写 "type": "object" 反而显得多余, 且会 confuse. 例如 msg schema 的 property 字段, 一定是 object 类型, 不能是其他类型.
+- TEN framework 的类型系统天生不是 json schema 的类型系统, 包含了很多 json schema 没有的类型. 例如 int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64, buf, ptr.
+- 在 TEN framework 的 API 定义中, 不少地方并不需要具有弹性的设定, 例如 message 的 schema 一定是 object 类型, 不能是其他类型, 这时候如果需要开发者明确写 `"type": "object"` 反而显得多余, 且会 confuse. 例如 message 的 property 字段, 一定是 object 类型, 不能是其他类型.
 
 基于以上几个理由, TEN framework 的 API schema 如果采用 JSON schema 的定义方式, 会显得非常不自然, 且容易引起误解. 因此, TEN framework 的 API schema 采用了一种更自然的定义方式, 即使用一种类似 JSON 的语法来定义 API schema.
+
+## 顶层
+
+API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字段中, 如下:
+
+```json
+{
+  "api": {
+    "property": {
+      "properties": {...},
+      "required": [...]
+    },
+    "cmd_in": [{
+      "name": "foo",
+      "property": {
+        "properties": {...},
+        "required": [...]
+      },
+      "result": {
+        "property": {
+          "properties": {...},
+          "required": [...]
+        }
+      }
+    }]
+  }
+}
+```
 
 ## API schema 的定义 pattern/原则
 
@@ -93,32 +122,6 @@ title: API
       }
     },
     "required": ["foo"]
-  }
-}
-```
-
-## 顶层
-
-```json
-{
-  "api": {
-    "property": {
-      "properties": {...},
-      "required": [...]
-    },
-    "cmd_in": [{
-      "name": "foo",
-      "property": {
-        "properties": {...},
-        "required": [...]
-      },
-      "result": {
-        "property": {
-          "properties": {...},
-          "required": [...]
-        }
-      }
-    }]
   }
 }
 ```
