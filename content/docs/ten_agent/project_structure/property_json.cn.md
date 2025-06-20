@@ -58,7 +58,7 @@ title: 理解 property.json
 
 ## 通信链路 (Connections)
 
-> `connections`部分包含节点之间通信链路的列表。每个通信链路分别指定了源节点和目标节点。每个通信链路都有一个 `extension_group` 和 `extension` 属性，用于指定源节点，并定义了 TEN 框架支持的一组多模态数据协议（`audio_frame`、`video_frame`、`data`、`cmd`）。对于每个数据协议，它都有一个目标定义列表，并且每个目标定义都有一个 `name` 属性（它是属性数据的键）和一个 `dest` 属性（它定义了目标节点列表）。下面是如何连接两个节点的示例，
+> `connections`部分包含节点之间通信链路的列表。每个通信链路分别指定了源节点和目标节点。每个通信链路都有一个 `extension_group` 和 `extension` 属性，用于指定源节点，并定义了 TEN framework 支持的一组多模态数据协议（`audio_frame`、`video_frame`、`data`、`cmd`）。对于每个数据协议，它都有一个目标定义列表，并且每个目标定义都有一个 `name` 属性（它是属性数据的键）和一个 `dest` 属性（它定义了目标节点列表）。下面是如何连接两个节点的示例，
 
 ```json
 {

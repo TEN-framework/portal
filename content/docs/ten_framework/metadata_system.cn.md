@@ -2,7 +2,7 @@
 title: 元数据系统
 ---
 
-TEN 框架在各种类型的包（包括：
+TEN framework 在各种类型的包（包括：
 
 - 应用 (App)
 - extension (Extension)
@@ -129,12 +129,12 @@ TEN 框架在各种类型的包（包括：
 
 ## 属性管理
 
-在 TEN 框架中，有两种类型的属性：
+在 TEN framework 中，有两种类型的属性：
 
 1. **消息属性：** 这些属性与框架中 extension 之间交换的消息相关联。消息属性定义消息中携带的特定数据或参数，例如命令参数、数据负载或与音频/视频帧相关的元数据。
 2. **TEN 包属性：** 这些属性与 TEN 包本身（例如 extension）相关联。TEN 包属性定义特定于包的配置或设置。例如，extension 可能具有配置其行为的属性，例如运行时设置、初始化参数或其他配置数据。
 
-这两种类型的属性都在 TEN 框架中进行管理，但服务于不同的目的，一种侧重于组件之间的通信（消息属性），另一种侧重于组件本身的配置和操作（TEN 包属性）。
+这两种类型的属性都在 TEN framework 中进行管理，但服务于不同的目的，一种侧重于组件之间的通信（消息属性），另一种侧重于组件本身的配置和操作（TEN 包属性）。
 
 ![属性系统](https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_system.png)
 
@@ -173,7 +173,7 @@ TEN 运行平台为 extension 提供了访问各种属性的 API。
 
 > ⚠️ **注意：** 本節所描述的行為還未被實現，是未來的 roadmap。
 
-TEN 框架提供了强大的屬性訪問機制，讓 extension 能夠讀取和修改 app 的屬性。透過 get/set property API，您可以存取所有屬性，包括 app 的屬性。當 API 參數以 `app:` 前綴開頭時，系統會識別這是對 app 屬性的操作請求。
+TEN framework 提供了强大的屬性訪問機制，讓 extension 能夠讀取和修改 app 的屬性。透過 get/set property API，您可以存取所有屬性，包括 app 的屬性。當 API 參數以 `app:` 前綴開頭時，系統會識別這是對 app 屬性的操作請求。
 
 各語言實現的 API 設計考量：
 

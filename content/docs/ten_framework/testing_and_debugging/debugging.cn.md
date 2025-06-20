@@ -2,13 +2,13 @@
 title: 调试
 ---
 
-## 适用于 TEN 框架的开发人员
+## 适用于 TEN framework 的开发人员
 
-如果您使用 VS Code 开发 TEN 框架，则 TEN 框架源代码树中有一个 `launch.json` 文件，其中提供了默认的调试目标。
+如果您使用 VS Code 开发 TEN framework，则 TEN framework 源代码树中有一个 `launch.json` 文件，其中提供了默认的调试目标。
 
-## 适用于 TEN 框架的用户
+## 适用于 TEN framework 的用户
 
-如果您使用 VS Code 开发基于 TEN 框架的自己的应用程序，您可以将配置添加到您的 `.vscode/launch.json` 文件，以便您可以使用断点和变量检查来调试您的应用程序，无论您使用的是哪种编程语言（C++/Golang/Python）。
+如果您使用 VS Code 开发基于 TEN framework 的自己的应用程序，您可以将配置添加到您的 `.vscode/launch.json` 文件，以便您可以使用断点和变量检查来调试您的应用程序，无论您使用的是哪种编程语言（C++/Golang/Python）。
 
 ### 在 C++ 应用程序中调试
 

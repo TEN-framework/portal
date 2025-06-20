@@ -4,7 +4,7 @@ title: 类型系统
 
 ## 类型
 
-TEN framework 类型系统是 TEN framework 内用于定义值的数据类型的系统。开发者可以通过 TEN schema 声明消息或 extension 的类型。
+TEN framework 类型系统是 TEN framework 内用于定义值的数据类型的系统。开发者可以通过 TEN schema 声明 message 或 extension property 的类型。
 
 TEN framework 类型系统包括基本类型和复合类型。基本类型包括以下内容：
 
@@ -57,7 +57,7 @@ cmd.SetPropertyFromJSONBytes("property_name", bytes)
 
 ## JSON 类型映射
 
-当从 JSON 创建 TEN 值时，TEN framework 使用以下映射规则：
+当从 JSON 创建 TEN value 时，TEN framework 使用以下映射规则：
 
 | JSON 类型   | TEN 类型映射      |
 | ----------- | -------------   |
@@ -69,7 +69,7 @@ cmd.SetPropertyFromJSONBytes("property_name", bytes)
 | 数组        | 映射为 array      |
 | 对象        | 映射为 object     |
 
-## 类型和模式
+## 类型和 schema
 
 如果指定了 TEN schema，则将根据相应的 TEN schema 确定属性类型。如果未指定 TEN schema，则将根据初始值赋值的类型确定属性类型。例如，如果初始赋值为 C++ 的 `int32_t`，则属性类型为 `int32`；如果使用 JSON 完成初始赋值，则将根据 JSON 处理规则确定类型。
 
@@ -126,7 +126,7 @@ int16_t error_type = cmd.get_property_int16("property_name");
 
 将较高精度类型转换为较低精度类型是不安全的，因为较高精度类型的值可能超出较低精度类型的范围，从而导致数据丢失。此转换称为不安全转换。执行不安全转换时，TEN 运行平台会检查溢出。如果发生溢出，TEN 类型系统将抛出一个错误。
 
-在 TEN framework  类型系统中，不安全转换包括：
+在 TEN framework 类型系统中，不安全转换包括：
 
 1. 将较高精度整数转换为较低精度整数
 2. 将有符号整数转换为无符号整数（当值为负数时）

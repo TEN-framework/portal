@@ -2,7 +2,7 @@
 title: Go
 ---
 
-让我们使用 TEN 框架构建一个 Go 应用程序。
+让我们使用 TEN framework 构建一个 Go 应用程序。
 
 ## 创建 TEN 应用
 

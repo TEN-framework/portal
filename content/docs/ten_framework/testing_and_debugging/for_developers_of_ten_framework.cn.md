@@ -1,14 +1,14 @@
 ---
-title: 面向 TEN 框架开发者
+title: 面向 TEN framework 开发者
 ---
 
-TEN 框架包括三种类型的测试套件：
+TEN framework 包括三种类型的测试套件：
 
 - 单元测试
 - 冒烟测试
 - 集成测试
 
-TEN 框架使用 `gtest` 作为单元测试和冒烟测试的测试框架，使用 `pytest` 作为集成测试的测试框架。
+TEN framework 使用 `gtest` 作为单元测试和冒烟测试的测试框架，使用 `pytest` 作为集成测试的测试框架。
 
 ## 单元测试
 
@@ -54,7 +54,7 @@ failed=0; for i in {1..100}; do if [ ${failed} != 0 ]; then echo "error occurred
 
 ## 集成测试
 
-集成测试是 TEN 框架的黑盒测试。集成测试的源目录是 `tests/ten_runtime/integration`。这些测试用于验证实际的执行场景。
+集成测试是 TEN framework 的黑盒测试。集成测试的源目录是 `tests/ten_runtime/integration`。这些测试用于验证实际的执行场景。
 
 集成测试的文件结构如下：
 
