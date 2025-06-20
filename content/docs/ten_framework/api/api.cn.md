@@ -211,33 +211,6 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-## description
-
-```json
-{
-  "type": "extension",
-  "name": "aliyun_analyticdb_vector_storage",
-  "version": "0.1.0",
-  "description": {
-    "en_US": "This is a description of the extension",
-    "zh_TW": "這是一個擴展的描述",
-    "zh_CN": "这是一个扩展的描述",
-    "ja_JP": "これは拡張の説明です",
-    // 或
-    "import_uri": "./description.json"
-  },
-  "dependencies": [
-    {
-      "type": "system",
-      "name": "ten_runtime_python",
-      "version": "0.8"
-    }
-  ],
-  "api": {
-  }
-}
-```
-
 ## API Schema 定义
 
 ### 属性定义 (Property)
