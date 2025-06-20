@@ -936,19 +936,19 @@ TEN framework 的 schema 系统提供了一个强大且结构化的方式来定�
 
 ### 当 extension 接收到消息时
 
-在 TEN 运行平台将 `msg_X` 或 `result_Y` 传递给 extension 的 `on_<foo>()` 或结果处理程序之前，它会检查 `msg_X` 或 `result_Y` 的 schema 中定义的所有 `required` 字段是否都存在。如果缺少任何 `required` 字段，则 schema 检查将失败。
+在 TEN runtime 将 `msg_X` 或 `result_Y` 传递给 extension 的 `on_<foo>()` 或结果处理程序之前，它会检查 `msg_X` 或 `result_Y` 的 schema 中定义的所有 `required` 字段是否都存在。如果缺少任何 `required` 字段，则 schema 检查将失败。
 
 1. **如果传入的消息是 TEN 命令：**
 
-   TEN 运行平台会将错误 `status_code` 结果返回给上一个 extension ，错误消息会指明缺少的必需字段。
+   TEN runtime 会将错误 `status_code` 结果返回给上一个 extension ，错误消息会指明缺少的必需字段。
 
 2. **如果传入的消息是 TEN 命令结果：**
 
-   TEN 运行平台会将结果的 `status_code` 更改为错误，添加缺少的 `required` 字段，并根据其类型将这些字段的值设置为默认值。
+   TEN runtime 会将结果的 `status_code` 更改为错误，添加缺少的 `required` 字段，并根据其类型将这些字段的值设置为默认值。
 
 3. **如果传入的消息是 TEN 类似于数据的消息：**
 
-   TEN 运行平台将直接丢弃类似于数据的消息。
+   TEN runtime 将直接丢弃类似于数据的消息。
 
 ### 错误消息格式
 

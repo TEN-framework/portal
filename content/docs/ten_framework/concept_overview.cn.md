@@ -4,9 +4,9 @@ title: 概述
 
 ![TEN framework](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_framework.png)
 
-## TEN 运行平台（TEN Runtime）
+## TEN runtime （TEN Runtime）
 
-TEN 运行平台是专为 TEN framework 设计的应用程序运行平台。它提供了一种灵活的架构，可以无缝集成用多种编程语言开发的扩展，并处理各种类型的数据流。通过对扩展的生命周期、数据流向和线程进行统一管理，TEN 运行平台使开发者能够高效构建多样化的应用和服务。
+TEN runtime 是专为 TEN framework 设计的应用程序运行平台。它提供了一种灵活的架构，可以无缝集成用多种编程语言开发的扩展，并处理各种类型的数据流。通过对扩展的生命周期、数据流向和线程进行统一管理，TEN runtime 使开发者能够高效构建多样化的应用和服务。
 
 ## 应用（App）
 

@@ -2,7 +2,7 @@
 title: 依赖项
 ---
 
-TEN framework 利用了多个第三方库。有些专门用于测试，而另一些则集成到 TEN 运行平台中。以下是对这些库的描述，以及在 TEN framework 中使用它们所需的任何必要修改。
+TEN framework 利用了多个第三方库。有些专门用于测试，而另一些则集成到 TEN runtime 中。以下是对这些库的描述，以及在 TEN framework 中使用它们所需的任何必要修改。
 
 ## Google gn
 

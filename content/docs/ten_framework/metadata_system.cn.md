@@ -26,12 +26,12 @@ TEN framework 在各种类型的包（包括：
     - **属性模式：** 这些模式通常在根目录的 `property.json` 文件中定义。清单可以指定这些属性的模式。
     - **消息模式：** 定义包处理的输入/输出消息的模式。
 
-  > ⚠️ **注意：** `manifest.json` 中的 TEN 模式 _不是_ JSON 模式。相反，它描述了 TEN 值的元数据，这些值是 TEN 运行平台的核心，而 JSON 仅仅是一种表示格式。
+  > ⚠️ **注意：** `manifest.json` 中的 TEN 模式 _不是_ JSON 模式。相反，它描述了 TEN 值的元数据，这些值是 TEN runtime 的核心，而 JSON 仅仅是一种表示格式。
 
 ### 2. **属性 (Property)**
 
 - **位置：** 通常存储在 TEN 包根目录的 `property.json` 文件中。
-- **目的：** `property.json` 文件存储初始属性值，这些属性值在运行时是可读写的。这意味着可以在 TEN 运行平台执行时修改属性。
+- **目的：** `property.json` 文件存储初始属性值，这些属性值在运行时是可读写的。这意味着可以在 TEN runtime 执行时修改属性。
 
 #### `property.json` 示例
 
@@ -119,11 +119,11 @@ TEN framework 在各种类型的包（包括：
 
 ### 清单中 TEN 模式的目的
 
-`manifest.json` 中的 TEN 模式为 TEN 运行平台提供了关于 extension 的外部 API 的元数据，包括属性和消息的类型信息。这有助于运行平台在操作期间正确处理 extension 的属性和消息。
+`manifest.json` 中的 TEN 模式为 TEN runtime 提供了关于 extension 的外部 API 的元数据，包括属性和消息的类型信息。这有助于运行平台在操作期间正确处理 extension 的属性和消息。
 
 ### 何时使用 TEN 模式
 
-1. **属性验证：** 当 TEN 运行平台获取/设置 TEN 包或消息的属性时。
+1. **属性验证：** 当 TEN runtime 获取/设置 TEN 包或消息的属性时。
 2. **数据转换：** 使用 `from_json` API 将 JSON 文档转换为 TEN 包或消息属性时。
 3. **兼容性检查：** 当 TEN 管理器根据 TEN 模式检查消息是否可以从源 extension 输出到目标 extension 时。
 
@@ -158,16 +158,16 @@ TEN framework 在各种类型的包（包括：
 
 ### 属性的 TEN 模式
 
-您可以在 `manifest.json` 文件中为属性定义 TEN 模式，使 TEN 运行平台能够更有效地处理这些属性。如果属性没有相应的 TEN 模式，则运行平台将使用默认的 JSON 处理方法（例如，将所有 JSON 数字视为 `float64`）。如果提供了 TEN 模式，则运行平台将使用它来验证和相应地处理属性。
+您可以在 `manifest.json` 文件中为属性定义 TEN 模式，使 TEN runtime 能够更有效地处理这些属性。如果属性没有相应的 TEN 模式，则运行平台将使用默认的 JSON 处理方法（例如，将所有 JSON 数字视为 `float64`）。如果提供了 TEN 模式，则运行平台将使用它来验证和相应地处理属性。
 
 | 属性 | TEN 模式 | 效果                                                       |
 | ---- | -------- | ---------------------------------------------------------- |
-| 是   | 是       | TEN 运行平台根据 TEN 模式验证属性值（例如，检查类型）。    |
-| 是   | 否       | TEN 运行平台使用默认处理，将所有 JSON 数字视为 `float64`。 |
+| 是   | 是       | TEN runtime 根据 TEN 模式验证属性值（例如，检查类型）。    |
+| 是   | 否       | TEN runtime 使用默认处理，将所有 JSON 数字视为 `float64`。 |
 
 ### 从 extension 访问属性
 
-TEN 运行平台为 extension 提供了访问各种属性的 API。
+TEN runtime 为 extension 提供了访问各种属性的 API。
 
 ### 從 extension 訪問 app 的屬性
 
@@ -195,7 +195,7 @@ TEN framework 提供了强大的屬性訪問機制，讓 extension 能夠讀取�
 
 ### 在 `start_graph` 命令中指定属性值
 
-与 TEN 包相关的属性值可以在 `start_graph` 命令中指定。TEN 运行平台根据 TEN 模式（如果已定义）处理这些属性，并将它们存储在相应的 TEN 包实例中。
+与 TEN 包相关的属性值可以在 `start_graph` 命令中指定。TEN runtime 根据 TEN 模式（如果已定义）处理这些属性，并将它们存储在相应的 TEN 包实例中。
 
 #### `start_graph` 命令中属性规范的示例
 
