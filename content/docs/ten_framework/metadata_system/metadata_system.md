@@ -20,11 +20,11 @@ In the TEN metadata system, there are two primary types of metadata:
 - **Contents**:
   - **Package Name**: The name of the TEN package.
   - **Package Version**: The version of the TEN package, following semantic versioning.
-  - **TEN Schemas**: Defines schemas related to the package's properties and input/output messages.
+  - **API Schema**: Defines schemas related to the package's properties and input/output messages.
     - **Property Schema**: These schemas are often defined in a `property.json` file in the root directory. The manifest can specify the schema for these properties.
     - **Message Schema**: Defines the schema for input/output messages handled by the package.
 
-> ⚠️ **Note**: The TEN schema in `manifest.json` is _not_ a JSON schema. Instead, it describes the metadata of TEN values, which are central to the TEN runtime, while JSON is merely a representation format.
+> ⚠️ **Note**: The API schema in `manifest.json` is _not_ a JSON schema. Instead, it describes the metadata of TEN values, which are central to the TEN runtime, while JSON is merely a representation format.
 
 ### 2. **Property**
 
@@ -117,7 +117,7 @@ The `manifest.json` file serves as the blueprint for the TEN package, defining i
 
 ### Purpose of TEN Schema in Manifest
 
-The TEN schema in `manifest.json` provides the TEN runtime with metadata about the extension's external API, including the type information for properties and messages. This helps the runtime correctly handle the extension's properties and messages during operation.
+The TEN schema in `manifest.json` provides the TEN runtime with metadata about the extension's external API, including the type information for properties and messages. This helps the runtime platform correctly handle the extension's properties and messages during operation.
 
 ### When TEN Schema is Used
 
@@ -139,7 +139,7 @@ Both types of properties are managed within the TEN framework but serve differen
 
 ### Defining TEN Package Properties
 
-The `property.json` file defines the properties of a TEN package. Here’s an example:
+The `property.json` file defines the properties of a TEN package. Here's an example:
 
 ```json
 {
@@ -157,7 +157,7 @@ The `property.json` file defines the properties of a TEN package. Here’s an ex
 
 ### TEN Schema for Properties
 
-You can define a TEN schema for properties in the `manifest.json` file, enabling the TEN runtime to handle these properties more effectively. If a property does not have a corresponding TEN schema, the runtime will use the default JSON handling method (e.g., treating all JSON numbers as `float64`). If a TEN schema is provided, the runtime will use it to validate and process the property accordingly.
+You can define a TEN schema for properties in the `manifest.json` file, enabling the TEN runtime to handle these properties more effectively. If a property does not have a corresponding TEN schema, the runtime platform will use the default JSON handling method (e.g., treating all JSON numbers as `float64`). If a TEN schema is provided, the runtime platform will use it to validate and process the property accordingly.
 
 | Property | TEN Schema | Effect                                                                                          |
 | -------- | ---------- | ----------------------------------------------------------------------------------------------- |
@@ -170,7 +170,7 @@ The TEN runtime provides APIs for extensions to access various properties.
 
 ### Accessing App Properties from an Extension
 
-> ⚠️ **Note:** The behavior described in this section has not yet been implemented and is part of the future roadmap.
+> ⚠️ **Note**: The behavior described in this section has not yet been implemented and is part of the future roadmap.
 
 The TEN framework provides a powerful property access mechanism that allows extensions to read and modify app properties. Through the get/set property API, you can access all properties, including app properties. When the API parameter begins with the `app:` prefix, the system identifies this as a request to operate on app properties.
 
@@ -182,7 +182,7 @@ API design considerations for different language implementations:
 - **Async Python**: Implemented as an async function without callbacks, consistent with Python's asynchronous model.
 - **C++**: Both versions with and without callbacks should be provided. Currently, a synchronous version without callbacks can be implemented first, but accessing `app:` properties will use event wait, which may impact performance.
 
-This design enables read/write operations on app properties through the unified get/set_property API, maintaining interface consistency without affecting message property-related APIs.
+This design enables CRUD operations on app properties through the unified get/set_property API, maintaining interface consistency without affecting message property-related APIs.
 
 Regarding the handling of `ten:` namespace fields, the following rules are adopted:
 

@@ -1,116 +1,67 @@
 ---
-title: Required
+title: required
 ---
 
-In the TEN framework, only message schemas are allowed to have `required` fields, and the properties of extensions are currently not permitted to include `required` fields.
+## Principles of the `required` Field
 
-This means that the schemas for `cmd_in`, `cmd_out`, `data_in`, `data_out`, `audio_frame_in`, `audio_frame_out`, `video_frame_in`, and `video_frame_out` are allowed to have `required` fields.
+1. **In a communication link, the source's `required` field must be a superset of the target's `required` field**
 
-For message schemas, the `required` field can only appear in three specific places:
+   This means that if a target extension requires a field to be mandatory, then the source extension must also mark that field as required. This ensures that messages will not lack necessary fields during transmission.
 
-- At the same level as the `property` in `<foo>_in`/`<foo>_out`.
-- Within the `property` of `result` in `<foo>_in`/`<foo>_out`.
-- Inside `property` with a type of `object` (i.e., in nested cases).
+2. **Fields with the same name in both source and target `required` fields must have compatible types**
 
-Examples of these three scenarios are shown below.
+   The framework validates field type compatibility to ensure data can be correctly transmitted and parsed. Type compatibility checks include basic type matching, array item type matching, and object property type matching.
 
-```json
-{
-  "api": {
-    "cmd_in": [
-      {
-        "name": "foo",
-        "property": {
-          "a": {
-            "type": "int8"
-          },
-          "b": {
-            "type": "uint8"
-          },
-          "c": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "d": {
-            "type": "object",
-            "properties": {
-              "e": {
-                "type": "float32"
-              }
-            }
-          },
-          "exampleObject": {
-            "type": "object",
-            "properties": {
-              "foo": {
-                "type": "int32"
-              },
-              "bar": {
-                "type": "string"
-              }
-            },
-            "required": ["foo"] // 3.
-          }
-        },
-        "required": ["a", "b"], // 1.
-        "result": {
-          "property": {
-            "ccc": {
-              "type": "buf"
-            },
-            "detail": {
-              "type": "buf"
-            }
-          },
-          "required": ["ccc"] // 2.
-        }
-      }
-    ]
-  }
-}
-```
+3. **Graph Check validates the integrity of the entire message transmission path**
 
-## Use of `required`
+   - Checks whether the output message schema of the source extension is compatible with the input message schema of the target extension
+   - Verifies the consistency of `required` fields throughout the transmission path
+   - Ensures that message transformation rules (if any) correctly handle all required fields
 
-### When a Message is Sent from an Extension
+Graph Check is performed before deployment, helping developers identify potential message transmission issues early and avoid runtime errors.
 
-When extension calls `send_<foo>(msg_X)` or `return_result(result_Y)`, the framework checks `msg_X` or `result_Y` against their respective schemas in extension. If `msg_X` or `result_Y` is missing any of the fields marked as `required` in the schema, the schema check fails, indicating an error.
+## Usage of the `required` Field
 
-The handling of these three scenarios is identical, though they are discussed separately:
+### When Extensions Send Messages
 
-1. If `send_<foo>` is sending a TEN command and the schema check fails:
+When an extension calls `send_<foo>(msg_X)` or `return_result(result_Y)`, the framework checks `msg_X` or `result_Y` against the corresponding schema in the extension. If `msg_X` or `result_Y` lacks any field marked as `required` in the schema, the schema check will fail.
 
-   `send_<foo>` will return false immediately, and if an error parameter is provided, it will include the schema check failure error message.
+The following three scenarios are handled in the same way:
 
-2. If `return_result` fails the schema check:
+1. **When sending a command and schema check fails**
 
-   `return_result` will return false, and if an error parameter is provided, it can include the schema check failure error message.
+   `send_<foo>` will immediately return `false`, and the error message will contain the schema check failure details.
 
-3. If `send_<foo>` is sending a general data-like TEN message (such as data, audio frame, or video frame):
+2. **When `return_result` fails schema check**
 
-   `send_<foo>` will return false, and if an error parameter is provided, it can include the schema check failure error message.
+   `return_result` will return `false`, and the error message will contain the schema check failure details, typically showing the missing required fields, such as: "the required properties are absent: 'foo'".
 
-### When a Message is Received by an Extension
+3. **When sending data-like messages (such as data, audio frames, or video frames)**
 
-Before ten*runtime passes `msg_X` or `result_Y` to an extension's `on*<foo>()`or result handler, it checks whether all`required`fields defined in the schema of`msg_X`or`result_Y`are present. If any`required` field is missing, the schema check fails.
+   `send_<foo>` will return `false`, and the error message will contain the schema check failure details.
 
-1. If the incoming message is a TEN command:
+**Note:** The framework's schema system only takes effect when fields are present. If a field is defined in the schema but does not exist in the message, and that field is not listed in `required`, no type checking will be performed. Type validation only occurs when fields exist both in the message and in the schema definition.
 
-   ten_runtime will return an error `status_code` result to the previous extension.
+### When Extensions Receive Messages
 
-2. If the incoming message is a TEN command result:
+Before the TEN runtime passes `msg_X` or `result_Y` to the extension's `on_<foo>()` or result handler, it checks whether all `required` fields defined in the schema of `msg_X` or `result_Y` are present. If any `required` fields are missing, the schema check will fail.
 
-   ten_runtime will change the `status_code` of the result to error, add the missing `required` fields, and set the values of these fields to their default values based on their type.
+1. **When the incoming message is a command**
 
-3. If the incoming message is a TEN data-like message:
+   The TEN runtime will return an error to the previous extension, with an error message indicating the missing required fields.
 
-   ten_runtime will simply drop the data-like message.
+2. **When the incoming message is a TEN command result**
 
-## Behavior of Graph Check
+   The TEN runtime will change the result's `status_code` to error, add the missing `required` fields, and set the values of these fields to default values based on their types.
 
-TEN Manager has a function called Graph Check, which is used to verify the semantic correctness of a graph. The checks related to required fields are as follows:
+3. **When the incoming message is a data-type TEN message**
 
-1. For a connection, the `required` fields of the source must be a superset of the `required` fields of the destination.
-2. If the same field name appears in both the source and destination `required` fields, their types must be compatible.
+   The TEN runtime will directly discard the data-type message.
+
+### Error Message Format
+
+When `required` field validation fails, the framework provides detailed error information:
+
+- Single missing field: `"the required properties are absent: 'field_name'"`
+- Multiple missing fields: `"the required properties are absent: 'field1', 'field2'"`
+- Missing fields in nested objects: `".nested_object: the required properties are absent: 'field_name'"`

@@ -2,7 +2,7 @@
 title: Go
 ---
 
-让我们使用 TEN 框架构建一个 Go 应用程序。
+让我们使用 TEN framework 构建一个 Go 应用程序。
 
 ## 创建 TEN 应用
 
@@ -52,7 +52,7 @@ tman install extension default_extension_go
 
 ## 构建应用
 
-与标准的 Go 项目不同，TEN Go 应用使用 CGo，因此您需要在构建之前设置某些环境变量。TEN 运行平台 Go 绑定系统包中已经提供了一个构建脚本，因此您可以使用一个命令构建应用：
+与标准的 Go 项目不同，TEN Go 应用使用 CGo，因此您需要在构建之前设置某些环境变量。TEN runtime Go 绑定系统包中已经提供了一个构建脚本，因此您可以使用一个命令构建应用：
 
 ```shell title="终端"
 go run ten_packages/system/ten_runtime_go/tools/build/main.go

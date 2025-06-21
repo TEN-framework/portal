@@ -13,6 +13,6 @@ title: 应用
 
 ## TEN 应用程序文件夹结构
 
-在 TEN 框架中，开发人员可以使用各种编程语言创建 TEN 软件包。无论使用哪种语言，TEN 应用程序的整体文件夹结构都保持一致，确保不同实现之间的一致性。
+在 TEN framework 中，开发人员可以使用各种编程语言创建 TEN 软件包。无论使用哪种语言，TEN 应用程序的整体文件夹结构都保持一致，确保不同实现之间的一致性。
 
 ![TEN 软件包文件夹结构](https://ten-framework-assets.s3.amazonaws.com/doc-assets/ten_package_folder_structure.png)

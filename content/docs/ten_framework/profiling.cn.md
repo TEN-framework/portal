@@ -2,7 +2,7 @@
 title: 性能分析
 ---
 
-## TEN 框架 GO 项目
+## TEN framework GO 项目
 
 使用 `gperftools` 来分析您的程序的 CPU 使用率和堆内存使用率。以下步骤介绍了如何准备环境、使用 `gperftools` 来分析您的程序，以及分析性能数据。
 

@@ -2,7 +2,7 @@
 title: 依赖项
 ---
 
-TEN 框架利用了多个第三方库。有些专门用于测试，而另一些则集成到 TEN 运行平台中。以下是对这些库的描述，以及在 TEN 框架中使用它们所需的任何必要修改。
+TEN framework 利用了多个第三方库。有些专门用于测试，而另一些则集成到 TEN runtime 中。以下是对这些库的描述，以及在 TEN framework 中使用它们所需的任何必要修改。
 
 ## Google gn
 
@@ -36,7 +36,7 @@ Commit ID
 
 [MIT 许可证](https://github.com/ibireme/yyjson/blob/master/LICENSE)
 
-这在 TEN 框架核心中用于解析和生成 JSON 数据。有关详细信息，请参阅 `third_party/yyjson`。
+这在 TEN framework 核心中用于解析和生成 JSON 数据。有关详细信息，请参阅 `third_party/yyjson`。
 
 ## libuv
 
@@ -246,7 +246,7 @@ FFmpeg 代码库主要采用 LGPL 许可，可选组件采用 GPL 许可。有�
 一个可以链接到 C/C++ 程序中以生成符号回溯的 C 库。
 
 > ⚠️ **注意：**
-> 我们已经对 `libbacktrace` 进行了重大修改，以符合 TEN 框架的命名约定和文件夹结构。有关详细信息，请参阅 `core/src/ten_utils/backtrace`。
+> 我们已经对 `libbacktrace` 进行了重大修改，以符合 TEN framework 的命名约定和文件夹结构。有关详细信息，请参阅 `core/src/ten_utils/backtrace`。
 
 ## uthash
 
@@ -257,7 +257,7 @@ FFmpeg 代码库主要采用 LGPL 许可，可选组件采用 GPL 许可。有�
 用于哈希表等的 C 宏。
 
 > ⚠️ **注意：**
-> 我们已经对 `uthash` 进行了重大修改，以符合 TEN 框架的命名约定和文件夹结构。有关详细信息，请参阅文件头中提到 `uthash` 的 `core/include/ten_utils/container` 下的文件。
+> 我们已经对 `uthash` 进行了重大修改，以符合 TEN framework 的命名约定和文件夹结构。有关详细信息，请参阅文件头中提到 `uthash` 的 `core/include/ten_utils/container` 下的文件。
 
 ## uuid4
 
@@ -267,7 +267,7 @@ FFmpeg 代码库主要采用 LGPL 许可，可选组件采用 GPL 许可。有�
 C 中的 UUID v4 生成。
 
 > ⚠️ **注意：**
-> 我们已经对 `uuid4` 进行了重大修改，以符合 TEN 框架的命名约定和文件夹结构。有关详细信息，请参阅 `core/src/ten_utils/lib/sys/general/uuid.c`。
+> 我们已经对 `uuid4` 进行了重大修改，以符合 TEN framework 的命名约定和文件夹结构。有关详细信息，请参阅 `core/src/ten_utils/lib/sys/general/uuid.c`。
 
 ## zf_log
 
@@ -276,4 +276,4 @@ C 中的 UUID v4 生成。
 用于 C/ObjC/C++ 的核心日志库。
 
 > ⚠️ **注意：**
-> 我们已经对 `zf_log` 进行了重大修改，以符合 TEN 框架的命名约定和文件夹结构。有关详细信息，请参阅 `core/src/ten_utils/log`。
+> 我们已经对 `zf_log` 进行了重大修改，以符合 TEN framework 的命名约定和文件夹结构。有关详细信息，请参阅 `core/src/ten_utils/log`。

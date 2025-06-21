@@ -2,7 +2,7 @@
 title: 项目结构
 ---
 
-TEN Agent 项目构建于 TEN 框架之上。有关 TEN 框架项目基本概念，请参考 [TEN 框架项目概览](../ten_framework/concept_overview)。
+TEN Agent 项目构建于 TEN framework 之上。有关 TEN framework 项目基本概念，请参考 [TEN framework 项目概览](../ten_framework/concept_overview)。
 
 以下是 TEN Agent 项目的文件夹结构：
 

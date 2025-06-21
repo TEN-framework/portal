@@ -2,7 +2,7 @@
 title: 版本系统
 ---
 
-TEN 框架遵循 semver 规范。
+TEN framework 遵循 semver 规范。
 
 ## TEN 包的版本信息
 

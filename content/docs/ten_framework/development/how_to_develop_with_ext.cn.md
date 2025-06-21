@@ -103,7 +103,7 @@ tman install --standalone
 
 ### 项目构建
 
-TEN 框架提供了两种便捷的构建方式供您选择：
+TEN framework 提供了两种便捷的构建方式供您选择：
 
 #### 方式一：手动分步构建
 
