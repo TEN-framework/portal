@@ -2,44 +2,27 @@
 title: 元数据系统
 ---
 
-TEN framework 在各种类型的包（包括：
-
-- 应用 (App)
-- extension (Extension)
-- 协议 (Protocol)
-- 系统 (System)
-
-中采用一致的元数据系统。
+TEN framework 在各种类型的包中采用一致的元数据系统。
 
 ## 元数据类型
 
 在 TEN 元数据系统中，有两种主要类型的元数据：
 
-### 1. **清单 (Manifest)**
+### 1. **Manifest**
 
 - **位置：** 存储在相关 TEN 包的根目录中，文件名为 `manifest.json`。
 - **内容：**
 
   - **包名称：** TEN 包的名称。
   - **包版本：** TEN 包的版本，遵循语义版本控制。
-  - **TEN 模式：** 定义与包的属性和输入/输出消息相关的模式。
-    - **属性模式：** 这些模式通常在根目录的 `property.json` 文件中定义。清单可以指定这些属性的模式。
-    - **消息模式：** 定义包处理的输入/输出消息的模式。
+  - **API Schema：** 定义与包的属性和输入/输出消息相关的模式。
 
-  > ⚠️ **注意：** `manifest.json` 中的 TEN 模式 _不是_ JSON 模式。相反，它描述了 TEN 值的元数据，这些值是 TEN runtime 的核心，而 JSON 仅仅是一种表示格式。
+  > ⚠️ **注意：** `manifest.json` 中的 API schema _不是_ JSON schema。
 
-### 2. **属性 (Property)**
+### 2. **Property**
 
 - **位置：** 通常存储在 TEN 包根目录的 `property.json` 文件中。
-- **目的：** `property.json` 文件存储初始属性值，这些属性值在运行时是可读写的。这意味着可以在 TEN runtime 执行时修改属性。
-
-#### `property.json` 示例
-
-```json
-{
-  "Darth Vader": "I am your father"
-}
-```
+- **目的：** `property.json` 文件存储初始属性值，这些属性值在运行时是可读写的。这意味着可以在 TEN runtime 运行时修改属性。
 
 ## 清单文件 (Manifest File)
 
