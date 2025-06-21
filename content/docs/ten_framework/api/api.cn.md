@@ -2,18 +2,21 @@
 title: API
 ---
 
-在 TEN framework 中, 一个 extension 的 API 定义, 包含在 manifest.json 文件中. TEN framework 定义 API 的时候, 不使用 json schema, 而是使用一种类似 JSON 的语法来定义 API schema.
+在 TEN Framework 中，extension 的 API 定义包含在 `manifest.json` 文件中。TEN Framework 定义 API 时，不使用 JSON Schema，而是使用一种类似 JSON 的语法来定义 API Schema。
 
-## 不使用 json schema 的理由
+## 为什么不使用 JSON Schema
 
-- TEN framework 的类型系统天生不是 json schema 的类型系统, 包含了很多 json schema 没有的类型. 例如 int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64, buf, ptr.
-- 在 TEN framework 的 API 定义中, 不少地方并不需要具有弹性的设定, 例如 message 的 schema 一定是 object 类型, 不能是其他类型, 这时候如果需要开发者明确写 `"type": "object"` 反而显得多余, 且会 confuse. 例如 message 的 property 字段, 一定是 object 类型, 不能是其他类型.
+TEN Framework 选择不使用标准 JSON Schema 的原因如下：
 
-基于以上几个理由, TEN framework 的 API schema 如果采用 JSON schema 的定义方式, 会显得非常不自然, 且容易引起误解. 因此, TEN framework 的 API schema 采用了一种更自然的定义方式, 即使用一种类似 JSON 的语法来定义 API schema.
+- **类型系统差异**：TEN Framework 的类型系统包含了许多 JSON Schema 没有的类型，例如 `int8`、`int16`、`int32`、`int64`、`uint8`、`uint16`、`uint32`、`uint64`、`float32`、`float64`、`buf`、`ptr` 等。
+
+- **减少冗余**：在 TEN Framework 的 API 定义中，许多地方不需要具有弹性的设定。例如，message 的 schema 一定是 object 类型，不能是其他类型。如果要求开发者明确写 `"type": "object"` 反而显得多余，且容易引起混淆。
+
+基于以上原因，TEN Framework 采用了一种更自然的定义方式，使用类似 JSON 的语法来定义 API Schema。
 
 ## API 顶层定义
 
-API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字段中, 如下:
+API Schema 的定义放在 `manifest.json` 文件中的 `api` 字段中：
 
 ```json
 {
@@ -39,11 +42,11 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-## API schema 的定义 pattern
+## API Schema 定义模式
 
-### 怎么表达一个 object 类型的字段
+### 表达 object 类型字段
 
-使用一个 `properties` 字段, 用来描述这个 object 类型的字段内的每个 property 的类型. 例如:
+使用 `properties` 字段来描述 object 类型字段内每个属性的类型：
 
 ```json
 {
@@ -61,9 +64,9 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-### 怎么表达一个 object 类型的字段内的必须跟可选字段
+### 表达必需和可选字段
 
-跟那个 object 类型的字段同级的一个 `required` 字段, 用来描述这个 object 类型的字段内的必须跟可选字段.
+与 object 类型字段同级的 `required` 字段，用来描述必需和可选字段：
 
 ```json
 {
@@ -71,50 +74,6 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
     "properties": {
       "foo": {},
       "bar": {}
-    },
-    "required": ["foo"]
-  }
-}
-```
-
-### 怎么表达一个 array 类型的字段
-
-使用一个 `items` 字段, 用来描述这个 array 类型的字段内的每个 item 的类型. 例如:
-
-```json
-{
-  "my_array": {
-    "type": "array",
-    "items": {
-      "type": "string"
-    }
-  }
-}
-```
-
-### 如果一个字段一定只能是某个 type, 就不需要明确写 type 字段, 反之则需要明确写 type 字段
-
-也就是说这是 TEN framework 本身的约束, 而不是用户定义的 API 的约束, 所以不需要明确写 type 字段, 如果有了这个字段, 反而会 confuse. 如果需要明确写 type 字段, 则表示这个字段可以是多种 type.
-
-例如底下的 some_concept 字段如果一定只能是 object 类型, 就不须要明确写 type 字段. 儿里面的 foo 字段, 可以是多种 type, 则就需要明确写 `type` 字段.
-
-```json
-{
-  "some_concept": {
-    // 这边不需要一个多余的 type 字段用来指定 some_concept 一定是 object 类型
-    "properties": {
-      "foo": {
-        "type": "string"
-      },
-      "bar": {
-        "type": "object",
-        "properties": {
-          "baz": {
-            "type": "string"
-          }
-        },
-        "required": ["baz"]
-      }
     },
     "required": ["foo"]
   }
@@ -140,18 +99,61 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-## 怎么表达一个 enum 类型的字段
+### 表达 array 类型字段
 
-使用一个 `enum` 字段, 用来描述这个 enum 类型的字段内的每个 value 的类型. 例如:
+使用 `items` 字段来描述 array 类型字段内每个元素的类型：
+
+```json
+{
+  "my_array": {
+    "type": "array",
+    "items": {
+      "type": "string"
+    }
+  }
+}
+```
+
+### type 字段的使用原则
+
+如果一个字段只能是特定类型（由 TEN Framework 本身约束），就不需要明确写 `type` 字段。如果字段可以是多种类型，则需要明确写 `type` 字段。
+
+例如，下面的 `some_concept` 字段如果只能是 object 类型，就不需要明确写 `type` 字段。而其中的 `foo` 字段可以是多种类型，则需要明确写 `type` 字段：
+
+```json
+{
+  "some_concept": {
+    "properties": {
+      "foo": {
+        "type": "string"
+      },
+      "bar": {
+        "type": "object",
+        "properties": {
+          "baz": {
+            "type": "string"
+          }
+        },
+        "required": ["baz"]
+      }
+    },
+    "required": ["foo"]
+  }
+}
+```
+
+## 表达 enum 类型字段
+
+使用 `enum` 字段来描述枚举类型的所有可能值：
 
 ```json
 {
   "api": {
     "property": {
       "properties": {
-        "foo": {
+        "status": {
           "type": "string",
-          "enum": [ "CREATING", "ACTIVE", "DELETING", "FAILED" ]
+          "enum": ["CREATING", "ACTIVE", "DELETING", "FAILED"]
         }
       }
     }
@@ -159,7 +161,9 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-## 怎么表达 extension property 的 schema
+## Extension Property Schema
+
+定义 extension 属性的完整示例：
 
 ```json
 {
@@ -197,7 +201,7 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-## 怎么表达 command-like message 的 schema
+## Command-like Message Schema
 
 命令支持输入 (`cmd_in`) 和输出 (`cmd_out`)：
 
@@ -261,7 +265,9 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-## 怎么表达 data-like message 的 schema
+## Data-like Message Schema
+
+数据类型消息的 schema 定义：
 
 ```json
 {
@@ -327,7 +333,7 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 
 ### 1. 属性名不符合规范
 
-**错误**：属性名包含连字符或以数字开头
+**错误示例**：属性名包含连字符或以数字开头
 
 ```json
 {
@@ -340,7 +346,7 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-**正确**：
+**正确示例**：
 
 ```json
 {
@@ -355,7 +361,7 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 
 ### 2. 数组类型缺少 items 定义
 
-**错误**：
+**错误示例**：
 
 ```json
 {
@@ -366,7 +372,7 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-**正确**：
+**正确示例**：
 
 ```json
 {
@@ -381,7 +387,7 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 
 ### 3. 对象类型缺少 properties 定义
 
-**错误**：
+**错误示例**：
 
 ```json
 {
@@ -392,7 +398,7 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-**正确**：
+**正确示例**：
 
 ```json
 {
@@ -407,8 +413,8 @@ API schema 的定义放在 manifest.json 文件中的一个名叫 `api` 的字�
 }
 ```
 
-## 结论
+## 总结
 
-TEN framework 的 schema 系统提供了一个强大且结构化的方式来定义和验证数据结构，确保组件之间的一致性和类型安全。通过遵循设计原则和最佳实践，开发者可以创建健壮、可维护的 TEN 应用程序和扩展。
+TEN Framework 的 Schema 系统提供了一个强大且结构化的方式来定义和验证数据结构，确保组件之间的一致性和类型安全。通过遵循设计原则和最佳实践，开发者可以创建健壮、可维护的 TEN 应用程序和扩展。
 
-该系统支持丰富的类型定义、复杂的 API 描述、以及灵活的消息转换功能，为构建大规模的实时多模态应用提供了坚实的基础。
+该系统支持丰富的类型定义、复杂的 API 描述以及灵活的消息转换功能，为构建大规模的实时多模态应用提供了坚实的基础。
