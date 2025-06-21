@@ -8,7 +8,7 @@ TEN framework 在各种类型的包中采用一致的元数据系统。
 
 在 TEN 元数据系统中，有两种主要类型的元数据：
 
-### 1. **Manifest**
+### 1. **Manifest（清单）**
 
 - **位置：** 存储在相关 TEN 包的根目录中，文件名为 `manifest.json`。
 - **内容：**
@@ -19,7 +19,7 @@ TEN framework 在各种类型的包中采用一致的元数据系统。
 
   > ⚠️ **注意：** `manifest.json` 中的 API schema _不是_ JSON schema。
 
-### 2. **Property**
+### 2. **Property（属性）**
 
 - **位置：** 通常存储在 TEN 包根目录的 `property.json` 文件中。
 - **目的：** `property.json` 文件存储初始属性值，这些属性值在运行时是可读写的。这意味着可以在 TEN runtime 运行时修改属性。
@@ -117,7 +117,7 @@ TEN framework 在各种类型的包中采用一致的元数据系统。
 1. **消息属性：** 这些属性与框架中 extension 之间交换的消息相关联。消息属性定义消息中携带的特定数据或参数，例如命令参数、数据负载或与音频/视频帧相关的元数据。
 2. **TEN 包属性：** 这些属性与 TEN 包本身（例如 extension）相关联。TEN 包属性定义特定于包的配置或设置。例如，extension 可能具有配置其行为的属性，例如运行时设置、初始化参数或其他配置数据。
 
-这两种类型的属性都在 TEN framework 中进行管理，但服务于不同的目的，一种侧重于组件之间的通信（消息属性），另一种侧重于组件本身的配置和操作（TEN 包属性）。
+这两种类型的属性都在 TEN framework 中进行管理，但服务于不同的目的：一种侧重于组件之间的通信（消息属性），另一种侧重于组件本身的配置和操作（TEN 包属性）。
 
 ![属性系统](https://ten-framework-assets.s3.amazonaws.com/doc-assets/property_system.png)
 
@@ -148,33 +148,33 @@ TEN framework 在各种类型的包中采用一致的元数据系统。
 | 是   | 是       | TEN runtime 根据 TEN 模式验证属性值（例如，检查类型）。    |
 | 是   | 否       | TEN runtime 使用默认处理，将所有 JSON 数字视为 `float64`。 |
 
-### 从 extension 访问属性
+### 从 Extension 访问属性
 
 TEN runtime 为 extension 提供了访问各种属性的 API。
 
-### 從 extension 訪問 app 的屬性
+### 从 Extension 访问 App 的属性
 
-> ⚠️ **注意：** 本節所描述的行為還未被實現，是未來的 roadmap。
+> ⚠️ **注意：** 本节所描述的行为还未被实现，是未来的 roadmap。
 
-TEN framework 提供了强大的屬性訪問機制，讓 extension 能夠讀取和修改 app 的屬性。透過 get/set property API，您可以存取所有屬性，包括 app 的屬性。當 API 參數以 `app:` 前綴開頭時，系統會識別這是對 app 屬性的操作請求。
+TEN framework 提供了强大的属性访问机制，让 extension 能够读取和修改 app 的属性。通过 get/set property API，您可以访问所有属性，包括 app 的属性。当 API 参数以 `app:` 前缀开头时，系统会识别这是对 app 属性的操作请求。
 
-各語言實現的 API 設計考量：
+各语言实现的 API 设计考量：
 
-- **Go**：提供不帶 callback 的同步版本即可，簡潔高效。
-- **Node.js**：實現為不帶 callback 的 async function，符合 Node.js 的異步編程模型。
-- **Python**：理想情況下應提供帶 callback 和不帶 callback 的版本。目前可先實現不帶 callback 的同步版本，但在訪問 `app:` 屬性時會使用 event wait，可能影響性能。
-- **Async Python**：實現為不帶 callback 的 async function，與 Python 異步模型一致。
-- **C++**：應提供帶 callback 和不帶 callback 的版本。目前可先實現不帶 callback 的同步版本，但在訪問 `app:` 屬性時會使用 event wait，可能影響性能。
+- **Go**：提供不带 callback 的同步版本即可，简洁高效。
+- **Node.js**：实现为不带 callback 的 async function，符合 Node.js 的异步编程模型。
+- **Python**：理想情况下应提供带 callback 和不带 callback 的版本。目前可先实现不带 callback 的同步版本，但在访问 `app:` 属性时会使用 event wait，可能影响性能。
+- **Async Python**：实现为不带 callback 的 async function，与 Python 异步模型一致。
+- **C++**：应提供带 callback 和不带 callback 的版本。目前可先实现不带 callback 的同步版本，但在访问 `app:` 属性时会使用 event wait，可能影响性能。
 
-這種設計使 app 屬性的增刪改查通過統一的 get/set_property API 實現，保持了介面的一致性，且不會影響 message 屬性的相關 API。
+这种设计使 app 属性的增删改查通过统一的 get/set_property API 实现，保持了接口的一致性，且不会影响 message 属性的相关 API。
 
-關於 `ten:` 命名空間字段的處理，採用以下規則：
+关于 `ten:` 命名空间字段的处理，采用以下规则：
 
-1. `get/set_property_to/from_json(nullptr)` 操作不處理 `ten:` 字段
-2. 要訪問 `ten:` 字段，必須明確指定如 `get/set_property("ten:xxx")` 的完整路徑
-3. 當使用 `get/set_property_to/from_json()` 時，只有明確指定 `"ten:xxx"` 形式的 key 時才會處理 `ten:` 字段
+1. `get/set_property_to/from_json(nullptr)` 操作不处理 `ten:` 字段
+2. 要访问 `ten:` 字段，必须明确指定如 `get/set_property("ten:xxx")` 的完整路径
+3. 当使用 `get/set_property_to/from_json()` 时，只有明确指定 `"ten:xxx"` 形式的 key 时才会处理 `ten:` 字段
 
-這種設計既保持了 API 的簡潔性，又避免了為特定需求創建額外命令的複雜性。
+这种设计既保持了 API 的简洁性，又避免了为特定需求创建额外命令的复杂性。
 
 ### 在 `start_graph` 命令中指定属性值
 

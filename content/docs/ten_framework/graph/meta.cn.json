@@ -1,6 +1,7 @@
 {
-  "title": "语言绑定",
+  "title": "图",
   "pages": [
-    "go"
+    "graph",
+    "msg_conversion"
   ]
 }
