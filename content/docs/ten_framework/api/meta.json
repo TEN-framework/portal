@@ -3,7 +3,6 @@
   "pages": [
     "api",
     "type_system",
-    "schema_system",
     "required",
     "log"
   ]
