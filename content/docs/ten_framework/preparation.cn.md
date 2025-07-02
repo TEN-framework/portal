@@ -2,7 +2,7 @@
 title: 准备工作
 ---
 
-TEN 框架支持 Windows、Linux 和 Mac 作为开发环境，但建议使用 Linux 或 Mac。
+TEN framework 支持 Windows、Linux 和 Mac 作为开发环境，但建议使用 Linux 或 Mac。
 
 ## 开发环境
 
@@ -10,13 +10,13 @@ TEN 框架支持 Windows、Linux 和 Mac 作为开发环境，但建议使用 Li
 
 以 Ubuntu 为例，您必须首先安装以下软件包：
 
-- gcc：TEN 框架支持的 C/C++ 编译器之一。
-- clang：TEN 框架支持的另一种 C/C++ 编译器。
-- clang-format：TEN 框架在运行时使用的代码格式化工具。
+- gcc：TEN framework 支持的 C/C++ 编译器之一。
+- clang：TEN framework 支持的另一种 C/C++ 编译器。
+- clang-format：TEN framework 在运行时使用的代码格式化工具。
 - clang-tidy：静态代码分析器。
 - cmake：构建系统。版本必须大于 3.13。
-- Python3：TEN 框架 Python 绑定所需。
-- pytest：用于 TEN 框架的集成测试。
+- Python3：TEN framework Python 绑定所需。
+- pytest：用于 TEN framework 的集成测试。
 
 ### Mac
 
@@ -45,7 +45,7 @@ ln -s /Applications/CMake.app/Contents/bin/cmake /usr/local/bin/cmake
 ln -sf /usr/local/opt/llvm/bin/clang-tidy /usr/local/bin/clang-tidy
 ```
 
-要构建 TEN 框架的各种语言绑定，您可以使用以下命令安装所需的语言：
+要构建 TEN framework 的各种语言绑定，您可以使用以下命令安装所需的语言：
 
 ```shell
 brew install python golang
@@ -53,7 +53,7 @@ brew install python golang
 
 ### Windows
 
-如果您需要在 Microsoft Windows 上开发 TEN 框架，您可以手动安装以下软件包：
+如果您需要在 Microsoft Windows 上开发 TEN framework，您可以手动安装以下软件包：
 
 - Visual Studio 社区版（最高至 2022）
 
@@ -67,11 +67,11 @@ brew install python golang
 
 ## ten_gn
 
-TEN 框架使用 `ten_gn` 作为其构建系统。`ten_gn` 是一个基于 Google GN 的构建系统。`ten_gn` 的源代码位于 TEN 框架仓库的 `core/ten_gn` 目录中。请将 `ten_gn` 目录路径添加到您开发环境的系统 `PATH` 环境变量中。
+TEN framework 使用 `ten_gn` 作为其构建系统。`ten_gn` 是一个基于 Google GN 的构建系统。`ten_gn` 的源代码位于 TEN framework 仓库的 `core/ten_gn` 目录中。请将 `ten_gn` 目录路径添加到您开发环境的系统 `PATH` 环境变量中。
 
 ## 使用 Docker 容器
 
-我们提供了预先编写的 Docker 文件，允许您创建一个容器，其中包含从源代码构建 TEN 框架所需的所有必要软件包。
+我们提供了预先编写的 Docker 文件，允许您创建一个容器，其中包含从源代码构建 TEN framework 所需的所有必要软件包。
 
 ### Ubuntu 22.04
 

@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 
 export const SITE_URL = 'https://theten.ai'
-export const DEFAULT_TITLE = 'TEN Framework - Build Real-Time Multimodal AI Agents'
-export const DEFAULT_DESCRIPTION = 'TEN is an open-source framework designed for building multimodal conversational AI with real-time capabilities.'
+export const DEFAULT_TITLE = 'Open-source framework for all AI agents.'
+export const DEFAULT_DESCRIPTION =
+  'TEN is an open-source framework designed for building multimodal conversational AI'
 
 export const KEYWORDS = [
   'AI Framework',
@@ -10,11 +11,11 @@ export const KEYWORDS = [
   'Multimodal AI',
   'Real-time AI',
   'Voice AI',
-  'AI Agents'
+  'AI Agents',
 ]
 
 export const SOCIAL_HANDLES = {
-  twitter: '@TenFramework'
+  twitter: '@TenFramework',
 }
 
 interface GenerateMetadataProps {
@@ -26,7 +27,7 @@ interface GenerateMetadataProps {
 export function generateSiteMetadata({
   title = DEFAULT_TITLE,
   description = DEFAULT_DESCRIPTION,
-  lang
+  lang,
 }: GenerateMetadataProps): Metadata {
   return {
     metadataBase: new URL(SITE_URL),
@@ -70,4 +71,4 @@ export function generateSiteMetadata({
       },
     },
   }
-} 
+}
