@@ -27,9 +27,10 @@ const BackgroundVideo = () => {
 
   if (!mounted) return null
 
-  const videoSrc = resolvedTheme === 'dark'
-    ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
-    : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
+  const videoSrc =
+    resolvedTheme === 'dark'
+      ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
+      : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
 
   return (
     <video

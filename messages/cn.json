@@ -35,7 +35,7 @@
     "heroDescription": "TEN 是一个用于搭建实时多模态的对话式 AI 引擎的开源框架",
     "heroBtnTryTenAgent": "体验 TEN Agent",
     "heroBtnReadDoc": "文档",
-    "bannerAnnouncement": "欢迎 TEN Turn Detection(语音检测)和 TEN VAD(打断检测)加入 TEN 大家庭",
+    "bannerAnnouncement": "欢迎 VAD 和 Turn Detection 加入 TEN 开源全家桶!",
     "huggingFaceSpace": "体验语音检测和打断",
     "supportedBy": "共同支持来自 TEN 社区"
   }
