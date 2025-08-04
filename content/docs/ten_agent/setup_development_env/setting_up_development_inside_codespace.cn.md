@@ -18,7 +18,7 @@ Github Codespace 是一个基于云的开发环境，允许您直接在云中开
 
 ```bash
 # 从 .env.example 准备 .env 文件并在其中设置您的 API 密钥
-cp ./env.example .env
+cp ./.env.example .env
 # 完成密钥配置后构建智能体
 task use
 ```

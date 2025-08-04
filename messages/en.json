@@ -36,6 +36,6 @@
     "heroBtnTryTenAgent": "Talk to TEN Agent",
     "huggingFaceSpace": "Try Turn Detection and VAD",
     "heroBtnReadDoc": "Documentation",
-    "bannerAnnouncement": "Welcome VAD and Turn Detection to the TEN open-source suite!"
+    "bannerAnnouncement": "TEN VAD and TEN Turn Detection are now part of the TEN open-source ecosystem!"
   }
 }

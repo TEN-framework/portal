@@ -18,7 +18,7 @@ The steps are similar to the process outlined in the [Quick Start](./getting_sta
 
 ```bash
 # Prepare .env file from .env.example and set your api keys inside it
-cp ./env.example .env
+cp ./.env.example .env
 # Build the agent after finish key configurations
 task use
 ```
