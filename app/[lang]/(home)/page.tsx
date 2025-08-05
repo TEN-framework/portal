@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes'
 import { useEffect, useState, useRef } from 'react'
-import { Hero } from '@/app/[lang]/(home)/_components'
+import { Hero, ProjectsShowcase } from '@/app/[lang]/(home)/_components'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
@@ -52,9 +52,12 @@ const BackgroundVideo = () => {
 
 export default function HomePage() {
   return (
-    <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
-      <BackgroundVideo />
-      <Hero className="relative z-10" />
-    </div>
+    <>
+      <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
+        <BackgroundVideo />
+        <Hero className="relative z-10" />
+        <ProjectsShowcase />
+      </div>
+    </>
   )
 }
