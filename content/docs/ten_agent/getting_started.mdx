@@ -3,95 +3,83 @@ title: Getting Started
 ---
 
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+import { Callout } from 'fumadocs-ui/components/callout'
 
-In this chapter, let's build the TEN Agent playground together.
+Three steps, you can get TEN up and running.
 
-## Prerequisites
+### Step ⓵ - Prerequisites
 
-**Docker setting on Apple Silicon**
-
-<Tabs items={['API Keys', 'Installations', 'Minimum system requirements']} defaultIndex={0}>
+<Tabs items={['API Keys', 'Installations', 'Minimum system requirements']}>
   <Tab>
-Agora [ App ID ](https://docs.agora.io/en/video-calling/get-started/manage-agora-account?platform=web#create-an-agora-project) and [ App Certificate ](https://docs.agora.io/en/video-calling/get-started/manage-agora-account?platform=web#create-an-agora-project)(free minutes every month)
+    • Agora [App ID](https://docs.agora.io/en/video-calling/get-started/manage-agora-account?platform=web#create-an-agora-project) and [App Certificate](https://docs.agora.io/en/video-calling/get-started/manage-agora-account?platform=web#create-an-agora-project) (free minutes every month) <br />
+    • [OpenAI API key](https://openai.com/index/openai-api/) (any LLM that is compatible with OpenAI) <br />
+    • [Deepgram ASR](https://deepgram.com/) (free credits available with signup) <br />
+    • [ElevenLabs TTS](https://elevenlabs.io/) (free credits available with signup)
   </Tab>
   <Tab>
-<p>[Docker](https://www.docker.com/) / [Docker Compose](https://docs.docker.com/compose/)</p>
-<p>[Node.js(LTS) v18](https://nodejs.org/en)</p>
+    • [Docker](https://www.docker.com/) / [Docker Compose](https://docs.docker.com/compose/) <br />
+    • [Node.js(LTS) v18](https://nodejs.org/en)
   </Tab>
   <Tab>
-🎉 CPU >= 2 Core
-
-😄 RAM >= 4 GB
+    • CPU >= 2 Core <br />
+    • RAM >= 4 GB
   </Tab>
 </Tabs>
 
-<Callout>
-  For Apple Silicon Macs, uncheck "Use Rosetta for x86/amd64 emulation" in
-  Docker settings. Note: This may result in slower build times on ARM, but
-  performance will be normal when deployed to x64 servers.
+<Callout title="macOS: Docker setting on Apple Silicon">
+  Uncheck "Use Rosetta for x86/amd64 emulation" in Docker settings, it may result in slower build times on ARM, but performance will be normal when deployed to x64 servers.
 </Callout>
 
-## Next step
+### Step ⓶ - Build agent in VM
 
-**1. Clone down the TEN Agent repository**
+##### 1. Clone down the repo,`cd` to `ai-agents` and create `.env` file from `.env.example`
 
-```sh title="Terminal"
-git clone https://github.com/TEN-framework/TEN-Agent.git
-```
-
-**2. Prepare config files**
-
-Open TEN Agent in your code editor. In the root of the project, use `cd` command to create \`.env\` file from example.
-
-```sh title="Terminal"
+```bash
+cd ai_agents
 cp ./.env.example ./.env
 ```
 
-**3. Setup Agora App ID and App Certificate in .env file**
+##### 2. Setup Agora App ID and App Certificate in `.env`
 
-Open the `.env` file and fill in Agora App ID and App Certificate.These will be used to connect to Agora RTC extension.
-
-```bash title=".env"
+```bash
 AGORA_APP_ID=
 AGORA_APP_CERTIFICATE=
 ```
 
-**4. Start agent builder toolkit containers**
+##### 3. Start agent development containers
 
-In the same directory, run the `docker` command to compose containers:
-
-```bash title="Terminal"
+```bash
 docker compose up -d
 ```
 
-**5. Enter container**
+##### 4. Enter container
 
-Use the following command to enter the container:
-
-```bash title="Bash"
+```bash
 docker exec -it ten_agent_dev bash
 ```
 
-**6. Build the agent**
+##### 5. Build agent with the default `graph` ( ~5min - ~8min)
 
-Use the following command to build the agent:
+check the `/examples` folder for more examples
 
-```bash title="Bash"
+```bash
+# use the default agent
 task use
+
+# or use the demo agent
+task use AGENT=agents/examples/demo
 ```
 
-**7. Start the web server**
+##### 6. Start the web server
 
-Use the following command to start the web server:
-
-```bash title="Bash"
+```bash
 task run
 ```
 
-**8. Edit playground settings**
+### Step ⓷ - Customize your agent with TMAN Designer
 
-Open the playground at [localhost:3000](http://localhost:3000) to configure your agent.
-
-1.  Select a graph type (e.g. Voice Agent, Realtime Agent)
-2.  Choose a corresponding module
-3.  Select an extension and configure its API key settings
+1. Open [localhost:49483](http://localhost:49483).
+2. Right-click to load the corresponding graph (e.g., Voice Assistant).
+3. Enter API keys and set preferences for each extension.
+4. Right-click and select `Manage Apps` to start the Apps Manager.
+5. Click `Run App` to start TEN Agent.

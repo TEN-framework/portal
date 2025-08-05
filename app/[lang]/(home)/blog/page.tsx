@@ -2,7 +2,6 @@ import { getTranslations, getFormatter } from 'next-intl/server'
 
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
-import { Button } from '@/components/ui/button'
 
 export default async function BlogHomePage(props: {
   params: Promise<{ lang: string }>
@@ -47,72 +46,47 @@ export default async function BlogHomePage(props: {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {sortedPosts.map((post) => (
             <Link
-              locale={locale}
               key={post.url}
               href={post.url}
-              className="group border-border/30 bg-background/90 hover:bg-background relative flex flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-sm transition-all duration-500 hover:shadow-2xl"
+              locale={locale}
+              className="group relative overflow-hidden rounded-3xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border border-gray-100 dark:border-slate-700 min-h-[320px] flex flex-col"
             >
-              <div className="border-border/30 relative h-56 w-full overflow-hidden border-b">
-                <div
-                  className="absolute inset-0 transition-all duration-700 group-hover:scale-110"
-                  style={{
-                    background: `linear-gradient(
-                      110deg,
-                      hsl(${(post.data.title.length * 7) % 360}, 40%, 45%),
-                      hsl(${(post.data.title.length * 13) % 360}, 40%, 40%),
-                      hsl(${(post.data.title.length * 19) % 360}, 40%, 42%)
-                    )`,
-                  }}
-                />
-                <div className="from-background/80 via-background/20 absolute inset-0 bg-gradient-to-b to-transparent" />
-                <div className="from-background/10 absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] via-transparent to-transparent" />
-                <div className="from-background/5 absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,_var(--tw-gradient-stops))] via-transparent to-transparent" />
-              </div>
-
-              <div className="flex flex-1 flex-col p-8">
-                <h2 className="text-foreground mb-4 text-xl font-semibold tracking-tight">
-                  {post.data.title}
-                </h2>
-                <p className="text-fd-muted-foreground line-clamp-3 text-sm leading-relaxed">
-                  {post.data.description}
-                </p>
-              </div>
-
-              <div className="bg-background/30 flex flex-col px-8">
-                <div className="py-4">
-                  <Button size="lg" className="gap-2" asChild>
-                    <Link href={post.url} locale={locale}>
-                      Read more
-                    </Link>
-                  </Button>
-                </div>
-                <div className="border-border/30 flex flex-col border-t py-5">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-background/60 ring-border/20 h-10 w-10 overflow-hidden rounded-full ring-1">
-                      <img
-                        src={`https://api.dicebear.com/7.x/initials/svg?seed=${post.data.author}&backgroundColor=transparent&textColor=1e293b`}
-                        alt={post.data.author}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-foreground text-sm font-medium">
+              {/* Top row - Article type and date */}
+               <div className="flex items-center justify-between mb-8 px-8 pt-8">
+                 <span className="inline-block px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-700 rounded-full">
+                   General
+                 </span>
+                 <time className="text-sm text-gray-500 dark:text-gray-400">
+                   {formatter.dateTime(new Date(post.data.date), {
+                     month: 'short',
+                     day: 'numeric'
+                   })}
+                 </time>
+               </div>
+ 
+               {/* Left-aligned content */}
+                 <div className="px-8 pb-8 flex-1 flex flex-col">
+                   <h2 className="text-2xl text-gray-900 dark:text-white mb-4 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-3">
+                      {post.data.title}
+                    </h2>
+                    
+                    <p className="text-gray-600 dark:text-gray-300 text-base leading-relaxed line-clamp-3 mb-8">
+                      {post.data.description}
+                    </p>
+                    
+                    {/* Bottom - Author info */}
+                    <div className="flex items-center gap-3 mt-auto">
+                      <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-slate-700 flex items-center justify-center text-gray-700 dark:text-gray-300 text-sm font-medium">
+                        {post.data.author.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">
                         {post.data.author}
                       </span>
-                      <span className="text-fd-muted-foreground text-xs">
-                        {formatter.dateTime(new Date(post.data.date), {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </span>
                     </div>
-                  </div>
-                </div>
-              </div>
+                 </div>
             </Link>
           ))}
         </div>
