@@ -2,7 +2,6 @@ import { getTranslations, getFormatter } from 'next-intl/server'
 
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
-import { Button } from '@/components/ui/button'
 
 export default async function BlogHomePage(props: {
   params: Promise<{ lang: string }>
