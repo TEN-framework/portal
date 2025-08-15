@@ -6,3 +6,4 @@ export const HUGGING_FACE_SPACE =
 export const URL_TEN_TURN_DETECTION =
   'https://github.com/ten-framework/ten-turn-detection'
 export const URL_TEN_FAMILY = 'https://github.com/ten-framework?view_as=public'
+export const URL_TEN_VAD = 'https://github.com/ten-framework/ten-vad'
