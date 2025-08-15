@@ -50,6 +50,19 @@ body {
   font-weight: 500;
 }
 
+/* Animation delay utilities for sparkles effect */
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animation-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animation-delay-700 {
+  animation-delay: 700ms;
+}
+
 :root {
   --radius: 0.625rem;
 
