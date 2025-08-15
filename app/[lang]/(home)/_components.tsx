@@ -71,7 +71,7 @@ export function ProjectsShowcase(props: { className?: string }) {
   const t = useTranslations('homePage')
 
   return (
-    <div className={cn('w-full py-20 bg-gray-50/50 dark:bg-gray-900/50 border border-red-500/50 dark:border-red-400/50', className)}>
+    <div className={cn('w-full py-20 bg-gray-50/50 dark:bg-gray-900/50', className)}>
       <div className="container mx-auto px-4">
         <div className="mb-12 text-center">
           <h2 className="mb-4 text-4xl font-bold tracking-tight text-black">

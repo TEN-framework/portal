@@ -56,7 +56,7 @@ export default function HomePage() {
       <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
         <BackgroundVideo />
         <Hero className="relative z-10" />
-        <ProjectsShowcase />
+        {/* <ProjectsShowcase /> */}
       </div>
     </>
   )
