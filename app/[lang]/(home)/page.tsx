@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes'
 import { useEffect, useState, useRef } from 'react'
-import { Hero, ProjectsShowcase } from '@/app/[lang]/(home)/_components'
+import { Hero } from '@/app/[lang]/(home)/_components'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()

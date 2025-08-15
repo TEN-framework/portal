@@ -68,7 +68,6 @@ const createConfetti = (e: React.MouseEvent) => {
 
 export function ProjectsShowcase(props: { className?: string }) {
   const { className } = props
-  const t = useTranslations('homePage')
 
   return (
     <div className={cn('w-full py-20 bg-gray-50/50 dark:bg-gray-900/50', className)}>
