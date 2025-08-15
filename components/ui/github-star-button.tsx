@@ -49,7 +49,6 @@ function useCountAnimation(endValue: number | null, duration: number = 8000) {
 export function GitHubStarButton({ repo, className = '' }: GitHubStarButtonProps) {
   const [starCount, setStarCount] = useState<number | null>(null)
   const [isHovered, setIsHovered] = useState(false)
-  const [showSparkles, setShowSparkles] = useState(false)
   const animatedCount = useCountAnimation(starCount)
 
   useEffect(() => {
@@ -63,10 +62,7 @@ export function GitHubStarButton({ repo, className = '' }: GitHubStarButtonProps
           setStarCount(data.stargazers_count)
           
           // Only show sparkles for fresh data, not cached
-          if (!data.from_cache) {
-            setTimeout(() => setShowSparkles(true), 1000)
-            setTimeout(() => setShowSparkles(false), 3000)
-          }
+          // Note: Sparkle animation removed
         } else {
           // Handle API errors (including rate limits)
           const errorData = await response.json().catch(() => ({}))
@@ -93,8 +89,6 @@ export function GitHubStarButton({ repo, className = '' }: GitHubStarButtonProps
   const formatStarCount = (count: number) => count.toLocaleString()
 
   const handleClick = () => {
-    setShowSparkles(true)
-    setTimeout(() => setShowSparkles(false), 2000)
     window.open(`https://github.com/${repo}`, '_blank', 'noopener,noreferrer')
   }
 
