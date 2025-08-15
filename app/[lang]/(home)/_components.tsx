@@ -71,13 +71,13 @@ export function ProjectsShowcase(props: { className?: string }) {
   const t = useTranslations('homePage')
 
   return (
-    <div className={cn('w-full py-20 bg-gray-50/50 dark:bg-gray-900/50', className)}>
+    <div className={cn('w-full py-20 bg-gray-50/50 dark:bg-gray-900/50 border border-red-500/50 dark:border-red-400/50', className)}>
       <div className="container mx-auto px-4">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-4xl font-bold tracking-tight">
+          <h2 className="mb-4 text-4xl font-bold tracking-tight text-black">
             From the Community
           </h2>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-lg">
+          <p className="text-black mx-auto max-w-2xl text-lg">
             Discover amazing projects built with TEN Framework
           </p>
         </div>
@@ -92,7 +92,6 @@ export function ProjectsShowcase(props: { className?: string }) {
               <div className="aspect-video w-full overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20">
                 <div className="flex h-full items-center justify-center text-gray-400">
                   <div className="text-center">
-                    <div className="mb-2 text-2xl">🚀</div>
                     <div className="text-sm">Preview</div>
                   </div>
                 </div>
