@@ -31,11 +31,11 @@
     "titleEdgeCloud": "Low-Latency",
     "titleSuffix": "Voice AI Agents",
     "readLaunchArticle": "Read more on our blog",
-    "heroDescription": "TEN is an open-source framework designed for building multimodal conversational AI",
+    "heroDescription": "An open-source framework designed for building conversational AI",
     "supportedBy": "supported by the TEN community and",
     "heroBtnTryTenAgent": "Talk to TEN Agent",
-    "huggingFaceSpace": "Try Turn Detection and VAD",
+    "huggingFaceSpace": "Try VAD and Turn Detection",
     "heroBtnReadDoc": "Documentation",
-    "bannerAnnouncement": "TEN VAD and TEN Turn Detection are now part of the TEN open-source ecosystem!"
+    "bannerAnnouncement": "are now part of the TEN open-source ecosystem!"
   }
 }
