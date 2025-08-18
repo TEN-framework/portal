@@ -5,6 +5,7 @@ import { getTranslations, getFormatter } from 'next-intl/server'
 
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
+import { SITE_URL } from '@/app/metadata.config'
 
 export async function generateMetadata(props: {
   params: Promise<{ slug: string; lang: string }>
@@ -14,9 +15,29 @@ export async function generateMetadata(props: {
 
   if (!page) notFound()
 
+  const blogUrl = `${SITE_URL}/${params.lang}/blog/${params.slug}`
+  
   return {
     title: page.data.title,
     description: page.data.description,
+    authors: [{ name: page.data.author }],
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      type: 'article',
+      publishedTime: new Date(page.data.date).toISOString(),
+      authors: [page.data.author],
+      url: blogUrl,
+      siteName: 'TEN Framework',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.data.title,
+      description: page.data.description,
+    },
+    alternates: {
+      canonical: blogUrl,
+    },
   }
 }
 
@@ -35,8 +56,37 @@ export default async function Page(props: {
 
   const Mdx = page.data.body
 
+  // Generate structured data for SEO
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": page.data.title,
+    "description": page.data.description,
+    "author": {
+      "@type": "Person",
+      "name": page.data.author
+    },
+    "datePublished": new Date(page.data.date).toISOString(),
+    "dateModified": new Date(page.data.date).toISOString(),
+    "publisher": {
+      "@type": "Organization",
+      "name": "TEN Framework",
+      "url": SITE_URL
+    },
+    "url": `${SITE_URL}/${locale}/blog/${params.slug}`,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/${locale}/blog/${params.slug}`
+    }
+  }
+
   return (
-    <div className="pb-16">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <div className="pb-16">
       <div className="via-primary/5 to-primary/10 bg-gradient-to-b from-transparent pt-24 pb-12">
         <div className="relative container">
           <Link
@@ -98,7 +148,8 @@ export default async function Page(props: {
           <Mdx components={defaultMdxComponents} />
         </div>
       </article>
-    </div>
+      </div>
+    </>
   )
 }
 
