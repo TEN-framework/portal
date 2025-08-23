@@ -4,6 +4,7 @@
   "root": true,
   "pages": [
     "overview",
+    "rtc_first_design",
     "getting_started",
     "architecture_flow",
     "project_structure",
