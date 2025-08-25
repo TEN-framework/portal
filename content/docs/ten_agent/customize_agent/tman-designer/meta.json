@@ -1,7 +1,6 @@
 {
   "pages": [
     "configure_modules",
-    "configure_properties",
-    "change_language"
+    "configure_properties"
   ]
 }

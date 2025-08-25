@@ -4,14 +4,6 @@ title: Configure Extension Nodes
 
 Extensions (or modules) are the core building blocks of a voice agent. They define the capabilities and functionalities of the agent. With TMAN Designer, you can easily add, remove, or replace extensions of same kind to tailor the agent to your specific needs.
 
-## Launching TMAN Designer
-
-1. Make sure `task run` is running and TEN Manager server is started. If you haven't started it yet, you can follow the instructions in [Get Started](/docs/ten_agent/getting_started) to set it up.
-2. Open the designer UI at [http://localhost:49483](http://localhost:49483) to configure your agent.
-3. You should see the TMAN Designer interface now, the graphs of your current loaded TEN App should be displayed in the canvas.
-
-![image](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/five.png)
-
 ## Replace Extension Node
 
 Replacing can be very useful when you want to replace a node with another node of same protocol, as it will keep the original connections while changing the underlying implementation (e.g. to a different vendor model).
@@ -22,10 +14,11 @@ To replace a module or extension in TMAN Designer, follow these steps:
 2. In the popup window, select the extension implementation you would like to use with "Addon Name" text input field.
 3. Click "Replace Node" to confirm the replacement.
 
->Note. The replacing extension will be using the properties defined in `property.json` by default.
+<Callout title="Note">
+The replacing extension will be using the properties defined in `property.json` by default.
+</Callout>
 
 ![image](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/three.png)
-
 
 ## Add Extension Node
 
@@ -34,6 +27,10 @@ You can add an extension node to a graph with following steps:
 1. Right click on an empty area in the canvas, in the context menu, select "Add Node"
 2. In the popup window, select the extension implementation you would like to use with "Addon Name" text input field, and give the node a name with "Node Name" text input field. The node name needs to be unique in a graph.
 3. Click "Add Node" to confirm the addition.
+
+<Callout title="Note">
+The added extension will be using the properties defined in `property.json` by default.
+</Callout>
 
 ![image](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/six.png)
 
@@ -70,7 +67,9 @@ Following is a list of supported extension categories:
 - xfyun_asr_dialect_python
 - xfyun_asr_python
 
->Note. The list above is subject to change as new extensions are added or existing ones are updated.
+<Callout title="Note">
+The list above is subject to change as new extensions are added or existing ones are updated.
+</Callout>
 
 ### Large Language Model (LLM)
 
@@ -78,10 +77,12 @@ Following is a list of supported extension categories:
 - dify_llm2_python
 - coze_llm2_python
 
->Most LLM models are compatible with openai api schema. You can switch vendors by changing base_uri / model to vendor you want.
->
->
->Note. The list above is subject to change as new extensions are added or existing ones are updated.
+<Callout title="Note">
+Most LLM models are compatible with openai api schema. You can switch vendors by changing base_uri / model to vendor you want.
+</Callout>
+<Callout title="Note">
+The list above is subject to change as new extensions are added or existing ones are updated.
+</Callout>
 
 ### Text to Speech (TTS)
 
@@ -97,7 +98,9 @@ Following is a list of supported extension categories:
 - polly_tts
 - tencent_tts_python
 
->Note. The list above is subject to change as new extensions are added or existing ones are updated.
+<Callout title="Note">
+The list above is subject to change as new extensions are added or existing ones are updated.
+</Callout>
 
 ### Multimodal Realtime V2V Model (MLLM)
 
@@ -107,7 +110,9 @@ Following is a list of supported extension categories:
 - openai_mllm_python
 - stepfun_mllm_python
 
->Note. The list above is subject to change as new extensions are added or existing ones are updated.
+<Callout title="Note">
+The list above is subject to change as new extensions are added or existing ones are updated.
+</Callout>
 
 ### Tools (TOOLS)
 
@@ -115,4 +120,6 @@ Following is a list of supported extension categories:
 - vision_analyze_tool_python
 - mcp_client_python
 
->Note. The list above is subject to change as new extensions are added or existing ones are updated.
+<Callout title="Note">
+The list above is subject to change as new extensions are added or existing ones are updated.
+</Callout>

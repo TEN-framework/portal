@@ -1,5 +1,5 @@
 ---
-title: Configure Properties
+title: Configure Extension Properties
 ---
 
 This guide will help you to configure properties in the TEN-Agent Playground.
