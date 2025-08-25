@@ -2,28 +2,33 @@
 title: Configure Extension Properties
 ---
 
-This guide will help you to configure properties in the TEN-Agent Playground.
+Every extension has a set of configurable properties. The configurable properties can be checked via the extension's `manifest.json` file.
+The properties can be used to customize the behavior of the extension during runtime.
 
-## Configure Properties
+You can follow [this guide](/docs/ten-agent/customize_agent/tman-designer/) to learn to launch TMAN Designer if you haven't done so already.
 
-1. Open the playground at [localhost:3000](http://localhost:3000) to configure your agent.
-2. Select a graph type (e.g. Voice Agent, Realtime Agent).
-3. Click on the Button to the right of the graph selection to open the property configuration.
-4. From the dropdown list, you can find all extension nodes used in the graph.
-5. Choose an extension node to configure its properties. e.g. stt / llm / tts / v2v / tool.
-6. You will see a list of properties that can be configured for the selected extension node.
-7. You can change the value of the property by clicking on the input field or switch (if it's a boolean)
-8. Click on `Save Change` to apply the property to the extension node.
-9. If you see the success toast, the property is successfully applied to the extension node.
+## Configure Node Properties
 
-## Add more properties
+1. Right click on a node you want to configure, in the context menu, select "Update Properties"
+2. In the popup window, you may see a set of properties displayed as a form for you to edit.
+3. Make the necessary changes and click "Save Change" to apply the updates.
 
-Some properties are defined in the extension node, while does not currently has a value. These properties will not be shown in the property configuration. You can add more properties by following the steps below:
+## Dynamic Fields
 
-1. In the propety list drawer, click on the `Add Property` button.
-2. A new drawer will be opened with a dropdown list of available properties.
-3. Select a property from the dropdown list.
-4. Click on `Add` to add the property to the extension node.
-5. Configure the value of the property.
-6. Click on `Save Change` to apply the property to the extension node.
-7. If you see the success toast, the property is successfully applied to the extension node.
+"Dynamic fields" are essentially a way to define an object without strictly specifying all of its possible keys upfront. Instead of enforcing a fixed schema, the object can accept and carry through any extra properties provided at runtime.
+
+The main purpose is **flexibility and extensibility**:
+
+* You can design an object with only the core or required fields defined.
+* Any additional fields can be passed in dynamically, without changing the original object definition.
+* When the object is handed off to an external SDK or API, those dynamic fields are transparently forwarded along with the known fields.
+
+This means you don’t have to constantly update your object definition whenever new attributes are needed by the external system—you can just attach them on the fly.
+
+To set a dynamic field, you can follow these steps:
+
+1. Right click on a node you want to configure, in the context menu, select "Update Properties"
+2. In the popup window, click on top tab to switch to "Dynamic Fields"
+3. Choose the object key route where you want to add the dynamic field, set the name of the field, choose the data type and default value.
+4. Confirm "Add Field" to finish adding the dynamic field.
+5. Back to "Node Properties", you should see the newly added dynamic field in the "View Form Values" preview.

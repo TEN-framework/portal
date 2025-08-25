@@ -11,9 +11,7 @@
     "setup_development_env",
     "playground",
     "customize_your_agent",
-    "create_a_hello_world_extension",
-    "how_does_interrupt_work",
-    "create_an_extension_with_predefined_type",
+    "tutorials",
     "faqs"
   ]
 }

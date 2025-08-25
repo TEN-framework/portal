@@ -10,11 +10,9 @@
     "project_structure",
     "setup_development_env",
     "customize_agent",
+    "extension_dev",
     "deploy_ten_agent",
-    "create_a_hello_world_extension",
-    "how_does_interrupt_work",
-    "create_an_extension_with_predefined_type",
-    "tutorials/how_to_run_local_model_in_ollama",
+    "tutorials",
     "faqs"
   ]
 }

@@ -1,0 +1,26 @@
+---
+title: Advanced Modification
+---
+
+Configuring extensions via TMAN Designer should well help you get started with basic modifications. But what happens when you need to implement more complex changes that aren't supported by the visual interface?
+Before making any code changes, it's essential to understand the existing structure and functionality of the `main` extension.
+
+<img src="https://ten-framework-assets.s3.amazonaws.com/blog/main-control/nine.svg" alt="Architecture" />
+
+In the TEN Framework, **connections** are used to define how video and audio data flow between extensions. This approach reduces unnecessary complexity and ensures high performance—a core strength of TEN.
+
+For **events and text-based data**, which are typically less resource-intensive, handling them directly in code offers greater flexibility and efficiency for implementing complex logic.
+
+To make this workflow easier, the latest version of the default TEN Agent app introduces a built-in **“main” extension** in every graph. This extension acts as a central hub for orchestrating components and managing their connections.
+
+With this design:
+
+1. **Video/audio data** always flows through connections between extensions. This lets you take advantage of the framework’s performance optimizations without touching low-level media processing logic.
+2. **The “main” extension** can communicate with any other extension and collect the event/text data it needs.
+
+   * For **inbound events/data**, you must register connections from the source extensions to the “main” extension in the `property.json` file.
+   * For **outbound events/data**, you can call `setDests` at runtime to specify destination extensions, without needing predefined connections in `property.json`.
+3. **All application-specific logic** can reside inside the “main” extension.
+4. **Other extensions** should remain stateless and independent, making them easy to reuse.
+
+The “main” extension can be written in **any language supported by the TEN Framework**. For example, you could implement the main extension in Node.js while keeping other extensions in Python or C++. This design neatly avoids Node.js performance bottlenecks with media processing, particularly in production environments.
