@@ -1,52 +1,118 @@
 ---
-title: Configure Modules
+title: Configure Extension Nodes
 ---
 
-This guide will help you to configure modules in the TEN-Agent Playground.
+Extensions (or modules) are the core building blocks of a voice agent. They define the capabilities and functionalities of the agent. With TMAN Designer, you can easily add, remove, or replace extensions of same kind to tailor the agent to your specific needs.
 
-## Configure Modules
+## Launching TMAN Designer
 
-1. Open the playground at [localhost:3000](http://localhost:3000) to configure your agent.
-2. Select a graph type (e.g. Voice Agent, Realtime Agent).
-3. Click on the Button to the right of the graph selection to open the module selection.
-4. Depending on the graph type, you can select available modules from the dropdown list.
-5. Click on `Save Change` to apply the module to the graph.
-6. If you see the success toast, the module is successfully applied to the graph.
+1. Make sure `task run` is running and TEN Manager server is started. If you haven't started it yet, you can follow the instructions in [Get Started](/docs/ten_agent/getting_started) to set it up.
+2. Open the designer UI at [http://localhost:49483](http://localhost:49483) to configure your agent.
+3. You should see the TMAN Designer interface now, the graphs of your current loaded TEN App should be displayed in the canvas.
 
-## Available Modules
+![image](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/five.png)
 
-The following module types are available for the TEN-Agent Playground:
+## Replace Extension Node
 
-### Speech Recognition (STT)
+Replacing can be very useful when you want to replace a node with another node of same protocol, as it will keep the original connections while changing the underlying implementation (e.g. to a different vendor model).
 
-The Speech Recognition module converts spoken language into text.
+To replace a module or extension in TMAN Designer, follow these steps:
 
-### Text-to-Speech (TTS)
+1. Right click on the node you would like to replace, in the context menu, select "Replace Node With..."
+2. In the popup window, select the extension implementation you would like to use with "Addon Name" text input field.
+3. Click "Replace Node" to confirm the replacement.
 
-The Text-to-Speech module converts text into spoken language.
+>Note. The replacing extension will be using the properties defined in `property.json` by default.
+
+![image](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/three.png)
+
+
+## Add Extension Node
+
+You can add an extension node to a graph with following steps:
+
+1. Right click on an empty area in the canvas, in the context menu, select "Add Node"
+2. In the popup window, select the extension implementation you would like to use with "Addon Name" text input field, and give the node a name with "Node Name" text input field. The node name needs to be unique in a graph.
+3. Click "Add Node" to confirm the addition.
+
+![image](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/six.png)
+
+## Remove Extension Node
+
+You can remove an extension you no longer need from graph by following these steps:
+
+1. Right click on the node you want to remove, in the context menu, select "Delete"
+2. Confirm the removal in the popup window.
+
+![image](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/four.png)
+
+## Supported Extension Categories
+
+Some key categories of extensions are widely adopted in voice ai agent. In TEN-Agent these extensions are built using certain shared protocols so that it's easy to switch.
+
+Following is a list of supported extension categories:
+
+### Audio Speech Recognition (ASR)
+
+- aliyun_asr
+- aliyun_asr_bigmodel_python
+- aws_asr_python
+- azure_asr_python
+- bytedance_asr
+- deepgram_asr_python
+- gladia_asr_python
+- google_asr_python
+- openai_asr_python
+- soniox_asr_python
+- speechmatics_asr_python
+- tencent_asr_python
+- xfyun_asr_bigmodel_python
+- xfyun_asr_dialect_python
+- xfyun_asr_python
+
+>Note. The list above is subject to change as new extensions are added or existing ones are updated.
 
 ### Large Language Model (LLM)
 
-The Large Language Model module generates text based on the input text with influence.
+- openai_llm2_python
+- dify_llm2_python
+- coze_llm2_python
 
-### Voide to Voice Model (V2V)
+>Most LLM models are compatible with openai api schema. You can switch vendors by changing base_uri / model to vendor you want.
+>
+>
+>Note. The list above is subject to change as new extensions are added or existing ones are updated.
 
-The Voice to Voice Model module generates voice based on the input voice with influence.
+### Text to Speech (TTS)
 
-### Tool (TOOL)
+- azure_tts_python
+- bytedance_tts_duplex
+- cartesia_tts2
+- elevenlabs_tts2_python
+- fish_audio_tts_python
+- google_tts_python
+- humeai_tts_python
+- minimax_tts_websocket_python
+- openai_tts2_python
+- polly_tts
+- tencent_tts_python
 
-The Tool module provides a set of tools for the agent to use. The tools can be binded to `LLM` module or `V2V` module.
+>Note. The list above is subject to change as new extensions are added or existing ones are updated.
 
-## Bind Tool Modules
+### Multimodal Realtime V2V Model (MLLM)
 
-You can bind tool modules to `LLM` or `V2V` modules in the TEN-Agent Playground.
-Tool can provide additional capabilities to the agent, such as weather check, news update, etc. You can also write your own tool extension if needed.
+- azure_mllm_python
+- glm_mllm_python
+- gemini_mllm_python
+- openai_mllm_python
+- stepfun_mllm_python
 
-1. Open the playground at [localhost:3000](http://localhost:3000) to configure your agent.
-2. Select a graph type (e.g. Voice Agent, Realtime Agent).
-3. Click on the Button to the right of the graph selection to open the module selection.
-4. Depending on the graph type, you will see `LLM` or `V2V` module in the Module Picker.
-5. Click on the button to the right of the module to open the tool selection.
-6. Select a tool available to bind to the module.
-7. Click on `Save Change` to apply the tool to the module.
-8. If you see the success toast, the tool is successfully applied to the module.
+>Note. The list above is subject to change as new extensions are added or existing ones are updated.
+
+### Tools (TOOLS)
+
+- weatherapi_tool_python
+- vision_analyze_tool_python
+- mcp_client_python
+
+>Note. The list above is subject to change as new extensions are added or existing ones are updated.
