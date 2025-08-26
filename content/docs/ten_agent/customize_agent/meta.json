@@ -2,7 +2,6 @@
   "title": "Customize Agent",
   "pages": [
     "tman-designer",
-    "modify-main",
-    "use-cases"
+    "modify-main"
   ]
 }

@@ -39,11 +39,22 @@ cd ai_agents
 cp ./.env.example ./.env
 ```
 
-##### 2. Setup Agora App ID and App Certificate in `.env`
+##### 2. Setup Agora App ID, App Certificate, Deepgram API Key and ElevenLabs API Key in `.env`
 
 ```bash
+# Agora App ID
+# Agora App Certificate(only required if enabled in the Agora Console)
 AGORA_APP_ID=
 AGORA_APP_CERTIFICATE=
+
+# Extension: elevenlabs_tts
+# ElevenLabs TTS key
+ELEVENLABS_TTS_KEY=
+
+# Extension: deepgram_asr
+# Deepgram ASR key
+DEEPGRAM_API_KEY=
+
 ```
 
 ##### 3. Start agent development containers
@@ -83,6 +94,6 @@ task run
 
 1. Open [localhost:49483](http://localhost:49483).
 2. Right-click to load the corresponding graph (e.g., Voice Assistant).
-3. Enter API keys and set preferences for each extension.
+3. Enter API keys and set preferences for each extension if you have not set them in `.env` in previous steps.
 4. Right-click and select `Manage Apps` to start the Apps Manager.
 5. Click `Run App` to start TEN Agent.
