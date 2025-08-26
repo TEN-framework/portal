@@ -1,0 +1,137 @@
+---
+title: Python - Cascade Main
+---
+
+# Building on the Main Extension
+
+The file [`extension.py`](./extension.py) is the **control center** of the agent.
+If you want to build your own solution on top of the TEN Framework, this is the file you should understand first.
+
+It shows how runtime messages (ASR, LLM, tools, user events) are captured, normalized, and redirected into the agent workflow.
+By following its patterns, you can easily **extend** or **replace** parts of the pipeline with your own logic.
+
+---
+
+## Quick File Layout
+
+```
+main_python/
+├── extension.py      → Main message router (start here!)
+└── agent/
+    ├── agent.py      → Event bus and orchestration
+    ├── events.py     → Typed event definitions (ASR, LLM, Tools, User)
+    ├── llm_exec.py   → Manages LLM requests and responses
+    └── decorators.py → Event binding helpers
+```
+
+You mostly need to know **`extension.py`**. The other files provide typed events and execution helpers.
+
+---
+
+## Architecture Overview
+<img src="https://ten-framework-assets.s3.amazonaws.com/blog/main-control/nine.svg" alt="Architecture" />
+
+---
+
+## How `extension.py` Works
+
+### 1. Event Routing
+
+The extension listens to runtime messages and turns them into **typed events**.
+For example, an ASR result from ASR extension becomes an `ASRResultEvent` object that the agent can use.
+
+```python
+@agent_event_handler(ASRResultEvent)
+async def _on_asr_result(self, event: ASRResultEvent):
+    if not event.text:
+        return
+    if event.final or len(event.text) > 2:
+        await self._interrupt()
+    if event.final:
+        self.turn_id += 1
+        await self.agent.queue_llm_input(event.text)
+    await self._send_transcript("user", event.text, event.final, int(self.session_id))
+```
+
+Here’s what happens:
+
+* **Partial speech** → streamed to transcript/logging
+* **Final speech** → sent into the LLM queue
+* **Overlap detected** → `_interrupt()` flushes ongoing TTS/LLM so the user can speak naturally
+
+---
+
+### 2. Handling LLM Responses
+
+When the LLM responds, the extension splits sentences and forwards them to TTS while also recording transcripts.
+
+```python
+@agent_event_handler(LLMResponseEvent)
+async def _on_llm_response(self, event: LLMResponseEvent):
+    if not event.is_final and event.type == "message":
+        sentences, self.sentence_fragment = parse_sentences(
+            self.sentence_fragment, event.delta
+        )
+        for s in sentences:
+            await self._send_to_tts(s, False)
+
+    await self._send_transcript(
+        "assistant", event.text, event.is_final, 100,
+        data_type=("reasoning" if event.type == "reasoning" else "text"),
+    )
+```
+
+Key points:
+
+* **Streaming**: You can send partial outputs sentence by sentence to TTS for natural speech.
+* **Final output**: Marked and sent to the transcript collector.
+* **Reasoning traces**: Can be separated if you want to show them differently in your UI.
+
+---
+
+### 3. Tool Registration
+
+The extension lets the LLM register tools dynamically.
+
+```python
+@agent_event_handler(ToolRegisterEvent)
+async def _on_tool_register(self, event: ToolRegisterEvent):
+    await self.agent.register_llm_tool(event.tool, event.source)
+```
+
+To add your own tool, define its metadata in `events.py`, then handle it in your solution.
+This makes it easy to plug in **APIs, databases, or custom functions** that the LLM can call.
+
+---
+
+### 4. Interruption
+
+Natural conversation needs interruption (barge-in).
+If the user speaks while the assistant is still generating, `_interrupt()` flushes LLM and TTS:
+
+```python
+async def _interrupt(self):
+    self.sentence_fragment = ""
+    await self.agent.flush_llm()
+    await _send_data(
+        self.ten_env, "tts_flush", "tts", {"flush_id": str(uuid.uuid4())}
+    )
+    await _send_cmd(self.ten_env, "flush", "agora_rtc")
+```
+
+This ensures the assistant doesn’t “talk over” the user.
+
+---
+
+## How to Extend for Your Own Solution
+
+* **Custom ASR behavior**: Edit `_on_asr_result` to filter text, add punctuation, or preprocess before sending to LLM.
+* **Custom LLM logic**: Change `_on_llm_response` to transform text before TTS, or enrich transcripts with metadata.
+* **Add tools**: Use `ToolRegisterEvent` to expose your own APIs or functions.
+* **Custom interruption policy**: Tweak `_interrupt()` to make the agent more/less tolerant of overlapping speech.
+
+## Summary
+
+* **`extension.py` is the heart of the agent**: it routes runtime messages into typed events and applies core conversation logic.
+* By modifying or extending these handlers, you can **quickly build your own conversational AI solution** on top of TEN.
+* Everything else (`agent.py`, `llm_exec.py`, `events.py`) supports this routing, but the patterns in `extension.py` are what you’ll reuse the most.

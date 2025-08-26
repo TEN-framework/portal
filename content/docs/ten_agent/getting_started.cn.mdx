@@ -60,8 +60,18 @@ cp ./.env.example ./.env
 打开 `.env` 文件并填写 Agora App ID 和 App Certificate。这些将用于连接 Agora RTC 扩展。
 
 ```bash title=".env"
+# Agora App ID
+# Agora App Certificate(only required if enabled in the Agora Console)
 AGORA_APP_ID=
 AGORA_APP_CERTIFICATE=
+
+# Extension: elevenlabs_tts
+# ElevenLabs TTS key
+ELEVENLABS_TTS_KEY=
+
+# Extension: deepgram_asr
+# Deepgram ASR key
+DEEPGRAM_API_KEY=
 ```
 
 **4. 启动 agent 构建工具容器**
@@ -102,4 +112,4 @@ task run
 
 1. 选择一个图类型 (例如，语音 Agent，实时对话 Agent)
 2. 选择一个对应的模块
-3. 选择一个扩展并配置其 API 密钥设置
+3. 选择一个扩展并配置其 API 密钥设置 (若你还未在前面步骤的.env中配置环境变量)

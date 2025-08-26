@@ -4,16 +4,15 @@
   "root": true,
   "pages": [
     "overview",
+    "rtc_first_design",
     "getting_started",
     "architecture_flow",
     "project_structure",
     "setup_development_env",
-    "demo/index",
-    "playground",
-    "customize_your_agent",
-    "create_a_hello_world_extension",
-    "how_does_interrupt_work",
-    "create_an_extension_with_predefined_type",
+    "customize_agent",
+    "extension_dev",
+    "deploy_ten_agent",
+    "tutorials",
     "faqs"
   ]
 }
