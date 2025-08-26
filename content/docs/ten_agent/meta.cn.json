@@ -9,8 +9,9 @@
     "architecture_flow",
     "project_structure",
     "setup_development_env",
-    "playground",
-    "customize_your_agent",
+    "customize_agent",
+    "extension_dev",
+    "deploy_ten_agent",
     "tutorials",
     "faqs"
   ]

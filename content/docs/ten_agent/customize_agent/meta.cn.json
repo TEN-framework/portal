@@ -1,9 +1,7 @@
 {
-  "title": "运行 Playground",
+  "title": "自定义Agent",
   "pages": [
-    "configure_modules",
-    "configure_properties",
-    "use-cases",
-    "change_language"
+    "tman-designer",
+    "modify-main"
   ]
 }

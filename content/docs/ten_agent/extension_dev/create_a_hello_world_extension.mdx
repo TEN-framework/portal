@@ -158,7 +158,11 @@ In the `extension.py` file of your extension, we will create a simple async loop
             await ten_env.send_data(data)
 ```
 
-Save the file, then Choose "App->Reload All Apps" to reload extension settings. Note this is mandatory when you want changes in manifest.json to take effect after you change the file without TMAN Designer.
+Save the file, then Choose "App->Reload All Apps" to reload extension settings. 
+
+<Callout title="Note">
+This reload step is mandatory when you want changes in `manifest.json` to take effect after you change the file without TMAN Designer.
+</Callout>
 
 ### 2). Add connection from `hello_world` to `main`
 
