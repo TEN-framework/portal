@@ -1,149 +1,244 @@
 ---
-title: 创建 Hello World 扩展
+title: 创建 Hello World Extension
 ---
 
-在本章中，我们将逐步创建一个 “Hello World” 扩展，该扩展将以 Python、Go 和 C++ 呈现。您可以随意选择您喜欢的任何语言。准备好了吗？
+在本章中，我们将一步步创建一个 `Hello World` 扩展，它可以用 Python、Go 和 C++ 实现。你可以自由选择自己喜欢的语言。准备好了吗？
 
-## 前提条件
+## 前置条件
 
-在深入本章之前，您需要熟悉[前面介绍的基础知识](./getting_started)。特别是，请确保您了解如何使用 `docker compose up` 并了解后台运行的服务。
+在深入学习本章之前，你需要熟悉[前面介绍的基础知识](/docs/ten_agent/getting_started)。特别是，要确保你理解如何使用 `docker compose up -d` 并了解后台运行的服务。
 
-## 1. 启动服务器
+## 1. 启动开发容器
 
-首先，让我们先启动服务器。运行以下命令：
+首先，我们需要启动相关服务器。运行以下命令：
 
 <Callout>
-  如果标题显示“终端”，则表示您正在本地运行命令。如果标题显示“Bash”，则表示您正在
-  Docker 容器中运行命令。
+  如果标题是 `Terminal`，表示你在本地运行命令。  
+  如果标题是 `Bash`，表示你在 Docker 容器中运行命令。
 </Callout>
 
-```bash title="终端"
-docker compose up
+```bash title="Terminal"
+docker compose up -d
 ```
 
-输入命令后，您应该看到类似于以下内容的输出：
+执行后，你应该会看到类似以下的输出：
 
-```bash title="终端"
-    .... Attaching to ten_agent_dev, ten_agent_playground ten_agent_dev | cd
-    agents && tman designer ten_agent_dev | :-) Starting server at
-    http://0.0.0.0:49483 ten_agent_playground | ▲ Next.js 14.2.4
-    ten_agent_playground | - Local: http://localhost:3000 ten_agent_playground |
-    - Network: http://0.0.0.0:3000 ten_agent_playground | ten_agent_playground |
-    ✓ Starting... ten_agent_playground | ✓ Ready in 429ms ...
+```bash title="Terminal"
+Attaching to ten_agent_dev, ten_agent_playground
+ten_agent_dev         | cd agents && tman designer
+ten_agent_dev         | :-)  Starting server at http://0.0.0.0:49483
+ten_agent_playground  |   ▲ Next.js 14.2.4
+ten_agent_playground  |   - Local:        http://localhost:3000
+ten_agent_playground  |   - Network:      http://0.0.0.0:3000
+ten_agent_playground  |
+ten_agent_playground  |  ✓ Starting...
+ten_agent_playground  |  ✓ Ready in 429ms
+...
 ```
 
-现在，我们正在运行以下服务：
+此时，以下服务已启动：
 
-• `ten_agent_dev`，地址为 `http://0.0.0.0:49483`（开发服务器）
-
-• `ten_agent_playground`，地址为 `http://localhost:3000` (TEN Agent playground)
+• `ten_agent_dev` 服务运行在 `http://0.0.0.0:49483` （TMAN Designer）
+• `ten_agent_playground` 服务运行在 `http://localhost:3000` （TEN Agent playground）
 
 ## 2. 进入 Docker 容器
 
-要在隔离的环境中工作，请运行以下命令：
+为了在隔离环境中工作，运行以下命令：
 
-```bash title="终端"
+```bash title="Terminal"
 docker exec -it ten_agent_dev bash
 ```
 
-## 3. 创建 Hello World 扩展
+## 3. 创建 hello world 扩展
 
-通过运行以下命令，将在 Python、Go 或 C++ 中创建一个名为 `hello_world` 的扩展。
+运行以下命令后，将分别在 Python、Go 或 C++ 中创建一个名为 `hello_world` 的扩展。
 
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
 
-<Tabs items={['Python', 'Go', 'C++']} defaultIndex={0}>
-  <Tab>
+\<Tabs items={\['Python', 'Go', 'C++']} defaultIndex={0}> <Tab>
 
-```bash title="终端"
+```bash title="Bash"
 cd /app/agents/ten_packages/extension
-tman create extension hello_world --template=default_async_extension_python@0.6 --template-data class_name_prefix=HelloWorld
+tman create extension hello_world --template=default_async_extension_python@0.10 --template-data class_name_prefix=HelloWorld
 ```
 
   </Tab>
   <Tab>
 
-```bash title="终端"
+```bash title="Bash"
 cd /app/agents/ten_packages/extension
-tman create extension hello_world --template=default_extension_go@0.6 --template-data class_name_prefix=HelloWorld
+tman create extension hello_world --template=default_extension_go@0.10 --template-data class_name_prefix=HelloWorld
 ```
 
   </Tab>
   <Tab>
 
-```bash title="终端"
+```bash title="Bash"
 cd /app/agents/ten_packages/extension
-tman create extension hello_world --template=default_extension_cpp@0.6 --template-data class_name_prefix=HelloWorld
+tman create extension hello_world --template=default_extension_cpp@0.10 --template-data class_name_prefix=HelloWorld
 ```
 
   </Tab>
 </Tabs>
 
-运行命令后，日志将显示如下内容：
+执行后日志会显示类似：
 
-```bash title="终端"
+```bash title="Bash"
 Package 'extension:hello_world' created successfully in '/app' in 3 seconds.
 ```
 
-## 4. 向扩展添加 API
+## 4. 将扩展节点添加到图中
 
-导航到 `hello_world` 目录并打开 manifest.json。添加带有 `data_in` 和 `cmd_out` 的 API 对象：
+接下来，启动 TMAN Designer 并打开你想要修改的图。
 
-```json title="./hello_world/manifest.json"
-{
-  "type": "extension",
-  "name": "hello_world",
-  "version": "0.3.1",
-  "dependencies": [
-    {
-      "type": "system",
-      "name": "ten_runtime_python",
-      "version": "0.3.1"
-    }
-  ],
-  "package": {
-    "include": [
-      "manifest.json",
-      "property.json",
-      "BUILD.gn",
-      "**.tent",
-      "**.py",
-      "README.md",
-      "tests/**"
+1. 在画布的空闲区域右键，选择 “Add Node”。
+2. 在弹出的对话框中，在 "Addon" 字段选择刚才创建的 `hello_world` 扩展。
+3. 点击 "Add Node"，即可将扩展节点放置到画布上。
+4. 你应该能看到 `hello_world` 节点出现在画布上。
+
+## 5. 在图中尝试第一个消息连接
+
+扩展可以在图中与其他节点收发消息。现在我们来尝试一个简单的消息连接。
+设想我们让 `hello_world` 输出消息名为 `output_text` 的 "Hello, World!"，并接收任何名为 `input_text` 的输入消息。
+
+### 1). 更新 `manifest.json` 声明消息协议
+
+在扩展的 `manifest.json` 文件中，需要声明扩展使用的消息协议。在 `api` 部分添加如下内容：
+
+```json
+...
+  "api": {
+    "data_in": [
+      {
+        "name": "input_text",
+        "property": {
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    ],
+    "data_out": [
+      {
+        "name": "output_text",
+        "property": {
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          }
+        }
+      }
     ]
   },
-  "api": {
-    "data_in": [ // [!code highlight]
-      { // [!code highlight]
-        "name": "text_data", // [!code highlight]
-        "property": { // [!code highlight]
-          "text": { // [!code highlight]
-            "type": "string" // [!code highlight]
-          }, // [!code highlight]
-          "is_final": { // [!code highlight]
-            "type": "bool" // [!code highlight]
-          } // [!code highlight]
-        } // [!code highlight]
-      } // [!code highlight]
-    ], // [!code highlight]
-    "cmd_out": [ // [!code highlight]
-      { // [!code highlight]
-        "name": "flush" // [!code highlight]
-      } // [!code highlight]
-    ] // [!code highlight]
-  }
+...
 ```
 
-## 5. 构建扩展
+在扩展的 `extension.py` 文件中，创建一个简单的异步循环，每隔 5 秒发送一次 "Hello, World!"。
 
-让我们使用 `cd /app` 命令返回到项目的根目录，并运行 `make build` 来构建扩展。
+```python
+    async def on_start(self, ten_env: AsyncTenEnv) -> None:
+        ten_env.log(LogLevel.DEBUG, "on_start")
 
-```bash title="终端"
-cd /app
+        # 实现：读取属性，初始化资源
+        asyncio.create_task(self._send_hello(ten_env))
 
-task use
+
+    async def _send_hello(self, ten_env: AsyncTenEnv) -> None:
+        while True:
+            await asyncio.sleep(5)  # 每隔 5 秒发送一次
+            data = Data.create("output_text")
+            # 空路径表示数据根节点
+            data.set_property_string("text", "Hello, World!")
+            await ten_env.send_data(data)
+```
+
+保存文件后，选择菜单 "App->Reload All Apps" 以重新加载扩展设置。
+
+<Callout title="注意">
+当你修改 `manifest.json` 文件后，这一步重新加载是必须的，否则更改不会生效。
+</Callout>
+
+### 2). 添加从 `hello_world` 到 `main` 的连接
+
+在 TMAN Designer 中，右键点击 `hello_world` 节点，选择 “Add Connection from hello\_world”。
+在弹出的对话框中选择消息类型为 "data"，消息名为 "output\_text"。然后选择目标节点为 "main"，点击 “Add Connection”。
+此时连接已成功创建！你应该能看到从 `hello_world` 到 `main` 的边。
+
+### 3). 在 `main` 中添加代码处理输入
+
+现在我们来写一些代码处理传入的消息。打开 `main.py` 文件并添加如下代码：
+
+```python
+    # hello_wolrd/extension.py
+    async def on_data(self, ten_env: AsyncTenEnv, data: Data):
+        name = data.get_name()
+        if name == "output_text":
+            # 直接处理 input_text
+            text, _ = data.get_property_string("text")
+            if text:
+                ten_env.log_info(f"[MainControlExtension] Received input_text: {text}")
+                return
+
+        await self.agent.on_data(data)
+```
+
+### 4). 从 `main` 回复消息到 `hello_world`
+
+由于 `main` 会与多个扩展通信，我们推荐你使用 `setDests` API 来发送消息。
+通常只在 `main` 中使用此 API，因为它知道对话上下文和目标接收者。如果在其他扩展中使用，可能会影响扩展的复用性。
+
+```python
+    # main/extension.py
+    async def on_data(self, ten_env: AsyncTenEnv, data: Data):
+        name = data.get_name()
+        if name == "output_text":
+            # 直接处理 input_text
+            text, _ = data.get_property_string("text")
+            if text:
+                source_name = data.get_source().extension_name
+                ten_env.log_info(f"[MainControlExtension] Received input_text: {text} from: {source_name}")
+
+                # 创建回复
+                reply = Data.create("input_text")
+                reply.set_property_string("text", f"Echo: {text}")
+                # 回复给消息来源
+                reply.set_dests([Loc(
+                    app_uri="",
+                    graph_id="",
+                    extension_name=source_name
+                )])
+                await ten_env.send_data(reply)
+                return
+
+        await self.agent.on_data(data)
+```
+
+接着修改 `hello_world` 的实现，使其能接收 echo 回复并在 ten\_env 日志中打印。
+
+```python
+    async def on_data(self, ten_env: AsyncTenEnv, data: Data) -> None:
+        data_name = data.get_name()
+        ten_env.log(LogLevel.INFO, "on_data name {}".format(data_name))
+
+        # 实现：处理数据
+        name = data.get_name()
+        if name == "input_text":
+            text, _ = data.get_property_string("text")
+            if text:
+                ten_env.log_info(f"[HelloWorldExtension] Received input_text: {text}")
+                return
 ```
 
 ## 6. 验证扩展
 
-恭喜！您已成功创建了第一个 `hello_world` 扩展。
+使用 TMAN Designer 启动应用，检查日志控制台是否打印了以下消息：
+
+```
+[MainControlExtension] Received input_text: Hello, World!
+[HelloWorldExtension] Received input_text: Echo: Hello, World!
+```
+
+恭喜！你已经成功创建了第一个 `hello_world` 扩展。
