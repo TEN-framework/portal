@@ -88,7 +88,7 @@ export function FrameworkSection({ className }: { className?: string }) {
                 viewport={{ once: true }}
                 className="rounded-lg bg-white/60 dark:bg-gray-800/60 p-6 backdrop-blur-sm border border-gray-200 dark:border-gray-700"
               >
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-r from-orange-500 to-red-500 text-white">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-black text-white">
                   {feature.icon}
                 </div>
                 <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">
