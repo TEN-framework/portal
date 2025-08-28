@@ -6,7 +6,7 @@ title: 创建 Hello World 扩展
 
 ## 前置条件
 
-在开始之前，你需要熟悉[前文的基础内容](/docs/ten_agent/getting_started)。特别是，需要掌握如何使用 `docker compose up -d` 并了解后台启动的服务。
+在开始之前，你需要熟悉[前文的基础内容](/docs/ten_agent/getting_started)。特别是，需要掌握如何使用 `docker compose up` 并了解后台启动的服务。
 
 ## 1. 启动服务器
 
@@ -91,9 +91,8 @@ Package 'extension:hello_world' created successfully in '/app' in 3 seconds.
 
 打开 **TMAN Designer** 并选择需要修改的图：
 
-1. 在画布上空白区域右键，选择 **Add Node**。
+1. 在画布上右键，选择 **Add Node**。
 2. 在弹窗的 **Addon** 字段中，选择刚创建的 `hello_world` 扩展。
-3. 在 **Name** 字段中，设置为 "hello_world"。
 3. 点击 **Add Node** 完成操作。
 4. 画布中应当出现 `hello_world` 节点。
 
