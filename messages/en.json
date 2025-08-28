@@ -1,7 +1,8 @@
 {
   "nav": {
     "docs": "Documentation",
-    "blog": "Blog"
+    "blog": "Blog",
+    "hackathon": "Hackathon"
   },
   "fuma": {
     "search": "Search",
@@ -37,5 +38,109 @@
     "huggingFaceSpace": "Try VAD and Turn Detection",
     "heroBtnReadDoc": "Documentation",
     "bannerAnnouncement": "are now part of the TEN open-source ecosystem!"
+  },
+  "hackathon": {
+    "title": "TEN Dev Challenge 2025",
+    "subtitle": "Join Developers Worldwide to Build Conversational AI",
+    "heroTitle": "Build the Next Generation of Real-Time Voice AI",
+    "prizePool": "USD 11,000 Prize Pool",
+    "global": "Global & Online",
+    "openToAll": "Open to All",
+    "about": {
+      "title": "What's This All About?",
+      "description": "The 15-day TEN Dev Challenge 2025, hosted by TEN Framework, centers on real-time engagement and Conversational AI, inviting developers worldwide to shape the next generation of voice-interaction products. From voice companionship to smart homes to enterprise services, we look forward to discovering new voice-driven scenarios. Join us in exploring practical applications for voice agents!"
+    },
+    "framework": {
+      "title": "TEN Framework",
+      "description": "An open-source framework for conversational voice AI agents",
+      "features": "Enables developers to quickly build real-time voice agents (with abilities of vision and others), making it easy for developers to experiment, integrate large language models, STT, TTS and create reusable extensions"
+    },
+    "challenge": {
+      "title": "Challenge Overview",
+      "description": "Participants must build their projects using the open-source TEN Framework. You can integrate a wide range of technologies and hardware, such as ASR, LLMs, TTS, SIP, and ESP32 to create innovative voice-interactive applications.",
+      "examples": "Examples include:",
+      "serviceAgents": "Service Agents: Voice-powered customer service, smart eldercare helpers",
+      "iotHardware": "IoT & Hardware: Voice-controlled smart home devices",
+      "emotionalCompanions": "Emotional Companions: AI live streamers, virtual companions"
+    },
+    "prizes": {
+      "title": "Prizes & Awards",
+      "firstPlace": {
+        "title": "TEN Voice Innovation Award - First Place (1 team)",
+        "amount": "$4,000 USD"
+      },
+      "secondPlace": {
+        "title": "TEN Voice Innovation Award - Second Place (1 team)",
+        "amount": "$3,000 USD"
+      },
+      "thirdPlace": {
+        "title": "TEN Voice Innovation Award - Third Place (2 teams)",
+        "amount": "$1,000 USD"
+      },
+      "technical": {
+        "title": "TEN Technical Award (1 team)",
+        "amount": "$1,000 USD"
+      },
+      "showcase": "All winning projects will have the opportunity to be showcased at the RTE Conference.",
+      "ambassador": "Winners will also be given priority consideration to become TEN Framework Community Ambassadors, with access to exclusive ambassador benefits.",
+      "eligibilityNote": "To be eligible for the \"TEN Voice Innovation Awards\" (1st, 2nd, and 3rd place prizes), your project must be built primarily on the TEN Framework.",
+      "technicalNote": "Projects that only use the TEN VAD or Turn Detection features will only be considered for the \"TEN Technical Award\"."
+    },
+    "judges": {
+      "title": "Judging Panel",
+      "tba": "The full list of judges will be announced in September."
+    },
+    "timeline": {
+      "title": "Event Timeline",
+      "registrationOpens": "Registration opens: Sept 4",
+      "submissionsOpen": "Submissions open: Sept 12, 00:00 PDT (07:00 UTC)",
+      "deadline": "Registration & submissions close: Sept 26, 23:59 PDT (Sept 27, 06:59 UTC)",
+      "judging": "Judging: Sept 27–30, 2025",
+      "winnersAnnounced": "Winners announced: Oct 15, 2025",
+      "workshops": "Online Workshops: TBA",
+      "workshopsDesc": "Throughout the submission period, we'll be hosting several online workshops to offer technical support on our official TEN Discord channel."
+    },
+    "participate": {
+      "title": "How to Participate",
+      "signUp": "Sign Up - Register on lu.ma and join our official Discord channel to stay updated.",
+      "build": "Build - Create your project using the open-source TEN Framework.",
+      "submit": "Submit - Send us your project, documentation, and a demo before the deadline here.",
+      "submissionTitle": "Your submission should include:",
+      "projectName": "Project name & description",
+      "teamInfo": "Team info & contact details",
+      "features": "A breakdown of the features developed using the TEN Framework(TEN VAD/TTD)",
+      "demo": "A demo video, a link to the live experience, etc."
+    },
+    "toolkit": {
+      "title": "Toolkit",
+      "framework": "TEN Framework",
+      "vadTtd": "TEN VAD/TTD"
+    },
+    "eligibility": {
+      "title": "Project Eligibility",
+      "openToAll": "Open to all. You can compete as an individual or in a team of up to five members.",
+      "teamFormation": "Team Formation. You can form a team beforehand or find teammates on our Discord channel.",
+      "buildWithTen": "Build with TEN. All projects must be built on the TEN Framework.",
+      "originalWork": "Original Work. All submissions must be original work, free of any legal or copyright issues.",
+      "note": "Projects that have previously won a prize at a TEN event are not eligible to compete again. However, you can submit a new version of the project if you make significant feature additions or major upgrades to the original."
+    },
+    "discord": {
+      "title": "Discord Community",
+      "description": "Join us on the official Discord channel",
+      "support": "If you have any questions about the competition, you can ask in our official Discord community or send an email to developer@theten.ai."
+    },
+    "cta": {
+      "title": "Ready to Build?",
+      "description": "Join TEN Dev Challenge 2025 and reshape the future of human-AI interaction with real-time voice AI.",
+      "register": "Register Now",
+      "joinDiscord": "Join Discord",
+      "email": "developer@theten.ai"
+    },
+    "footer": {
+      "organizer": "Organizer: TEN Framework",
+      "partners": "Partners:",
+      "communitySupport": "Community Support: Slush",
+      "socialMedia": "Social Media:"
+    }
   }
 }
