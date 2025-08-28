@@ -1,0 +1,219 @@
+---
+title: Code Realtime Voice Agent Using Node.js
+description: Using Node.js to build a real-time voice agent with TEN Framework.
+author: Plutoless
+date: 2025-08-28
+---
+
+## Build a Voice Assistant with Node.js on TEN Framework
+
+The TEN Framework makes it possible to build **real-time, low-latency voice assistants** that combine speech recognition, large language models, and text-to-speech — all orchestrated through a single pipeline.
+
+In this tutorial, we’ll show you how to use **Node.js** to create a voice assistant with TEN.
+The best part? You don’t need to reimplement ASR, LLM, or TTS in Node. You can **reuse Python or C++ extensions** for those, and just focus on writing the **main pipeline and business logic** in Node.js.
+
+---
+
+## Why Node.js with TEN?
+
+TEN Framework is designed for **modular, cross-language development**:
+
+* **RTC-first pipeline** → audio/video/data flows are real-time and low-latency.
+* **Cross-language extensions** → use ASR in Python, TTS in C++, LLM in Go, etc.
+* **Unified orchestration** → Node.js just needs to implement the **main extension**, which orchestrates all components.
+
+This means **your business logic lives in JavaScript/TypeScript**, while the heavy lifting is done by optimized extensions.
+
+---
+
+## 📂 Project Structure
+
+You don’t need to set everything up from scratch — TEN Framework already provides a **ready-to-use Node.js voice assistant example** in the repository.
+
+👉 You can find it here: [**voice-assistant-nodejs example on GitHub**](https://github.com/ten-framework/ten/tree/main/agents/examples/voice-assistant-nodejs)
+
+The folder layout looks like this (mirroring what you’ll find on GitHub):
+
+```
+.
+├── index.ts            → MainControlExtension (Node.js pipeline logic)
+├── helper.ts           → Utilities for sending Cmd/Data
+└── agent/
+    ├── agent.ts        → Event queue and orchestration
+    ├── events.ts       → Typed events (ASR, LLM, Tools, User)
+    ├── llm_exec.ts     → Handles LLM requests/responses
+    └── struct.ts       → Zod schemas for message validation
+```
+
+This example shows how to implement the **main extension** in Node.js while reusing existing ASR, LLM, and TTS extensions written in Python or C++.
+
+---
+
+## 🏃 Getting Started
+
+We recommend following the [**official Getting Started guide**](https://theten.ai/docs/ten_agent/getting_started) for the basic setup steps (installations, API keys, environment, Docker, etc.).
+
+⚠️ **Note:** When you reach the step to build the agent with `task use`, make sure to select the **Node.js voice assistant example**:
+
+```bash
+task use AGENT=agents/examples/voice-assistant-nodejs
+```
+
+This ensures you’re running the **Node.js pipeline version**, while still reusing Python/C++ extensions for ASR, LLM, and TTS.
+
+---
+
+## The Main Extension
+
+[`index.ts`](./index.ts) defines the **MainControlExtension**, which is your Node.js entry point.
+Its job is to:
+
+* **Listen** to runtime events (ASR results, LLM responses, tool calls, user join/leave).
+* **Redirect** events into the agent.
+* **Handle** interruption (barge-in).
+* **Send** transcripts and responses back out.
+
+Example:
+
+```ts
+import { Extension, TenEnv, Data } from "ten-runtime-nodejs";
+import { Agent } from "./agent/agent.js";
+import { parseSentences, sendData } from "./helper.js";
+
+export class MainControlExtension extends Extension {
+  tenEnv!: TenEnv;
+  agent!: Agent;
+  sentenceFragment = "";
+
+  async on_data(tenEnv: TenEnv, data: Data) {
+    const event = parseEvent(data);
+
+    switch (event.name) {
+      case "asr_result":
+        if (event.final) {
+          await this.agent.queueLLMInput(event.text);
+        }
+        break;
+
+      case "llm_response":
+        const [sentences, fragment] = parseSentences(this.sentenceFragment, event.delta);
+        this.sentenceFragment = fragment;
+        for (const s of sentences) {
+          await sendData(this.tenEnv, "tts_input", "tts", { text: s });
+        }
+        break;
+    }
+  }
+}
+```
+
+This is where you add **business logic**: customizing how user input is processed and how assistant responses are spoken.
+
+---
+
+## Voice Flow
+
+* **Audio in**: User’s microphone audio goes **RTC → ASR extension (Python/C++) → Node.js** (ASR events).
+* **Logic**: Node.js MainControlExtension routes ASR text → LLM input.
+* **LLM out**: Model responses (streaming tokens) are sent back → Node.js → TTS extension (C++).
+* **Audio out**: RTC delivers synthesized voice to the user.
+
+You only code the **glue logic** in Node — no need to handle raw audio or train models.
+
+---
+
+## Reusing Python/C++ Extensions
+
+Say you already have:
+
+* **ASR** → `google_asr_python`
+* **LLM** → `openai_llm2_python`
+* **TTS** → `polly_tts` (C++)
+
+You don’t need to port these to Node. In your TEN graph, just connect them:
+
+```json title="property.json"
+{
+  "connections": [
+    { "src": "rtc", "dest": "google_asr_python" },
+    { "src": "google_asr_python", "dest": "main_nodejs" },
+    { "src": "main_nodejs", "dest": "openai_llm2_python" },
+    { "src": "openai_llm2_python", "dest": "main_nodejs" },
+    { "src": "main_nodejs", "dest": "polly_tts" },
+    { "src": "polly_tts", "dest": "rtc" }
+  ]
+}
+```
+
+Here:
+
+* **Node.js (`main_nodejs`)** is only responsible for **business logic orchestration**.
+* Heavy-lifting (ASR/LLM/TTS) is done by optimized Python/C++ extensions.
+
+---
+
+## Tool Calls: Adding Business Logic
+
+One of the most powerful features of TEN is that **LLMs can call tools dynamically**.
+You can implement these tools in Node.js, where your business logic lives.
+
+### 1. Define the tool
+
+In `agent/events.ts`:
+
+```ts
+export class ToolRegisterEvent {
+  type = "cmd";
+  name = "tool_register";
+  tool!: LLMToolMetadata;
+  source!: string;
+}
+```
+
+### 2. Register the tool in Node.js
+
+In your main extension:
+
+```ts
+case "tool_register":
+  await this.agent.registerLLMTool(event.tool, event.source);
+  break;
+```
+
+### 3. Handle the tool call
+
+When the LLM decides to invoke the tool:
+
+```ts
+case "llm_tool_call":
+  const result = await callWeatherAPI(event.arguments.city);
+  await sendData(this.tenEnv, "llm_tool_result", event.source, {
+    call_id: event.call_id,
+    output: result,
+  });
+  break;
+```
+
+Here you can connect **any external API, DB, or custom service**.
+
+---
+
+## Advantages
+
+* **Rapid iteration**: Change your pipeline logic in TypeScript without touching ASR/LLM/TTS.
+* **Cross-language reusability**: Plug in extensions written in Python or C++ seamlessly.
+* **Business logic in Node**: Implement tools (API calls, DB queries) where your app logic already lives.
+* **Real-time performance**: RTC-first design ensures low-latency audio streaming.
+
+
+## Summary
+
+With TEN Framework, building a voice assistant in Node.js is about **writing orchestration and business logic** — not reinventing ASR, LLM, or TTS.
+
+You can:
+
+* **Reuse existing extensions** in Python/C++.
+* **Keep your business pipeline and tools in Node.js**.
+* **Deliver real-time voice assistants** with minimal code.
+
+TEN brings the **best of both worlds**: cross-language extensibility and RTC-first performance.
