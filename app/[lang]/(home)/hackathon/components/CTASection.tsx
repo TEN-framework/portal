@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl'
 import { motion } from 'motion/react'
 import { ExternalLink, MessageCircle, Mail, Rocket } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Link } from '@/lib/next-intl-navigation'
 import { cn } from '@/lib/utils'
 
 export function CTASection({ className }: { className?: string }) {

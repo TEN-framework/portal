@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { HackathonHero } from './components/HackathonHero'
 import { AboutSection } from './components/AboutSection'
 import { FrameworkSection } from './components/FrameworkSection'
