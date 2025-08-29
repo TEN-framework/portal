@@ -159,7 +159,7 @@ export function Hero(props: { className?: string }) {
   return (
     <div className={cn('text-foreground w-full', className)}>
       <div className="container mx-auto">
-        <div className="flex flex-col items-center justify-center gap-8 pt-4 pb-20 lg:pt-8 lg:pb-60">
+        <div className="flex flex-col items-center justify-center gap-6 md:gap-8 pt-4 pb-10 sm:pb-12 md:pb-16 lg:pt-8 xl:pb-24 2xl:pb-60">
           <div>
             <Button
               variant="secondary"
@@ -186,7 +186,7 @@ export function Hero(props: { className?: string }) {
             </Button>
           </div>
           <div className="flex flex-col gap-4">
-            <h1 className="font-regular text-center text-5xl tracking-tighter md:text-7xl">
+            <h1 className="font-regular text-center text-5xl tracking-tighter md:text-6xl lg:text-7xl">
               <span className="text-spektr-cyan-50 font-medium">
                 {t('titlePrefix')}
               </span>
