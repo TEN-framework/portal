@@ -53,7 +53,7 @@ const BackgroundVideo = () => {
 export default function HomePage() {
   return (
     <>
-      <div className="relative flex h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
+      <div className="relative flex min-h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
         <BackgroundVideo />
         <Hero className="relative z-10" />
         {/* <ProjectsShowcase /> */}

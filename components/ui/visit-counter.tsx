@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-interface VisitCounterProps {
-  className?: string
-  showCounter?: boolean
-}
-
-export function VisitCounter({ className = '', showCounter = false }: VisitCounterProps) {
+export function VisitCounter() {
 
   const [, setVisitCount] = useState<number | null>(null)
 
