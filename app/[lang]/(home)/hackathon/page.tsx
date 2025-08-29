@@ -15,8 +15,6 @@ import { FooterSection } from './components/FooterSection'
 import { VisitCounter } from '@/components/ui/visit-counter'
 
 export default function HackathonPage() {
-  const t = useTranslations('hackathon')
-
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950">
       <HackathonHero />

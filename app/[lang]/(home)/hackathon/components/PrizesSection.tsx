@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { motion } from 'motion/react'
-import { Trophy, Award, Star, Users } from 'lucide-react'
+import { Trophy, Award, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function PrizesSection({ className }: { className?: string }) {

@@ -17,8 +17,8 @@ function getClientIP(request: NextRequest): string {
   if (realIP) return realIP
   if (cfConnectingIP) return cfConnectingIP
   
-  // Fallback to request.ip or unknown
-  return request.ip || 'unknown'
+  // Fallback to unknown
+  return 'unknown'
 }
 
 export async function POST(request: NextRequest) {

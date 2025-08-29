@@ -4,7 +4,6 @@ import { useTranslations } from 'next-intl'
 import { motion, useScroll, useTransform } from 'motion/react'
 import { ExternalLink, Calendar, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Link } from '@/lib/next-intl-navigation'
 import { cn } from '@/lib/utils'
 import { useEffect, useState } from 'react'
 

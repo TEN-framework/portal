@@ -9,7 +9,7 @@ interface VisitCounterProps {
 
 export function VisitCounter({ className = '', showCounter = false }: VisitCounterProps) {
 
-  const [visitCount, setVisitCount] = useState<number | null>(null)
+  const [, setVisitCount] = useState<number | null>(null)
 
   useEffect(() => {
     // Track the visit when component mounts
