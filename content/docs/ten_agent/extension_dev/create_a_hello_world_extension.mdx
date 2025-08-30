@@ -1,0 +1,249 @@
+---
+title: Create a Hello World Extension
+---
+
+In this chapter, we are going to create a `Hello World` extension step by step, available in Python, Go, and C++. Feel free to choose whichever language you prefer. So buckle up.
+
+## Prerequisites
+
+Before diving into this chapter, you’ll need to be familiar with the [basics covered earlier](/docs/ten_agent/getting_started). Specifically, ensure you understand how to use `docker compose up` and are aware of the services running in the background.
+
+## 1. Compose up the servers
+
+First things first, let’s start by composing the servers. Run the following command:
+
+<Callout>
+  If the caption says `Terminal`, it means you are running the command locally.
+  If the caption says `Bash`, it means you are running the command in the Docker
+  container.
+</Callout>
+
+```bash title="Terminal"
+docker compose up -d
+```
+
+Once the command is entered, you should see output similar to this:
+
+```bash title="Terminal"
+Attaching to ten_agent_dev, ten_agent_playground
+ten_agent_dev         | cd agents && tman designer
+ten_agent_dev         | :-)  Starting server at http://0.0.0.0:49483
+ten_agent_playground  |   ▲ Next.js 14.2.4
+ten_agent_playground  |   - Local:        http://localhost:3000
+ten_agent_playground  |   - Network:      http://0.0.0.0:3000
+ten_agent_playground  |
+ten_agent_playground  |  ✓ Starting...
+ten_agent_playground  |  ✓ Ready in 429ms
+...
+```
+
+Now, we’ve got the following services running:
+
+• `ten_agent_dev` at `http://0.0.0.0:49483` (TMAN Designer)
+
+• `ten_agent_playground` at `http://localhost:3000` (TEN Agent playground)
+
+## 2. Enter the docker container
+
+To work within the isolated environment, run the following command:
+
+```bash title="Terminal"
+docker exec -it ten_agent_dev bash
+```
+
+## 3. Create the hello world extension
+
+By running the following commands, an extension called `hello_world` will be created in Python, Go, or C++.
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+
+<Tabs items={['Python', 'Go', 'C++']} defaultIndex={0}>
+  <Tab>
+
+```bash title="Bash"
+cd /app/agents/ten_packages/extension
+tman create extension hello_world --template=default_async_extension_python@0.10 --template-data class_name_prefix=HelloWorld
+```
+
+  </Tab>
+  <Tab>
+
+```bash title="Bash"
+cd /app/agents/ten_packages/extension
+tman create extension hello_world --template=default_extension_go@0.10 --template-data class_name_prefix=HelloWorld
+```
+
+  </Tab>
+  <Tab>
+
+```bash title="Bash"
+cd /app/agents/ten_packages/extension
+tman create extension hello_world --template=default_extension_cpp@0.10 --template-data class_name_prefix=HelloWorld
+```
+
+  </Tab>
+</Tabs>
+
+After running the command, the log will display something like this:
+
+```bash title="Bash"
+Package 'extension:hello_world' created successfully in '/app' in 3 seconds.
+```
+
+## 4. Adding Extension Node to a graph
+
+Now launch TMAN Designer and open the graph you want to modify.
+
+1. Right-click anywhere on the canvas to open the context menu, then select "Add Node".
+2. In the dialog that appears, with the "Addon" field, select the `hello_world` extension you created earlier.
+3. For the name field give it a unique name `hello_world` in the graph.
+4. Click "Add Node" to place the extension node on the canvas.
+5. You should see the `hello_world` node appear on the canvas.
+
+## 5. Try your first message connection in graph
+
+An extension can send/receive messages to/from other nodes in the graph. Now let's create a simple message connection to give it a shot.
+Imagine we are going to let `hello_world` send a "Hello, World!" with message name `output_text` as output, and receive any message named `input_text` as input.
+
+### 1). Update `manifest.json` to declare message protocols
+
+In the `manifest.json` file of your extension, you need to declare the message protocols that your extension will use. Add the following to the `api` section:
+
+```json
+...
+  "api": {
+    "data_in": [
+      {
+        "name": "input_text",
+        "property": {
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    ],
+    "data_out": [
+      {
+        "name": "output_text",
+        "property": {
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    ]
+  },
+...
+```
+
+In the `extension.py` file of your extension, we will create a simple async loop to send "Hello, World!" every 5 seconds.
+
+```python
+    async def on_start(self, ten_env: AsyncTenEnv) -> None:
+        ten_env.log(LogLevel.DEBUG, "on_start")
+
+        # IMPLEMENT: read properties, initialize resources
+        asyncio.create_task(self._send_hello(ten_env))
+
+
+    async def _send_hello(self, ten_env: AsyncTenEnv) -> None:
+        while True:
+            await asyncio.sleep(5)  # Send every 5 seconds
+            data = Data.create("output_text")
+            # set empty path means root of the data
+            data.set_property_string("text", "Hello, World!")
+            await ten_env.send_data(data)
+```
+
+Save the file, then Choose "App->Reload All Apps" to reload extension settings. 
+
+<Callout title="Note">
+This reload step is mandatory when you want changes in `manifest.json` to take effect after you change the file without TMAN Designer.
+</Callout>
+
+### 2). Add connection from `hello_world` to `main`
+
+In TMAN Designer, right click on `hello_world` node, and choose "Add Connection from hello_world". In the popup dialog, choose "data" as message type, and "output_text" as message name. Then choose "main" as destination node, and click "Add Connection".
+The connection should be successfully created! You should see an edge connecting from `hello_world` to `main`.
+
+
+### 3). Add code in `main` to process the input
+
+Now it's time to write some code to process incoming messages. Open the `main.py` file and add the following code:
+
+```python
+    # hello_wolrd/extension.py
+    async def on_data(self, ten_env: AsyncTenEnv, data: Data):
+        name = data.get_name()
+        if name == "output_text":
+            # process input_text directly here
+            text, _ = data.get_property_string("text")
+            if text:
+                ten_env.log_info(f"[MainControlExtension] Received input_text: {text}")
+                return
+
+        await self.agent.on_data(data)
+```
+
+### 4). Reply a message from `main` to `hello_world`
+
+As the `main` file will talk to lots of other extensions, we will suggest you to send an outbound message by using `setDests` API.
+Using of this API is typically recommended in `main` only, as it is expected to know the context of the conversation and the intended recipients. Using `setDests` in other extensions may make the extension hard to reuse.
+
+```python 
+    # main/extension.py
+    async def on_data(self, ten_env: AsyncTenEnv, data: Data):
+        name = data.get_name()
+        if name == "output_text":
+            # process input_text directly here
+            text, _ = data.get_property_string("text")
+            if text:
+                source_name = data.get_source().extension_name
+                ten_env.log_info(f"[MainControlExtension] Received input_text: {text} from: {source_name}")
+
+                # create a reply
+                reply = Data.create("input_text")
+                reply.set_property_string("text", f"Echo: {text}")
+                # reply to where it came from
+                reply.set_dests([Loc(
+                    app_uri="",
+                    graph_id="",
+                    extension_name=source_name
+                )])
+                await ten_env.send_data(reply)
+                return
+
+        await self.agent.on_data(data)
+```
+
+And modify `hello_world` implementation to receive echo reply and print it in ten_env logs.
+
+```python
+    async def on_data(self, ten_env: AsyncTenEnv, data: Data) -> None:
+        data_name = data.get_name()
+        ten_env.log(LogLevel.INFO, "on_data name {}".format(data_name))
+
+        # IMPLEMENT: process data
+        name = data.get_name()
+        if name == "input_text":
+            text, _ = data.get_property_string("text")
+            if text:
+                ten_env.log_info(f"[HelloWorldExtension] Received input_text: {text}")
+                return
+```
+
+
+## 6. Verify the extension
+
+Start the app using TMAN Designer. Check if following message is properly printed in the log console:
+
+```
+[MainControlExtension] Received input_text: Hello, World!
+[HelloWorldExtension] Received input_text: Echo: Hello, World!
+```
+
+Congratulations! You’ve successfully created your first `hello_world` extension.

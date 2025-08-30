@@ -1,0 +1,209 @@
+---
+title: Code Realtime Voice Agent Using Node.js
+description: Using Node.js to build a real-time voice agent with TEN Framework.
+author: Plutoless
+date: 2025-08-28
+---
+
+## Build a Voice Assistant with Node.js on TEN Framework
+
+The TEN Framework makes it possible to build **real-time, low-latency voice assistants** that combine speech recognition, large language models, and text-to-speech — all orchestrated through a single pipeline.
+
+In this tutorial, we’ll show you how to use **Node.js** to create a voice assistant with TEN.
+The best part? You don’t need to reimplement ASR, LLM, or TTS in Node. You can **reuse Python or C++ extensions** for those, and just focus on writing the **main pipeline and business logic** in Node.js.
+
+---
+
+## Why Node.js with TEN?
+
+TEN Framework is designed for **modular, cross-language development**:
+
+* **RTC-first pipeline** → audio/video/data flows are real-time and low-latency.
+* **Cross-language extensions** → use ASR in Python, TTS in C++, LLM in Go, etc.
+* **Unified orchestration** → Node.js just needs to implement the **main extension**, which orchestrates all components.
+
+This means **your business logic lives in JavaScript/TypeScript**, while the heavy lifting is done by optimized extensions.
+
+---
+
+## Project Structure
+
+You don’t need to set everything up from scratch — TEN Framework already provides a **ready-to-use Node.js voice assistant example** in the repository.
+
+👉 You can find it here: [**voice-assistant-nodejs example on GitHub**](https://github.com/ten-framework/ten/tree/main/agents/examples/voice-assistant-nodejs)
+
+The folder layout looks like this (mirroring what you’ll find on GitHub):
+
+```
+.
+├── index.ts            → MainControlExtension (Node.js pipeline logic)
+├── helper.ts           → Utilities for sending Cmd/Data
+└── agent/
+    ├── agent.ts        → Event queue and orchestration
+    ├── events.ts       → Typed events (ASR, LLM, Tools, User)
+    ├── llm_exec.ts     → Handles LLM requests/responses
+    └── struct.ts       → Zod schemas for message validation
+```
+
+This example shows how to implement the **main extension** in Node.js while reusing existing ASR, LLM, and TTS extensions written in Python or C++.
+
+---
+
+## Getting Started
+
+We recommend following the [**official Getting Started guide**](https://theten.ai/docs/ten_agent/getting_started) for the basic setup steps (installations, API keys, environment, Docker, etc.).
+
+⚠️ **Note:** When you reach the step to build the agent with `task use`, make sure to select the **Node.js voice assistant example**:
+
+```bash
+task use AGENT=agents/examples/voice-assistant-nodejs
+```
+
+This ensures you’re running the **Node.js pipeline version**, while still reusing Python/C++ extensions for ASR, LLM, and TTS.
+
+---
+
+## The Main Extension
+
+[`index.ts`](./index.ts) defines the **MainControlExtension**, your Node.js entry point. It wires the conversation loop together by reacting to runtime events and sending outputs to the right destinations.
+
+Here’s how it works, split into its four core parts:
+
+---
+
+### 1. Greeting on User Join
+
+When the **first user joins**, the extension greets them automatically.
+It sends the configured greeting both to **TTS** (so the user hears it) and to the **transcript collector** (so it appears in the conversation history).
+
+```ts
+this.agent.on(UserJoinedEvent, async () => {
+  this.joinedUserCount++;
+  if (this.joinedUserCount === 1) {
+    await this._send_to_tts(this.config.greeting, true);
+    await this._send_transcript("assistant", this.config.greeting, true, 100);
+  }
+});
+```
+
+👉 This makes sure your assistant always opens with a warm welcome.
+
+---
+
+### 2. Processing ASR Results
+
+When speech recognition (ASR) emits results, the extension:
+
+* Tracks the session/stream IDs.
+* Issues an **interrupt** if the input is long or final, to stop ongoing LLM/TTS.
+* Queues final user text into the LLM input pipeline.
+* Sends the recognized transcript to the collector.
+
+```ts
+this.agent.on(ASRResultEvent, async (event) => {
+  this.session_id = String(event.metadata?.session_id ?? "100");
+  const stream_id = Number(this.session_id) || 0;
+
+  if (!event.text) return;
+
+  if (event.final || event.text.length > 2) {
+    await this._interrupt();
+  }
+
+  if (event.final) {
+    this.turn_id += 1;
+    await this.agent.queueLLMInput(event.text);
+  }
+
+  await this._send_transcript("user", event.text, event.final, stream_id);
+});
+```
+
+👉 This is how **spoken input** gets turned into **LLM prompts**.
+
+---
+
+### 3. Handling LLM Results
+
+When the LLM responds, the extension:
+
+* Splits streaming deltas into complete sentences using `parseSentences`.
+* Sends each sentence fragment immediately to **TTS**.
+* For every message or reasoning chunk, forwards the transcript to the collector.
+
+```ts
+this.agent.on(LLMResponseEvent, async (event) => {
+  if (!event.is_final && event.kind === "message") {
+    const [sentences, remainText] = parseSentences(this.sentenceFragment, event.delta);
+    this.sentenceFragment = remainText;
+    for (const sentence of sentences) {
+      await this._send_to_tts(sentence, false);
+    }
+  }
+
+  const dataType = event.kind === "message" ? "text" : "reasoning";
+  await this._send_transcript(
+    "assistant", event.content, event.is_final, 100, dataType
+  );
+});
+```
+
+👉 This enables **real-time speech synthesis** — users hear the assistant **while it’s still thinking**.
+
+---
+
+### 4. Transcript Handling
+
+All ASR and LLM text eventually flows through `_send_transcript`, which normalizes it into a structured format for the `message_collector`.
+
+```ts
+private async _send_transcript(
+  role: string,
+  text: string,
+  final: boolean,
+  stream_id: number,
+  data_type: "text" | "reasoning" = "text",
+) {
+  await sendData(this.tenEnv, "message", "message_collector", {
+    role,
+    text,
+    is_final: final,
+    stream_id,
+    data_type,
+    text_ts: Date.now(),
+  });
+}
+```
+
+👉 This ensures every utterance (user or assistant) is consistently logged for UI display, debugging, or analytics.
+
+---
+
+With TEN Framework, building a voice assistant in Node.js is about **writing orchestration and business logic** — not reinventing ASR, LLM, or TTS.
+
+You can:
+
+* **Reuse existing extensions** in Python/C++.
+* **Keep your business pipeline and tools in Node.js**.
+* **Deliver real-time voice assistants** with minimal code.
+
+TEN brings the **best of both worlds**: cross-language extensibility and RTC-first performance.
+
+---
+
+## Test It Out
+
+Now that you’ve set everything up:
+
+1. Follow the [Getting Started guide](https://theten.ai/docs/ten_agent/getting_started).
+2. Use the Node.js agent:
+
+```bash
+task use AGENT=agents/examples/voice-assistant-nodejs
+task run
+```
+
+3. Connect with playground at http://localhost:3000 or test it out in TMAN Designer.
+4. Start speaking — your **Node.js pipeline** will orchestrate the flow.
+
+✨ That’s it — you now have a working **voice assistant powered by Node.js on TEN Framework**!
