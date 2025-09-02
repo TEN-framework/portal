@@ -12,7 +12,6 @@ import cnMessages from '@/messages/cn.json'
 import enMessages from '@/messages/en.json'
 import { generateSiteMetadata } from '@/app/metadata.config'
 
-import Script from 'next/script'
 import '../global.css'
 
 const inter = Inter({
