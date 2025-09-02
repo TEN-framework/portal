@@ -24,17 +24,19 @@ function getClientIP(request: NextRequest): string {
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIP(request)
-    
+
+    // Determine if this is the first visit from this IP
+    const isFirstVisit = !visits.has(ip)
+
     // Only count unique IPs (first time visitors)
-    if (!visits.has(ip)) {
+    if (isFirstVisit) {
       visits.set(ip, Date.now())
-      console.log(`New unique visitor: ${ip} (Total: ${visits.size})`)
     }
-    
-    return Response.json({ 
+
+    return Response.json({
       uniqueVisitors: visits.size,
       yourIP: ip,
-      isFirstVisit: !visits.has(ip)
+      isFirstVisit
     })
   } catch (error) {
     console.error('Error in visit counter:', error)
