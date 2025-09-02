@@ -11,7 +11,7 @@ import { EligibilitySection } from './components/EligibilitySection'
 import { DiscordSection } from './components/DiscordSection'
 import { CTASection } from './components/CTASection'
 import { FooterSection } from './components/FooterSection'
-import { VisitCounter } from '@/components/ui/visit-counter'
+import { WelcomeHackers } from '@/components/ui/welcome-hackers'
 
 export default function HackathonPage() {
   return (
@@ -29,7 +29,7 @@ export default function HackathonPage() {
         <CTASection />
         <FooterSection />
       </div>
-      <VisitCounter />
+      <WelcomeHackers />
     </div>
   )
 }
