@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-export function VisitCounter() {
+export function WelcomeHackers() {
 
   const [, setVisitCount] = useState<number | null>(null)
 
@@ -29,10 +29,9 @@ export function VisitCounter() {
           if (isMounted) {
             setVisitCount(data.uniqueVisitors)
           }
-          console.log(`🎉 Welcome, new hacker! ${data.uniqueVisitors}`)
-          if (data.isFirstVisit) {
-            console.log('🎉 Welcome, new hacker!')
-          }
+          // Only log the counts info in the browser devtools
+          console.log(`\n  _______  ______  _   _ \n |__   __||  ____|| \\ | |\n    | |   | |__   |  \\| |\n    | |   |  __|  | . | |\n    | |   | |____ | |\\  |\n    |_|   |______||_| \\_|\n`)
+          console.log(`Welcome to TEN 🎉, hacker #${data.uniqueVisitors}`)
         } else {
           console.warn('⚠️ Visit counter API returned non-OK status:', response.status)
         }
@@ -55,3 +54,5 @@ export function VisitCounter() {
   // Always return null - don't show anything to users
   return null
 }
+
+
