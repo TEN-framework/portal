@@ -12,7 +12,6 @@ import cnMessages from '@/messages/cn.json'
 import enMessages from '@/messages/en.json'
 import { generateSiteMetadata } from '@/app/metadata.config'
 
-import Script from 'next/script'
 import '../global.css'
 
 const inter = Inter({
@@ -85,10 +84,6 @@ export default async function Layout({
             }}
           >
             {children}
-            <Script
-              src="/analytics/scarf-analytics.js"
-              strategy="afterInteractive"
-            />
           </RootProvider>
         </NextIntlClientProvider>
       </body>
