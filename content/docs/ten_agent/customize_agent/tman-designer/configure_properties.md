@@ -13,6 +13,10 @@ You can follow [this guide](/docs/ten-agent/customize_agent/tman-designer/) to l
 2. In the popup window, you may see a set of properties displayed as a form for you to edit.
 3. Make the necessary changes and click "Save Change" to apply the updates.
 
+![Properties Dialog](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/properties_dialog.png)
+
+
+
 ## Dynamic Fields
 
 "Dynamic fields" are essentially a way to define an object without strictly specifying all of its possible keys upfront. Instead of enforcing a fixed schema, the object can accept and carry through any extra properties provided at runtime.
@@ -32,3 +36,5 @@ To set a dynamic field, you can follow these steps:
 3. Choose the object key route where you want to add the dynamic field, set the name of the field, choose the data type and default value.
 4. Confirm "Add Field" to finish adding the dynamic field.
 5. Back to "Node Properties", you should see the newly added dynamic field in the "View Form Values" preview.
+
+![Dynamic Fields](https://ten-framework-assets.s3.amazonaws.com/blog/main-control/dynamic_fields.png)
