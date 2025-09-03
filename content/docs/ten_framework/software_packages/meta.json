@@ -1,10 +1,10 @@
 {
-	"title": "Software Packages",
-	"pages": [
-		"overview",
-		"addon_system",
-		"app",
-		"extension",
-		"python_async_extension"
-	]
+  "title": "Software Packages",
+  "pages": [
+    "overview",
+    "addon_system",
+    "app",
+    "extension",
+    "python_async_extension"
+  ]
 }
