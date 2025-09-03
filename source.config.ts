@@ -4,6 +4,7 @@ import {
 	defineCollections,
 } from "fumadocs-mdx/config";
 import { z } from "zod";
+import { remarkImage } from "fumadocs-core/mdx-plugins";
 
 export const docs = defineDocs({
 	dir: "content/docs",
@@ -11,7 +12,13 @@ export const docs = defineDocs({
 
 export default defineConfig({
 	mdxOptions: {
-		// MDX options
+		// Avoid remote network calls during build (image size fetch)
+		remarkPlugins: [
+			[
+				remarkImage,
+				{ external: false, useImport: true, placeholder: "none", publicDir: "public" },
+			],
+		],
 	},
 });
 

@@ -1,15 +1,15 @@
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 import { createMDX } from "fumadocs-mdx/next";
-import createNextIntlPlugin from "next-intl/plugin";
 
-const withMDX = createMDX();
-const withNextIntl = createNextIntlPlugin("./lib/next-intl-requests.ts");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /** @type {import('next').NextConfig} */
-const config = {
-	turbopack: true,
-	images: {
-		domains: ["ten-framework-assets.s3.amazonaws.com"],
-	},
+const nextConfig = {
+  // Ensure Next.js treats this folder as the root for file tracing
+  outputFileTracingRoot: __dirname,
 };
 
-export default withNextIntl(withMDX(config));
+const withMDX = createMDX();
+export default withMDX(nextConfig);
