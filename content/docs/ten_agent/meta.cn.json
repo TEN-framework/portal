@@ -1,18 +1,18 @@
 {
-	"title": "TEN Agent",
-	"description": "TEN Agent",
-	"root": true,
-	"pages": [
-		"overview",
-		"rtc_first_design",
-		"getting_started",
-		"architecture_flow",
-		"project_structure",
-		"setup_development_env",
-		"customize_agent",
-		"extension_dev",
-		"deploy_ten_agent",
-		"tutorials",
-		"faqs"
-	]
+  "title": "TEN Agent",
+  "description": "TEN Agent",
+  "root": true,
+  "pages": [
+    "overview",
+    "rtc_first_design",
+    "getting_started",
+    "architecture_flow",
+    "project_structure",
+    "setup_development_env",
+    "customize_agent",
+    "extension_dev",
+    "deploy_ten_agent",
+    "tutorials",
+    "faqs"
+  ]
 }
