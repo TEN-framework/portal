@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import { HackathonHero } from './components/HackathonHero'
-import { AboutSection } from './components/AboutSection'
-import { FrameworkSection } from './components/FrameworkSection'
-import { ChallengeSection } from './components/ChallengeSection'
-import { PrizesSection } from './components/PrizesSection'
-import { TimelineSection } from './components/TimelineSection'
-import { ParticipateSection } from './components/ParticipateSection'
-import { EligibilitySection } from './components/EligibilitySection'
-import { DiscordSection } from './components/DiscordSection'
-import { CTASection } from './components/CTASection'
-import { FooterSection } from './components/FooterSection'
-import { WelcomeHackers } from '@/components/ui/welcome-hackers'
+import { WelcomeHackers } from "@/components/ui/welcome-hackers";
+import { AboutSection } from "./components/AboutSection";
+import { ChallengeSection } from "./components/ChallengeSection";
+import { CTASection } from "./components/CTASection";
+import { DiscordSection } from "./components/DiscordSection";
+import { EligibilitySection } from "./components/EligibilitySection";
+import { FooterSection } from "./components/FooterSection";
+import { FrameworkSection } from "./components/FrameworkSection";
+import { HackathonHero } from "./components/HackathonHero";
+import { ParticipateSection } from "./components/ParticipateSection";
+import { PrizesSection } from "./components/PrizesSection";
+import { TimelineSection } from "./components/TimelineSection";
 
 export default function HackathonPage() {
   return (
@@ -31,5 +31,5 @@ export default function HackathonPage() {
       </div>
       <WelcomeHackers />
     </div>
-  )
+  );
 }

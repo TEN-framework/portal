@@ -1,6 +1,6 @@
 interface LogoProps {
-  height?: number
-  width?: number
+  height?: number;
+  width?: number;
 }
 
 export const Logo = ({ height = 32, width }: LogoProps) => (
@@ -11,9 +11,9 @@ export const Logo = ({ height = 32, width }: LogoProps) => (
     viewBox="0 0 536.03 168.7"
     style={{
       height: `${height}px`,
-      width: width ? `${width}px` : 'auto',
+      width: width ? `${width}px` : "auto",
     }}
-    className="w-full h-full"
+    className="h-full w-full"
   >
     <defs>
       <style>
@@ -36,7 +36,9 @@ export const Logo = ({ height = 32, width }: LogoProps) => (
           fill="currentColor"
         />
       </g>
-      <text className="cls-1" x="200" y="85">TEN</text>
+      <text className="cls-1" x="200" y="85">
+        TEN
+      </text>
     </g>
   </svg>
-)
+);

@@ -1,7 +1,4 @@
 {
   "title": "TMAN Designer",
-  "pages": [
-    "overview",
-    "doc_window"
-  ]
+  "pages": ["overview", "doc_window"]
 }

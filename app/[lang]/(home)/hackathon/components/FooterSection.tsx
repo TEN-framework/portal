@@ -1,30 +1,35 @@
-'use client'
+"use client";
 
-import { useTranslations } from 'next-intl'
-import { motion } from 'motion/react'
-import { ExternalLink } from 'lucide-react'
-import { Logo } from '@/components/ui/logo'
-import { Link } from '@/lib/next-intl-navigation'
-import { cn } from '@/lib/utils'
+import { ExternalLink } from "lucide-react";
+import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
+import { Logo } from "@/components/ui/logo";
+import { Link } from "@/lib/next-intl-navigation";
+import { cn } from "@/lib/utils";
 
 export function FooterSection({ className }: { className?: string }) {
-  const t = useTranslations('hackathon')
+  const t = useTranslations("hackathon");
 
   const socialLinks = [
     {
-      name: 'X (Twitter)',
-      href: 'https://twitter.com/TENFramework',
-      icon: '𝕏'
+      name: "X (Twitter)",
+      href: "https://twitter.com/TENFramework",
+      icon: "𝕏",
     },
     {
-      name: 'Medium',
-      href: 'https://medium.com/@TENFramework',
-      icon: 'M'
-    }
-  ]
+      name: "Medium",
+      href: "https://medium.com/@TENFramework",
+      icon: "M",
+    },
+  ];
 
   return (
-    <section className={cn('py-16 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800', className)}>
+    <section
+      className={cn(
+        "border-gray-200 border-t bg-gray-50 py-16 dark:border-gray-800 dark:bg-gray-900",
+        className
+      )}
+    >
       <div className="container mx-auto max-w-[72rem] px-6">
         {/* Main Content */}
         <motion.div
@@ -36,8 +41,8 @@ export function FooterSection({ className }: { className?: string }) {
         >
           {/* Organizer */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t('footer.organizer')}
+            <h3 className="font-semibold text-gray-900 text-lg dark:text-white">
+              {t("footer.organizer")}
             </h3>
             <Link href="/" className="inline-block">
               <Logo height={40} width={80} />
@@ -46,8 +51,8 @@ export function FooterSection({ className }: { className?: string }) {
 
           {/* Partners */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t('footer.partners')}
+            <h3 className="font-semibold text-gray-900 text-lg dark:text-white">
+              {t("footer.partners")}
             </h3>
             <div className="space-y-2 text-gray-600 dark:text-gray-400">
               <p>Coming soon...</p>
@@ -56,13 +61,13 @@ export function FooterSection({ className }: { className?: string }) {
 
           {/* Community Support */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t('footer.communitySupport')}
+            <h3 className="font-semibold text-gray-900 text-lg dark:text-white">
+              {t("footer.communitySupport")}
             </h3>
-            <Link 
-              href="https://slush.org" 
+            <Link
+              href="https://slush.org"
               target="_blank"
-              className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300"
+              className="inline-flex items-center gap-2 text-gray-600 transition-colors duration-300 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
             >
               Slush
               <ExternalLink className="h-4 w-4" />
@@ -71,8 +76,8 @@ export function FooterSection({ className }: { className?: string }) {
 
           {/* Social Media */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t('footer.socialMedia')}
+            <h3 className="font-semibold text-gray-900 text-lg dark:text-white">
+              {t("footer.socialMedia")}
             </h3>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -80,10 +85,10 @@ export function FooterSection({ className }: { className?: string }) {
                   key={social.name}
                   href={social.href}
                   target="_blank"
-                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 shadow-md hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 transition-colors"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-md transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700"
                   title={social.name}
                 >
-                  <span className="text-lg font-bold">{social.icon}</span>
+                  <span className="font-bold text-lg">{social.icon}</span>
                 </Link>
               ))}
             </div>
@@ -110,11 +115,10 @@ export function FooterSection({ className }: { className?: string }) {
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
             {/* <WelcomeHackers /> */}
           </div>
-          
-          <div className="flex items-center gap-6">
-          </div>
+
+          <div className="flex items-center gap-6"></div>
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,36 +1,39 @@
-'use client'
+"use client";
 
-import { useTranslations } from 'next-intl'
-import { motion } from 'motion/react'
-import { Headphones, Home, Heart } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Headphones, Heart, Home } from "lucide-react";
+import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
 
 export function ChallengeSection({ className }: { className?: string }) {
-  const t = useTranslations('hackathon')
+  const t = useTranslations("hackathon");
 
   const examples = [
     {
       icon: <Headphones className="h-8 w-8" />,
-      title: t('challenge.serviceAgents'),
-      gradient: 'from-blue-500 to-cyan-500',
-      bgGradient: 'from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20'
+      title: t("challenge.serviceAgents"),
+      gradient: "from-blue-500 to-cyan-500",
+      bgGradient:
+        "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20",
     },
     {
       icon: <Home className="h-8 w-8" />,
-      title: t('challenge.iotHardware'),
-      gradient: 'from-green-500 to-emerald-500',
-      bgGradient: 'from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20'
+      title: t("challenge.iotHardware"),
+      gradient: "from-green-500 to-emerald-500",
+      bgGradient:
+        "from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20",
     },
     {
       icon: <Heart className="h-8 w-8" />,
-      title: t('challenge.emotionalCompanions'),
-      gradient: 'from-purple-500 to-pink-500',
-      bgGradient: 'from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20'
-    }
-  ]
+      title: t("challenge.emotionalCompanions"),
+      gradient: "from-purple-500 to-pink-500",
+      bgGradient:
+        "from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20",
+    },
+  ];
 
   return (
-    <section className={cn('py-16 bg-gray-50 dark:bg-gray-900 ', className)}>
+    <section className={cn("bg-gray-50 py-16 dark:bg-gray-900", className)}>
       <div className="container mx-auto max-w-[72rem] px-6">
         <motion.div
           initial={{ opacity: 0 }}
@@ -39,11 +42,11 @@ export function ChallengeSection({ className }: { className?: string }) {
           viewport={{ once: true }}
           className="mx-auto max-w-4xl text-center"
         >
-          <h2 className="mb-8 text-4xl font-bold text-gray-900 dark:text-white">
-            {t('challenge.title')}
+          <h2 className="mb-8 font-bold text-4xl text-gray-900 dark:text-white">
+            {t("challenge.title")}
           </h2>
-          <p className="mb-12 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-            {t('challenge.description')}
+          <p className="mb-12 text-gray-600 text-lg leading-relaxed dark:text-gray-300">
+            {t("challenge.description")}
           </p>
         </motion.div>
 
@@ -55,8 +58,8 @@ export function ChallengeSection({ className }: { className?: string }) {
           viewport={{ once: true }}
           className="mb-8 text-center"
         >
-          <h3 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
-            {t('challenge.examples')}
+          <h3 className="font-semibold text-2xl text-gray-800 dark:text-gray-200">
+            {t("challenge.examples")}
           </h3>
         </motion.div>
 
@@ -69,13 +72,15 @@ export function ChallengeSection({ className }: { className?: string }) {
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.2, delay: 0.05 * index }}
               viewport={{ once: true }}
-              className="rounded-xl p-8 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+              className="rounded-xl border border-gray-200 bg-white p-8 dark:border-gray-700 dark:bg-gray-800"
             >
               <div className="">
-                <div className={`mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black border border-gray-200 dark:border-gray-700`}>
+                <div
+                  className={`mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full border border-gray-200 bg-black text-white dark:border-gray-700 dark:bg-white dark:text-black`}
+                >
                   {example.icon}
                 </div>
-                <p className="text-lg font-semibold leading-relaxed text-gray-800 dark:text-gray-200">
+                <p className="font-semibold text-gray-800 text-lg leading-relaxed dark:text-gray-200">
                   {example.title}
                 </p>
               </div>
@@ -89,16 +94,24 @@ export function ChallengeSection({ className }: { className?: string }) {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.2 }}
           viewport={{ once: true }}
-          className="mt-16 rounded-xl bg-gray-50 dark:bg-gray-800 p-8 text-center border border-gray-200 dark:border-gray-700"
+          className="mt-16 rounded-xl border border-gray-200 bg-gray-50 p-8 text-center dark:border-gray-700 dark:bg-gray-800"
         >
-          <h3 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">
+          <h3 className="mb-4 font-semibold text-gray-900 text-xl dark:text-white">
             Technologies You Can Use
           </h3>
           <div className="flex flex-wrap justify-center gap-4">
-            {['ASR', 'LLMs', 'TTS', 'SIP', 'ESP32', 'Computer Vision', 'NLP'].map((tech) => (
+            {[
+              "ASR",
+              "LLMs",
+              "TTS",
+              "SIP",
+              "ESP32",
+              "Computer Vision",
+              "NLP",
+            ].map((tech) => (
               <span
                 key={tech}
-                className="rounded-full bg-blue-100 dark:bg-blue-900/30 px-4 py-2 text-sm font-medium text-blue-700 dark:text-blue-300"
+                className="rounded-full bg-blue-100 px-4 py-2 font-medium text-blue-700 text-sm dark:bg-blue-900/30 dark:text-blue-300"
               >
                 {tech}
               </span>
@@ -107,5 +120,5 @@ export function ChallengeSection({ className }: { className?: string }) {
         </motion.div>
       </div>
     </section>
-  )
+  );
 }

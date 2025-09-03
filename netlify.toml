@@ -1,0 +1,19 @@
+[build]
+  command = "bun run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+## Redirect doc.theten.ai root to the main docs
+[[redirects]]
+  from = "http://doc.theten.ai/"
+  to = "https://theten.ai/docs"
+  status = 308
+  force = true
+
+[[redirects]]
+  from = "https://doc.theten.ai/"
+  to = "https://theten.ai/docs"
+  status = 308
+  force = true

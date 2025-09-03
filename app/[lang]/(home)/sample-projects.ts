@@ -8,7 +8,7 @@ export const SAMPLE_PROJECTS = [
     author: "TEN Team",
     remixes: "2.1k",
     image: "/api/placeholder/300/200",
-    href: "#"
+    href: "#",
   },
   {
     id: 2,
@@ -18,7 +18,7 @@ export const SAMPLE_PROJECTS = [
     author: "Community",
     remixes: "1.8k",
     image: "/api/placeholder/300/200",
-    href: "#"
+    href: "#",
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ export const SAMPLE_PROJECTS = [
     author: "DevTeam",
     remixes: "1.5k",
     image: "/api/placeholder/300/200",
-    href: "#"
+    href: "#",
   },
   {
     id: 4,
@@ -38,7 +38,7 @@ export const SAMPLE_PROJECTS = [
     author: "StoryAI",
     remixes: "2.3k",
     image: "/api/placeholder/300/200",
-    href: "#"
+    href: "#",
   },
   {
     id: 5,
@@ -48,7 +48,7 @@ export const SAMPLE_PROJECTS = [
     author: "CodeBot",
     remixes: "1.9k",
     image: "/api/placeholder/300/200",
-    href: "#"
+    href: "#",
   },
   {
     id: 6,
@@ -58,6 +58,6 @@ export const SAMPLE_PROJECTS = [
     author: "HealthTech",
     remixes: "1.2k",
     image: "/api/placeholder/300/200",
-    href: "#"
-  }
+    href: "#",
+  },
 ];

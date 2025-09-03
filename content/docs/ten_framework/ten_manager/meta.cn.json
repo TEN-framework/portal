@@ -1,7 +1,4 @@
 {
   "title": "TEN 管理器",
-  "pages": [
-    "overview",
-    "check_graph"
-  ]
+  "pages": ["overview", "check_graph"]
 }
