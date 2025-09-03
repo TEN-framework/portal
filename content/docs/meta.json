@@ -1,13 +1,13 @@
 {
-	"pages": [
-		"---Introduction---",
-		"index",
-		"goal",
-		"key_concepts",
-		"application_scenarios",
-		"---TEN Framework---",
-		"ten_framework",
-		"---TEN Agent---",
-		"ten_agent"
-	]
+  "pages": [
+    "---Introduction---",
+    "index",
+    "goal",
+    "key_concepts",
+    "application_scenarios",
+    "---TEN Framework---",
+    "ten_framework",
+    "---TEN Agent---",
+    "ten_agent"
+  ]
 }
