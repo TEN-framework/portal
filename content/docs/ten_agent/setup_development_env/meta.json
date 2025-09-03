@@ -1,6 +1,6 @@
 {
-  "pages": [
-    "setting_up_development_inside_codespace",
-    "setting_up_vscode_for_development_inside_container"
-  ]
+	"pages": [
+		"setting_up_development_inside_codespace",
+		"setting_up_vscode_for_development_inside_container"
+	]
 }

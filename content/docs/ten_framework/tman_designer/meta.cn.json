@@ -1,7 +1,4 @@
 {
-  "title": "TMAN 设计师",
-  "pages": [
-    "overview",
-    "doc_window"
-  ]
+	"title": "TMAN 设计师",
+	"pages": ["overview", "doc_window"]
 }
