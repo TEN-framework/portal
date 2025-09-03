@@ -1,6 +1,4 @@
 {
-    "title": "Extension Development",
-    "pages": [
-        "create_a_hello_world_extension"
-    ]
+	"title": "Extension Development",
+	"pages": ["create_a_hello_world_extension"]
 }

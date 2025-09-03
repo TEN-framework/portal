@@ -1,6 +1,3 @@
 {
-  "pages": [
-    "configure_modules",
-    "configure_properties"
-  ]
+	"pages": ["configure_modules", "configure_properties"]
 }

@@ -1,6 +1,4 @@
 {
-  "title": "Language Binding",
-  "pages": [
-    "go"
-  ]
+	"title": "Language Binding",
+	"pages": ["go"]
 }

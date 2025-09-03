@@ -1,7 +1,4 @@
 {
-  "title": "Customize Agent",
-  "pages": [
-    "tman-designer",
-    "modify-main"
-  ]
+	"title": "Customize Agent",
+	"pages": ["tman-designer", "modify-main"]
 }

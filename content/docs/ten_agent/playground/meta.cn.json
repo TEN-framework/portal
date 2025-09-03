@@ -1,9 +1,9 @@
 {
-  "title": "运行 Playground",
-  "pages": [
-    "configure_modules",
-    "configure_properties",
-    "use-cases",
-    "change_language"
-  ]
+	"title": "运行 Playground",
+	"pages": [
+		"configure_modules",
+		"configure_properties",
+		"use-cases",
+		"change_language"
+	]
 }
