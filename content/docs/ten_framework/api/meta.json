@@ -1,9 +1,4 @@
 {
   "title": "API",
-  "pages": [
-    "api",
-    "type_system",
-    "required",
-    "log"
-  ]
+  "pages": ["api", "type_system", "required", "log"]
 }

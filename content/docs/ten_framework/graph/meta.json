@@ -1,7 +1,4 @@
 {
   "title": "Graph",
-  "pages": [
-    "graph",
-    "msg_conversion"
-  ]
+  "pages": ["graph", "msg_conversion"]
 }

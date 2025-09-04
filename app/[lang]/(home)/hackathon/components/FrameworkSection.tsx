@@ -1,0 +1,137 @@
+"use client";
+
+import { Code, Cpu, ExternalLink, Mic, Zap } from "lucide-react";
+import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Link } from "@/lib/next-intl-navigation";
+import { cn } from "@/lib/utils";
+
+export function FrameworkSection({ className }: { className?: string }) {
+  const t = useTranslations("hackathon");
+
+  const features = [
+    {
+      icon: <Zap className="h-6 w-6" />,
+      title: "Real-Time",
+      description: "Low-latency voice interactions",
+    },
+    {
+      icon: <Mic className="h-6 w-6" />,
+      title: "Multi-Modal",
+      description: "Voice, vision, and text capabilities",
+    },
+    {
+      icon: <Code className="h-6 w-6" />,
+      title: "Extensible",
+      description: "Create reusable extensions",
+    },
+    {
+      icon: <Cpu className="h-6 w-6" />,
+      title: "AI-Powered",
+      description: "Integrate LLMs, STT, TTS easily",
+    },
+  ];
+
+  return (
+    <section className={cn("bg-white py-16 dark:bg-gray-950", className)}>
+      <div className="container mx-auto px-4">
+        <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+          {/* Left Column - Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="mb-6 font-bold text-4xl text-gray-900 dark:text-white">
+              {t("framework.title")}
+            </h2>
+            <p className="mb-6 font-semibold text-gray-700 text-xl dark:text-gray-200">
+              {t("framework.description")}
+            </p>
+            <p className="mb-8 text-gray-600 text-lg leading-relaxed dark:text-gray-300">
+              {t("framework.features")}
+            </p>
+
+            <div className="flex gap-4">
+              <Button className="gap-2" asChild>
+                <Link
+                  href="https://github.com/TEN-framework/ten-framework"
+                  target="_blank"
+                >
+                  <Code className="h-4 w-4" />
+                  View on GitHub
+                  <ExternalLink className="h-4 w-4" />
+                </Link>
+              </Button>
+              <Button variant="outline" className="gap-2" asChild>
+                <Link href="/docs" target="_blank">
+                  Documentation
+                  <ExternalLink className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Right Column - Features Grid */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="grid gap-6 sm:grid-cols-2"
+          >
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="rounded-lg border border-gray-200 bg-white/60 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/60"
+              >
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-black text-white">
+                  {feature.icon}
+                </div>
+                <h3 className="mb-2 font-semibold text-gray-900 text-lg dark:text-white">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 text-sm dark:text-gray-400">
+                  {feature.description}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Toolkit Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          viewport={{ once: true }}
+          className="mt-16 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-900"
+        >
+          <div className="text-center">
+            <h3 className="mb-4 font-medium text-gray-900 text-xl dark:text-white">
+              {t("toolkit.title")}
+            </h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 dark:border-gray-600 dark:bg-gray-800">
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {t("toolkit.framework")}
+                </span>
+              </div>
+              <div className="rounded-lg border border-gray-200 bg-white px-4 py-2 dark:border-gray-600 dark:bg-gray-800">
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {t("toolkit.vadTtd")}
+                </span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

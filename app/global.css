@@ -1,7 +1,7 @@
-@import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
-@import 'fumadocs-ui/css/preset.css';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "tw-animate-css";
 @plugin "tailwindcss-motion";
 
 @custom-variant dark (&:is(.dark *));
@@ -9,32 +9,32 @@
 @source '../node_modules/fumadocs-ui/dist/**/*.js';
 
 @font-face {
-  font-family: 'Jokker';
-  src: url('/fonts/Jokker.woff2') format('woff2');
+  font-family: "Jokker";
+  src: url("/fonts/Jokker.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Jokker';
-  src: url('/fonts/Jokker-Medium.woff2') format('woff2');
+  font-family: "Jokker";
+  src: url("/fonts/Jokker-Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Jokker';
-  src: url('/fonts/Jokker-Semibold.woff2') format('woff2');
+  font-family: "Jokker";
+  src: url("/fonts/Jokker-Semibold.woff2") format("woff2");
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Jokker';
-  src: url('/fonts/Jokker-Bold.woff2') format('woff2');
+  font-family: "Jokker";
+  src: url("/fonts/Jokker-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -42,7 +42,7 @@
 
 /* Apply Jokker font to all text by default */
 :root {
-  --font-jokker: 'Jokker', system-ui, sans-serif;
+  --font-jokker: "Jokker", system-ui, sans-serif;
 }
 
 body {

@@ -1,7 +1,4 @@
 {
   "title": "图",
-  "pages": [
-    "graph",
-    "msg_conversion"
-  ]
+  "pages": ["graph", "msg_conversion"]
 }

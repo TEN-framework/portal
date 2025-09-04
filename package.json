@@ -6,7 +6,11 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "postinstall": "fumadocs-mdx"
+    "postinstall": "fumadocs-mdx",
+    "lint": "biome check --reporter=pretty .",
+    "format": "biome format --write .",
+    "typecheck": "tsc --noEmit",
+    "check": "bun run typecheck && bun run lint"
   },
   "dependencies": {
     "@orama/orama": "^3.1.4",
@@ -19,7 +23,6 @@
     "fumadocs-core": "^15.2.8",
     "fumadocs-mdx": "^11.6.6",
     "fumadocs-ui": "^15.2.8",
-    "lodash": "^4.17.21",
     "lucide-react": "^0.486.0",
     "motion": "^12.7.4",
     "next": "^15.3.1",
@@ -31,20 +34,20 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "@tailwindcss/postcss": "^4.1.4",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/lodash": "^4.17.16",
     "@types/mdx": "^2.0.13",
     "@types/node": "22.13.14",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
-    "eslint": "^8",
-    "eslint-config-next": "15.2.4",
     "postcss": "^8.5.3",
-    "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.1.4",
     "tailwindcss-motion": "^1.1.0",
     "typescript": "^5.8.2"
+  },
+  "engines": {
+    "node": ">=22",
+    "bun": ">=1.1.0"
   }
 }

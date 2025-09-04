@@ -1,6 +1,4 @@
 {
   "title": "Standard Extension",
-  "pages": [
-    "standard_interface"
-  ]
+  "pages": ["standard_interface"]
 }
