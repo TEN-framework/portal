@@ -8,7 +8,13 @@ import { cn } from "@/lib/utils";
 export function TimelineSection({ className }: { className?: string }) {
   const t = useTranslations("hackathon");
 
-  const timeline = [
+  const timeline: Array<{
+    icon: JSX.Element;
+    title: string;
+    date: string;
+    color: string;
+    description?: string;
+  }> = [
     {
       icon: <Calendar className="h-6 w-6" />,
       title: "Registration Opens",
@@ -79,9 +85,11 @@ export function TimelineSection({ className }: { className?: string }) {
                     <h3 className="mb-2 font-semibold text-gray-800 text-xl dark:text-gray-200">
                       {item.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
-                      {item.description}
-                    </p>
+                    {item.description && (
+                      <p className="text-gray-600 dark:text-gray-400">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
                 </div>
 
