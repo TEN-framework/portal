@@ -18,7 +18,7 @@ export function FooterSection({ className }: { className?: string }) {
     },
     {
       name: "Medium",
-      href: "https://medium.com/@TENFramework",
+      href: "https://ten-framework.medium.com",
       icon: "M",
     },
   ];
