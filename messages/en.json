@@ -48,16 +48,17 @@
     "openToAll": "Open to All",
     "about": {
       "title": "What's This All About?",
-      "description": "The 15-day TEN Dev Challenge 2025, hosted by TEN Framework, centers on real-time engagement and Conversational AI, inviting developers worldwide to shape the next generation of voice-interaction products. From voice companionship to smart homes to enterprise services, we look forward to discovering new voice-driven scenarios. Join us in exploring practical applications for voice agents!"
+      "description": "The TEN Dev Challenge 2025, hosted by TEN Framework, center on real-time engagement and Conversational AI, inviting developers worldwide to shape the next generation of voice-interaction products. ",
+      "descriptionTwo": "From voice companionship to smart homes to enterprise services, we look forward to discovering new voice-driven scenarios. Join us in exploring practical applications for voice agents!"
     },
     "framework": {
       "title": "TEN Framework",
       "description": "An open-source framework for conversational voice AI agents",
-      "features": "Enables developers to quickly build real-time voice agents (with abilities of vision and others), making it easy for developers to experiment, integrate large language models, STT, TTS and create reusable extensions"
+      "features": "Enables developers to quickly build real-time voice agents (with abilities of vision and others), making it easy for developers to experiment, integrate LLM, STT, TTS and create reusable extensions"
     },
     "challenge": {
       "title": "Challenge Overview",
-      "description": "Participants must build their projects using the open-source TEN Framework. You can integrate a wide range of technologies and hardware, such as ASR, LLMs, TTS, SIP, and ESP32 to create innovative voice-interactive applications.",
+      "description": "Participants must build their projects using the open-source TEN Family（TEN Framework/TEN VAD/TEN Turn Detection）. You can integrate a wide range of technologies and hardware, such as ASR, LLMs, TTS, SIP, and ESP32 to create innovative voice-interactive applications.",
       "examples": "Examples include:",
       "serviceAgents": "Service Agents: Voice-powered customer service, smart eldercare helpers",
       "iotHardware": "IoT & Hardware: Voice-controlled smart home devices",
@@ -67,7 +68,7 @@
       "title": "Prizes & Awards",
       "firstPlace": {
         "title": "TEN Voice Innovation Award - First Place (1 team)",
-        "amount": "$4,000 USD"
+        "amount": "$5,000 USD"
       },
       "secondPlace": {
         "title": "TEN Voice Innovation Award - Second Place (1 team)",
@@ -84,7 +85,12 @@
       "showcase": "All winning projects will have the opportunity to be showcased at the RTE Conference.",
       "ambassador": "Winners will also be given priority consideration to become TEN Framework Community Ambassadors, with access to exclusive ambassador benefits.",
       "eligibilityNote": "To be eligible for the \"TEN Voice Innovation Awards\" (1st, 2nd, and 3rd place prizes), your project must be built primarily on the TEN Framework.",
-      "technicalNote": "Projects that only use the TEN VAD or Turn Detection features will only be considered for the \"TEN Technical Award\"."
+      "technicalNote": "Projects that only use the TEN VAD or Turn Detection features will only be considered for the \"TEN Technical Award\".",
+      "kiro": {
+        "title": "Kiro Prize",
+        "subscription": "Each member of the Top 10 teams will be awarded a complimentary three-month Kiro Pro subscription.",
+        "cash": "Top 10 teams that use Kiro during development will receive an exclusive cash prize ($300 per team)."
+      }
     },
     "judges": {
       "title": "Judging Panel",
@@ -99,6 +105,15 @@
       "winnersAnnounced": "Winners announced: Oct 15, 2025",
       "workshops": "Online Workshops: TBA",
       "workshopsDesc": "Throughout the submission period, we'll be hosting several online workshops to offer technical support on our official TEN Discord channel."
+    },
+    "workshop": {
+      "title": "🛠 Online Workshop: Building Conversational AI with TEN Framework",
+      "timeLabel": "Time:",
+      "time": "Sept 11, 7:00–8:00 PM PDT",
+      "desc1": "Want to crush the hackathon with your own conversational AI? 🚀",
+      "desc2": "This workshop will show you how to build voice agents step by step using the TEN Framework. We’ll walk through TEN’s core concepts and module layout, configuration, and deployment—so you can make the most of TEN in the competition!",
+      "desc3": "Make sure to join our Discord channel—we’ll be sharing the livestream link there!",
+      "joinDiscord": "Join Discord"
     },
     "participate": {
       "title": "How to Participate",
@@ -118,7 +133,7 @@
     },
     "eligibility": {
       "title": "Project Eligibility",
-      "openToAll": "Open to all. You can compete as an individual or in a team of up to five members.",
+      "openToAll": "Open to all. You can compete as an individual or in a team of up to 3 members.",
       "teamFormation": "Team Formation. You can form a team beforehand or find teammates on our Discord channel.",
       "buildWithTen": "Build with TEN. All projects must be built on the TEN Framework.",
       "originalWork": "Original Work. All submissions must be original work, free of any legal or copyright issues.",
@@ -139,7 +154,7 @@
     "footer": {
       "organizer": "Organizer: TEN Framework",
       "partners": "Partners:",
-      "communitySupport": "Community Support: Slush",
+      "communitySupport": "Community Support",
       "socialMedia": "Social Media:"
     }
   }

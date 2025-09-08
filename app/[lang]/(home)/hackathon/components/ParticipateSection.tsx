@@ -94,38 +94,6 @@ export function ParticipateSection({ className }: { className?: string }) {
           ))}
         </div>
 
-        {/* Submission Requirements */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.2, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="rounded-2xl border border-gray-200 bg-white/60 p-8 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/60"
-        >
-          <h3 className="mb-6 text-center font-bold text-2xl text-gray-900 dark:text-white">
-            {t("participate.submissionTitle")}
-          </h3>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            {requirements.map((req, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ duration: 0.2, delay: 0.05 * index }}
-                viewport={{ once: true }}
-                className="flex items-center gap-4 rounded-lg border border-gray-100 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg border border-gray-200 bg-black text-white dark:border-gray-700 dark:bg-white dark:text-black">
-                  {req.icon}
-                </div>
-                <p className="font-medium text-gray-800 dark:text-gray-200">
-                  {req.title}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );

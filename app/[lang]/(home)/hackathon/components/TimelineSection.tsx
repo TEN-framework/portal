@@ -12,29 +12,25 @@ export function TimelineSection({ className }: { className?: string }) {
     {
       icon: <Calendar className="h-6 w-6" />,
       title: "Registration Opens",
-      description: t("timeline.registrationOpens"),
-      date: "Sept 4",
+      date: "Sept 8",
       color: "neutral",
     },
     {
       icon: <Clock className="h-6 w-6" />,
       title: "Submissions Open",
-      description: t("timeline.submissionsOpen"),
-      date: "Sept 12",
+      date: "Sept 21",
       color: "neutral",
     },
     {
       icon: <Users className="h-6 w-6" />,
       title: "Deadline",
-      description: t("timeline.deadline"),
-      date: "Sept 26",
+      date: "Sept 28",
       color: "neutral",
     },
     {
       icon: <Trophy className="h-6 w-6" />,
       title: "Winners Announced",
-      description: t("timeline.winnersAnnounced"),
-      date: "Oct 15",
+      date: "Oct 13",
       color: "neutral",
     },
   ];
@@ -126,24 +122,12 @@ export function TimelineSection({ className }: { className?: string }) {
             </p>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-6 py-3">
               <Users className="h-5 w-5" />
+              <a href="https://discord.gg/8AJkU7cU" target="_blank" rel="noopener noreferrer">
               <span className="font-semibold">
                 Join our Discord for updates!
               </span>
+              </a>
             </div>
-          </div>
-        </motion.div>
-
-        {/* Judging Period */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.2, delay: 0.35 }}
-          viewport={{ once: true }}
-          className="mt-8 text-center"
-        >
-          <div className="inline-flex items-center gap-2 rounded-full bg-gray-100 px-6 py-3 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-            <Clock className="h-5 w-5" />
-            <span className="font-medium">{t("timeline.judging")}</span>
           </div>
         </motion.div>
       </div>

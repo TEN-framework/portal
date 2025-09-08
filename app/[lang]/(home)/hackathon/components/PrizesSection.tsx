@@ -13,8 +13,8 @@ export function PrizesSection({ className }: { className?: string }) {
       place: "first",
       icon: <Trophy className="h-8 w-8" />,
       emoji: "🥇",
-      title: t("prizes.firstPlace.title"),
-      amount: t("prizes.firstPlace.amount"),
+      title: t("prizes.secondPlace.title"),
+      amount: t("prizes.secondPlace.amount"),
       gradient: "from-yellow-400 to-orange-500",
       bgGradient:
         "from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
@@ -25,8 +25,8 @@ export function PrizesSection({ className }: { className?: string }) {
       place: "second",
       icon: <Award className="h-8 w-8" />,
       emoji: "🥈",
-      title: t("prizes.secondPlace.title"),
-      amount: t("prizes.secondPlace.amount"),
+      title: t("prizes.firstPlace.title"),
+      amount: t("prizes.firstPlace.amount"),
       gradient: "from-gray-400 to-gray-600",
       bgGradient:
         "from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20",
@@ -186,6 +186,17 @@ export function PrizesSection({ className }: { className?: string }) {
             <p className="text-gray-600 dark:text-gray-400">
               {t("prizes.ambassador")}
             </p>
+          </div>
+
+          {/* Kiro Prize */}
+          <div className="rounded-xl border border-gray-200 bg-white/60 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/60">
+            <h4 className="mb-2 font-semibold text-gray-900 text-lg dark:text-white">
+              🏆 {t("prizes.kiro.title")}
+            </h4>
+            <div className="text-gray-600 dark:text-gray-400">
+              <p>{t("prizes.kiro.subscription")}</p>
+              <p className="mt-2">{t("prizes.kiro.cash")}</p>
+            </div>
           </div>
 
           {/* Eligibility Notes */}

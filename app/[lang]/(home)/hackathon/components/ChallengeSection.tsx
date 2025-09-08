@@ -87,37 +87,6 @@ export function ChallengeSection({ className }: { className?: string }) {
             </motion.div>
           ))}
         </div>
-
-        {/* Additional Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.2, delay: 0.2 }}
-          viewport={{ once: true }}
-          className="mt-16 rounded-xl border border-gray-200 bg-gray-50 p-8 text-center dark:border-gray-700 dark:bg-gray-800"
-        >
-          <h3 className="mb-4 font-semibold text-gray-900 text-xl dark:text-white">
-            Technologies You Can Use
-          </h3>
-          <div className="flex flex-wrap justify-center gap-4">
-            {[
-              "ASR",
-              "LLMs",
-              "TTS",
-              "SIP",
-              "ESP32",
-              "Computer Vision",
-              "NLP",
-            ].map((tech) => (
-              <span
-                key={tech}
-                className="rounded-full bg-blue-100 px-4 py-2 font-medium text-blue-700 text-sm dark:bg-blue-900/30 dark:text-blue-300"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </motion.div>
       </div>
     </section>
   );

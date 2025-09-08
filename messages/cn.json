@@ -43,7 +43,6 @@
   "hackathon": {
     "title": "TEN 开发挑战赛 2025",
     "subtitle": "与全球开发者一起构建对话式 AI",
-    "heroTitle": "构建下一代实时语音 AI",
     "prizePool": "11,000 美元奖金池",
     "global": "全球线上",
     "openToAll": "面向所有人开放",
@@ -85,7 +84,16 @@
       "showcase": "所有获奖项目都有机会在 RTE 大会上进行展示。",
       "ambassador": "获奖者还将优先考虑成为 TEN Framework 社区大使。",
       "eligibilityNote": "要获得语音创新奖，您的项目必须主要基于 TEN Framework 构建。",
-      "technicalNote": "仅使用 TEN VAD 或 Turn Detection 功能的项目只能参评技术奖。"
+      "technicalNote": "仅使用 TEN VAD 或 Turn Detection 功能的项目只能参评技术奖。",
+      "kiro": {
+        "title": "Kiro 奖励",
+        "subscription": "Top 10 团队的每位成员可获赠 Kiro Pro 三个月订阅。",
+        "cash": "在开发过程中使用 Kiro 的 Top 10 团队可获得现金奖励（每队 300 美元）。"
+      }
+    },
+    "judges": {
+      "title": "评审团",
+      "tba": "完整评审名单将于 9 月公布。"
     },
     "timeline": {
       "title": "活动时间线",
@@ -96,6 +104,15 @@
       "winnersAnnounced": "获奖者公布：10月15日",
       "workshops": "线上研讨会：待定",
       "workshopsDesc": "我们将举办多场线上研讨会，提供技术支持。"
+    },
+    "workshop": {
+      "title": "🛠 线上工作坊：使用 TEN Framework 构建对话式 AI",
+      "timeLabel": "时间：",
+      "time": "9 月 11 日，PDT 19:00–20:00",
+      "desc1": "想用自己的对话式 AI 横扫本次黑客松吗？🚀",
+      "desc2": "本次工作坊将手把手带你用 TEN Framework 搭建语音智能体，讲解 TEN 的核心概念与模块结构、配置与部署，帮助你在比赛中最大化发挥 TEN 的优势。",
+      "desc3": "记得加入我们的 Discord 频道——直播链接会在那边发布！",
+      "joinDiscord": "加入 Discord"
     },
     "participate": {
       "title": "如何参与",
@@ -136,7 +153,7 @@
     "footer": {
       "organizer": "主办方：TEN Framework",
       "partners": "合作伙伴：",
-      "communitySupport": "社区支持：Slush",
+      "communitySupport": "社区支持",
       "socialMedia": "社交媒体："
     }
   }
