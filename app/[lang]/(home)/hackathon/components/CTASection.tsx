@@ -104,6 +104,7 @@ export function CTASection({ className }: { className?: string }) {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
+          <a href="https://luma.com/y14vmjsu" target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 className="gap-3 bg-white px-8 py-4 font-medium text-gray-900 text-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
@@ -111,6 +112,7 @@ export function CTASection({ className }: { className?: string }) {
                 {t("cta.register")}
                 <ExternalLink className="h-5 w-5" />
               </Button>
+              </a>
             </motion.div>
 
             <motion.div
@@ -118,6 +120,7 @@ export function CTASection({ className }: { className?: string }) {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
+              <a href="https://discord.gg/8AJkU7cU" target="_blank" rel="noopener noreferrer">
               <Button
                 size="lg"
                 variant="outline"
@@ -126,6 +129,7 @@ export function CTASection({ className }: { className?: string }) {
                 {t("cta.joinDiscord")}
                 <MessageCircle className="h-5 w-5" />
               </Button>
+              </a>
             </motion.div>
           </motion.div>
 
@@ -152,15 +156,11 @@ export function CTASection({ className }: { className?: string }) {
           viewport={{ once: true }}
           className="mt-16 grid gap-8 text-center text-white md:grid-cols-3 dark:text-gray-900"
         >
-          <div>
+          <div className="flex flex-col items-center">
             <div className="mb-2 font-bold text-3xl">$11,000</div>
             <div className="text-lg opacity-80">Total Prize Pool</div>
           </div>
-          <div>
-            <div className="mb-2 font-bold text-3xl">15 Days</div>
-            <div className="text-lg opacity-80">Build Duration</div>
-          </div>
-          <div>
+          <div className="flex flex-col items-center">
             <div className="mb-2 font-bold text-3xl">Global</div>
             <div className="text-lg opacity-80">Online Event</div>
           </div>

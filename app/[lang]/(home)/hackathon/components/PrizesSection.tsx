@@ -13,8 +13,8 @@ export function PrizesSection({ className }: { className?: string }) {
       place: "first",
       icon: <Trophy className="h-8 w-8" />,
       emoji: "🥇",
-      title: t("prizes.firstPlace.title"),
-      amount: t("prizes.firstPlace.amount"),
+      title: t("prizes.secondPlace.title"),
+      amount: t("prizes.secondPlace.amount"),
       gradient: "from-yellow-400 to-orange-500",
       bgGradient:
         "from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20",
@@ -25,8 +25,8 @@ export function PrizesSection({ className }: { className?: string }) {
       place: "second",
       icon: <Award className="h-8 w-8" />,
       emoji: "🥈",
-      title: t("prizes.secondPlace.title"),
-      amount: t("prizes.secondPlace.amount"),
+      title: t("prizes.firstPlace.title"),
+      amount: t("prizes.firstPlace.amount"),
       gradient: "from-gray-400 to-gray-600",
       bgGradient:
         "from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20",

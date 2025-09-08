@@ -58,9 +58,18 @@ export function DiscordSection({ className }: { className?: string }) {
                     size="lg"
                     className="gap-2 bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black"
                   >
-                    <MessageCircle className="h-5 w-5" />
-                    Join Discord Community
-                    <ExternalLink className="h-5 w-5" />
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="h-5 w-5" />
+                      <a 
+                        href="https://discord.gg/8AJkU7cU" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2"
+                      >
+                        Join Discord Community
+                        <ExternalLink className="h-5 w-5" />
+                      </a>
+                    </div>
                   </Button>
 
                   <Button
