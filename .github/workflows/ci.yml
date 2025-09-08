@@ -34,7 +34,7 @@ jobs:
             ${{ runner.os }}-next-
 
       - name: Install dependencies
-        run: bun install --frozen-lockfile --no-progress
+        run: bun install --no-progress
 
       - name: Typecheck
         run: bun run typecheck
