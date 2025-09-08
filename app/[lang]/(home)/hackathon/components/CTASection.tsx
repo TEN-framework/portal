@@ -154,7 +154,7 @@ export function CTASection({ className }: { className?: string }) {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
           viewport={{ once: true }}
-          className="mt-16 grid gap-8 text-center text-white md:grid-cols-3 dark:text-gray-900"
+          className="mt-16 grid gap-8 text-center text-white sm:grid-cols-2 justify-items-center dark:text-gray-900"
         >
           <div className="flex flex-col items-center">
             <div className="mb-2 font-bold text-3xl">$11,000</div>

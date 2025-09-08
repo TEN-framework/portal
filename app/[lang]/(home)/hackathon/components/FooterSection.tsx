@@ -54,8 +54,41 @@ export function FooterSection({ className }: { className?: string }) {
             <h3 className="font-semibold text-gray-900 text-lg dark:text-white">
               {t("footer.partners")}
             </h3>
-            <div className="space-y-2 text-gray-600 dark:text-gray-400">
-              <p>Coming soon...</p>
+            <div className="flex flex-wrap gap-3 text-gray-600 dark:text-gray-400">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 rounded border border-gray-200 bg-white px-3 py-1 text-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
+                title="TEN Framework"
+              >
+                TEN Framework
+              </Link>
+              <Link
+                href="https://www.agora.io/"
+                target="_blank"
+                className="inline-flex items-center gap-2 rounded border border-gray-200 bg-white px-3 py-1 text-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
+                title="Agora"
+              >
+                Agora
+                <ExternalLink className="h-3 w-3" />
+              </Link>
+              <Link
+                href="https://kiro.dev"
+                target="_blank"
+                className="inline-flex items-center gap-2 rounded border border-gray-200 bg-white px-3 py-1 text-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
+                title="Kiro"
+              >
+                Kiro
+                <ExternalLink className="h-3 w-3" />
+              </Link>
+              <Link
+                href="https://www.siliconflow.com/"
+                target="_blank"
+                className="inline-flex items-center gap-2 rounded border border-gray-200 bg-white px-3 py-1 text-sm transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
+                title="SiliconFlow"
+              >
+                SiliconFlow
+                <ExternalLink className="h-3 w-3" />
+              </Link>
             </div>
           </div>
 
@@ -64,14 +97,24 @@ export function FooterSection({ className }: { className?: string }) {
             <h3 className="font-semibold text-gray-900 text-lg dark:text-white">
               {t("footer.communitySupport")}
             </h3>
-            <Link
-              href="https://slush.org"
-              target="_blank"
-              className="inline-flex items-center gap-2 text-gray-600 transition-colors duration-300 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-            >
-              Slush
-              <ExternalLink className="h-4 w-4" />
-            </Link>
+            <div className="flex flex-wrap items-center gap-3 text-gray-600 dark:text-gray-400">
+              <span>CamelAI</span>
+              <span className="text-gray-400">|</span>
+              <span>WayToAGI</span>
+              <span className="text-gray-400">|</span>
+              <span>IVS</span>
+              <span className="text-gray-400">|</span>
+              <Link
+                href="https://slush.org"
+                target="_blank"
+                className="inline-flex items-center gap-2 transition-colors duration-300 hover:text-blue-600 dark:hover:text-blue-400"
+              >
+                Slush
+                <ExternalLink className="h-4 w-4" />
+              </Link>
+              <span className="text-gray-400">|</span>
+              <span>MeltingHack</span>
+            </div>
           </div>
 
           {/* Social Media */}

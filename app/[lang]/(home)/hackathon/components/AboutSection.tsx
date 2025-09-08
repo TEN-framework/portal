@@ -22,6 +22,7 @@ export function AboutSection({ className }: { className?: string }) {
           </h2>
           <div className="mx-auto max-w-3xl text-gray-600 text-lg leading-relaxed dark:text-gray-400">
             <p>{t("about.description")}</p>
+            <p>{t("about.descriptionTwo")}</p>
           </div>
         </motion.div>
       </div>

@@ -13,23 +13,23 @@ export function FrameworkSection({ className }: { className?: string }) {
   const features = [
     {
       icon: <Zap className="h-6 w-6" />,
-      title: "Real-Time",
-      description: "Low-latency voice interactions",
+      title: "Production-Ready & Real-Time",
+      description: "Low-latency, interruptible, and full-duplex conversations.",
     },
     {
       icon: <Mic className="h-6 w-6" />,
-      title: "Multi-Modal",
-      description: "Voice, vision, and text capabilities",
+      title: "Highly Extensible",
+      description: "Easily integrate any mainstream or custom AI model."
     },
     {
       icon: <Code className="h-6 w-6" />,
-      title: "Extensible",
-      description: "Create reusable extensions",
+      title: "Developer-Friendly",
+      description: "Build with pro-code (Node.js, Python, Go, C++) or a low-code canvas.",
     },
     {
       icon: <Cpu className="h-6 w-6" />,
-      title: "AI-Powered",
-      description: "Integrate LLMs, STT, TTS easily",
+      title: "Multimodal Support",
+      description: "Simultaneously process voice, vision, text, and data streams."
     },
   ];
 
@@ -152,7 +152,7 @@ export function FrameworkSection({ className }: { className?: string }) {
                </div>
 
                <div className="border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800 max-w-xs p-4 rounded-lg">
-                 <a href="https://docs.siliconflow.com/en/userguide/introduction" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
+                 <a href="https://www.siliconflow.com/" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
                    SiliconFlow
                  </a>
                  <p className="dark:text-gray-400 mt-2 text-gray-600 text-sm">

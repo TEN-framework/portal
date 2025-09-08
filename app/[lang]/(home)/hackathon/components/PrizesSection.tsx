@@ -188,6 +188,17 @@ export function PrizesSection({ className }: { className?: string }) {
             </p>
           </div>
 
+          {/* Kiro Prize */}
+          <div className="rounded-xl border border-gray-200 bg-white/60 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/60">
+            <h4 className="mb-2 font-semibold text-gray-900 text-lg dark:text-white">
+              🏆 {t("prizes.kiro.title")}
+            </h4>
+            <div className="text-gray-600 dark:text-gray-400">
+              <p>{t("prizes.kiro.subscription")}</p>
+              <p className="mt-2">{t("prizes.kiro.cash")}</p>
+            </div>
+          </div>
+
           {/* Eligibility Notes */}
           <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20">
             <h4 className="mb-2 font-semibold text-lg text-yellow-800 dark:text-yellow-200">
