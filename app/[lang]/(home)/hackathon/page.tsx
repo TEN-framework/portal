@@ -11,6 +11,8 @@ import { FrameworkSection } from "./components/FrameworkSection";
 import { HackathonHero } from "./components/HackathonHero";
 import { ParticipateSection } from "./components/ParticipateSection";
 import { PrizesSection } from "./components/PrizesSection";
+import { JudgesSection } from "./components/JudgesSection";
+import { WorkshopSection } from "./components/WorkshopSection";
 import { TimelineSection } from "./components/TimelineSection";
 
 export default function HackathonPage() {
@@ -22,7 +24,9 @@ export default function HackathonPage() {
         <FrameworkSection />
         <ChallengeSection />
         <PrizesSection />
+        <JudgesSection />
         <TimelineSection />
+        <WorkshopSection />
         <ParticipateSection />
         <EligibilitySection />
         <DiscordSection />

@@ -73,19 +73,6 @@ export function HackathonHero({ className }: { className?: string }) {
             }}
             className="mb-6"
           >
-            <motion.div
-              className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 dark:border-gray-700 dark:bg-gray-900"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-              }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Sparkles className="h-4 w-4 text-orange-500" />
-              <span className="font-medium text-gray-600 text-sm dark:text-gray-400">
-                15-Day Challenge
-              </span>
-            </motion.div>
           </motion.div>
 
           {/* Main Title */}
@@ -118,20 +105,7 @@ export function HackathonHero({ className }: { className?: string }) {
             {t("subtitle")}
           </motion.p>
 
-          {/* Hero Description */}
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.6,
-              delay: 0.6,
-              type: "spring",
-              stiffness: 100,
-            }}
-            className="mb-8 max-w-3xl font-normal text-2xl text-gray-900 md:text-3xl dark:text-white"
-          >
-            {t("heroTitle")}
-          </motion.h2>
+
 
           {/* Key Features */}
           <motion.div
@@ -207,9 +181,12 @@ export function HackathonHero({ className }: { className?: string }) {
                 size="lg"
                 variant="outline"
                 className="gap-2 border-gray-900 px-8 py-4 font-medium text-gray-900 text-lg hover:bg-gray-100 dark:border-gray-200 dark:text-gray-900 dark:hover:bg-gray-100"
+                asChild
               >
-                {t("cta.joinDiscord")}
-                <ExternalLink className="h-4 w-4" />
+                <a href="https://discord.gg/8AJkU7cU" target="_blank" rel="noopener noreferrer">
+                  {t("cta.joinDiscord")}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
               </Button>
             </motion.div>
           </motion.div>
@@ -231,7 +208,7 @@ export function HackathonHero({ className }: { className?: string }) {
             className="flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50/80 px-4 py-2 font-medium text-gray-600 text-sm dark:border-gray-700 dark:bg-gray-900/80 dark:text-gray-400"
           >
             <Calendar className="h-4 w-4" />
-            <span>Sept 4 - Oct 15, 2025</span>
+            <span>Sept 8 - Oct 28, 2025</span>
           </motion.div>
         </div>
       </motion.div>
