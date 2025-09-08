@@ -157,12 +157,12 @@ export function CTASection({ className }: { className?: string }) {
           className="mt-16 grid gap-8 text-center text-white md:grid-cols-3 dark:text-gray-900"
         >
           <div className="flex flex-col items-center">
-            <div className="font-bold mb-2 text-3xl">$11,000</div>
-            <div className="opacity-80 text-lg">Total Prize Pool</div>
+            <div className="mb-2 font-bold text-3xl">$11,000</div>
+            <div className="text-lg opacity-80">Total Prize Pool</div>
           </div>
           <div className="flex flex-col items-center">
-            <div className="font-bold mb-2 text-3xl">Global</div>
-            <div className="opacity-80 text-lg">Online Event</div>
+            <div className="mb-2 font-bold text-3xl">Global</div>
+            <div className="text-lg opacity-80">Online Event</div>
           </div>
         </motion.div>
       </div>

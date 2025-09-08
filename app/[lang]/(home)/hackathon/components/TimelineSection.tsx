@@ -122,9 +122,11 @@ export function TimelineSection({ className }: { className?: string }) {
             </p>
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-6 py-3">
               <Users className="h-5 w-5" />
+              <a href="https://discord.gg/8AJkU7cU" target="_blank" rel="noopener noreferrer">
               <span className="font-semibold">
                 Join our Discord for updates!
               </span>
+              </a>
             </div>
           </div>
         </motion.div>
