@@ -1,6 +1,7 @@
 "use client";
 
 import { Calendar, Clock, Trophy, Users } from "lucide-react";
+import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,7 @@ export function TimelineSection({ className }: { className?: string }) {
   const t = useTranslations("hackathon");
 
   const timeline: Array<{
-    icon: JSX.Element;
+    icon: ReactNode;
     title: string;
     date: string;
     color: string;
