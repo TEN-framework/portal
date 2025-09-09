@@ -1,23 +1,23 @@
-import { createTokenizer } from "@orama/tokenizers/mandarin";
-import { createFromSource } from "fumadocs-core/search/server";
-import { source } from "@/lib/source";
+import { source } from '@/lib/source'
+import { createTokenizer } from '@orama/tokenizers/mandarin'
+import { createFromSource } from 'fumadocs-core/search/server'
 
 export const { GET } = createFromSource(source, undefined, {
-  localeMap: {
-    // you can customise search configs for specific locales, like:
-    // [locale]: Orama options
+	localeMap: {
+		// you can customise search configs for specific locales, like:
+		// [locale]: Orama options
 
-    cn: {
-      components: {
-        tokenizer: createTokenizer(),
-      },
-      search: {
-        threshold: 0,
-        tolerance: 0,
-      },
-    },
+		cn: {
+			components: {
+				tokenizer: createTokenizer(),
+			},
+			search: {
+				threshold: 0,
+				tolerance: 0,
+			},
+		},
 
-    // use the English tokenizer
-    "custom-locale": "english",
-  },
-});
+		// use the English tokenizer
+		'custom-locale': 'english',
+	},
+})

@@ -1,1 +1,1 @@
-export * from "@/constants/url";
+export * from '@/constants/url'

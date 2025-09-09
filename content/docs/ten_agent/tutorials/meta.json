@@ -1,4 +1,4 @@
 {
-  "title": "Tutorials",
-  "pages": ["how_does_interrupt_work", "how_to_run_local_model_in_ollama"]
+	"title": "Tutorials",
+	"pages": ["how_does_interrupt_work", "how_to_run_local_model_in_ollama"]
 }
