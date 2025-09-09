@@ -14,6 +14,7 @@ const BackgroundVideo = () => {
 		setMounted(true)
 	}, [])
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Theme dependency is intentional to reset video on theme change
 	useEffect(() => {
 		if (videoRef.current) {
 			// Reset loaded state when theme changes
