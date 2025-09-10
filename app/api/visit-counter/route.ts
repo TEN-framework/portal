@@ -19,7 +19,7 @@ function getClientIP(request: NextRequest): string {
   if (cfConnectingIP) return cfConnectingIP
 
   // Fallback to localhost for development
-  return request.ip || 'localhost'
+  return 'localhost'
 }
 
 function getVisitorFingerprint(request: NextRequest, ip: string): string {
