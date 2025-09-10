@@ -18,111 +18,112 @@
   },
   "blog": {
     "latestPosts": "最新博客文章",
-    "discoverLatestArticles": "发现我们关于 TEN framework、AI 开发等方面的最新文章",
+    "discoverLatestArticles": "探索我们关于 TEN Framework、TEN Agent 和对话式 AI 的最新文章",
     "readMore": "阅读更多",
     "backToBlog": "返回博客",
     "writtenBy": "作者",
     "publishedOn": "发布于"
   },
   "homePage": {
-    "titlePrefix": "搭建",
-    "titleRealtime": "实时",
+    "titlePrefix": "构建",
+    "titleLowlantency": "实时",
     "titleMultimodal": "可定制",
-    "titleLowlantency": "低延迟",
     "titleHighperformance": "高性能",
-    "titleEdgeCloud": "可边缘云",
+    "titleEdgeCloud": "低延迟",
     "titleSuffix": "语音 AI Agent",
     "readLaunchArticle": "阅读我们的博客了解更多",
-    "heroDescription": "TEN 是一个用于搭建实时多模态的对话式 AI 引擎的开源框架",
+    "heroDescription": "一个专为构建对话式 AI 而设计的开源框架",
+    "supportedBy": "由 TEN 社区支持，以及",
     "heroBtnTryTenAgent": "体验 TEN Agent",
+    "huggingFaceSpace": "体验 VAD 和 Turn Detection",
     "heroBtnReadDoc": "文档",
-    "bannerAnnouncement": "欢迎 VAD 和 Turn Detection 加入 TEN 开源全家桶!",
-    "huggingFaceSpace": "体验语音检测和打断",
-    "supportedBy": "共同支持来自 TEN 社区"
+    "bannerAnnouncement": "现在是 TEN 开源生态系统的一部分！"
   },
   "hackathon": {
-    "title": "TEN 开发挑战赛 2025",
+    "title": "TEN Dev Challenge 2025",
     "subtitle": "与全球开发者一起构建对话式 AI",
+    "heroTitle": "构建下一代实时语音 AI",
     "prizePool": "11,000 美元奖金池",
     "global": "全球线上",
     "openToAll": "面向所有人开放",
     "about": {
-      "title": "活动介绍",
-      "description": "为期 15 天的 TEN 开发挑战赛 2025，由 TEN Framework 主办，专注于实时交互和对话式 AI，邀请全球开发者共同塑造下一代语音交互产品。"
+      "title": "这是什么活动？",
+      "description": "TEN Dev Challenge 2025 由 TEN Framework 主办，专注于实时互动和对话式 AI，邀请全球开发者共同塑造下一代语音交互产品。",
+      "descriptionTwo": "从语音陪伴到智能家居再到企业服务，我们期待发现新的语音驱动场景。加入我们，一起探索语音 AI 智能体的实用应用！"
     },
     "framework": {
       "title": "TEN Framework",
-      "description": "用于构建对话式语音 AI 智能体的开源框架",
-      "features": "让开发者能够快速构建实时语音智能体，轻松集成大语言模型、STT、TTS。"
+      "description": "用于对话式语音 AI 智能体的开源框架",
+      "features": "让开发者能够快速构建实时语音智能体（具备视觉等能力），使开发者能够轻松实验、集成 LLM、STT、TTS 并创建可复用的扩展"
     },
     "challenge": {
       "title": "挑战概述",
-      "description": "参赛者必须使用开源的 TEN Framework 构建项目。",
+      "description": "参赛者必须使用开源的 TEN Family（TEN Framework/TEN VAD/TEN Turn Detection）构建项目。您可以集成广泛的技术和硬件，如 ASR、LLM、TTS、SIP 和 ESP32，来创建创新的语音交互应用。",
       "examples": "示例包括：",
       "serviceAgents": "服务智能体：语音客服、智能养老助手",
-      "iotHardware": "物联网与硬件：语音控制的智能家居设备",
+      "iotHardware": "IoT 和硬件：语音控制的智能家居设备",
       "emotionalCompanions": "情感陪伴：AI 主播、虚拟伴侣"
     },
     "prizes": {
       "title": "奖项设置",
       "firstPlace": {
         "title": "TEN 语音创新奖 - 一等奖（1 个团队）",
-        "amount": "4,000 美元"
+        "amount": "$5,000 USD"
       },
       "secondPlace": {
         "title": "TEN 语音创新奖 - 二等奖（1 个团队）",
-        "amount": "3,000 美元"
+        "amount": "$3,000 USD"
       },
       "thirdPlace": {
         "title": "TEN 语音创新奖 - 三等奖（2 个团队）",
-        "amount": "1,000 美元"
+        "amount": "$1,000 USD"
       },
       "technical": {
         "title": "TEN 技术奖（1 个团队）",
-        "amount": "1,000 美元"
+        "amount": "$1,000 USD"
       },
       "showcase": "所有获奖项目都有机会在 RTE 大会上进行展示。",
-      "ambassador": "获奖者还将优先考虑成为 TEN Framework 社区大使。",
-      "eligibilityNote": "要获得语音创新奖，您的项目必须主要基于 TEN Framework 构建。",
-      "technicalNote": "仅使用 TEN VAD 或 Turn Detection 功能的项目只能参评技术奖。",
+      "ambassador": "获奖者还将优先考虑成为 TEN Framework 社区大使，享受专属大使权益。",
+      "eligibilityNote": "要获得「TEN 语音创新奖」（一、二、三等奖），您的项目必须主要基于 TEN Framework 构建。",
+      "technicalNote": "仅使用 TEN VAD 或 Turn Detection 功能的项目只能参评「TEN 技术奖」。",
       "kiro": {
         "title": "Kiro 奖励",
-        "subscription": "Top 10 团队的每位成员可获赠 Kiro Pro 三个月订阅。",
-        "cash": "在开发过程中使用 Kiro 的 Top 10 团队可获得现金奖励（每队 300 美元）。"
+        "subscription": "前 10 名团队的每位成员都将获得免费的 Kiro Pro 三个月订阅。",
+        "cash": "在开发过程中使用 Kiro 的前 10 名团队将获得专属现金奖励（每队 $300）。"
       }
     },
     "judges": {
       "title": "评审团",
-      "tba": "完整评审名单将于 9 月公布。"
+      "tba": "完整的评审名单将在 9 月公布。"
     },
     "timeline": {
       "title": "活动时间线",
-      "registrationOpens": "报名开始：9月4日",
-      "submissionsOpen": "提交开始：9月12日",
-      "deadline": "截止：9月26日",
-      "judging": "评审：9月27日-30日",
-      "winnersAnnounced": "获奖者公布：10月15日",
+      "registrationOpens": "报名开始：9月10日",
+      "submissionsOpen": "提交开始：9月12日，PDT 00:00（UTC 07:00）",
+      "deadline": "报名和提交截止：9月26日，PDT 23:59（9月27日，UTC 06:59）",
+      "judging": "评审：2025年9月27日-30日",
+      "winnersAnnounced": "获奖者公布：2025年10月15日",
       "workshops": "线上研讨会：待定",
-      "workshopsDesc": "我们将举办多场线上研讨会，提供技术支持。"
+      "workshopsDesc": "在提交期间，我们将在官方 TEN Discord 频道举办多场线上研讨会，提供技术支持。"
     },
     "workshop": {
       "title": "🛠 线上工作坊：使用 TEN Framework 构建对话式 AI",
       "timeLabel": "时间：",
-      "time": "9 月 11 日，PDT 19:00–20:00",
-      "desc1": "想用自己的对话式 AI 横扫本次黑客松吗？🚀",
-      "desc2": "本次工作坊将手把手带你用 TEN Framework 搭建语音智能体，讲解 TEN 的核心概念与模块结构、配置与部署，帮助你在比赛中最大化发挥 TEN 的优势。",
-      "desc3": "记得加入我们的 Discord 频道——直播链接会在那边发布！",
+      "time": "9月11日，PDT 19:00–20:00",
+      "desc1": "想用自己的对话式 AI 横扫黑客松吗？🚀",
+      "desc2": "本次工作坊将手把手带你使用 TEN Framework 逐步构建语音智能体。我们将介绍 TEN 的核心概念和模块布局、配置和部署——帮你在比赛中最大化发挥 TEN 的优势！",
+      "desc3": "记得加入我们的 Discord 频道——我们会在那里分享直播链接！",
       "joinDiscord": "加入 Discord"
     },
     "participate": {
       "title": "如何参与",
-      "signUp": "注册并加入我们的官方 Discord 频道。",
-      "build": "使用开源 TEN Framework 创建您的项目。",
-      "submit": "在截止日期前提交您的项目和演示。",
-      "submissionTitle": "提交内容：",
+      "signUp": "注册 - 在 lu.ma 注册并加入我们的官方 Discord 频道以获得最新消息。",
+      "build": "构建 - 使用开源 TEN Framework 创建您的项目。",
+      "submit": "提交 - 提交开始时会提供提交链接。",
+      "submissionTitle": "您的提交内容应包括：",
       "projectName": "项目名称和描述",
       "teamInfo": "团队信息和联系方式",
-      "features": "TEN Framework 功能使用说明",
+      "features": "使用 TEN Framework（TEN VAD/TTD）开发功能的详细说明",
       "demo": "演示视频、在线体验链接等"
     },
     "toolkit": {
@@ -131,30 +132,30 @@
       "vadTtd": "TEN VAD/TTD"
     },
     "eligibility": {
-      "title": "项目要求",
-      "openToAll": "面向所有人开放。个人或最多五人团队。",
-      "teamFormation": "可以提前组队或在 Discord 频道寻找队友。",
-      "buildWithTen": "所有项目必须基于 TEN Framework 构建。",
-      "originalWork": "所有提交作品必须是原创。",
-      "note": "之前获奖的项目不能再次参赛。"
+      "title": "项目资格",
+      "openToAll": "面向所有人开放。您可以个人参赛或组建最多 3 人的团队。",
+      "teamFormation": "团队组建。您可以提前组队或在我们的 Discord 频道寻找队友。",
+      "buildWithTen": "使用 TEN 构建。所有项目都必须基于 TEN Framework 构建。",
+      "originalWork": "原创作品。所有提交内容必须是原创作品，不涉及任何法律或版权问题。",
+      "note": "请点击以下链接查看参与者指南。通过注册和提交项目，您确认并同意遵循这些官方指南。"
     },
     "discord": {
       "title": "Discord 社区",
       "description": "加入我们的官方 Discord 频道",
-      "support": "如有问题，可在 Discord 社区询问或发送邮件。"
+      "support": "如果您对比赛有任何问题，可以在我们的官方 Discord 社区询问或发送邮件至 developer@theten.ai。"
     },
     "cta": {
       "title": "准备好开始构建了吗？",
-      "description": "加入 TEN 开发挑战赛 2025。",
+      "description": "加入 TEN Dev Challenge 2025，用实时语音 AI 重塑人机交互的未来。",
       "register": "立即注册",
       "joinDiscord": "加入 Discord",
       "email": "developer@theten.ai"
     },
     "footer": {
-      "organizer": "主办方：TEN Framework",
-      "partners": "合作伙伴：",
+      "organizer": "主办方",
+      "partners": "合作伙伴",
       "communitySupport": "社区支持",
-      "socialMedia": "社交媒体："
+      "socialMedia": "社交媒体"
     }
   }
 }
