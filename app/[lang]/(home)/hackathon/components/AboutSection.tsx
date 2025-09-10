@@ -1,11 +1,12 @@
-'use client'
+"use client";
 
 import { cn } from '@/lib/utils'
 import { motion } from 'motion/react'
+import { Link } from '@/lib/next-intl-navigation'
 import { useTranslations } from 'next-intl'
 
 export function AboutSection({ className }: { className?: string }) {
-	const t = useTranslations('hackathon')
+  const t = useTranslations("hackathon");
 
 	return (
 		<section className={cn('bg-gray-50 py-16 dark:bg-gray-900', className)}>
@@ -23,6 +24,14 @@ export function AboutSection({ className }: { className?: string }) {
 					<div className="mx-auto max-w-3xl text-gray-600 text-lg leading-relaxed dark:text-gray-400">
 						<p>{t('about.description')}</p>
 						<p>{t('about.descriptionTwo')}</p>
+						<div className="mt-6">
+							<Link
+								href="/hackathon/guidelines"
+								className="inline-flex items-center font-semibold text-gray-900 hover:text-gray-700 hover:underline dark:text-white dark:hover:text-gray-300"
+							>
+								TEN DEV Challenge – Participant Guidelines
+							</Link>
+						</div>
 					</div>
 				</motion.div>
 			</div>

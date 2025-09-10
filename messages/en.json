@@ -98,7 +98,7 @@
 		},
 		"timeline": {
 			"title": "Event Timeline",
-			"registrationOpens": "Registration opens: Sept 4",
+			"registrationOpens": "Registration opens: Sep 10",
 			"submissionsOpen": "Submissions open: Sept 12, 00:00 PDT (07:00 UTC)",
 			"deadline": "Registration & submissions close: Sept 26, 23:59 PDT (Sept 27, 06:59 UTC)",
 			"judging": "Judging: Sept 27–30, 2025",
@@ -152,10 +152,10 @@
 			"email": "developer@theten.ai"
 		},
 		"footer": {
-			"organizer": "Organizer: TEN Framework",
-			"partners": "Partners:",
+			"organizer": "Organizer",
+			"partners": "Partners",
 			"communitySupport": "Community Support",
-			"socialMedia": "Social Media:"
+			"socialMedia": "Social Media"
 		}
 	}
 }
