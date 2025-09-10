@@ -84,7 +84,7 @@
       },
       "showcase": "All winning projects will have the opportunity to be showcased at the RTE Conference.",
       "ambassador": "Winners will also be given priority consideration to become TEN Framework Community Ambassadors, with access to exclusive ambassador benefits.",
-      "eligibilityNote": "Please click here to review the Participant Guidelines. By registering and submitting your project, you acknowledge and agree to follow these official guidelines.",
+      "eligibilityNote": "To be eligible for the \"TEN Voice Innovation Awards\" (1st, 2nd, and 3rd place prizes), your project must be built primarily on the TEN Framework.",
       "technicalNote": "Projects that only use the TEN VAD or Turn Detection features will only be considered for the \"TEN Technical Award\".",
       "kiro": {
         "title": "Kiro Prize",
@@ -137,7 +137,7 @@
       "teamFormation": "Team Formation. You can form a team beforehand or find teammates on our Discord channel.",
       "buildWithTen": "Build with TEN. All projects must be built on the TEN Framework.",
       "originalWork": "Original Work. All submissions must be original work, free of any legal or copyright issues.",
-      "note": "Projects that have previously won a prize at a TEN event are not eligible to compete again. However, you can submit a new version of the project if you make significant feature additions or major upgrades to the original."
+      "note": "Please click the following link to review the Participant Guidelines. By registering and submitting your project, you acknowledge and agree to follow these official guidelines."
     },
     "discord": {
       "title": "Discord Community",
