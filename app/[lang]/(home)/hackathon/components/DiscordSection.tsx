@@ -1,34 +1,34 @@
-"use client";
+'use client'
 
-import { ExternalLink, Mail, MessageCircle } from "lucide-react";
-import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { ExternalLink, Mail, MessageCircle } from 'lucide-react'
+import { motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export function DiscordSection({ className }: { className?: string }) {
-  const t = useTranslations("hackathon");
+  const t = useTranslations('hackathon')
 
-	return (
-		<section className={cn('bg-white py-16 dark:bg-gray-950', className)}>
-			<div className="container mx-auto max-w-[72rem] px-6">
-				<motion.div
-					initial={{ opacity: 0 }}
-					whileInView={{ opacity: 1 }}
-					transition={{ duration: 0.2 }}
-					viewport={{ once: true }}
-					className="mx-auto max-w-4xl text-center"
-				>
-					<div className="relative">
-						{/* Background decoration (static, no animation) */}
-						<div className="pointer-events-none -m-4 absolute inset-0 z-0">
-							<div className="absolute top-0 left-1/4 h-32 w-32 rounded-full bg-purple-400/20 blur-3xl" />
-							<div className="absolute right-1/4 bottom-0 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
-						</div>
+  return (
+    <section className={cn('bg-white py-16 dark:bg-gray-950', className)}>
+      <div className="container mx-auto max-w-[72rem] px-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.2 }}
+          viewport={{ once: true }}
+          className="mx-auto max-w-4xl text-center"
+        >
+          <div className="relative">
+            {/* Background decoration (static, no animation) */}
+            <div className="-m-4 pointer-events-none absolute inset-0 z-0">
+              <div className="absolute top-0 left-1/4 h-32 w-32 rounded-full bg-purple-400/20 blur-3xl" />
+              <div className="absolute right-1/4 bottom-0 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
+            </div>
 
             <div className="">
               <h2 className="mb-8 font-bold text-4xl text-gray-900 dark:text-white">
-                {t("discord.title")}
+                {t('discord.title')}
               </h2>
 
               {/* Main Discord Card */}
@@ -46,30 +46,30 @@ export function DiscordSection({ className }: { className?: string }) {
                 </div>
 
                 <h3 className="mb-4 font-bold text-2xl">
-                  {t("discord.description")}
+                  {t('discord.description')}
                 </h3>
 
                 <p className="mb-8 text-lg opacity-90">
-                  {t("discord.support")}
+                  {t('discord.support')}
                 </p>
 
-								<div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-									<Button
-										asChild
-										size="lg"
-										className="gap-2 bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black"
-									>
-										<a
-											href="https://discord.gg/8AJkU7cU"
-											target="_blank"
-											rel="noopener noreferrer"
-											className="flex items-center gap-2"
-										>
-											<MessageCircle className="h-5 w-5" />
-											Join Discord Community
-											<ExternalLink className="h-5 w-5" />
-										</a>
-									</Button>
+                <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="gap-2 bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black"
+                  >
+                    <a
+                      href="https://discord.gg/8AJkU7cU"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2"
+                    >
+                      <MessageCircle className="h-5 w-5" />
+                      Join Discord Community
+                      <ExternalLink className="h-5 w-5" />
+                    </a>
+                  </Button>
 
                   <Button
                     size="lg"
@@ -77,7 +77,7 @@ export function DiscordSection({ className }: { className?: string }) {
                     className="gap-2 border-gray-900 text-gray-900 hover:bg-gray-100 dark:border-gray-200 dark:text-gray-900 dark:hover:bg-gray-100"
                   >
                     <Mail className="h-5 w-5" />
-                    {t("cta.email")}
+                    {t('cta.email')}
                   </Button>
                 </div>
               </motion.div>
@@ -125,5 +125,5 @@ export function DiscordSection({ className }: { className?: string }) {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

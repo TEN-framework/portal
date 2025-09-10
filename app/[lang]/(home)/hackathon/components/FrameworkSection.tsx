@@ -1,40 +1,42 @@
-"use client";
+'use client'
 
-import { Code, Cpu, ExternalLink, Mic, Zap } from "lucide-react";
-import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Link } from "@/lib/next-intl-navigation";
-import { cn } from "@/lib/utils";
+import { Code, Cpu, ExternalLink, Mic, Zap } from 'lucide-react'
+import { motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
+import { Button } from '@/components/ui/button'
+import { Link } from '@/lib/next-intl-navigation'
+import { cn } from '@/lib/utils'
 
 export function FrameworkSection({ className }: { className?: string }) {
-  const t = useTranslations("hackathon");
+  const t = useTranslations('hackathon')
 
   const features = [
     {
       icon: <Zap className="h-6 w-6" />,
-      title: "Production-Ready & Real-Time",
-      description: "Low-latency, interruptible, and full-duplex conversations.",
+      title: 'Production-Ready & Real-Time',
+      description: 'Low-latency, interruptible, and full-duplex conversations.',
     },
     {
       icon: <Mic className="h-6 w-6" />,
-      title: "Highly Extensible",
-      description: "Easily integrate any mainstream or custom AI model."
+      title: 'Highly Extensible',
+      description: 'Easily integrate any mainstream or custom AI model.',
     },
     {
       icon: <Code className="h-6 w-6" />,
-      title: "Developer-Friendly",
-      description: "Build with pro-code (Node.js, Python, Go, C++) or a low-code canvas.",
+      title: 'Developer-Friendly',
+      description:
+        'Build with pro-code (Node.js, Python, Go, C++) or a low-code canvas.',
     },
     {
       icon: <Cpu className="h-6 w-6" />,
-      title: "Multimodal Support",
-      description: "Simultaneously process voice, vision, text, and data streams."
+      title: 'Multimodal Support',
+      description:
+        'Simultaneously process voice, vision, text, and data streams.',
     },
-  ];
+  ]
 
   return (
-    <section className={cn("bg-white py-16 dark:bg-gray-950", className)}>
+    <section className={cn('bg-white py-16 dark:bg-gray-950', className)}>
       <div className="container mx-auto px-4">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           {/* Left Column - Content */}
@@ -45,13 +47,13 @@ export function FrameworkSection({ className }: { className?: string }) {
             viewport={{ once: true }}
           >
             <h2 className="mb-6 font-bold text-4xl text-gray-900 dark:text-white">
-              {t("framework.title")}
+              {t('framework.title')}
             </h2>
             <p className="mb-6 font-semibold text-gray-700 text-xl dark:text-gray-200">
-              {t("framework.description")}
+              {t('framework.description')}
             </p>
             <p className="mb-8 text-gray-600 text-lg leading-relaxed dark:text-gray-300">
-              {t("framework.features")}
+              {t('framework.features')}
             </p>
 
             <div className="flex gap-4">
@@ -115,54 +117,85 @@ export function FrameworkSection({ className }: { className?: string }) {
         >
           <div className="text-center">
             <h3 className="mb-4 font-medium text-gray-900 text-xl dark:text-white">
-              {t("toolkit.title")}
+              {t('toolkit.title')}
             </h3>
-            <div className="flex flex-wrap gap-6 justify-center">
-               <div className="border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800 max-w-xs p-4 rounded-lg">
-                 <a href="https://theten.ai/docs/ten_agent/overview" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
-                   TEN Framework
-                 </a>
-                 <p className="dark:text-gray-400 mt-2 text-gray-600 text-sm">
-                   An open-source framework for conversational voice AI agents.
-                 </p>
-               </div>
-               
-               <div className="border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800 max-w-xs p-4 rounded-lg">
-                 <div className="flex w-full items-center justify-center gap-2">
-                   <a href="https://github.com/ten-framework/ten-vad" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
-                     TEN VAD
-                   </a>
-                   <span className="text-gray-500">/</span>
-                   <a href="https://github.com/ten-framework/ten-turn-detection" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
-                     TTD
-                   </a>
-                 </div>
-                 <p className="dark:text-gray-400 mt-2 text-gray-600 text-sm">
-                   Lightweight Voice Activity Detection with low latency and high accuracy, plus intelligent Turn Detection for natural conversations between humans and AI agents.
-                 </p>
-               </div>
+            <div className="flex flex-wrap justify-center gap-6">
+              <div className="max-w-xs rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-600 dark:bg-gray-800">
+                <a
+                  href="https://theten.ai/docs/ten_agent/overview"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
+                >
+                  TEN Framework
+                </a>
+                <p className="mt-2 text-gray-600 text-sm dark:text-gray-400">
+                  An open-source framework for conversational voice AI agents.
+                </p>
+              </div>
 
-               <div className="border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800 max-w-xs p-4 rounded-lg">
-                 <a href="https://kiro.dev/docs/getting-started/index" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
-                   Kiro
-                 </a>
-                 <p className="dark:text-gray-400 mt-2 text-gray-600 text-sm">
-                   An AI IDE that helps you deliver from concept to production through simplified developer experience for working with AI agents.
-                 </p>
-               </div>
+              <div className="max-w-xs rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-600 dark:bg-gray-800">
+                <div className="flex w-full items-center justify-center gap-2">
+                  <a
+                    href="https://github.com/ten-framework/ten-vad"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
+                  >
+                    TEN VAD
+                  </a>
+                  <span className="text-gray-500">/</span>
+                  <a
+                    href="https://github.com/ten-framework/ten-turn-detection"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
+                  >
+                    TTD
+                  </a>
+                </div>
+                <p className="mt-2 text-gray-600 text-sm dark:text-gray-400">
+                  Lightweight Voice Activity Detection with low latency and high
+                  accuracy, plus intelligent Turn Detection for natural
+                  conversations between humans and AI agents.
+                </p>
+              </div>
 
-               <div className="border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800 max-w-xs p-4 rounded-lg">
-                 <a href="https://www.siliconflow.com/" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
-                   SiliconFlow
-                 </a>
-                 <p className="dark:text-gray-400 mt-2 text-gray-600 text-sm">
-                   A one-stop cloud service platform integrating top-tier large language models, providing developers with faster, more comprehensive, and seamlessly integrated model APIs.
-                 </p>
-               </div>
+              <div className="max-w-xs rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-600 dark:bg-gray-800">
+                <a
+                  href="https://kiro.dev/docs/getting-started/index"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
+                >
+                  Kiro
+                </a>
+                <p className="mt-2 text-gray-600 text-sm dark:text-gray-400">
+                  An AI IDE that helps you deliver from concept to production
+                  through simplified developer experience for working with AI
+                  agents.
+                </p>
+              </div>
+
+              <div className="max-w-xs rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-600 dark:bg-gray-800">
+                <a
+                  href="https://www.siliconflow.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-400"
+                >
+                  SiliconFlow
+                </a>
+                <p className="mt-2 text-gray-600 text-sm dark:text-gray-400">
+                  A one-stop cloud service platform integrating top-tier large
+                  language models, providing developers with faster, more
+                  comprehensive, and seamlessly integrated model APIs.
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
       </div>
     </section>
-  );
+  )
 }
