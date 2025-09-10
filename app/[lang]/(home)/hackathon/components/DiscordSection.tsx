@@ -9,22 +9,22 @@ import { cn } from "@/lib/utils";
 export function DiscordSection({ className }: { className?: string }) {
   const t = useTranslations("hackathon");
 
-  return (
-    <section className={cn("bg-white py-16 dark:bg-gray-950", className)}>
-      <div className="container mx-auto max-w-[72rem] px-6">
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.2 }}
-          viewport={{ once: true }}
-          className="mx-auto max-w-4xl text-center"
-        >
-          <div className="">
-            {/* Background decoration (static, no animation) */}
-            <div className="-m-4 absolute inset-0">
-              <div className="absolute top-0 left-1/4 h-32 w-32 rounded-full bg-purple-400/20 blur-3xl"></div>
-              <div className="absolute right-1/4 bottom-0 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl"></div>
-            </div>
+	return (
+		<section className={cn('bg-white py-16 dark:bg-gray-950', className)}>
+			<div className="container mx-auto max-w-[72rem] px-6">
+				<motion.div
+					initial={{ opacity: 0 }}
+					whileInView={{ opacity: 1 }}
+					transition={{ duration: 0.2 }}
+					viewport={{ once: true }}
+					className="mx-auto max-w-4xl text-center"
+				>
+					<div className="relative">
+						{/* Background decoration (static, no animation) */}
+						<div className="pointer-events-none -m-4 absolute inset-0 z-0">
+							<div className="absolute top-0 left-1/4 h-32 w-32 rounded-full bg-purple-400/20 blur-3xl" />
+							<div className="absolute right-1/4 bottom-0 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl" />
+						</div>
 
             <div className="">
               <h2 className="mb-8 font-bold text-4xl text-gray-900 dark:text-white">
@@ -53,24 +53,23 @@ export function DiscordSection({ className }: { className?: string }) {
                   {t("discord.support")}
                 </p>
 
-                <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-                  <Button
-                    size="lg"
-                    className="gap-2 bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black"
-                  >
-                    <div className="flex items-center gap-2">
-                      <MessageCircle className="h-5 w-5" />
-                      <a 
-                        href="https://discord.gg/8AJkU7cU" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2"
-                      >
-                        Join Discord Community
-                        <ExternalLink className="h-5 w-5" />
-                      </a>
-                    </div>
-                  </Button>
+								<div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+									<Button
+										asChild
+										size="lg"
+										className="gap-2 bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black"
+									>
+										<a
+											href="https://discord.gg/8AJkU7cU"
+											target="_blank"
+											rel="noopener noreferrer"
+											className="flex items-center gap-2"
+										>
+											<MessageCircle className="h-5 w-5" />
+											Join Discord Community
+											<ExternalLink className="h-5 w-5" />
+										</a>
+									</Button>
 
                   <Button
                     size="lg"
