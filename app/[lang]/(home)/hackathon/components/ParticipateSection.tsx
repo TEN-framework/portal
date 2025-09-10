@@ -63,38 +63,39 @@ export function ParticipateSection({ className }: { className?: string }) {
           </h2>
         </motion.div>
 
-        {/* Steps */}
-        <div className="mb-16 grid gap-8 md:grid-cols-3">
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 0.2, delay: index * 0.05 }}
-              viewport={{ once: true }}
-              className="text-center"
-            >
-              <div className="mb-6">
-                <div
-                  className={`mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-gray-200 bg-black text-white dark:border-gray-700 dark:bg-white dark:text-black`}
-                >
-                  {step.icon}
-                </div>
-                <div className="-top-2 -right-2 absolute flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-900 text-sm shadow-md dark:bg-gray-800 dark:text-white">
-                  {index + 1}
-                </div>
-              </div>
-              <h3 className="mb-3 font-bold text-gray-900 text-xl dark:text-white">
-                {step.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed dark:text-gray-400">
-                {step.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-
-      </div>
-    </section>
-  );
+				{/* Steps */}
+				<div className="mb-16 grid gap-8 md:grid-cols-3">
+					{steps.map((step, index) => (
+						<motion.div
+							key={step.title}
+							initial={{ opacity: 0 }}
+							whileInView={{ opacity: 1 }}
+							transition={{ duration: 0.2, delay: index * 0.05 }}
+							viewport={{ once: true }}
+							className="text-center"
+						>
+							<div className="relative mb-6">
+								<div
+									className={
+										'mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-gray-200 bg-black text-white dark:border-gray-700 dark:bg-white dark:text-black'
+									}
+								>
+									{step.icon}
+								</div>
+								<div className="pointer-events-none -top-2 -right-2 absolute flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-900 text-sm shadow-md dark:bg-gray-800 dark:text-white">
+									{index + 1}
+								</div>
+							</div>
+							<h3 className="mb-3 font-bold text-gray-900 text-xl dark:text-white">
+								{step.title}
+							</h3>
+							<p className="text-gray-600 leading-relaxed dark:text-gray-400">
+								{step.description}
+							</p>
+						</motion.div>
+					))}
+				</div>
+			</div>
+		</section>
+	)
 }

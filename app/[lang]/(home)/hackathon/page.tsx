@@ -9,31 +9,31 @@ import { EligibilitySection } from "./components/EligibilitySection";
 import { FooterSection } from "./components/FooterSection";
 import { FrameworkSection } from "./components/FrameworkSection";
 import { HackathonHero } from "./components/HackathonHero";
+import { JudgesSection } from "./components/JudgesSection";
 import { ParticipateSection } from "./components/ParticipateSection";
 import { PrizesSection } from "./components/PrizesSection";
-import { JudgesSection } from "./components/JudgesSection";
-import { WorkshopSection } from "./components/WorkshopSection";
 import { TimelineSection } from "./components/TimelineSection";
+import { WorkshopSection } from "./components/WorkshopSection";
 
 export default function HackathonPage() {
-  return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
-      <HackathonHero />
-      <div className="pb-0">
-        <AboutSection />
-        <FrameworkSection />
-        <ChallengeSection />
-        <PrizesSection />
-        <JudgesSection />
-        <TimelineSection />
-        <WorkshopSection />
-        <ParticipateSection />
-        <EligibilitySection />
-        <DiscordSection />
-        <CTASection />
-        <FooterSection />
-      </div>
-      <WelcomeHackers />
-    </div>
-  );
+	return (
+		<div className="min-h-screen bg-white dark:bg-gray-950">
+			<HackathonHero />
+			<div className="pb-0">
+				<AboutSection />
+				<FrameworkSection />
+				<ChallengeSection />
+				<PrizesSection />
+				<JudgesSection />
+				<TimelineSection />
+				<WorkshopSection />
+				<ParticipateSection />
+				<EligibilitySection />
+				<DiscordSection />
+				<CTASection />
+				<FooterSection />
+			</div>
+			<WelcomeHackers />
+		</div>
+	);
 }

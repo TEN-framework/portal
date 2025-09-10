@@ -86,52 +86,64 @@ export function CTASection({ className }: { className?: string }) {
             {t("cta.description")}
           </motion.p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.6,
-              type: "spring",
-              stiffness: 100,
-              delay: 0.3,
-            }}
-            viewport={{ once: true }}
-            className="flex flex-col gap-4 sm:flex-row sm:justify-center"
-          >
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-          <a href="https://luma.com/y14vmjsu" target="_blank" rel="noopener noreferrer">
-              <Button
-                size="lg"
-                className="gap-3 bg-white px-8 py-4 font-medium text-gray-900 text-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
-              >
-                {t("cta.register")}
-                <ExternalLink className="h-5 w-5" />
-              </Button>
-              </a>
-            </motion.div>
+					{/* CTA Buttons */}
+					<motion.div
+						initial={{ opacity: 0, y: 30 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						transition={{
+							duration: 0.6,
+							type: 'spring',
+							stiffness: 100,
+							delay: 0.3,
+						}}
+						viewport={{ once: true }}
+						className="relative z-10 flex flex-col gap-4 sm:flex-row sm:justify-center"
+					>
+						<motion.div
+							whileHover={{ scale: 1.05, y: -5 }}
+							whileTap={{ scale: 0.95 }}
+							transition={{ type: 'spring', stiffness: 300 }}
+							className="cursor-pointer"
+						>
+							<Button
+								asChild
+								size="lg"
+								className="gap-3 bg-white px-8 py-4 font-medium text-gray-900 text-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 cursor-pointer pointer-events-auto"
+							>
+								<a
+									href="https://luma.com/y14vmjsu"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{t('cta.register')}
+									<ExternalLink className="h-5 w-5" />
+								</a>
+							</Button>
+						</motion.div>
 
-            <motion.div
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <a href="https://discord.gg/8AJkU7cU" target="_blank" rel="noopener noreferrer">
-              <Button
-                size="lg"
-                variant="outline"
-                className="gap-3 bg-white px-8 py-4 font-medium text-gray-900 text-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
-              >
-                {t("cta.joinDiscord")}
-                <MessageCircle className="h-5 w-5" />
-              </Button>
-              </a>
-            </motion.div>
-          </motion.div>
+						<motion.div
+							whileHover={{ scale: 1.05, y: -5 }}
+							whileTap={{ scale: 0.95 }}
+							transition={{ type: 'spring', stiffness: 300 }}
+							className="cursor-pointer"
+						>
+							<Button
+								asChild
+								size="lg"
+								variant="outline"
+								className="gap-3 bg-white px-8 py-4 font-medium text-gray-900 text-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 cursor-pointer pointer-events-auto"
+							>
+								<a
+									href="https://discord.gg/8AJkU7cU"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									{t('cta.joinDiscord')}
+									<MessageCircle className="h-5 w-5" />
+								</a>
+							</Button>
+						</motion.div>
+					</motion.div>
 
           {/* Contact Info */}
           <motion.div

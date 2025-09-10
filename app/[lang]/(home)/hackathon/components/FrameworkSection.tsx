@@ -128,7 +128,7 @@ export function FrameworkSection({ className }: { className?: string }) {
                </div>
                
                <div className="border border-gray-200 bg-white dark:border-gray-600 dark:bg-gray-800 max-w-xs p-4 rounded-lg">
-                 <div className="flex gap-2">
+                 <div className="flex w-full items-center justify-center gap-2">
                    <a href="https://github.com/ten-framework/ten-vad" target="_blank" rel="noopener noreferrer" className="dark:hover:text-blue-400 dark:text-white font-medium hover:text-blue-600 text-gray-900">
                      TEN VAD
                    </a>
