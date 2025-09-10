@@ -1,20 +1,20 @@
-import { InlineTOC } from "fumadocs-ui/components/inline-toc";
-import defaultMdxComponents from "fumadocs-ui/mdx";
-import { notFound } from "next/navigation";
-import { getFormatter, getTranslations } from "next-intl/server";
-import { SITE_URL } from "@/app/metadata.config";
-import { Link } from "@/lib/next-intl-navigation";
-import { blog } from "@/lib/source";
+import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
+import defaultMdxComponents from 'fumadocs-ui/mdx'
+import { notFound } from 'next/navigation'
+import { getFormatter, getTranslations } from 'next-intl/server'
+import { SITE_URL } from '@/app/metadata.config'
+import { Link } from '@/lib/next-intl-navigation'
+import { blog } from '@/lib/source'
 
 export async function generateMetadata(props: {
-  params: Promise<{ slug: string; lang: string }>;
+  params: Promise<{ slug: string; lang: string }>
 }) {
-  const params = await props.params;
-  const page = blog.getPage([params.slug], params.lang);
+  const params = await props.params
+  const page = blog.getPage([params.slug], params.lang)
 
-  if (!page) notFound();
+  if (!page) notFound()
 
-  const blogUrl = `${SITE_URL}/${params.lang}/blog/${params.slug}`;
+  const blogUrl = `${SITE_URL}/${params.lang}/blog/${params.slug}`
 
   return {
     title: page.data.title,
@@ -23,61 +23,61 @@ export async function generateMetadata(props: {
     openGraph: {
       title: page.data.title,
       description: page.data.description,
-      type: "article",
+      type: 'article',
       publishedTime: new Date(page.data.date).toISOString(),
       authors: [page.data.author],
       url: blogUrl,
-      siteName: "TEN Framework",
+      siteName: 'TEN Framework',
     },
     twitter: {
-      card: "summary_large_image",
+      card: 'summary_large_image',
       title: page.data.title,
       description: page.data.description,
     },
     alternates: {
       canonical: blogUrl,
     },
-  };
+  }
 }
 
 export default async function Page(props: {
-  params: Promise<{ slug: string; lang: string }>;
+  params: Promise<{ slug: string; lang: string }>
 }) {
-  const params = await props.params;
-  const locale = await params.lang;
+  const params = await props.params
+  const locale = await params.lang
 
-  const page = blog.getPage([params.slug], params.lang);
+  const page = blog.getPage([params.slug], params.lang)
 
-  const t = await getTranslations({ locale, namespace: "blog" });
-  const formatter = await getFormatter({ locale });
+  const t = await getTranslations({ locale, namespace: 'blog' })
+  const formatter = await getFormatter({ locale })
 
-  if (!page) notFound();
+  if (!page) notFound()
 
-  const Mdx = page.data.body;
+  const Mdx = page.data.body
 
   // Generate structured data for SEO
   const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
     headline: page.data.title,
     description: page.data.description,
     author: {
-      "@type": "Person",
+      '@type': 'Person',
       name: page.data.author,
     },
     datePublished: new Date(page.data.date).toISOString(),
     dateModified: new Date(page.data.date).toISOString(),
     publisher: {
-      "@type": "Organization",
-      name: "TEN Framework",
+      '@type': 'Organization',
+      name: 'TEN Framework',
       url: SITE_URL,
     },
     url: `${SITE_URL}/${locale}/blog/${params.slug}`,
     mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${SITE_URL}/${locale}/blog/${params.slug}`,
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/${locale}/blog/${params.slug}`,
     },
-  };
+  }
 
   return (
     <>
@@ -106,7 +106,7 @@ export default async function Page(props: {
                   d="M7 16l-4-4m0 0l4-4m-4 4h18"
                 />
               </svg>
-              {t("backToBlog")}
+              {t('backToBlog')}
             </Link>
 
             <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-background/80 via-background/50 to-background/30 p-8 shadow-lg backdrop-blur-sm">
@@ -120,19 +120,19 @@ export default async function Page(props: {
               <div className="mt-6 flex items-center gap-6 border-t pt-6 text-sm">
                 <div>
                   <p className="mb-1 text-fd-muted-foreground">
-                    {t("writtenBy")}
+                    {t('writtenBy')}
                   </p>
                   <p className="font-medium">{page.data.author}</p>
                 </div>
                 <div>
                   <p className="mb-1 text-fd-muted-foreground">
-                    {t("publishedOn")}
+                    {t('publishedOn')}
                   </p>
                   <p className="font-medium">
                     {formatter.dateTime(new Date(page.data.date), {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
                     })}
                   </p>
                 </div>
@@ -149,12 +149,12 @@ export default async function Page(props: {
         </article>
       </div>
     </>
-  );
+  )
 }
 
 export function generateStaticParams(): { slug: string }[] {
   return blog.getPages().map((page) => ({
     slug: page.slugs[0],
     lang: page.locale,
-  }));
+  }))
 }

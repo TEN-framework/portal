@@ -2,12 +2,12 @@ import {
   defineCollections,
   defineConfig,
   defineDocs,
-} from "fumadocs-mdx/config";
-import { z } from "zod";
+} from 'fumadocs-mdx/config'
+import { z } from 'zod'
 
 export const docs = defineDocs({
-  dir: "content/docs",
-});
+  dir: 'content/docs',
+})
 
 export default defineConfig({
   mdxOptions: {
@@ -15,16 +15,16 @@ export default defineConfig({
     remarkPlugins: [],
     rehypePlugins: [],
   },
-});
+})
 
 // https://fumadocs.vercel.app/blog/make-a-blog
 export const blogPosts = defineCollections({
-  type: "doc",
-  dir: "content/blog",
+  type: 'doc',
+  dir: 'content/blog',
   schema: z.object({
     title: z.string(),
     description: z.string(),
     author: z.string(),
     date: z.coerce.date(),
   }),
-});
+})

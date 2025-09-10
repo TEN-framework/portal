@@ -1,60 +1,60 @@
-"use client";
+'use client'
 
-import { Sparkles, Star } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Sparkles, Star } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 interface GitHubStarButtonProps {
-  repo: string; // Format: "owner/repo"
-  className?: string;
+  repo: string // Format: "owner/repo"
+  className?: string
 }
 
 function useCountAnimation(endValue: number | null, duration: number = 8000) {
-  const [count, setCount] = useState(0);
-  const countRef = useRef<number>(0);
-  const startTimeRef = useRef<number | null>(null);
+  const [count, setCount] = useState(0)
+  const countRef = useRef<number>(0)
+  const startTimeRef = useRef<number | null>(null)
 
   useEffect(() => {
-    if (!endValue) return;
+    if (!endValue) return
 
     const animate = (currentTime: number) => {
       if (startTimeRef.current === null) {
-        startTimeRef.current = currentTime;
+        startTimeRef.current = currentTime
       }
 
-      const elapsed = currentTime - startTimeRef.current;
-      const progress = Math.min(elapsed / duration, 1);
-      const easeOutExpo = progress === 1 ? 1 : 1 - 2 ** (-10 * progress);
+      const elapsed = currentTime - startTimeRef.current
+      const progress = Math.min(elapsed / duration, 1)
+      const easeOutExpo = progress === 1 ? 1 : 1 - 2 ** (-10 * progress)
 
-      const startValue = countRef.current;
+      const startValue = countRef.current
       const newValue = Math.floor(
         startValue + (endValue - startValue) * easeOutExpo
-      );
-      countRef.current = newValue;
-      setCount(newValue);
+      )
+      countRef.current = newValue
+      setCount(newValue)
 
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        requestAnimationFrame(animate)
       }
-    };
+    }
 
-    startTimeRef.current = null;
-    requestAnimationFrame(animate);
+    startTimeRef.current = null
+    requestAnimationFrame(animate)
 
     return () => {
-      startTimeRef.current = null;
-    };
-  }, [endValue, duration]);
+      startTimeRef.current = null
+    }
+  }, [endValue, duration])
 
-  return count;
+  return count
 }
 
 export function GitHubStarButton({
   repo,
-  className = "",
+  className = '',
 }: GitHubStarButtonProps) {
-  const [starCount, setStarCount] = useState<number | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const animatedCount = useCountAnimation(starCount);
+  const [starCount, setStarCount] = useState<number | null>(null)
+  const [isHovered, setIsHovered] = useState(false)
+  const animatedCount = useCountAnimation(starCount)
 
   useEffect(() => {
     const fetchStarCount = async () => {
@@ -62,48 +62,48 @@ export function GitHubStarButton({
         // Use our API route instead of direct GitHub API calls
         const response = await fetch(
           `/api/github-stars?repo=${encodeURIComponent(repo)}`
-        );
+        )
 
         if (response.ok) {
-          const data = await response.json();
-          setStarCount(data.stargazers_count);
+          const data = await response.json()
+          setStarCount(data.stargazers_count)
 
           // Only show sparkles for fresh data, not cached
           // Note: Sparkle animation removed
         } else {
           // Handle API errors (including rate limits)
-          const errorData = await response.json().catch(() => ({}));
+          const errorData = await response.json().catch(() => ({}))
 
           if (errorData.from_cache) {
             console.info(
-              "Using cached star count due to API error:",
-              errorData.error || "Unknown error"
-            );
+              'Using cached star count due to API error:',
+              errorData.error || 'Unknown error'
+            )
           } else {
             console.warn(
-              "GitHub star count API failed, using fallback:",
-              errorData.error || "Unknown error"
-            );
+              'GitHub star count API failed, using fallback:',
+              errorData.error || 'Unknown error'
+            )
           }
 
           // Use fallback count from API response (either cached or default)
-          setStarCount(errorData.stargazers_count || 1000);
+          setStarCount(errorData.stargazers_count || 1000)
         }
       } catch (error) {
-        console.error("Failed to fetch star count:", error);
+        console.error('Failed to fetch star count:', error)
         // Fallback: show a placeholder count
-        setStarCount(1000);
+        setStarCount(1000)
       }
-    };
+    }
 
-    fetchStarCount();
-  }, [repo]);
+    fetchStarCount()
+  }, [repo])
 
-  const formatStarCount = (count: number) => count.toLocaleString();
+  const formatStarCount = (count: number) => count.toLocaleString()
 
   const handleClick = () => {
-    window.open(`https://github.com/${repo}`, "_blank", "noopener,noreferrer");
-  };
+    window.open(`https://github.com/${repo}`, '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <div className="relative">
@@ -133,10 +133,10 @@ export function GitHubStarButton({
         </svg>
         <span className="relative z-10 dark:text-gray-300">open source</span>
         <Star
-          className={`relative z-10 h-4 w-4 transition-all duration-300 ${isHovered ? "scale-110 fill-transparent stroke-yellow-500" : "fill-transparent stroke-white"}`}
+          className={`relative z-10 h-4 w-4 transition-all duration-300 ${isHovered ? 'scale-110 fill-transparent stroke-yellow-500' : 'fill-transparent stroke-white'}`}
         />
         <span
-          className={`relative z-10 inline-block w-16 rounded bg-gradient-to-r from-gray-700 to-gray-600 px-2 py-0.5 text-center font-bold text-xs transition-all duration-300 ${isHovered ? "scale-105 from-yellow-600 to-yellow-500 text-white" : ""}`}
+          className={`relative z-10 inline-block w-16 rounded bg-gradient-to-r from-gray-700 to-gray-600 px-2 py-0.5 text-center font-bold text-xs transition-all duration-300 ${isHovered ? 'scale-105 from-yellow-600 to-yellow-500 text-white' : ''}`}
         >
           {formatStarCount(animatedCount)}
         </span>
@@ -149,5 +149,5 @@ export function GitHubStarButton({
         )}
       </button>
     </div>
-  );
+  )
 }

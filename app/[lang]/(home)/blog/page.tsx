@@ -1,24 +1,24 @@
-import { getFormatter, getTranslations } from "next-intl/server";
+import { getFormatter, getTranslations } from 'next-intl/server'
 
-import { Link } from "@/lib/next-intl-navigation";
-import { blog } from "@/lib/source";
+import { Link } from '@/lib/next-intl-navigation'
+import { blog } from '@/lib/source'
 
 export default async function BlogHomePage(props: {
-  params: Promise<{ lang: string }>;
+  params: Promise<{ lang: string }>
 }) {
-  const params = await props.params;
-  const locale = await params.lang;
+  const params = await props.params
+  const locale = await params.lang
 
-  const posts = blog.getPages();
+  const posts = blog.getPages()
 
-  const t = await getTranslations({ locale, namespace: "blog" });
-  const formatter = await getFormatter({ locale });
+  const t = await getTranslations({ locale, namespace: 'blog' })
+  const formatter = await getFormatter({ locale })
 
   const sortedPosts = [...posts].sort((a, b) => {
-    const dateA = new Date(a.data.date);
-    const dateB = new Date(b.data.date);
-    return dateB.getTime() - dateA.getTime();
-  });
+    const dateA = new Date(a.data.date)
+    const dateB = new Date(b.data.date)
+    return dateB.getTime() - dateA.getTime()
+  })
 
   return (
     <div className="relative min-h-[calc(100dvh-56px)] overflow-hidden">
@@ -39,10 +39,10 @@ export default async function BlogHomePage(props: {
       <div className="container relative z-10 mx-auto mt-14 px-4 py-12">
         <div className="mb-12 text-center">
           <h1 className="mb-4 font-bold text-5xl leading-normal tracking-tight">
-            {t("latestPosts")}
+            {t('latestPosts')}
           </h1>
           <p className="mx-auto max-w-2xl text-fd-muted-foreground text-lg">
-            {t("discoverLatestArticles")}
+            {t('discoverLatestArticles')}
           </p>
         </div>
 
@@ -61,8 +61,8 @@ export default async function BlogHomePage(props: {
                 </span>
                 <time className="text-gray-500 text-sm dark:text-gray-400">
                   {formatter.dateTime(new Date(post.data.date), {
-                    month: "short",
-                    day: "numeric",
+                    month: 'short',
+                    day: 'numeric',
                   })}
                 </time>
               </div>
@@ -92,5 +92,5 @@ export default async function BlogHomePage(props: {
         </div>
       </div>
     </div>
-  );
+  )
 }

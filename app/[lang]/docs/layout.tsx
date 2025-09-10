@@ -1,17 +1,17 @@
-import { DocsLayout } from "fumadocs-ui/layouts/notebook";
-import type { ReactNode } from "react";
+import { DocsLayout } from 'fumadocs-ui/layouts/notebook'
+import type { ReactNode } from 'react'
 
-import { baseOptions } from "@/app/layout.config";
-import { source } from "@/lib/source";
+import { baseOptions } from '@/app/layout.config'
+import { source } from '@/lib/source'
 
 export default async function Layout({
   params,
   children,
 }: {
-  params: Promise<{ lang: string }>;
-  children: ReactNode;
+  params: Promise<{ lang: string }>
+  children: ReactNode
 }) {
-  const { lang } = await params;
+  const { lang } = await params
 
   return (
     <DocsLayout
@@ -22,5 +22,5 @@ export default async function Layout({
     >
       {children}
     </DocsLayout>
-  );
+  )
 }

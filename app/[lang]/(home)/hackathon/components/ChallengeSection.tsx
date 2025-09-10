@@ -1,39 +1,39 @@
-"use client";
+'use client'
 
-import { Headphones, Heart, Home } from "lucide-react";
-import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
+import { Headphones, Heart, Home } from 'lucide-react'
+import { motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
+import { cn } from '@/lib/utils'
 
 export function ChallengeSection({ className }: { className?: string }) {
-  const t = useTranslations("hackathon");
+  const t = useTranslations('hackathon')
 
   const examples = [
     {
       icon: <Headphones className="h-8 w-8" />,
-      title: t("challenge.serviceAgents"),
-      gradient: "from-blue-500 to-cyan-500",
+      title: t('challenge.serviceAgents'),
+      gradient: 'from-blue-500 to-cyan-500',
       bgGradient:
-        "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20",
+        'from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20',
     },
     {
       icon: <Home className="h-8 w-8" />,
-      title: t("challenge.iotHardware"),
-      gradient: "from-green-500 to-emerald-500",
+      title: t('challenge.iotHardware'),
+      gradient: 'from-green-500 to-emerald-500',
       bgGradient:
-        "from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20",
+        'from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20',
     },
     {
       icon: <Heart className="h-8 w-8" />,
-      title: t("challenge.emotionalCompanions"),
-      gradient: "from-purple-500 to-pink-500",
+      title: t('challenge.emotionalCompanions'),
+      gradient: 'from-purple-500 to-pink-500',
       bgGradient:
-        "from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20",
+        'from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20',
     },
-  ];
+  ]
 
   return (
-    <section className={cn("bg-gray-50 py-16 dark:bg-gray-900", className)}>
+    <section className={cn('bg-gray-50 py-16 dark:bg-gray-900', className)}>
       <div className="container mx-auto max-w-[72rem] px-6">
         <motion.div
           initial={{ opacity: 0 }}
@@ -43,10 +43,10 @@ export function ChallengeSection({ className }: { className?: string }) {
           className="mx-auto max-w-4xl text-center"
         >
           <h2 className="mb-8 font-bold text-4xl text-gray-900 dark:text-white">
-            {t("challenge.title")}
+            {t('challenge.title')}
           </h2>
           <p className="mb-12 text-gray-600 text-lg leading-relaxed dark:text-gray-300">
-            {t("challenge.description")}
+            {t('challenge.description')}
           </p>
         </motion.div>
 
@@ -59,7 +59,7 @@ export function ChallengeSection({ className }: { className?: string }) {
           className="mb-8 text-center"
         >
           <h3 className="font-semibold text-2xl text-gray-800 dark:text-gray-200">
-            {t("challenge.examples")}
+            {t('challenge.examples')}
           </h3>
         </motion.div>
 
@@ -89,5 +89,5 @@ export function ChallengeSection({ className }: { className?: string }) {
         </div>
       </div>
     </section>
-  );
+  )
 }
