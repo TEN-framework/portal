@@ -39,11 +39,11 @@ export function baseOptions(locale: string): BaseLayoutProps {
         url: `/${locale}/blog`,
         active: 'nested-url',
       },
-      // {
-      //   text: messages.nav.hackathon,
-      //   url: `/${locale}/hackathon`,
-      //   active: 'nested-url',
-      // },
+      {
+        text: messages.nav.hackathon,
+        url: `/${locale}/hackathon`,
+        active: 'nested-url',
+      },
       {
         text: <GitHubStarButton repo="TEN-framework/ten-framework" />,
         url: 'https://github.com/TEN-framework/ten-framework',
