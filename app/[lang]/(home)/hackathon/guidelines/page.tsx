@@ -1,13 +1,13 @@
 export default function GuidelinesPage() {
   return (
-    <section className='mt-12 bg-white py-16 md:mt-16 dark:bg-gray-950'>
-      <div className='container mx-auto max-w-[72rem] px-6'>
-        <h1 className='mb-6 font-bold text-3xl text-gray-900 md:text-4xl dark:text-white'>
+    <section className="mt-12 bg-white py-16 md:mt-16 dark:bg-gray-950">
+      <div className="container mx-auto max-w-[72rem] px-6">
+        <h1 className="mb-6 font-bold text-3xl text-gray-900 md:text-4xl dark:text-white">
           TEN DEV Challenge – Participant Guidelines
         </h1>
 
-        <div className='prose dark:prose-invert max-w-none text-gray-800 dark:text-gray-200'>
-          <h2 className='mt-8 font-semibold text-xl'>
+        <div className="prose dark:prose-invert max-w-none text-gray-800 dark:text-gray-200">
+          <h2 className="mt-8 font-semibold text-xl">
             1. Agreeing to the Rules
           </h2>
           <p>
@@ -15,10 +15,10 @@ export default function GuidelinesPage() {
             you understand and agree to follow these official guidelines.
           </p>
 
-          <hr className='my-6 border-gray-200 dark:border-gray-800' />
+          <hr className="my-6 border-gray-200 dark:border-gray-800" />
 
-          <h2 className='mt-8 font-semibold text-xl'>2. Your Submission</h2>
-          <ul className='list-disc pl-6'>
+          <h2 className="mt-8 font-semibold text-xl">2. Your Submission</h2>
+          <ul className="list-disc pl-6">
             <li>
               Your entry must be original and created by you or your team.
             </li>
@@ -39,12 +39,12 @@ export default function GuidelinesPage() {
             </li>
           </ul>
 
-          <hr className='my-6 border-gray-200 dark:border-gray-800' />
+          <hr className="my-6 border-gray-200 dark:border-gray-800" />
 
-          <h2 className='mt-8 font-semibold text-xl'>
+          <h2 className="mt-8 font-semibold text-xl">
             3. Intellectual Property &amp; Promotion
           </h2>
-          <ul className='list-disc pl-6'>
+          <ul className="list-disc pl-6">
             <li>
               By participating, you give TEN Framework and partners the right to
               promote your project, including using names, photos, voices, and
@@ -54,10 +54,10 @@ export default function GuidelinesPage() {
             <li>Some project components may be publicly displayed.</li>
           </ul>
 
-          <hr className='my-6 border-gray-200 dark:border-gray-800' />
+          <hr className="my-6 border-gray-200 dark:border-gray-800" />
 
-          <h2 className='mt-8 font-semibold text-xl'>4. Personal Data</h2>
-          <ul className='list-disc pl-6'>
+          <h2 className="mt-8 font-semibold text-xl">4. Personal Data</h2>
+          <ul className="list-disc pl-6">
             <li>
               By entering, you acknowledge and agree that the personal data you
               provide (e.g., name, email address, project details) will be
@@ -72,24 +72,24 @@ export default function GuidelinesPage() {
               processing of your personal data, as well as the right to data
               portability and to withdraw consent. You can exercise these rights
               by contacting us at
-              <a className='ml-1 underline' href='mailto:developer@theten.ai'>
+              <a className="ml-1 underline" href="mailto:developer@theten.ai">
                 developer@theten.ai
               </a>
               .
             </li>
           </ul>
 
-          <hr className='my-6 border-gray-200 dark:border-gray-800' />
+          <hr className="my-6 border-gray-200 dark:border-gray-800" />
 
-          <h2 className='mt-8 font-semibold text-xl'>5. Prizes Delivery</h2>
-          <ul className='list-disc pl-6'>
+          <h2 className="mt-8 font-semibold text-xl">5. Prizes Delivery</h2>
+          <ul className="list-disc pl-6">
             <li>
               Prizes may not be awarded if no eligible submissions meet the
               criteria.
             </li>
             <li>
               Distribution:
-              <ul className='mt-2 list-disc pl-6'>
+              <ul className="mt-2 list-disc pl-6">
                 <li>
                   Prizes will be awarded directly to the Entrant if the
                   submission is from an individual.

@@ -1,11 +1,11 @@
-"use client";
-import type React from "react";
-import type { ReactNode } from "react";
-import { cn } from "@/lib/utils";
+'use client'
+import type React from 'react'
+import type { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
 
 interface AuroraBackgroundProps extends React.HTMLProps<HTMLDivElement> {
-  children: ReactNode;
-  showRadialGradient?: boolean;
+  children: ReactNode
+  showRadialGradient?: boolean
 }
 
 export const AuroraBackground = ({
@@ -18,7 +18,7 @@ export const AuroraBackground = ({
     <main>
       <div
         className={cn(
-          "relative flex h-[100vh] flex-col items-center justify-center bg-zinc-50 text-slate-950 transition-bg dark:bg-zinc-900",
+          'relative flex h-[100vh] flex-col items-center justify-center bg-zinc-50 text-slate-950 transition-bg dark:bg-zinc-900',
           className
         )}
         {...props}
@@ -37,5 +37,5 @@ export const AuroraBackground = ({
         {children}
       </div>
     </main>
-  );
-};
+  )
+}
