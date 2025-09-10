@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 
 // In-memory storage (resets on server restart)
+// In production, consider using Redis or a database
 const visits = new Map<string, number>()
 
 function getClientIP(request: NextRequest): string {
@@ -17,20 +18,33 @@ function getClientIP(request: NextRequest): string {
   if (realIP) return realIP
   if (cfConnectingIP) return cfConnectingIP
 
-  // Fallback to unknown
-  return 'unknown'
+  // Fallback to localhost for development
+  return request.ip || 'localhost'
+}
+
+function getVisitorFingerprint(request: NextRequest, ip: string): string {
+  // Create a more unique identifier combining IP + User Agent
+  const userAgent = request.headers.get('user-agent') || 'unknown'
+  const acceptLanguage = request.headers.get('accept-language') || 'unknown'
+  
+  // Create a hash for better uniqueness while preserving privacy
+  const combined = `${ip}|${userAgent}|${acceptLanguage}`
+  const hash = Buffer.from(combined).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 16)
+  
+  return `visitor_${hash}`
 }
 
 export async function POST(request: NextRequest) {
   try {
     const ip = getClientIP(request)
+    const fingerprint = getVisitorFingerprint(request, ip)
 
-    // Determine if this is the first visit from this IP
-    const isFirstVisit = !visits.has(ip)
+    // Determine if this is the first visit from this fingerprint
+    const isFirstVisit = !visits.has(fingerprint)
 
-    // Only count unique IPs (first time visitors)
+    // Only count unique visitors (first time visitors)
     if (isFirstVisit) {
-      visits.set(ip, Date.now())
+      visits.set(fingerprint, Date.now())
     }
 
     return Response.json({
