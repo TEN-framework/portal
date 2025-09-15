@@ -94,7 +94,10 @@
     },
     "judges": {
       "title": "评审团",
-      "tba": "完整的评审名单将在 9 月公布。"
+      "plutoless": "Plutoless，TEN Framework 联合创始人",
+      "hermes": "Hermes，声网 Agora 开发者关系与合作伙伴工程总监",
+      "kiroTeam": "Kiro 技术团队",
+      "badge": "评审"
     },
     "timeline": {
       "title": "活动时间线",
@@ -119,7 +122,8 @@
       "title": "如何参与",
       "signUp": "注册 - 在 lu.ma 注册并加入我们的官方 Discord 频道以获得最新消息。",
       "build": "构建 - 使用开源 TEN Framework 创建您的项目。",
-      "submit": "提交 - 请在截止日期前将您的项目、文档和演示提交到这里。提交开始时会提供提交链接。",
+      "submit": "提交 - 请在截止日期前提交您的项目、文档和演示。",
+      "submitLinkLabel": "在此提交",
       "submissionTitle": "您的提交内容应包括：",
       "projectName": "项目名称和描述",
       "teamInfo": "团队信息和联系方式",
