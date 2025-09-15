@@ -86,15 +86,27 @@ export function ParticipateSection({ className }: { className?: string }) {
                   {index + 1}
                 </div>
               </div>
-              <h3 className="mb-3 font-bold text-gray-900 text-xl dark:text-white">
-                {step.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed dark:text-gray-400">
-                {step.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+          <h3 className="mb-3 font-bold text-gray-900 text-xl dark:text-white">
+            {step.title}
+          </h3>
+          <p className="text-gray-600 leading-relaxed dark:text-gray-400">
+            {step.description}
+          </p>
+          {step.title === 'Submit' && (
+            <div className="mt-3">
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSeApnJUb4bir-NKNDDuGcvcMT45StDteL3mTFQkFDMcntTQdw/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-black underline dark:text-white"
+              >
+                {t('participate.submitLinkLabel')}
+              </a>
+            </div>
+          )}
+        </motion.div>
+      ))}
+    </div>
       </div>
     </section>
   )

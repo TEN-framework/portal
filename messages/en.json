@@ -94,7 +94,10 @@
     },
     "judges": {
       "title": "Judging Panel",
-      "tba": "The full list of judges will be announced in September."
+      "plutoless": "Plutoless, Co-Founder @TEN Framework",
+      "hermes": "Hermes, Director of DevRel and Partner Engineering @Agora",
+      "kiroTeam": "Kiro Technical Team",
+      "badge": "Judge"
     },
     "timeline": {
       "title": "Event Timeline",
@@ -119,7 +122,8 @@
       "title": "How to Participate",
       "signUp": "Sign Up - Register on lu.ma and join our official Discord channel to stay updated.",
       "build": "Build - Create your project using the open-source TEN Framework.",
-      "submit": "Submit - Send us your project, documentation, and a demo before the deadline here. The submit link will be made available when submissions open.",
+      "submit": "Submit - Send us your project, documentation, and a demo.",
+      "submitLinkLabel": "Submit here",
       "submissionTitle": "Your submission should include:",
       "projectName": "Project name & description",
       "teamInfo": "Team info & contact details",
