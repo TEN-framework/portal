@@ -134,7 +134,7 @@ export function CTASection({ className }: { className?: string }) {
                 className="pointer-events-auto cursor-pointer gap-3 bg-white px-8 py-4 font-medium text-gray-900 text-lg hover:bg-gray-100 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800"
               >
                 <a
-                  href="https://discord.gg/8AJkU7cU"
+                  href="https://discord.gg/VnPftUzAMJ"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

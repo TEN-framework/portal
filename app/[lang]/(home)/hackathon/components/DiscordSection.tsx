@@ -60,7 +60,7 @@ export function DiscordSection({ className }: { className?: string }) {
                     className="gap-2 bg-black text-white hover:bg-gray-900 dark:bg-white dark:text-black"
                   >
                     <a
-                      href="https://discord.gg/8AJkU7cU"
+                      href="https://discord.gg/VnPftUzAMJ"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2"
