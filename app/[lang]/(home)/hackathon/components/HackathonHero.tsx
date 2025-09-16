@@ -190,7 +190,7 @@ export function HackathonHero({ className }: { className?: string }) {
                 asChild
               >
                 <a
-                  href="https://discord.gg/8AJkU7cU"
+                  href="https://discord.gg/VnPftUzAMJ"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
