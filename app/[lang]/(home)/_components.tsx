@@ -174,11 +174,11 @@ export function Hero(props: { className?: string }) {
             <Button
               variant="secondary"
               size="sm"
-              className="gap-2 bg-blue-600/[0.05] py-7 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:py-0"
+              className="gap-2 bg-blue-600/[0.05] text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 h-auto min-h-[3.25rem] px-4 py-3 sm:h-8 sm:min-h-0 sm:px-5 sm:py-0"
               asChild
               onClick={(e) => createConfetti(e)}
             >
-              <span className="flex items-center gap-2">
+              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center whitespace-normal">
                 🎉{' '}
                 <Link
                   href={URL_TEN_VAD}
