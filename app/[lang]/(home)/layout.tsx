@@ -11,9 +11,5 @@ export default async function Layout({
 }) {
   const { lang } = await params
 
-  return (
-    <HomeLayout {...baseOptions(lang)} className="pt-0">
-      {children}
-    </HomeLayout>
-  )
+  return <HomeLayout {...baseOptions(lang)}>{children}</HomeLayout>
 }
