@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
+    "include": [
       "app/**",
       "components/**",
       "lib/**",
@@ -28,9 +28,7 @@
     "lineEnding": "lf",
     "lineWidth": 80,
     "attributePosition": "auto",
-    "bracketSameLine": false,
     "bracketSpacing": true,
-    "expand": "auto",
     "useEditorconfig": true
   },
   "linter": {
@@ -62,17 +60,7 @@
       "bracketSpacing": true
     }
   },
-  "html": {
-    "formatter": {
-      "selfCloseVoidElements": "always"
-    }
-  },
-  "assist": {
-    "enabled": true,
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
+  "assists": {
+    "enabled": true
   }
 }
