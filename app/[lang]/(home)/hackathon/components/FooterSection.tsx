@@ -1,11 +1,11 @@
 'use client'
 
-import { ExternalLink } from 'lucide-react'
-import { motion } from 'motion/react'
-import { useTranslations } from 'next-intl'
 import { Logo } from '@/components/ui/logo'
 import { Link } from '@/lib/next-intl-navigation'
 import { cn } from '@/lib/utils'
+import { ExternalLink } from 'lucide-react'
+import { motion } from 'motion/react'
+import { useTranslations } from 'next-intl'
 
 export function FooterSection({ className }: { className?: string }) {
   const t = useTranslations('hackathon')
@@ -139,7 +139,7 @@ export function FooterSection({ className }: { className?: string }) {
           transition={{ duration: 0.6, delay: 0.3 }}
           viewport={{ once: true }}
           className="my-12 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent dark:via-gray-700"
-        ></motion.div>
+        />
 
         {/* Bottom Section */}
         <motion.div
@@ -149,9 +149,7 @@ export function FooterSection({ className }: { className?: string }) {
           viewport={{ once: true }}
           className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left"
         >
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
-            {/* <WelcomeHackers /> */}
-          </div>
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-4"></div>
 
           <div className="flex items-center gap-6" />
         </motion.div>
