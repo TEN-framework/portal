@@ -7,16 +7,11 @@ import { RootProvider } from 'fumadocs-ui/provider'
 import type { Metadata } from 'next'
 import { NextIntlClientProvider, hasLocale } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { Inter } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
 import type { ReactNode } from 'react'
 
 import '../global.css'
-
-const inter = Inter({
-  subsets: ['latin'],
-})
 
 const cn: Partial<Translations> = cnMessages.fuma
 const en: Partial<Translations> = enMessages.fuma
@@ -58,7 +53,7 @@ export default async function Layout({
   }
 
   return (
-    <html lang={lang} className={inter.className} suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

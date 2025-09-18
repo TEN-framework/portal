@@ -1,8 +1,8 @@
 'use client'
 
+import { Hero } from '@/app/[lang]/(home)/_components'
 import { useTheme } from 'next-themes'
 import { useEffect, useRef, useState } from 'react'
-import { Hero } from '@/app/[lang]/(home)/_components'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
@@ -53,7 +53,7 @@ const BackgroundVideo = () => {
 export default function HomePage() {
   return (
     <>
-      <div className="relative flex min-h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center">
+      <div className="relative -mt-10 flex min-h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center sm:-mt-12 md:-mt-16 lg:-mt-20">
         <BackgroundVideo />
         <Hero className="relative z-10" />
         {/* <ProjectsShowcase /> */}

@@ -1,5 +1,9 @@
+import { ArrowRight } from 'lucide-react'
 import { getFormatter, getTranslations } from 'next-intl/server'
 
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
 
@@ -20,77 +24,134 @@ export default async function BlogHomePage(props: {
     return dateB.getTime() - dateA.getTime()
   })
 
-  return (
-    <div className="relative min-h-[calc(100dvh-56px)] overflow-hidden">
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="fixed inset-0 z-0 h-screen w-full object-cover opacity-37"
-      >
-        <source
-          src="https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4"
-          type="video/mp4"
-        />
-        Your browser does not support the video tag.
-      </video>
+  const isChinese = locale === 'cn'
+  const badgeText = isChinese ? '博客' : 'Blog'
+  const buttonLabel = isChinese ? '浏览所有文章' : 'View all articles'
+  const fallbackLabel = isChinese ? '文章' : 'Article'
+  const fallbackAuthor = isChinese ? 'TEN 团队' : 'TEN Team'
+  const fallbackImage =
+    'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg'
 
-      <div className="container relative z-10 mx-auto mt-14 px-4 py-12">
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 font-bold text-5xl leading-normal tracking-tight">
+  return (
+    <section className="py-20 md:py-24 lg:py-32">
+      <div className="container mx-auto flex flex-col items-center gap-16 px-4 lg:px-16">
+        <div className="w-full max-w-3xl text-center">
+          <Badge variant="secondary" className="mb-6">
+            {badgeText}
+          </Badge>
+          <h1 className="mb-3 text-pretty font-semibold text-3xl md:mb-4 md:text-4xl lg:mb-6 lg:text-5xl">
             {t('latestPosts')}
           </h1>
-          <p className="mx-auto max-w-2xl text-fd-muted-foreground text-lg">
+          <p className="mb-8 text-muted-foreground md:text-base lg:text-lg">
             {t('discoverLatestArticles')}
           </p>
+          <Button variant="link" className="gap-2 text-base" asChild>
+            <Link href={`/${locale}/blog`} locale={locale} scroll>
+              {buttonLabel}
+              <ArrowRight className="size-4" />
+            </Link>
+          </Button>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {sortedPosts.map((post) => (
-            <Link
-              key={post.url}
-              href={post.url}
-              locale={locale}
-              className="group hover:-translate-y-2 relative flex min-h-[320px] flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-lg transition-all duration-300 hover:shadow-xl dark:border-slate-700 dark:bg-slate-800"
-            >
-              {/* Top row - Article type and date */}
-              <div className="mb-8 flex items-center justify-between px-8 pt-8">
-                <span className="inline-block rounded-full bg-gray-100 px-3 py-1 font-medium text-gray-700 text-xs dark:bg-slate-700 dark:text-gray-300">
-                  General
-                </span>
-                <time className="text-gray-500 text-sm dark:text-gray-400">
-                  {formatter.dateTime(new Date(post.data.date), {
-                    month: 'short',
-                    day: 'numeric',
-                  })}
-                </time>
-              </div>
+        <div className="grid w-full gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {sortedPosts.map((post) => {
+            type BlogMetadata = {
+              title: string
+              description: string
+              author: string
+              date: Date
+              image?: string
+            }
 
-              {/* Left-aligned content */}
-              <div className="flex flex-1 flex-col px-8 pb-8">
-                <h2 className="mb-4 line-clamp-3 text-2xl text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
-                  {post.data.title}
-                </h2>
+            const metadata = post.data as BlogMetadata
+            const description = metadata.description ?? ''
+            const authorName = metadata.author ?? fallbackAuthor
+            const imageUrl =
+              metadata.image && metadata.image.length > 0
+                ? metadata.image
+                : fallbackImage
 
-                <p className="mb-8 line-clamp-3 text-base text-gray-600 leading-relaxed dark:text-gray-300">
-                  {post.data.description}
-                </p>
+            const published = formatter.dateTime(new Date(post.data.date), {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })
 
-                {/* Bottom - Author info */}
-                <div className="mt-auto flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 font-medium text-gray-700 text-sm dark:bg-slate-700 dark:text-gray-300">
-                    {post.data.author.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="text-gray-600 text-sm dark:text-gray-400">
-                    {post.data.author}
-                  </span>
+            const articleLabel = fallbackLabel
+            const authorInitial = authorName.charAt(0).toUpperCase() || 'T'
+
+            return (
+              <Card
+                key={post.url}
+                className="group hover:-translate-y-1 grid h-full grid-rows-[auto_auto_1fr_auto] overflow-hidden border-border/60 bg-background/70 shadow-sm transition-all duration-300 hover:shadow-lg"
+              >
+                <div className="relative aspect-[16/9] w-full overflow-hidden">
+                  <Link
+                    href={post.url}
+                    locale={locale}
+                    className="block h-full w-full"
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={post.data.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
+                    />
+                  </Link>
                 </div>
-              </div>
-            </Link>
-          ))}
+
+                <CardHeader className="flex flex-col gap-3 px-6 pt-6">
+                  <div className="flex items-center justify-between font-medium text-muted-foreground text-xs uppercase tracking-wide">
+                    <span className="inline-flex items-center rounded-full bg-muted px-3 py-1 font-medium text-xs">
+                      {articleLabel}
+                    </span>
+                    <time>{published}</time>
+                  </div>
+                  <h2 className="text-left font-semibold text-lg leading-tight transition-colors group-hover:text-primary md:text-xl">
+                    <Link
+                      href={post.url}
+                      locale={locale}
+                      className="hover:underline"
+                    >
+                      {post.data.title}
+                    </Link>
+                  </h2>
+                </CardHeader>
+
+                <CardContent className="px-6">
+                  <p className="line-clamp-3 text-muted-foreground text-sm md:text-base">
+                    {description}
+                  </p>
+                </CardContent>
+
+                <CardFooter className="mt-auto flex items-center justify-between px-6 pb-6">
+                  <div className="flex items-center gap-3 text-muted-foreground text-sm">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted font-semibold text-foreground">
+                      {authorInitial}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="font-medium text-foreground text-sm">
+                        {authorName}
+                      </span>
+                      <span className="text-muted-foreground text-xs">
+                        {published}
+                      </span>
+                    </div>
+                  </div>
+                  <Link
+                    href={post.url}
+                    locale={locale}
+                    className="inline-flex items-center gap-2 font-semibold text-primary text-sm hover:underline"
+                  >
+                    {t('readMore')}
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </CardFooter>
+              </Card>
+            )
+          })}
         </div>
       </div>
-    </div>
+    </section>
   )
 }

@@ -11,7 +11,8 @@ export const docs = defineDocs({
 
 export default defineConfig({
   mdxOptions: {
-    // Disable image size fetching to prevent build failures
+    // Disable remote image size fetching to prevent build/network failures
+    remarkImageOptions: false,
     remarkPlugins: [],
     rehypePlugins: [],
   },

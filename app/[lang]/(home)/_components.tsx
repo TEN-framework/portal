@@ -1,6 +1,6 @@
 'use client'
 
-import confetti from 'canvas-confetti'
+import { AwardBadge } from '@/components/ui/award-badge'
 import { ExternalLink } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useTranslations } from 'next-intl'
@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils'
 import { SAMPLE_PROJECTS } from './sample-projects'
 
 const TITLES = ['titleLowlantency', 'titleMultimodal', 'titleEdgeCloud']
+const awardLink = 'https://github.com/ten-framework/ten-framework'
 
 const titleVariants = {
   visible: { y: 0, opacity: 1 },
@@ -25,50 +26,6 @@ const titleVariants = {
     y: direction > 0 ? -150 : 150,
     opacity: 0,
   }),
-}
-
-const createConfetti = (e: React.MouseEvent) => {
-  const count = 88
-  const defaults = {
-    origin: {
-      x: e.clientX / window.innerWidth,
-      y: (e.clientY + 50) / window.innerHeight,
-    },
-    scalar: 0.6,
-  }
-
-  function fire(particleRatio: number, opts: confetti.Options = {}) {
-    confetti({
-      ...defaults,
-      ...opts,
-      particleCount: Math.floor(count * particleRatio),
-    })
-  }
-
-  fire(0.25, {
-    spread: 20,
-    startVelocity: 20,
-  })
-  fire(0.2, {
-    spread: 35,
-    startVelocity: 15,
-  })
-  fire(0.35, {
-    spread: 30,
-    decay: 0.91,
-    scalar: 0.4,
-    startVelocity: 15,
-  })
-  fire(0.1, {
-    spread: 40,
-    startVelocity: 10,
-    decay: 0.92,
-    scalar: 0.8,
-  })
-  fire(0.1, {
-    spread: 40,
-    startVelocity: 10,
-  })
 }
 
 export function ProjectsShowcase(props: { className?: string }) {
@@ -174,11 +131,10 @@ export function Hero(props: { className?: string }) {
             <Button
               variant="secondary"
               size="sm"
-              className="gap-2 bg-blue-600/[0.05] text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 h-auto min-h-[3.25rem] px-4 py-3 sm:h-8 sm:min-h-0 sm:px-5 sm:py-0"
+              className="h-auto min-h-[3.25rem] gap-2 bg-blue-600/[0.05] px-4 py-3 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:h-8 sm:min-h-0 sm:px-5 sm:py-0"
               asChild
-              onClick={(e) => createConfetti(e)}
             >
-              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center whitespace-normal">
+              <span className="inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 whitespace-normal text-center">
                 🎉{' '}
                 <Link
                   href={URL_TEN_VAD}
@@ -201,6 +157,13 @@ export function Hero(props: { className?: string }) {
               </span>
             </Button>
           </div>
+
+          <div className="relative z-10 flex flex-col items-center gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              <AwardBadge type="github-trending" link={awardLink} />
+            </div>
+          </div>
+
           <div className="flex flex-col gap-4">
             <h1 className="text-center font-regular text-5xl tracking-tighter md:text-6xl lg:text-7xl">
               <span className="font-medium text-spektr-cyan-50">
@@ -235,6 +198,7 @@ export function Hero(props: { className?: string }) {
               {t('heroDescription')}
             </p>
           </div>
+
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button size="lg" className="gap-4" asChild>
               <Link href={URL_TEN_AGENT} target="_blank">
