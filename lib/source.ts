@@ -1,5 +1,13 @@
-import { loader } from 'fumadocs-core/source'
+import { createElement } from 'react'
+
+import {
+  InferMetaType,
+  InferPageType,
+  loader,
+} from 'fumadocs-core/source'
 import { createMDXSource } from 'fumadocs-mdx'
+import { icons } from 'lucide-react'
+
 import { blogPosts, docs } from '@/.source'
 import { i18n } from '@/lib/i18n'
 
@@ -9,6 +17,11 @@ export const source = loader({
   baseUrl: '/docs',
   source: docs.toFumadocsSource(),
   i18n,
+  icon(name) {
+    if (name && name in icons) {
+      return createElement(icons[name as keyof typeof icons])
+    }
+  },
 })
 
 export const blog = loader({
@@ -16,3 +29,6 @@ export const blog = loader({
   source: createMDXSource(blogPosts),
   i18n,
 })
+
+export type DocPage = InferPageType<typeof source>
+export type DocMeta = InferMetaType<typeof source>

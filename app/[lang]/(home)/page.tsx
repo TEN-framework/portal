@@ -2,7 +2,8 @@
 
 import { Hero } from '@/app/[lang]/(home)/_components'
 import { useTheme } from 'next-themes'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { CSSProperties } from 'react'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
@@ -51,9 +52,19 @@ const BackgroundVideo = () => {
 }
 
 export default function HomePage() {
+  const heroOffsetStyle = useMemo<CSSProperties>(() => {
+    const navHeightVar = 'var(--fd-nav-height, 3.5rem)'
+    return {
+      marginTop: `calc(${navHeightVar} * -0.5)`,
+    }
+  }, [])
+
   return (
     <>
-      <div className="relative -mt-10 flex min-h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center sm:-mt-12 md:-mt-16 lg:-mt-20">
+      <div
+        className="relative flex min-h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center"
+        style={heroOffsetStyle}
+      >
         <BackgroundVideo />
         <Hero className="relative z-10" />
         {/* <ProjectsShowcase /> */}

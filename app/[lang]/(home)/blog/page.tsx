@@ -4,6 +4,7 @@ import { getFormatter, getTranslations } from 'next-intl/server'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Logo } from '@/components/ui/logo'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
 
@@ -29,9 +30,6 @@ export default async function BlogHomePage(props: {
   const buttonLabel = isChinese ? '浏览所有文章' : 'View all articles'
   const fallbackLabel = isChinese ? '文章' : 'Article'
   const fallbackAuthor = isChinese ? 'TEN 团队' : 'TEN Team'
-  const fallbackImage =
-    'https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg'
-
   return (
     <section className="py-20 md:py-24 lg:py-32">
       <div className="container mx-auto flex flex-col items-center gap-16 px-4 lg:px-16">
@@ -66,11 +64,6 @@ export default async function BlogHomePage(props: {
             const metadata = post.data as BlogMetadata
             const description = metadata.description ?? ''
             const authorName = metadata.author ?? fallbackAuthor
-            const imageUrl =
-              metadata.image && metadata.image.length > 0
-                ? metadata.image
-                : fallbackImage
-
             const published = formatter.dateTime(new Date(post.data.date), {
               month: 'short',
               day: 'numeric',
@@ -89,14 +82,9 @@ export default async function BlogHomePage(props: {
                   <Link
                     href={post.url}
                     locale={locale}
-                    className="block h-full w-full"
+                    className="flex h-full w-full items-center justify-center bg-muted"
                   >
-                    <img
-                      src={imageUrl}
-                      alt={post.data.title}
-                      loading="lazy"
-                      className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-[1.03]"
-                    />
+                    <Logo height={72} variant="mark" />
                   </Link>
                 </div>
 
