@@ -11,13 +11,15 @@ import {
 } from 'fumadocs-core/mdx-plugins'
 import { z } from 'zod'
 
-const docFrontmatterSchema = frontmatterSchema.extend({
+// Casting to `any` avoids TS's deep instantiation errors with the extended shape.
+const docFrontmatterSchema = (frontmatterSchema as any).extend({
   description: z.string().optional(),
   index: z.boolean().default(false),
   preview: z.string().optional(),
 }) as z.ZodTypeAny
 
-const docMetaSchema = metaSchema.extend({
+// Same cast rationale as above; the extended schema blows up the TS checker otherwise.
+const docMetaSchema = (metaSchema as any).extend({
   description: z.string().optional(),
 }) as z.ZodTypeAny
 
@@ -48,7 +50,7 @@ export default defineConfig({
 })
 
 // https://fumadocs.vercel.app/blog/make-a-blog
-const blogFrontmatterSchema = frontmatterSchema.extend({
+const blogFrontmatterSchema = (frontmatterSchema as any).extend({
   author: z.string(),
   date: z.coerce.date(),
 }) as z.ZodTypeAny
