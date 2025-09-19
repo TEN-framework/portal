@@ -11,20 +11,24 @@ import {
 } from 'fumadocs-core/mdx-plugins'
 import { z } from 'zod'
 
+const docFrontmatterSchema = frontmatterSchema.extend({
+  description: z.string().optional(),
+  index: z.boolean().default(false),
+  preview: z.string().optional(),
+}) as z.ZodTypeAny
+
+const docMetaSchema = metaSchema.extend({
+  description: z.string().optional(),
+}) as z.ZodTypeAny
+
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
-    schema: frontmatterSchema.extend({
-      description: z.string().optional(),
-      index: z.boolean().default(false),
-      preview: z.string().optional(),
-    }),
-  },
+    schema: docFrontmatterSchema,
+  } as const,
   meta: {
-    schema: metaSchema.extend({
-      description: z.string().optional(),
-    }),
-  },
+    schema: docMetaSchema,
+  } as const,
 })
 
 export default defineConfig({
@@ -44,11 +48,13 @@ export default defineConfig({
 })
 
 // https://fumadocs.vercel.app/blog/make-a-blog
+const blogFrontmatterSchema = frontmatterSchema.extend({
+  author: z.string(),
+  date: z.coerce.date(),
+}) as z.ZodTypeAny
+
 export const blogPosts = defineCollections({
   type: 'doc',
   dir: 'content/blog',
-  schema: frontmatterSchema.extend({
-    author: z.string(),
-    date: z.coerce.date(),
-  }),
+  schema: blogFrontmatterSchema,
 })

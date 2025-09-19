@@ -30,7 +30,7 @@ export function LocaleProviders({
     <RootProvider
       i18n={{
         locale,
-        locales: availableLocales,
+        locales: [...availableLocales],
         translations,
       }}
     >

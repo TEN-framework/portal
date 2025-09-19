@@ -17,6 +17,15 @@ const fumaTranslations = {
   en: enMessages.fuma,
 } as const
 
+type FumaLocale = keyof typeof fumaTranslations
+
+const getFumaTranslations = (locale: string) => {
+  if (locale in fumaTranslations) {
+    return fumaTranslations[locale as FumaLocale]
+  }
+  return enMessages.fuma
+}
+
 export async function generateMetadata({
   params: paramsPromise,
 }: {
@@ -68,10 +77,7 @@ export default async function Layout({
       </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider locale={lang} messages={messages}>
-          <LocaleProviders
-            locale={lang}
-            translations={fumaTranslations[lang]}
-          >
+          <LocaleProviders locale={lang} translations={getFumaTranslations(lang)}>
             {children}
           </LocaleProviders>
         </NextIntlClientProvider>
