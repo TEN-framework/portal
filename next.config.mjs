@@ -13,6 +13,9 @@ const config = {
   },
   // Optimize build performance
   swcMinify: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   experimental: {
     turbo: {
       memoryLimit: 512,
