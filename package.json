@@ -10,7 +10,8 @@
     "lint": "biome check --reporter=pretty .",
     "format": "biome format --write .",
     "typecheck": "tsc --noEmit",
-    "check": "bun run typecheck && bun run lint"
+    "lint:links": "bun run scripts/validate-links.ts",
+    "check": "bun run typecheck && bun run lint && bun run lint:links"
   },
   "dependencies": {
     "@orama/orama": "^3.1.4",
@@ -44,7 +45,8 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.4",
     "tailwindcss-motion": "^1.1.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "next-validate-link": "^1.6.2"
   },
   "engines": {
     "node": ">=22",

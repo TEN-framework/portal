@@ -27,6 +27,7 @@ export function baseOptions(locale: string): BaseLayoutProps {
         </div>
       ),
       url: `/${locale}`,
+      transparentMode: 'top',
     },
     links: [
       {
@@ -45,9 +46,8 @@ export function baseOptions(locale: string): BaseLayoutProps {
         active: 'nested-url',
       },
       {
-        text: <GitHubStarButton repo="TEN-framework/ten-framework" />,
-        url: 'https://github.com/TEN-framework/ten-framework',
-        active: 'none',
+        type: 'custom',
+        children: <GitHubStarButton repo="TEN-framework/ten-framework" />,
       },
     ],
     themeSwitch: {

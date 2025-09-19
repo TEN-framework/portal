@@ -1,5 +1,6 @@
 ---
 title: 📚 Key Concepts
+description: Explore essential terminology and architecture patterns used across TEN projects.
 ---
 
 ## Modularity

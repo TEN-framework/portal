@@ -18,6 +18,10 @@ export default async function Page(props: {
   if (!page) notFound()
 
   const MDXContent = page.data.body
+  const gitSha =
+    process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ??
+    process.env.VERCEL_GIT_COMMIT_SHA ??
+    'main'
 
   return (
     <DocsPage
@@ -26,15 +30,21 @@ export default async function Page(props: {
       tableOfContent={{
         style: 'clerk',
       }}
+      tableOfContentPopover={{
+        style: 'clerk',
+      }}
       editOnGithub={{
         owner: 'TEN-framework',
         repo: 'portal',
-        sha: 'main',
+        sha: gitSha,
         path: `content/docs/${page.file.path}`,
       }}
+      lastUpdate={page.data.lastModified}
     >
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
+      {page.data.description ? (
+        <DocsDescription>{page.data.description}</DocsDescription>
+      ) : null}
       <DocsBody>
         <MDXContent
           components={{

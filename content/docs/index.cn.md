@@ -1,5 +1,6 @@
 ---
 title: 🌟 欢迎使用 TEN
+description: 了解 TEN 开源语音智能框架的核心能力与使用方式。
 ---
 
 欢迎使用 TEN！TEN（Transformative Extensions Network）是一个用于创建对话式 AI 的语音代理框架。

@@ -1,5 +1,6 @@
 ---
 title: 🔠 Application Scenarios
+description: Review real-world scenarios where TEN powers responsive multimodal voice agents.
 ---
 
 The TEN framework is designed to make AI feature integration and application development more efficient and flexible. Developers can create and deploy AI function extensions quickly, combining them to form customized applications or services. Typical AI scenarios include:
