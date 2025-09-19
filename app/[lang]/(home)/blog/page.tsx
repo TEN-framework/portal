@@ -53,18 +53,10 @@ export default async function BlogHomePage(props: {
 
         <div className="grid w-full gap-8 md:grid-cols-2 lg:grid-cols-3">
           {sortedPosts.map((post) => {
-            type BlogMetadata = {
-              title: string
-              description: string
-              author: string
-              date: Date
-              image?: string
-            }
-
-            const metadata = post.data as BlogMetadata
-            const description = metadata.description ?? ''
-            const authorName = metadata.author ?? fallbackAuthor
-            const published = formatter.dateTime(new Date(post.data.date), {
+            const description = post.data.description ?? ''
+            const authorName = (post.data as { author?: string }).author ?? fallbackAuthor
+            const postDate = (post.data as { date?: Date | string }).date ?? new Date()
+            const published = formatter.dateTime(new Date(postDate), {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
