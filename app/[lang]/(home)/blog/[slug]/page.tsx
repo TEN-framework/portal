@@ -2,9 +2,19 @@ import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 import { notFound } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
+
 import { SITE_URL } from '@/app/metadata.config'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
+
+import {
+  AuthorBadge,
+  CoverArtwork,
+  getAccentColor,
+  hexToRgba,
+  mixHexColors,
+  type BlogFrontmatterMeta,
+} from '../components/visuals'
 
 export async function generateMetadata(props: {
   params: Promise<{ slug: string; lang: string }>
@@ -53,6 +63,46 @@ export default async function Page(props: {
 
   if (!page) notFound()
 
+  const frontmatter = page.data as BlogFrontmatterMeta
+  const isChinese = locale === 'cn'
+  const fallbackAuthor = isChinese ? 'TEN 团队' : 'TEN Team'
+  const authorName = frontmatter.author ?? fallbackAuthor
+  const articleLabel = isChinese ? '文章' : 'Article'
+  const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
+  const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
+  const postDate = frontmatter.date ?? page.data.date ?? new Date()
+  const published = formatter.dateTime(new Date(postDate), {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  const heroBackdropStyle = {
+    backgroundImage: `radial-gradient(circle at 12% 20%, ${hexToRgba(
+      mixHexColors(accentColor, '#ffffff', 0.55),
+      0.32
+    )}, transparent 55%), radial-gradient(circle at 85% 0%, ${hexToRgba(
+      mixHexColors(accentColor, '#0f172a', 0.35),
+      0.25
+    )}, transparent 60%)`,
+    backgroundColor: hexToRgba('#0f172a', 0.02),
+  }
+
+  const panelHighlight = mixHexColors(accentColor, '#ffffff', 0.4)
+  const panelDeep = mixHexColors(accentColor, '#000000', 0.55)
+  const panelStyle = {
+    backgroundImage: `radial-gradient(circle at 20% 20%, ${hexToRgba(
+      panelHighlight,
+      0.42
+    )}, transparent 60%), radial-gradient(circle at 82% 10%, ${hexToRgba(
+      accentColor,
+      0.3
+    )}, transparent 65%), linear-gradient(135deg, ${hexToRgba(
+      accentColor,
+      0.85
+    )}, ${hexToRgba(panelDeep, 0.85)})`,
+  }
+
   const Mdx = page.data.body
 
   // Generate structured data for SEO
@@ -86,7 +136,7 @@ export default async function Page(props: {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div className="pb-16">
-        <div className="bg-gradient-to-b from-transparent via-primary/5 to-primary/10 pt-24 pb-12">
+        <div className="pt-24 pb-12" style={heroBackdropStyle}>
           <div className="container relative">
             <Link
               locale={locale}
@@ -109,32 +159,48 @@ export default async function Page(props: {
               {t('backToBlog')}
             </Link>
 
-            <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-background/80 via-background/50 to-background/30 p-8 shadow-lg backdrop-blur-sm">
-              <h1 className="mb-4 font-bold text-4xl tracking-tight">
-                {page.data.title}
-              </h1>
-              <p className="text-fd-muted-foreground text-lg">
-                {page.data.description}
-              </p>
+            <div className="group relative overflow-hidden rounded-3xl border border-border/60 bg-background/85 shadow-2xl backdrop-blur">
+              <div className="pointer-events-none absolute inset-0 opacity-90" style={panelStyle} />
+              <div className="relative grid gap-10 p-8 md:grid-cols-[1.4fr_1fr] md:p-12">
+                <div className="order-2 flex flex-col gap-6 md:order-1">
+                  <div className="inline-flex items-center rounded-full bg-white/80 px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-gray-700 shadow-sm backdrop-blur-sm dark:bg-slate-900/70 dark:text-slate-200">
+                    {articleLabel}
+                  </div>
 
-              <div className="mt-6 flex items-center gap-6 border-t pt-6 text-sm">
-                <div>
-                  <p className="mb-1 text-fd-muted-foreground">
-                    {t('writtenBy')}
-                  </p>
-                  <p className="font-medium">{page.data.author}</p>
+                  <h1 className="font-bold text-4xl tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                    {frontmatter.title}
+                  </h1>
+
+                  {frontmatter.description && (
+                    <p className="text-muted-foreground text-lg leading-relaxed md:text-xl">
+                      {frontmatter.description}
+                    </p>
+                  )}
+
+                  <div className="mt-auto flex flex-wrap items-center gap-6">
+                    <AuthorBadge
+                      accentColor={accentColor}
+                      authorName={authorName}
+                      published={published}
+                    />
+                    <div className="flex flex-col text-sm">
+                      <span className="text-muted-foreground">{t('publishedOn')}</span>
+                      <time className="font-medium text-foreground">{published}</time>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <p className="mb-1 text-fd-muted-foreground">
-                    {t('publishedOn')}
-                  </p>
-                  <p className="font-medium">
-                    {formatter.dateTime(new Date(page.data.date), {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
+
+                <div className="order-1 md:order-2">
+                  <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-white/40 bg-muted/40 shadow-lg">
+                    <CoverArtwork
+                      accentColor={accentColor}
+                      articleLabel={articleLabel}
+                      coverImage={frontmatter.coverImage}
+                      coverImageAlt={coverImageAlt}
+                      featured
+                      title={frontmatter.title}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -152,7 +218,7 @@ export default async function Page(props: {
   )
 }
 
-export function generateStaticParams(): { slug: string }[] {
+export function generateStaticParams(): { slug: string; lang: string }[] {
   return blog.getPages().map((page) => ({
     slug: page.slugs[0],
     lang: page.locale,

@@ -53,6 +53,9 @@ export default defineConfig({
 const blogFrontmatterSchema = (frontmatterSchema as any).extend({
   author: z.string(),
   date: z.coerce.date(),
+  coverImage: z.string().optional(),
+  coverImageAlt: z.string().optional(),
+  accentColor: z.string().optional(),
 }) as z.ZodTypeAny
 
 export const blogPosts = defineCollections({
