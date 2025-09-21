@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 import { notFound } from 'next/navigation'
@@ -9,7 +11,6 @@ import { blog } from '@/lib/source'
 
 import {
   AuthorBadge,
-  CoverArtwork,
   getAccentColor,
   hexToRgba,
   mixHexColors,
@@ -69,7 +70,6 @@ export default async function Page(props: {
   const authorName = frontmatter.author ?? fallbackAuthor
   const articleLabel = isChinese ? '文章' : 'Article'
   const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
-  const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
   const postDate = frontmatter.date ?? page.data.date ?? new Date()
   const published = formatter.dateTime(new Date(postDate), {
     year: 'numeric',
@@ -77,30 +77,23 @@ export default async function Page(props: {
     day: 'numeric',
   })
 
-  const heroBackdropStyle = {
-    backgroundImage: `radial-gradient(circle at 12% 20%, ${hexToRgba(
-      mixHexColors(accentColor, '#ffffff', 0.55),
-      0.32
-    )}, transparent 55%), radial-gradient(circle at 85% 0%, ${hexToRgba(
-      mixHexColors(accentColor, '#0f172a', 0.35),
-      0.25
-    )}, transparent 60%)`,
-    backgroundColor: hexToRgba('#0f172a', 0.02),
+  const heroGradientStyle: CSSProperties = {
+    backgroundImage: `linear-gradient(135deg, ${hexToRgba(
+      mixHexColors(accentColor, '#ffffff', 0.8),
+      0.16
+    )}, transparent 60%), radial-gradient(circle at 90% -10%, ${hexToRgba(
+      mixHexColors(accentColor, '#0f172a', 0.5),
+      0.15
+    )}, transparent 55%)`,
   }
 
-  const panelHighlight = mixHexColors(accentColor, '#ffffff', 0.4)
-  const panelDeep = mixHexColors(accentColor, '#000000', 0.55)
-  const panelStyle = {
-    backgroundImage: `radial-gradient(circle at 20% 20%, ${hexToRgba(
-      panelHighlight,
-      0.42
-    )}, transparent 60%), radial-gradient(circle at 82% 10%, ${hexToRgba(
-      accentColor,
-      0.3
-    )}, transparent 65%), linear-gradient(135deg, ${hexToRgba(
-      accentColor,
-      0.85
-    )}, ${hexToRgba(panelDeep, 0.85)})`,
+  const labelStyle: CSSProperties = {
+    backgroundColor: hexToRgba(mixHexColors(accentColor, '#ffffff', 0.85), 0.45),
+    color: mixHexColors(accentColor, '#0f172a', 0.1),
+  }
+
+  const accentUnderlineStyle: CSSProperties = {
+    backgroundImage: `linear-gradient(90deg, ${hexToRgba(accentColor, 0.7)}, transparent 85%)`,
   }
 
   const Mdx = page.data.body
@@ -129,6 +122,17 @@ export default async function Page(props: {
     },
   }
 
+  const mdxComponents = {
+    ...defaultMdxComponents,
+    img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
+      <img
+        {...props}
+        loading={props.loading ?? 'lazy'}
+        className={['rounded-2xl', props.className].filter(Boolean).join(' ')}
+      />
+    ),
+  }
+
   return (
     <>
       <script
@@ -136,8 +140,8 @@ export default async function Page(props: {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div className="pb-16">
-        <div className="pt-24 pb-12" style={heroBackdropStyle}>
-          <div className="container relative">
+        <div className="pt-24 pb-12">
+          <div className="container">
             <Link
               locale={locale}
               href="/blog"
@@ -158,59 +162,51 @@ export default async function Page(props: {
               </svg>
               {t('backToBlog')}
             </Link>
+          </div>
 
-            <div className="group relative overflow-hidden rounded-3xl border border-border/60 bg-background/85 shadow-2xl backdrop-blur">
-              <div className="pointer-events-none absolute inset-0 opacity-90" style={panelStyle} />
-              <div className="relative grid gap-10 p-8 md:grid-cols-[1.4fr_1fr] md:p-12">
-                <div className="order-2 flex flex-col gap-6 md:order-1">
-                  <div className="inline-flex items-center rounded-full bg-white/80 px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-gray-700 shadow-sm backdrop-blur-sm dark:bg-slate-900/70 dark:text-slate-200">
-                    {articleLabel}
-                  </div>
+          <div className="relative mt-6 w-full overflow-hidden border-y border-border/60 bg-background/95 py-12 shadow-sm">
+            <div className="pointer-events-none absolute inset-0" style={heroGradientStyle} />
+            <div className="relative mx-auto flex max-w-4xl flex-col gap-7 px-6 md:px-12 lg:px-16">
+              <span
+                className="inline-flex w-fit items-center rounded-full px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em]"
+                style={labelStyle}
+              >
+                {articleLabel}
+              </span>
 
-                  <h1 className="font-bold text-4xl tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-                    {frontmatter.title}
-                  </h1>
+              <div className="space-y-6">
+                <h1 className="font-bold text-4xl tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+                  {frontmatter.title}
+                </h1>
 
-                  {frontmatter.description && (
-                    <p className="text-muted-foreground text-lg leading-relaxed md:text-xl">
-                      {frontmatter.description}
-                    </p>
-                  )}
+                {frontmatter.description && (
+                  <p className="text-muted-foreground text-lg leading-relaxed md:text-xl">
+                    {frontmatter.description}
+                  </p>
+                )}
+              </div>
 
-                  <div className="mt-auto flex flex-wrap items-center gap-6">
-                    <AuthorBadge
-                      accentColor={accentColor}
-                      authorName={authorName}
-                      published={published}
-                    />
-                    <div className="flex flex-col text-sm">
-                      <span className="text-muted-foreground">{t('publishedOn')}</span>
-                      <time className="font-medium text-foreground">{published}</time>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="order-1 md:order-2">
-                  <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-white/40 bg-muted/40 shadow-lg">
-                    <CoverArtwork
-                      accentColor={accentColor}
-                      articleLabel={articleLabel}
-                      coverImage={frontmatter.coverImage}
-                      coverImageAlt={coverImageAlt}
-                      featured
-                      title={frontmatter.title}
-                    />
-                  </div>
+              <div className="flex flex-wrap items-center gap-6">
+                <AuthorBadge
+                  accentColor={accentColor}
+                  authorName={authorName}
+                  published={published}
+                />
+                <div className="flex flex-col text-sm">
+                  <span className="text-muted-foreground">{t('publishedOn')}</span>
+                  <time className="font-medium text-foreground">{published}</time>
                 </div>
               </div>
+
+              <div className="h-0.5 w-24 rounded-full" style={accentUnderlineStyle} />
             </div>
           </div>
         </div>
 
-        <article className="container relative mx-auto mt-12 max-w-4xl px-4">
+        <article className="container relative mx-auto mt-14 max-w-3xl px-4">
           <div className="prose prose-lg dark:prose-invert mx-auto">
             <InlineTOC items={page.data.toc} />
-            <Mdx components={defaultMdxComponents} />
+            <Mdx components={mdxComponents} />
           </div>
         </article>
       </div>

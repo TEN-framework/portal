@@ -147,6 +147,7 @@ type CoverArtworkProps = {
   coverImageAlt: string
   featured?: boolean
   title: string
+  showLabel?: boolean
 }
 
 export function CoverArtwork({
@@ -156,6 +157,7 @@ export function CoverArtwork({
   featured,
   articleLabel,
   title,
+  showLabel = true,
 }: CoverArtworkProps) {
   const highlight = mixHexColors(accentColor, '#ffffff', 0.35)
   const glow = mixHexColors(accentColor, '#ffffff', 0.55)
@@ -211,9 +213,11 @@ export function CoverArtwork({
           </div>
         </>
       )}
-      <div className="pointer-events-none absolute left-4 top-4 inline-flex items-center rounded-full bg-white/85 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-700 shadow-sm backdrop-blur">
-        {articleLabel}
-      </div>
+      {showLabel && (
+        <div className="pointer-events-none absolute left-4 top-4 inline-flex items-center rounded-full bg-white/85 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-700 shadow-sm backdrop-blur">
+          {articleLabel}
+        </div>
+      )}
     </div>
   )
 }
