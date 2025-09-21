@@ -71,7 +71,7 @@ export default async function BlogHomePage(props: {
               day: 'numeric',
               year: 'numeric',
             })
-            const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
+            const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title, 0)
             const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
 
             return (
@@ -139,7 +139,7 @@ export default async function BlogHomePage(props: {
 
         {standardPosts.length > 0 && (
           <div className="grid w-full gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {standardPosts.map((post) => {
+            {standardPosts.map((post, index) => {
               const frontmatter = post.data as BlogFrontmatterMeta
               const description = frontmatter.description ?? ''
               const authorName = frontmatter.author ?? fallbackAuthor
@@ -150,7 +150,11 @@ export default async function BlogHomePage(props: {
                 year: 'numeric',
               })
 
-              const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
+              const accentColor = getAccentColor(
+                frontmatter.accentColor,
+                frontmatter.title,
+                index + 1
+              )
               const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
 
               return (

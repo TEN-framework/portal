@@ -1,6 +1,21 @@
+import type { ReactNode } from 'react'
+
 import Image from 'next/image'
 
-export const accentPalette = ['#f97316', '#6366f1', '#ec4899', '#10b981', '#facc15', '#0ea5e9']
+import { cn } from '@/lib/utils'
+
+export const accentPalette = [
+  '#f97316',
+  '#6366f1',
+  '#ec4899',
+  '#10b981',
+  '#facc15',
+  '#0ea5e9',
+  '#c084fc',
+  '#fb7185',
+  '#14b8a6',
+  '#fbbf24',
+]
 const hexColorRegex = /^#(?:[0-9a-fA-F]{3}){1,2}$/
 
 type RGB = { r: number; g: number; b: number }
@@ -91,12 +106,31 @@ export function getReadableTextColor(background: HexColor) {
   return getLuminance(background) > 0.5 ? '#0f172a' : '#f8fafc'
 }
 
-export function getAccentColor(preferred: string | undefined, key: string): HexColor {
+export function getAccentColor(
+  preferred: string | undefined,
+  key: string,
+  position = 0
+): HexColor {
   if (preferred && hexColorRegex.test(preferred)) {
     return preferred
   }
-  const paletteIndex = hashString(key) % accentPalette.length
+  const hash = hashString(key)
+  const baseIndex = hash % accentPalette.length
+  const paletteIndex = (baseIndex + position) % accentPalette.length
   return accentPalette[paletteIndex]
+}
+
+export function getInitials(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return 'TEN'
+  const words = trimmed.split(/\s+/).filter(Boolean)
+  if (words.length === 1) {
+    const firstWord = words[0]
+    const first = firstWord.charAt(0)
+    const second = firstWord.charAt(1) || firstWord.charAt(0)
+    return `${first}${second}`.toUpperCase()
+  }
+  return `${words[0].charAt(0)}${words[1].charAt(0)}`.toUpperCase()
 }
 
 export function getPrimaryWords(value: string) {
@@ -115,19 +149,6 @@ export function getPrimaryWords(value: string) {
   }
 
   return [words[0], words[1]]
-}
-
-export function getInitials(value: string) {
-  const trimmed = value.trim()
-  if (!trimmed) return 'TEN'
-  const words = trimmed.split(/\s+/).filter(Boolean)
-  if (words.length === 1) {
-    const firstWord = words[0]
-    const first = firstWord.charAt(0)
-    const second = firstWord.charAt(1) || firstWord.charAt(0)
-    return `${first}${second}`.toUpperCase()
-  }
-  return `${words[0].charAt(0)}${words[1].charAt(0)}`.toUpperCase()
 }
 
 export type BlogFrontmatterMeta = {
@@ -162,10 +183,16 @@ export function CoverArtwork({
   const highlight = mixHexColors(accentColor, '#ffffff', 0.35)
   const glow = mixHexColors(accentColor, '#ffffff', 0.55)
   const deep = mixHexColors(accentColor, '#000000', 0.3)
-  const textColor = getReadableTextColor(deep)
+  const ambient = mixHexColors(accentColor, '#f8fafc', 0.6)
+  const lowlight = mixHexColors(accentColor, '#0f172a', 0.35)
+  const gradientTilt = 120 + ((hashString(title) % 40) - 20)
+  const softSweep = 45 + ((hashString(`${title}-sweep`) % 35) - 17)
   const [primaryWord, secondaryWord] = getPrimaryWords(title)
-  const displayPrimary = primaryWord.toUpperCase()
-  const displaySecondary = secondaryWord.toUpperCase()
+  const wordContainerClass = featured
+    ? 'relative z-20 flex flex-col items-center gap-1 text-center uppercase tracking-[0.5em] text-white drop-shadow-lg'
+    : 'relative z-10 flex flex-col items-center gap-1 text-center uppercase tracking-[0.35em] text-white/80'
+  const primaryWordClass = featured ? 'text-lg font-semibold md:text-2xl' : 'text-sm font-semibold md:text-base'
+  const secondaryWordClass = featured ? 'text-sm font-medium md:text-lg text-white/80' : 'text-xs font-semibold md:text-sm'
 
   return (
     <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
@@ -191,24 +218,46 @@ export function CoverArtwork({
             className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105"
             style={{
               backgroundColor: accentColor,
-              backgroundImage: `radial-gradient(circle at 20% 20%, ${glow}, transparent 55%), radial-gradient(circle at 80% 0%, ${highlight}, transparent 45%), linear-gradient(135deg, ${accentColor}, ${deep})`,
+              backgroundImage: `radial-gradient(circle at 20% 20%, ${glow}, transparent 55%), radial-gradient(circle at 80% 0%, ${highlight}, transparent 45%), linear-gradient(${gradientTilt}deg, ${accentColor}, ${deep})`,
             }}
           />
           <div
-            className="pointer-events-none absolute -left-10 -top-16 h-32 w-32 rounded-full opacity-50 blur-3xl"
-            style={{ background: glow }}
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage: `linear-gradient(${softSweep}deg, ${hexToRgba(
+                glow,
+                0.28
+              )}, transparent 60%), radial-gradient(75% 95% at 15% 85%, ${hexToRgba(
+                ambient,
+                0.32
+              )}, transparent 70%), radial-gradient(circle at 85% -15%, ${hexToRgba(
+                lowlight,
+                0.3
+              )}, transparent 60%)`,
+            }}
           />
           <div
-            className="pointer-events-none absolute -bottom-16 right-0 h-40 w-40 rounded-full opacity-40 blur-3xl"
-            style={{ background: deep }}
+            className="pointer-events-none absolute -left-16 top-6 h-36 w-36 rounded-full opacity-60 blur-3xl"
+            style={{ background: hexToRgba(glow, 0.55) }}
           />
           <div
-            className="relative z-10 flex flex-col items-center gap-2 text-center uppercase tracking-[0.3em] drop-shadow-md"
-            style={{ color: textColor }}
-          >
-            <span className="text-4xl font-semibold md:text-5xl">{displayPrimary}</span>
-            {displaySecondary && (
-              <span className="text-3xl font-semibold md:text-4xl">{displaySecondary}</span>
+            className="pointer-events-none absolute -bottom-20 right-0 h-44 w-44 rounded-full opacity-45 blur-[100px]"
+            style={{ background: hexToRgba(lowlight, 0.45) }}
+          />
+          <div
+            className="pointer-events-none absolute inset-0 opacity-15 mix-blend-soft-light"
+            style={{
+              backgroundImage:
+                'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADtgGpGvxuugAAAABJRU5ErkJggg==")',
+              backgroundSize: '120px',
+            }}
+          />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-white/25" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] bg-white/10" />
+          <div className={wordContainerClass}>
+            <span className={primaryWordClass}>{primaryWord}</span>
+            {secondaryWord && (
+              <span className={secondaryWordClass}>{secondaryWord}</span>
             )}
           </div>
         </>
@@ -248,6 +297,80 @@ export function AuthorBadge({ accentColor, authorName, published }: AuthorBadgeP
       <div className="flex flex-col leading-tight">
         <span className="font-medium text-foreground text-sm">{authorName}</span>
         <span className="text-muted-foreground text-xs">{published}</span>
+      </div>
+    </div>
+  )
+}
+
+type ModernPaintingBannerProps = {
+  accentColor: HexColor
+  children: ReactNode
+  className?: string
+  height?: number
+}
+
+export function ModernPaintingBanner({
+  accentColor,
+  children,
+  className,
+  height,
+}: ModernPaintingBannerProps) {
+  const highlight = mixHexColors(accentColor, '#ffffff', 0.78)
+  const whisper = mixHexColors(accentColor, '#f8fafc', 0.55)
+  const depth = mixHexColors(accentColor, '#0f172a', 0.45)
+  const glow = mixHexColors(accentColor, '#ffffff', 0.4)
+
+  return (
+    <div
+      className={cn(
+        'relative overflow-hidden border-border/60 bg-background/95',
+        className
+      )}
+      style={{ minHeight: height }}
+    >
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${hexToRgba(
+            highlight,
+            0.22
+          )}, transparent 62%), radial-gradient(70% 90% at 20% 100%, ${hexToRgba(
+            whisper,
+            0.32
+          )}, transparent 72%), radial-gradient(circle at 85% -10%, ${hexToRgba(
+            depth,
+            0.26
+          )}, transparent 58%)`,
+        }}
+      />
+
+      <div
+        className="pointer-events-none absolute -left-20 top-10 h-[18rem] w-[18rem] rounded-full opacity-60 blur-3xl"
+        style={{ background: hexToRgba(glow, 0.7) }}
+      />
+      <div
+        className="pointer-events-none absolute -bottom-24 right-0 h-[20rem] w-[20rem] rounded-full opacity-50 blur-[120px]"
+        style={{ background: hexToRgba(depth, 0.55) }}
+      />
+
+      <div
+        className="pointer-events-none absolute inset-0 opacity-15 mix-blend-soft-light"
+        style={{
+          backgroundImage:
+            'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADtgGpGvxuugAAAABJRU5ErkJggg==")',
+          backgroundSize: '140px',
+        }}
+      />
+
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-[18%] -skew-x-[12deg] bg-gradient-to-r from-white/15 via-white/4 to-transparent" />
+
+      <div className="relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-white/6 via-transparent to-transparent mix-blend-overlay" />
+        <div className="relative flex h-full flex-col justify-center gap-8 px-6 py-12 md:px-12 lg:px-20">
+          <div className="h-[2px] w-14 rounded-full bg-gradient-to-r from-white/70 to-transparent" />
+          {children}
+          <div className="h-[2px] w-24 rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+        </div>
       </div>
     </div>
   )
