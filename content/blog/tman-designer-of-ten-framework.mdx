@@ -5,6 +5,8 @@ author: halajohn
 date: 2025-03-31
 ---
 
+import { CaptionedImage } from '@/components/mdx/captioned-image'
+
 ![](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-1.webp)
 
 ## TMAN Designer Overview
@@ -188,11 +190,11 @@ It’s worth noting that even though it’s not explicitly declared in the manif
 
 Through the Apps Manager interface in TMAN Designer, developers can perform the Install All operation on a specified App to easily complete the installation of all dependencies. After clicking the button, you will see the following interface showing the installation progress:
 
-![](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-5.webp)
-
-<div style={{ textAlign: "center", fontSize: "0.9em" }}>
-  Installing All Dependencies for an App
-</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-5.webp"
+  alt="Installing all dependencies for an app"
+  caption="Installing All Dependencies for an App"
+/>
 
 ---
 
@@ -200,9 +202,11 @@ Through the Apps Manager interface in TMAN Designer, developers can perform the 
 
 You can open the TEN Cloud Store and install TEN Extensions to the current TEN App using the Open Extension Store button in the Graph menu. After clicking the button, you will see the following interface:
 
-![](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-6.webp)
-
-<div style={{ textAlign: "center", fontSize: "0.9em" }}>TEN Cloud Store</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-6.webp"
+  alt="TEN Cloud Store"
+  caption="TEN Cloud Store"
+/>
 
 In the TEN Cloud Store, developers can search for the required TEN Extensions and click the Install button to install them to the current TEN App. After installation, you can view the installed TEN Extensions in the current TEN App.
 
@@ -210,9 +214,11 @@ In the TEN Cloud Store, developers can search for the required TEN Extensions an
 
 In the Apps Manager, you can perform preset runtime operations on the specified App. After clicking the Run button in the Apps Manager, you will see the following interface:
 
-![](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-7.webp)
-
-<div style={{ textAlign: "center", fontSize: "0.9em" }}>Running a TEN App</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-7.webp"
+  alt="Running a TEN App"
+  caption="Running a TEN App"
+/>
 
 In the dialog, developers can select the preset operation to execute from the dropdown menu. These typically include the following operations:
 
@@ -221,16 +227,20 @@ In the dialog, developers can select the preset operation to execute from the dr
 
 Below is the build interface for a TEN App developed in C++:
 
-![](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-8.webp)
-
-<div style={{ textAlign: "center", fontSize: "0.9em" }}>Building a TEN App</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-8.webp"
+  alt="Building a TEN App"
+  caption="Building a TEN App"
+/>
 After the build is complete, you can continue with the startup operation for the
 TEN App. The system will display a window showing the TEN App’s runtime logs in
 real-time:
 
-![](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-9.webp)
-
-<div style={{ textAlign: "center", fontSize: "0.9em" }}>Starting a TEN App</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-9.webp"
+  alt="Starting a TEN App"
+  caption="Starting a TEN App"
+/>
 
 ## Working with TEN Graphs
 
@@ -238,13 +248,11 @@ real-time:
 
 You can load an existing TEN Graph using the Open Existing Graph button in the Graph menu. After successful loading, you will see an interface similar to the following:
 
-![TEN Graph](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-10.webp)
-
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-
-TEN Graph
-
-</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-10.webp"
+  alt="TEN Graph"
+  caption="TEN Graph"
+/>
 
 Using this Graph as an example, it contains 3 TEN Extensions, namely:
 
@@ -261,13 +269,11 @@ Each TEN Extension has its corresponding inputs and outputs. For example, `ffmpe
 
 Clicking on the number buttons for inputs and outputs opens a dialog like the following, which is used to manage input and output connections:
 
-![TEN Message Input/Output Dialog](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-11.webp)
-
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-
-TEN Message Input/Output Dialog
-
-</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-11.webp"
+  alt="TEN Message Input/Output Dialog"
+  caption="TEN Message Input/Output Dialog"
+/>
 
 ## Auto-Layout Graph
 
@@ -277,20 +283,16 @@ After manually adjusting the positions of TEN Extensions in the TEN Graph, devel
 
 In the Graph, right-clicking on each TEN Extension opens the TEN Extension’s context menu:
 
-![Context menu showing options for TEN Extension configuration](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-12.webp)
-
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-
-TEN Extension Context Menu
-
-</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-12.webp"
+  alt="Context menu showing options for TEN Extension configuration"
+  caption="TEN Extension Context Menu"
+/>
 
 In the context menu, you can open the TEN Extension’s manifest.json file, property.json file, or directly start a terminal in the root directory of the TEN Extension, making it convenient for developers to modify and customize the TEN Extension:
 
-![](https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-13.webp)
-
-<div style={{ textAlign: 'center', fontSize: '0.9em' }}>
-
-Opening Manifest
-
-</div>
+<CaptionedImage
+  src="https://ten-framework-assets.s3.amazonaws.com/blog/tman-designer/tman-13.webp"
+  alt="Opening manifest"
+  caption="Opening Manifest"
+/>

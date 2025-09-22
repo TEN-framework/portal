@@ -71,7 +71,7 @@ export default async function BlogHomePage(props: {
               day: 'numeric',
               year: 'numeric',
             })
-            const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title, 0)
+            const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
             const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
 
             return (
@@ -152,8 +152,7 @@ export default async function BlogHomePage(props: {
 
               const accentColor = getAccentColor(
                 frontmatter.accentColor,
-                frontmatter.title,
-                index + 1
+                frontmatter.title
               )
               const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
 

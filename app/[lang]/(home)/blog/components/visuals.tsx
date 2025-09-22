@@ -189,10 +189,14 @@ export function CoverArtwork({
   const softSweep = 45 + ((hashString(`${title}-sweep`) % 35) - 17)
   const [primaryWord, secondaryWord] = getPrimaryWords(title)
   const wordContainerClass = featured
-    ? 'relative z-20 flex flex-col items-center gap-1 text-center uppercase tracking-[0.5em] text-white drop-shadow-lg'
+    ? 'relative z-20 flex flex-col items-center gap-2 text-center uppercase tracking-[0.28em] text-white drop-shadow-[0_12px_28px_rgba(15,23,42,0.55)]'
     : 'relative z-10 flex flex-col items-center gap-1 text-center uppercase tracking-[0.35em] text-white/80'
-  const primaryWordClass = featured ? 'text-lg font-semibold md:text-2xl' : 'text-sm font-semibold md:text-base'
-  const secondaryWordClass = featured ? 'text-sm font-medium md:text-lg text-white/80' : 'text-xs font-semibold md:text-sm'
+  const primaryWordClass = featured
+    ? 'text-3xl font-black leading-tight md:text-5xl lg:text-6xl transition-transform duration-300 group-hover/cover:-translate-y-1'
+    : 'text-sm font-semibold md:text-base'
+  const secondaryWordClass = featured
+    ? 'text-lg font-semibold text-white/85 tracking-[0.18em] md:text-3xl md:tracking-[0.24em] transition-transform duration-300 group-hover/cover:translate-y-0.5'
+    : 'text-xs font-semibold md:text-sm'
 
   return (
     <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
@@ -315,46 +319,50 @@ export function ModernPaintingBanner({
   className,
   height,
 }: ModernPaintingBannerProps) {
-  const highlight = mixHexColors(accentColor, '#ffffff', 0.78)
-  const whisper = mixHexColors(accentColor, '#f8fafc', 0.55)
-  const depth = mixHexColors(accentColor, '#0f172a', 0.45)
-  const glow = mixHexColors(accentColor, '#ffffff', 0.4)
+  const highlight = mixHexColors(accentColor, '#ffffff', 0.35)
+  const glow = mixHexColors(accentColor, '#ffffff', 0.58)
+  const deep = mixHexColors(accentColor, '#000000', 0.32)
+  const ambient = mixHexColors(accentColor, '#f8fafc', 0.66)
+  const lowlight = mixHexColors(accentColor, '#0f172a', 0.38)
+  const gradientTilt = 115 + ((hashString(`${accentColor}-banner`) % 42) - 21)
+  const sweepTilt = 38 + ((hashString(`${accentColor}-sweep`) % 28) - 14)
 
   return (
     <div
       className={cn(
-        'relative overflow-hidden border-border/60 bg-background/95',
+        'relative overflow-hidden border-border/60',
         className
       )}
-      style={{ minHeight: height }}
+      style={{
+        minHeight: height,
+        backgroundColor: mixHexColors(accentColor, '#0f172a', 0.12),
+      }}
     >
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage: `linear-gradient(135deg, ${hexToRgba(
+          backgroundColor: accentColor,
+          backgroundImage: `radial-gradient(circle at 15% 18%, ${hexToRgba(
+            glow,
+            0.55
+          )}, transparent 58%), radial-gradient(circle at 84% 6%, ${hexToRgba(
             highlight,
-            0.22
-          )}, transparent 62%), radial-gradient(70% 90% at 20% 100%, ${hexToRgba(
-            whisper,
-            0.32
-          )}, transparent 72%), radial-gradient(circle at 85% -10%, ${hexToRgba(
-            depth,
-            0.26
-          )}, transparent 58%)`,
+            0.48
+          )}, transparent 46%), linear-gradient(${gradientTilt}deg, ${accentColor}, ${deep})`,
         }}
       />
 
       <div
         className="pointer-events-none absolute -left-20 top-10 h-[18rem] w-[18rem] rounded-full opacity-60 blur-3xl"
-        style={{ background: hexToRgba(glow, 0.7) }}
+        style={{ background: hexToRgba(glow, 0.68) }}
       />
       <div
         className="pointer-events-none absolute -bottom-24 right-0 h-[20rem] w-[20rem] rounded-full opacity-50 blur-[120px]"
-        style={{ background: hexToRgba(depth, 0.55) }}
+        style={{ background: hexToRgba(lowlight, 0.6) }}
       />
 
       <div
-        className="pointer-events-none absolute inset-0 opacity-15 mix-blend-soft-light"
+        className="pointer-events-none absolute inset-0 opacity-25 mix-blend-soft-light"
         style={{
           backgroundImage:
             'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADtgGpGvxuugAAAABJRU5ErkJggg==")',
@@ -365,7 +373,18 @@ export function ModernPaintingBanner({
       <div className="pointer-events-none absolute inset-y-0 left-0 w-[18%] -skew-x-[12deg] bg-gradient-to-r from-white/15 via-white/4 to-transparent" />
 
       <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-white/6 via-transparent to-transparent mix-blend-overlay" />
+        <div
+          className="absolute inset-0 mix-blend-overlay"
+          style={{
+            backgroundImage: `linear-gradient(145deg, ${hexToRgba(
+              glow,
+              0.12
+            )}, transparent 55%), linear-gradient(${sweepTilt}deg, ${hexToRgba(
+              ambient,
+              0.28
+            )}, transparent 70%)`,
+          }}
+        />
         <div className="relative flex h-full flex-col justify-center gap-8 px-6 py-12 md:px-12 lg:px-20">
           <div className="h-[2px] w-14 rounded-full bg-gradient-to-r from-white/70 to-transparent" />
           {children}
