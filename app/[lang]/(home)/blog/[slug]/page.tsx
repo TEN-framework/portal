@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
 
 import { SITE_URL } from '@/app/metadata.config'
+import { i18n } from '@/lib/i18n'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
 
@@ -213,6 +214,6 @@ export default async function Page(props: {
 export function generateStaticParams(): { slug: string; lang: string }[] {
   return blog.getPages().map((page) => ({
     slug: page.slugs[0],
-    lang: page.locale,
+    lang: page.locale ?? i18n.defaultLanguage,
   }))
 }
