@@ -1,10 +1,23 @@
+import type { CSSProperties, ImgHTMLAttributes } from 'react'
+
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
 import defaultMdxComponents from 'fumadocs-ui/mdx'
 import { notFound } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
+
 import { SITE_URL } from '@/app/metadata.config'
+import { i18n } from '@/lib/i18n'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
+
+import {
+  AuthorBadge,
+  ModernPaintingBanner,
+  getAccentColor,
+  hexToRgba,
+  mixHexColors,
+  type BlogFrontmatterMeta,
+} from '../components/visuals'
 
 export async function generateMetadata(props: {
   params: Promise<{ slug: string; lang: string }>
@@ -53,6 +66,31 @@ export default async function Page(props: {
 
   if (!page) notFound()
 
+  const frontmatter = page.data as BlogFrontmatterMeta
+  const isChinese = locale === 'cn'
+  const fallbackAuthor = isChinese ? 'TEN 团队' : 'TEN Team'
+  const authorName = frontmatter.author ?? fallbackAuthor
+  const articleLabel = isChinese ? '文章' : 'Article'
+  const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
+  const postDate = frontmatter.date ?? page.data.date ?? new Date()
+  const published = formatter.dateTime(new Date(postDate), {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  const labelStyle: CSSProperties = {
+    backgroundColor: hexToRgba(mixHexColors(accentColor, '#ffffff', 0.85), 0.45),
+    color: mixHexColors(accentColor, '#0f172a', 0.1),
+  }
+
+  const accentUnderlineStyle: CSSProperties = {
+    backgroundImage: `linear-gradient(90deg, ${hexToRgba(
+      mixHexColors(accentColor, '#ffffff', 0.2),
+      0.85
+    )}, transparent 85%)`,
+  }
+
   const Mdx = page.data.body
 
   // Generate structured data for SEO
@@ -79,6 +117,17 @@ export default async function Page(props: {
     },
   }
 
+  const mdxComponents = {
+    ...defaultMdxComponents,
+    img: (props: ImgHTMLAttributes<HTMLImageElement>) => (
+      <img
+        {...props}
+        loading={props.loading ?? 'lazy'}
+        className={['rounded-2xl', props.className].filter(Boolean).join(' ')}
+      />
+    ),
+  }
+
   return (
     <>
       <script
@@ -86,8 +135,8 @@ export default async function Page(props: {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div className="pb-16">
-        <div className="bg-gradient-to-b from-transparent via-primary/5 to-primary/10 pt-24 pb-12">
-          <div className="container relative">
+        <div className="pt-24 pb-12">
+          <div className="container">
             <Link
               locale={locale}
               href="/blog"
@@ -108,43 +157,53 @@ export default async function Page(props: {
               </svg>
               {t('backToBlog')}
             </Link>
+          </div>
 
-            <div className="relative overflow-hidden rounded-xl border bg-gradient-to-br from-background/80 via-background/50 to-background/30 p-8 shadow-lg backdrop-blur-sm">
-              <h1 className="mb-4 font-bold text-4xl tracking-tight">
-                {page.data.title}
-              </h1>
-              <p className="text-fd-muted-foreground text-lg">
-                {page.data.description}
-              </p>
+          <ModernPaintingBanner
+            accentColor={accentColor}
+            className="mt-6 w-full border-y py-12 shadow-lg"
+          >
+            <div className="mx-auto flex max-w-4xl flex-col gap-7 px-6 md:px-12 lg:px-16">
+              <span
+                className="inline-flex w-fit items-center rounded-full px-4 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.35em]"
+                style={labelStyle}
+              >
+                {articleLabel}
+              </span>
 
-              <div className="mt-6 flex items-center gap-6 border-t pt-6 text-sm">
-                <div>
-                  <p className="mb-1 text-fd-muted-foreground">
-                    {t('writtenBy')}
+              <div className="space-y-6 text-white drop-shadow-sm">
+                <h1 className="font-bold text-4xl tracking-tight md:text-5xl lg:text-6xl">
+                  {frontmatter.title}
+                </h1>
+
+                {frontmatter.description && (
+                  <p className="max-w-3xl text-base leading-relaxed text-white/85 md:text-lg">
+                    {frontmatter.description}
                   </p>
-                  <p className="font-medium">{page.data.author}</p>
-                </div>
-                <div>
-                  <p className="mb-1 text-fd-muted-foreground">
-                    {t('publishedOn')}
-                  </p>
-                  <p className="font-medium">
-                    {formatter.dateTime(new Date(page.data.date), {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-6 text-white">
+                <AuthorBadge
+                  accentColor={accentColor}
+                  authorName={authorName}
+                  published={published}
+                />
+                <div className="flex flex-col text-sm text-white/85">
+                  <span>{t('publishedOn')}</span>
+                  <time className="font-medium text-white">{published}</time>
                 </div>
               </div>
+
+              <div className="h-0.5 w-24 rounded-full" style={accentUnderlineStyle} />
             </div>
-          </div>
+          </ModernPaintingBanner>
         </div>
 
-        <article className="container relative mx-auto mt-12 max-w-4xl px-4">
+        <article className="container relative mx-auto mt-14 max-w-3xl px-4">
           <div className="prose prose-lg dark:prose-invert mx-auto">
             <InlineTOC items={page.data.toc} />
-            <Mdx components={defaultMdxComponents} />
+            <Mdx components={mdxComponents} />
           </div>
         </article>
       </div>
@@ -152,9 +211,9 @@ export default async function Page(props: {
   )
 }
 
-export function generateStaticParams(): { slug: string }[] {
+export function generateStaticParams(): { slug: string; lang: string }[] {
   return blog.getPages().map((page) => ({
     slug: page.slugs[0],
-    lang: page.locale,
+    lang: page.locale ?? i18n.defaultLanguage,
   }))
 }
