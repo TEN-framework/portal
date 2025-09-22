@@ -159,6 +159,8 @@ export type BlogFrontmatterMeta = {
   coverImage?: string
   coverImageAlt?: string
   accentColor?: string
+  featuredLabel?: string
+  articleLabel?: string
 }
 
 type CoverArtworkProps = {

@@ -73,6 +73,7 @@ export default async function BlogHomePage(props: {
             })
             const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
             const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
+            const featuredBadgeLabel = frontmatter.featuredLabel ?? featuredLabel
 
             return (
               <Card className="group w-full overflow-hidden border-border/60 bg-background/80 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
@@ -85,7 +86,7 @@ export default async function BlogHomePage(props: {
                     <div className="relative aspect-[3/2] md:h-full">
                       <CoverArtwork
                         accentColor={accentColor}
-                        articleLabel={featuredLabel}
+                        articleLabel={featuredBadgeLabel}
                         coverImage={frontmatter.coverImage}
                         coverImageAlt={coverImageAlt}
                         featured
@@ -155,6 +156,7 @@ export default async function BlogHomePage(props: {
                 frontmatter.title
               )
               const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
+              const articleBadgeLabel = frontmatter.articleLabel ?? fallbackLabel
 
               return (
                 <Card
@@ -169,7 +171,7 @@ export default async function BlogHomePage(props: {
                     <div className="relative aspect-[16/9]">
                       <CoverArtwork
                         accentColor={accentColor}
-                        articleLabel={fallbackLabel}
+                        articleLabel={articleBadgeLabel}
                         coverImage={frontmatter.coverImage}
                         coverImageAlt={coverImageAlt}
                         title={frontmatter.title}
