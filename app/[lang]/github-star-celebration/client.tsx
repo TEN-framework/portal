@@ -150,7 +150,9 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
                     'text-[clamp(2.5rem,6vw,4rem)] font-semibold uppercase tracking-[0.45em] text-amber-50/80'
                   )}
                 >
+                  <span className="mt-[-2.5rem] block" />
                   Stars
+                  <span className="mb-10 block" />
                 </span>
                 <span
                   className={cn(
