@@ -193,7 +193,7 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
               className="w-full text-base sm:w-auto sm:flex-1"
               onClick={() => {
                 window.open(
-                  'https://github.com/TEN-framework/ten-framework?tab=readme-ov-file#-welcome-to-ten',
+                  'https://github.com/TEN-framework/ten-framework/stargazers',
                   '_blank'
                 )
               }}
