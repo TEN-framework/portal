@@ -128,7 +128,7 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
           <div className="flex flex-col items-center gap-4">
             <div className="relative flex flex-col items-center gap-3 text-center">
               <div className="absolute -inset-8 rounded-full bg-amber-200/25 blur-3xl" />
-              <div className="relative flex flex-col items-center text-center">
+              <div className="relative flex flex-col items-center gap-3 text-center md:gap-5 lg:gap-1">
                 <span
                   className={cn(
                     orbitron.className,
@@ -147,12 +147,12 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
                 <span
                   className={cn(
                     orbitron.className,
-                    'text-[clamp(2.5rem,6vw,4rem)] font-semibold uppercase tracking-[0.45em] text-amber-50/80'
+                    'text-[clamp(2.3rem,6.3vw,3.8rem)] font-semibold uppercase tracking-[0.45em] text-amber-50/80 lg:text-[clamp(2.5rem,6vw,4rem)]'
                   )}
                 >
-                  <span className="mt-[-2.5rem] block" />
+                  <span className="mt-3 block md:mt-6 lg:mt-[-2.5rem]" />
                   Stars
-                  <span className="mb-10 block" />
+                  <span className="mb-3 block md:mb-5 lg:mb-0" />
                 </span>
                 <span
                   className={cn(
@@ -170,9 +170,9 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
                 : 'Every star sparks the next release — thank you for the momentum'}
             </span>
           </div>
-          <div className="flex flex-col items-center gap-4 sm:flex-row">
+          <div className="flex w-full max-w-xl flex-col gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-4">
             <LiquidButton
-              className="rounded-full px-10 py-3 text-lg text-white"
+              className="w-full rounded-full px-10 py-3 text-lg text-white sm:w-auto sm:flex-1"
               size="xl"
               onClick={() => {
                 window.open(
@@ -190,7 +190,7 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
             </LiquidButton>
             <MetalButton
               variant="gold"
-              className="text-base"
+              className="w-full text-base sm:w-auto sm:flex-1"
               onClick={() => {
                 window.open(
                   'https://github.com/TEN-framework/ten-framework?tab=readme-ov-file#-welcome-to-ten',
