@@ -234,7 +234,7 @@ async def start_connection(self) -> None:
         await self.deepgram_client.start(options)
         
     except Exception as e:
-        self.get_logger().error(f"failed to connect to deepgram: {e}")
+        self.ten_env.log_error(f"failed to connect to deepgram: {e}", category="vendor")
         raise
 
 @override
@@ -266,7 +266,7 @@ async def send_audio(self, audio_frame: AudioFrame) -> bool:
         return True
         
     except Exception as e:
-        self.get_logger().error(f"Failed to send audio: {e}")
+        self.ten_env.log_error(f"Failed to send audio: {e}", category="vendor")
         return False
 
 @override  
@@ -302,12 +302,12 @@ async def _register_deepgram_events(self) -> None:
 async def _on_open(self, *args, **kwargs) -> None:
     """连接建立成功"""
     self.is_connected_flag = True
-    self.get_logger().info("Deepgram connection opened")
+    self.ten_env.log_info("Deepgram connection opened", category="vendor")
 
 async def _on_close(self, *args, **kwargs) -> None:
     """连接关闭"""
     self.is_connected_flag = False
-    self.get_logger().info("Deepgram connection closed")
+    self.ten_env.log_warn("Deepgram connection closed", category="vendor")
 
 async def _on_transcript(self, *args, **kwargs) -> None:
     """处理转录结果"""
@@ -334,12 +334,12 @@ async def _on_transcript(self, *args, **kwargs) -> None:
         await self.send_asr_result(asr_result)
         
     except Exception as e:
-        self.get_logger().error(f"Error processing transcript: {e}")
+        self.ten_env.log_error(f"Error processing transcript: {e}", category="vendor")
 
 async def _on_error(self, *args, **kwargs) -> None:
     """处理错误"""
     error = args[1] if len(args) > 1 else "Unknown error"
-    self.get_logger().error(f"Deepgram error: {error}")
+    self.ten_env.log_error(f"Deepgram error: {error}", category="vendor")
 ```
 
 ## 5. 高级功能实现
@@ -456,7 +456,7 @@ class MyAsrExtension(AsyncASRBaseExtension):
             return True
             
         except Exception as e:
-            self.get_logger().error(f"Failed to send audio: {e}")
+            self.ten_env.log_error(f"Failed to send audio: {e}", category="vendor")
             return False
 ```
 
@@ -860,6 +860,120 @@ class MyAsrExtension(AsyncASRBaseExtension):
 - **KEY_POINT**: 关键节点日志，用于记录重要的配置和状态信息
 - **VENDOR**: 供应商相关日志，包括连接状态、结果处理、错误信息
 - **默认分类**: 业务逻辑相关的一般日志
+
+### 错误上报
+
+除了日志记录，还需要通过 `self.send_asr_error` API 进行结构化的错误上报：
+
+```python title="extension.py"
+from ten_ai_base.message import (
+    ModuleError,
+    ModuleErrorVendorInfo,
+    ModuleErrorCode,
+)
+from .const import MODULE_NAME_ASR
+
+class MyAsrExtension(AsyncASRBaseExtension):
+    @override
+    async def on_init(self, ten_env: AsyncTenEnv) -> None:
+        """初始化配置 - 致命错误示例"""
+        try:
+            # 配置解析逻辑
+            pass
+        except Exception as e:
+            # 记录日志
+            ten_env.log_error(
+                f"invalid property: {e}", 
+                category=LOG_CATEGORY_KEY_POINT
+            )
+            
+            # 上报致命错误 - 扩展无法正常工作
+            await self.send_asr_error(
+                ModuleError(
+                    module=MODULE_NAME_ASR,
+                    code=ModuleErrorCode.FATAL_ERROR.value,
+                    message=str(e),
+                ),
+            )
+    
+    async def start_connection(self) -> None:
+        """连接失败 - 致命错误示例"""
+        try:
+            # 连接逻辑
+            pass
+        except Exception as e:
+            # 记录供应商错误日志
+            self.ten_env.log_error(
+                f"vendor_error: start_connection failed: {e}",
+                category=LOG_CATEGORY_VENDOR,
+            )
+            
+            # 上报致命错误 - 无法建立连接
+            await self.send_asr_error(
+                ModuleError(
+                    module=MODULE_NAME_ASR,
+                    code=ModuleErrorCode.FATAL_ERROR.value,
+                    message=str(e),
+                ),
+            )
+    
+    async def _on_error(self, *args, **kwargs) -> None:
+        """供应商错误 - 非致命错误示例"""
+        error = args[1] if len(args) > 1 else None
+        if not error:
+            return
+            
+        # 记录供应商错误日志
+        self.ten_env.log_error(
+            f"vendor_error: deepgram error: {error}",
+            category=LOG_CATEGORY_VENDOR,
+        )
+        
+        # 上报非致命错误 - 包含供应商信息
+        await self.send_asr_error(
+            ModuleError(
+                module=MODULE_NAME_ASR,
+                code=ModuleErrorCode.NON_FATAL_ERROR.value,
+                message=str(error),
+            ),
+            ModuleErrorVendorInfo(
+                vendor="deepgram",
+                code=getattr(error, 'code', 'unknown'),
+                message=str(error),
+            ),
+        )
+        
+        # 触发重连机制
+        await self._handle_reconnect()
+```
+
+#### 错误分类策略
+
+**🔥 致命错误 (FATAL_ERROR)**
+- 配置解析失败
+- 无效的API密钥
+- 无法建立初始连接
+- 扩展无法继续工作的情况
+
+**⚠️ 非致命错误 (NON_FATAL_ERROR)** 
+- 临时的网络连接问题
+- 供应商服务暂时不可用
+- 音频处理错误
+- 可通过重连恢复的错误
+
+#### 供应商信息 (VendorInfo)
+
+对于供应商返回的错误，应包含详细的供应商信息：
+
+```python
+ModuleErrorVendorInfo(
+    vendor="deepgram",           # 供应商名称
+    code="400",                  # 供应商错误码
+    message="Invalid audio format", # 供应商错误消息
+)
+```
+
+这样可以帮助运维团队快速定位问题来源，区分是扩展问题还是供应商服务问题。
 
 #### 敏感信息脱敏
 
