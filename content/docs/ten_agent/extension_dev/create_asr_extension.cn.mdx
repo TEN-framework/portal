@@ -464,6 +464,22 @@ class MyAsrExtension(AsyncASRBaseExtension):
 
 ### 创建测试框架
 
+#### Mock的必要性
+
+在单元测试中使用Mock而非真实API调用的原因：
+
+- **🔄 CI/CD友好**: 每次CI都会触发执行，避免供应商配额消耗
+- **💰 成本控制**: 避免不必要的API调用费用
+- **🛡️ 稳定性**: 避免因供应商连接不稳定导致的CI失败
+- **⚡ 执行速度**: Mock响应更快，提升测试执行效率
+- **🧪 可控性**: 可以模拟各种边界情况和错误场景
+
+#### 最佳实践建议
+
+- **开发调试阶段**: 可以使用真实的API Key进行测试，验证实际集成效果
+- **正式提交前**: 切换到Mock实现，确保CI/CD环境的稳定运行
+- **边界测试**: 使用Mock模拟网络超时、服务错误等异常情况
+
 在 `tests/mock.py` 中创建 Mock 对象：
 
 ```python title="tests/mock.py"
@@ -749,7 +765,28 @@ Guarder 测试会重点验证以下对话场景的关键指标：
 - **识别准确率**: 在不同音质条件下的准确性
 - **连接稳定性**: 长时间会话的连接保持能力
 
-## 8. 最佳实践
+## 8. 端到端测试
+
+完成开发后，可以使用 TMan Designer 快速替换 TEN Agent 对话图中的 ASR 扩展，验证在实际对话场景下的效果。
+
+### 使用 TMan Designer 替换 ASR 扩展
+
+```bash title="Terminal"
+# 在 TEN Agent 项目目录下启动
+cd /path/to/your/ten-agent-project
+tman designer
+```
+
+TMan Designer 会打开可视化界面，你可以：
+
+1. **选择 ASR 节点**: 点击现有的 ASR 扩展积木
+2. **替换为你的扩展**: 选择 `my_asr_extension`
+3. **配置参数**: 设置 API Key、语言等参数
+4. **一键应用**: 完成替换并启动测试
+
+替换完成后，通过真实对话验证扩展的识别准确性、响应速度和稳定性。
+
+## 9. 最佳实践
 
 ### 配置管理
 
@@ -999,7 +1036,7 @@ def to_json(self, sensitive_handling: bool = False) -> str:
 - ✅ 支持不同日志级别和分类
 - ✅ 提供性能和质量指标
 
-## 9. 扩展和贡献
+## 10. 扩展和贡献
 
 ### 适配其他 ASR 服务
 
