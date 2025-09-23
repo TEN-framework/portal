@@ -31,6 +31,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "tailwind-merge": "^3.2.0",
+    "three": "^0.180.0",
     "tw-animate-css": "^1.2.5",
     "zod": "^3.24.2"
   },
@@ -42,11 +43,12 @@
     "@types/node": "22.13.14",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
+    "@types/three": "^0.180.0",
+    "next-validate-link": "^1.6.2",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.4",
     "tailwindcss-motion": "^1.1.0",
-    "typescript": "^5.8.2",
-    "next-validate-link": "^1.6.2"
+    "typescript": "^5.8.2"
   },
   "engines": {
     "node": ">=22",
