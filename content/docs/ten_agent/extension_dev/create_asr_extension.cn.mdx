@@ -1,0 +1,1015 @@
+---
+title: 创建 ASR 扩展
+---
+
+在本章中，我们将一步步创建一个完整的 ASR（自动语音识别）扩展，演示从项目创建、开发实现、单元测试到生产验证的全流程。通过这个教程，你将掌握如何为 TEN Agent 贡献高质量的 ASR 扩展。
+
+## 前置条件
+
+在开始之前，你需要：
+
+1. 熟悉 [TEN Agent 基础知识](/docs/ten_agent/getting_started)
+2. 了解 ASR 服务的基本概念（如 Deepgram、Azure Speech 等）
+3. 具备 Python 异步编程经验
+4. 准备好 ASR 服务商的 API 密钥（用于最终测试）
+
+<Callout>
+  本教程以 Deepgram ASR 为例，但同样的方法适用于其他 ASR 服务商
+</Callout>
+
+## 1. 创建 ASR 扩展项目
+
+### 使用 ASR 模板创建项目
+
+在 `ten_packages/extension` 目录下，使用 ASR 专用模板创建扩展：
+
+```bash title="Terminal"
+cd ten-framework/ai_agents/agents/ten_packages/extension
+tman create extension my_asr_extension --template default_asr_python --template-data class_name_prefix=MyAsr
+```
+
+执行成功后，你将看到类似输出：
+
+```bash title="Terminal"
+Package 'extension:my_asr_extension' created successfully in 'my_asr_extension' in 2 seconds.
+```
+
+### 安装项目依赖
+
+进入创建的扩展目录并安装依赖：
+
+```bash title="Terminal"
+cd my_asr_extension
+tman install --standalone
+```
+
+这会根据 `manifest.json` 中声明的依赖构建依赖树，并安装到 `.ten` 目录下。
+
+## 2. 了解 ASR 扩展架构
+
+### 项目结构
+
+```
+my_asr_extension/
+├── .vscode/               # VS Code 调试配置
+│   └── launch.json       # 调试启动配置
+├── manifest.json          # 扩展元数据和依赖声明
+├── property.json          # 默认配置参数  
+├── requirements.txt       # Python 依赖
+├── extension.py           # 主要实现文件
+└── tests/                 # 测试文件
+    ├── bin/start         # 测试启动脚本
+    ├── test_basic.py     # 单元测试
+    └── configs/          # 测试配置
+```
+
+### 核心继承关系
+
+```python
+AsyncASRBaseExtension  # TEN AI Base 提供的抽象基类
+    ↓
+MyAsrExtension         # 你的具体实现
+```
+
+`AsyncASRBaseExtension` 提供了 ASR 扩展的通用框架，你需要实现以下关键方法：
+
+- `vendor()`: 返回 ASR 服务商名称
+- `start_connection()`: 建立与 ASR 服务的连接
+- `stop_connection()`: 停止连接
+- `send_audio()`: 发送音频数据
+- `finalize()`: 快速触发最终结果（收到上游EOS信号后，通过断连、发送静音包或供应商专用API快速获得final结果，降低对话延迟）
+- `is_connected()`: 检查连接状态
+- `input_audio_sample_rate()`: 返回音频采样率
+
+## 3. 配置管理设计
+
+### 添加 ASR 服务依赖
+
+首先在 `requirements.txt` 中添加 Deepgram SDK：
+
+```text title="requirements.txt"
+websockets~=14.0
+pydantic
+requests
+deepgram-sdk
+aiofiles
+```
+
+### 设计配置类
+
+创建灵活的配置类，支持必填参数和可选透传参数：
+
+```python title="extension.py"
+from pydantic import BaseModel
+from typing import Dict, Optional
+
+class MyAsrConfig(BaseModel):
+    # 所有ASR参数都在params中，包括必填和可选参数
+    params: Dict[str, Optional[str]] = {}
+    
+    # 音频dump相关配置 - 所有ASR扩展的标准实现
+    dump: bool = False
+    dump_path: Optional[str] = None
+    
+    @property
+    def url(self) -> str:
+        """获取Deepgram API端点URL"""
+        return self.params.get("url", "") or ""
+    
+    @property  
+    def api_key(self) -> str:
+        """获取Deepgram API密钥"""
+        return self.params.get("api_key", "") or ""
+    
+    @property
+    def language(self) -> str:
+        """获取语言代码"""
+        return self.params.get("language", "en") or ""
+    
+    @property
+    def model(self) -> str:
+        """获取ASR模型"""
+        return self.params.get("model", "nova-2") or ""
+    
+    @property
+    def sample_rate(self) -> int:
+        """获取音频采样率"""
+        return int(self.params.get("sample_rate", "16000") or "16000")
+```
+
+### 配置默认参数
+
+在 `property.json` 中提供默认配置：
+
+```json title="property.json"
+{
+  "params": {
+    "url": "wss://api.deepgram.com/v1/listen",
+    "api_key": "your_deepgram_api_key_here",
+    "language": "en",
+    "model": "nova-2", 
+    "sample_rate": "16000",
+    "punctuate": "true",
+    "smart_format": "true",
+    "interim_results": "true"
+  },
+  "dump": false,
+  "dump_path": "/tmp/asr_audio_dump"
+}
+```
+
+## 4. 核心功能实现
+
+### 实现基础方法
+
+```python title="extension.py"
+import asyncio
+from deepgram import (
+    DeepgramClient,
+    DeepgramClientOptions, 
+    LiveTranscriptionEvents,
+    LiveOptions
+)
+from ten_ai_base.asr import ASRResult
+
+class MyAsrExtension(AsyncASRBaseExtension):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.config: MyAsrConfig = MyAsrConfig()
+        self.deepgram_client: Optional[AsyncListenWebSocketClient] = None
+        self.is_connected_flag: bool = False
+        self.last_finalize_timestamp: float = 0.0  # 用于延迟计算
+        
+    @override
+    def vendor(self) -> str:
+        """返回ASR服务商名称"""
+        return "deepgram"
+    
+    @override
+    def input_audio_sample_rate(self) -> int:
+        """返回音频采样率"""
+        return self.config.sample_rate
+    
+    @override
+    def is_connected(self) -> bool:
+        """检查连接状态"""
+        return self.is_connected_flag
+```
+
+### 实现连接管理
+
+```python title="extension.py"
+@override
+async def start_connection(self) -> None:
+    """建立与Deepgram的WebSocket连接"""
+    try:
+        # 确保清理之前的连接
+        await self.stop_connection()
+        
+        # 创建Deepgram客户端配置
+        config = DeepgramClientOptions(
+            api_key=self.config.api_key
+        )
+        
+        # 初始化WebSocket客户端
+        deepgram = DeepgramClient(config=config)
+        self.deepgram_client = deepgram.listen.live.v("1")
+        
+        # 注册事件处理器
+        await self._register_deepgram_events()
+        
+        # 创建连接选项
+        options = LiveOptions(
+            model=self.config.model,
+            language=self.config.language,
+            sample_rate=self.config.sample_rate,
+        )
+        
+        # 动态添加其他参数
+        for key, value in self.config.params.items():
+            if key not in ["url", "api_key", "language", "model", "sample_rate"] and value:
+                setattr(options, key, value == "true" if value in ["true", "false"] else value)
+        
+        # 启动连接
+        await self.deepgram_client.start(options)
+        
+    except Exception as e:
+        self.get_logger().error(f"failed to connect to deepgram: {e}")
+        raise
+
+@override
+async def stop_connection(self) -> None:
+    """停止Deepgram连接"""
+    if self.deepgram_client:
+        await self.deepgram_client.finish()
+        self.deepgram_client = None
+        self.is_connected_flag = False
+```
+
+### 实现音频处理
+
+```python title="extension.py"
+@override
+async def send_audio(self, audio_frame: AudioFrame) -> bool:
+    """发送音频数据到ASR服务"""
+    if not self.is_connected() or not self.deepgram_client:
+        return False
+        
+    try:
+        # 获取音频数据
+        audio_buf = audio_frame.get_buf()
+        if not audio_buf:
+            return False
+            
+        # 发送到Deepgram
+        await self.deepgram_client.send(bytes(audio_buf))
+        return True
+        
+    except Exception as e:
+        self.get_logger().error(f"Failed to send audio: {e}")
+        return False
+
+@override  
+async def finalize(self) -> None:
+    """快速触发最终结果
+    
+    收到上游EOS(End of Speech)信号后，立即触发ASR服务返回final结果。
+    这对于对话场景非常重要，可以显著降低用户感知的延迟。
+    
+    实现方式：
+    - Deepgram: 调用finalize() API快速结束转录
+    - 其他服务商: 可通过断连、发送静音包等方式实现
+    """
+    if self.deepgram_client:
+        # 记录finalize时间戳，用于延迟计算
+        self.last_finalize_timestamp = asyncio.get_event_loop().time() * 1000
+        await self.deepgram_client.finalize()
+```
+
+### 实现事件处理
+
+```python title="extension.py"
+async def _register_deepgram_events(self) -> None:
+    """注册Deepgram WebSocket事件处理器"""
+    if not self.deepgram_client:
+        return
+        
+    self.deepgram_client.on(LiveTranscriptionEvents.Open, self._on_open)
+    self.deepgram_client.on(LiveTranscriptionEvents.Close, self._on_close)
+    self.deepgram_client.on(LiveTranscriptionEvents.Transcript, self._on_transcript)
+    self.deepgram_client.on(LiveTranscriptionEvents.Error, self._on_error)
+
+async def _on_open(self, *args, **kwargs) -> None:
+    """连接建立成功"""
+    self.is_connected_flag = True
+    self.get_logger().info("Deepgram connection opened")
+
+async def _on_close(self, *args, **kwargs) -> None:
+    """连接关闭"""
+    self.is_connected_flag = False
+    self.get_logger().info("Deepgram connection closed")
+
+async def _on_transcript(self, *args, **kwargs) -> None:
+    """处理转录结果"""
+    result = args[1] if len(args) > 1 else None
+    if not result:
+        return
+        
+    try:
+        # 解析Deepgram结果
+        transcript_data = result.channel.alternatives[0] if result.channel.alternatives else None
+        if not transcript_data:
+            return
+            
+        # 创建ASR结果
+        asr_result = ASRResult(
+            text=transcript_data.transcript,
+            final=result.is_final,
+            start_ms=int(result.start * 1000) if hasattr(result, 'start') else 0,
+            duration_ms=int(result.duration * 1000) if hasattr(result, 'duration') else 0,
+            language=self.config.language
+        )
+        
+        # 发送结果
+        await self.send_asr_result(asr_result)
+        
+    except Exception as e:
+        self.get_logger().error(f"Error processing transcript: {e}")
+
+async def _on_error(self, *args, **kwargs) -> None:
+    """处理错误"""
+    error = args[1] if len(args) > 1 else "Unknown error"
+    self.get_logger().error(f"Deepgram error: {error}")
+```
+
+## 5. 高级功能实现
+
+### 重连机制
+
+创建 `reconnect_manager.py` 实现智能重连：
+
+```python title="reconnect_manager.py"
+import asyncio
+from typing import Callable, Awaitable, Optional
+
+class ReconnectManager:
+    def __init__(self, max_attempts: int = 5, base_delay: float = 0.5):
+        self.max_attempts = max_attempts
+        self.base_delay = base_delay
+        self.current_attempts = 0
+        
+    def reset_counter(self) -> None:
+        """重置重连计数器"""
+        self.current_attempts = 0
+        
+    def mark_connection_successful(self) -> None:
+        """标记连接成功，重置计数器"""
+        self.reset_counter()
+        
+    def can_retry(self) -> bool:
+        """检查是否可以重试"""
+        return self.current_attempts < self.max_attempts
+        
+    async def handle_reconnect(self, connect_func: Callable[[], Awaitable[None]]) -> bool:
+        """处理重连逻辑"""
+        if not self.can_retry():
+            return False
+            
+        self.current_attempts += 1
+        
+        # 指数退避延迟
+        delay = self.base_delay * (2 ** (self.current_attempts - 1))
+        await asyncio.sleep(delay)
+        
+        try:
+            await connect_func()
+            return True
+        except Exception:
+            return False
+```
+
+### 音频调试功能
+
+集成音频 Dump 功能：
+
+```python title="extension.py"
+import os
+from ten_ai_base.dumper import Dumper
+
+# 在文件顶部定义常量
+DUMP_FILE_NAME = "my_asr_in.pcm"
+
+class MyAsrExtension(AsyncASRBaseExtension):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.audio_dumper: Optional[Dumper] = None
+        self.reconnect_manager = ReconnectManager()
+        
+    @override
+    async def on_init(self, ten_env: AsyncTenEnv) -> None:
+        """初始化阶段配置"""
+        await super().on_init(ten_env)
+        
+        # 初始化音频dumper
+        if self.config.dump:
+            dump_file_path = os.path.join(
+                self.config.dump_path, DUMP_FILE_NAME
+            )
+            self.audio_dumper = Dumper(dump_file_path)
+            
+    @override
+    async def on_deinit(self, ten_env: AsyncTenEnv) -> None:
+        """清理资源"""
+        await super().on_deinit(ten_env)
+        if self.audio_dumper:
+            await self.audio_dumper.stop()
+            self.audio_dumper = None
+            
+    @override
+    async def start_connection(self) -> None:
+        """建立连接时启动dumper"""
+        # ... 连接逻辑 ...
+        
+        # 启动音频dumper
+        if self.audio_dumper:
+            await self.audio_dumper.start()
+        
+    @override
+    async def send_audio(self, audio_frame: AudioFrame) -> bool:
+        """发送音频数据（含调试功能）"""
+        if not self.is_connected() or not self.deepgram_client:
+            return False
+            
+        try:
+            # 锁定音频缓冲区
+            buf = audio_frame.lock_buf()
+            
+            # 保存音频用于调试
+            if self.audio_dumper:
+                await self.audio_dumper.push_bytes(bytes(buf))
+                
+            # 发送到Deepgram
+            await self.deepgram_client.send(bytes(buf))
+            
+            # 解锁缓冲区
+            audio_frame.unlock_buf(buf)
+            return True
+            
+        except Exception as e:
+            self.get_logger().error(f"Failed to send audio: {e}")
+            return False
+```
+
+## 6. 单元测试
+
+### 创建测试框架
+
+在 `tests/mock.py` 中创建 Mock 对象：
+
+```python title="tests/mock.py"
+import pytest
+from unittest.mock import MagicMock, patch
+from types import SimpleNamespace
+
+@pytest.fixture(scope="function")
+def patch_deepgram_ws():
+    """Mock Deepgram WebSocket客户端"""
+    with patch("ten_packages.extension.my_asr_extension.extension.AsyncListenWebSocketClient") as mock_client:
+        # 创建mock实例
+        mock_instance = MagicMock()
+        mock_client.return_value = mock_instance
+        
+        # 存储事件处理器
+        event_handlers = {}
+        
+        def mock_on(event, handler):
+            event_handlers[event] = handler
+            
+        mock_instance.on = mock_on
+        mock_instance.start = MagicMock()
+        mock_instance.send = MagicMock()
+        mock_instance.finish = MagicMock()
+        mock_instance.finalize = MagicMock()
+        
+        # 提供触发事件的方法
+        def trigger_open():
+            if 'open' in event_handlers:
+                event_handlers['open']()
+                
+        def trigger_transcript(text, is_final=False):
+            if 'transcript' in event_handlers:
+                # 模拟Deepgram响应格式
+                mock_result = SimpleNamespace()
+                mock_result.channel = SimpleNamespace()
+                mock_result.channel.alternatives = [SimpleNamespace()]
+                mock_result.channel.alternatives[0].transcript = text
+                mock_result.is_final = is_final
+                mock_result.start = 0.0
+                mock_result.duration = 1.0
+                
+                event_handlers['transcript'](None, mock_result)
+                
+        mock_instance.trigger_open = trigger_open
+        mock_instance.trigger_transcript = trigger_transcript
+        
+        yield mock_instance
+```
+
+### 编写测试用例
+
+在 `tests/test_basic.py` 中编写完整测试：
+
+```python title="tests/test_basic.py"
+import asyncio
+import json
+from typing_extensions import override
+from ten_runtime import (
+    AsyncExtensionTester,
+    AsyncTenEnvTester, 
+    Data,
+    AudioFrame
+)
+from tests.mock import patch_deepgram_ws
+
+class MyAsrExtensionTester(AsyncExtensionTester):
+    def __init__(self):
+        super().__init__()
+        self.received_results = []
+        
+    @override
+    async def on_start(self, ten_env: AsyncTenEnvTester) -> None:
+        """开始测试"""
+        ten_env.log_info("Starting ASR test")
+        
+        # 发送测试音频
+        await self.send_test_audio(ten_env)
+        
+        # 等待处理完成
+        await asyncio.sleep(2)
+        ten_env.stop_test()
+        
+    async def send_test_audio(self, ten_env: AsyncTenEnvTester) -> None:
+        """发送测试音频数据"""
+        # 创建模拟音频帧
+        audio_frame = AudioFrame.create("pcm_frame")
+        test_data = b'\x00' * 320  # 320字节的静默音频
+        
+        audio_frame.alloc_buf(len(test_data))
+        buf = audio_frame.lock_buf()
+        buf[:] = test_data
+        audio_frame.unlock_buf(buf)
+        
+        await ten_env.send_audio_frame(audio_frame)
+        
+    @override 
+    async def on_data(self, ten_env: AsyncTenEnvTester, data: Data) -> None:
+        """处理ASR结果"""
+        name = data.get_name()
+        if name == "asr_result":
+            json_str, _ = data.get_property_to_json(None)
+            result_data = json.loads(json_str)
+            
+            ten_env.log_info(f"Received ASR result: {result_data}")
+            self.received_results.append(result_data)
+            
+            # 验证结果格式
+            assert "text" in result_data
+            assert "final" in result_data
+            assert "language" in result_data
+
+def test_asr_basic_functionality(patch_deepgram_ws):
+    """测试ASR基础功能"""
+    # 配置
+    config = {
+        "params": {
+            "api_key": "test_key",
+            "language": "en-US"
+        }
+    }
+    
+    # 创建测试器
+    tester = MyAsrExtensionTester()
+    tester.set_test_mode_single("my_asr_extension", json.dumps(config))
+    
+    # 模拟ASR事件
+    def simulate_asr_events():
+        # 模拟连接建立
+        patch_deepgram_ws.trigger_open()
+        
+        # 模拟转录结果
+        patch_deepgram_ws.trigger_transcript("hello world", True)
+        
+    # 延迟触发事件
+    asyncio.get_event_loop().call_later(0.5, simulate_asr_events)
+    
+    # 运行测试
+    error = tester.run()
+    assert error is None
+    
+    # 验证结果
+    assert len(tester.received_results) > 0
+    result = tester.received_results[0]
+    assert result["text"] == "hello world"
+    assert result["final"] is True
+```
+
+### 运行单元测试
+
+```bash title="Terminal"
+cd my_asr_extension
+./tests/bin/start
+```
+
+### 断点调试
+
+模板创建的扩展项目包含 `.vscode` 目录，提供了开箱即用的调试配置。
+
+#### 使用 VS Code 调试
+
+1. **打开项目**: 在 VS Code 中打开 `my_asr_extension` 目录
+
+2. **查看调试配置**: `.vscode/launch.json` 中预置了调试脚本
+
+```json title=".vscode/launch.json"
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Test Extension",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tests/bin/start",
+            "args": [],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/.ten/app/ten_packages/system/ten_runtime_python/lib:${workspaceFolder}/.ten/app/ten_packages/system/ten_runtime_python/interface:${workspaceFolder}/.ten/app/ten_packages/system/ten_ai_base/interface"
+            }
+        }
+    ]
+}
+```
+
+3. **设置断点**: 在 `extension.py` 或测试文件中设置断点
+
+4. **启动调试**: 
+   - 按 `F5` 或使用调试面板
+   - 选择 "Python: Test Extension" 配置
+   - 调试器会自动运行测试用例
+
+#### 调试特定测试
+
+修改 `launch.json` 中的 `args` 参数来调试特定测试：
+
+```json title=".vscode/launch.json"
+{
+    "args": [
+        "tests/test_basic.py::test_asr_basic_functionality",  // 调试特定测试函数
+        "-v"  // 详细输出
+    ]
+}
+```
+
+#### 调试技巧
+
+- **断点位置**: 
+  - `on_init`: 验证配置加载
+  - `start_connection`: 检查连接建立过程  
+  - `_on_transcript`: 查看ASR结果处理
+  - `send_audio`: 追踪音频发送流程
+
+- **变量监视**: 
+  - `self.config`: 查看配置状态
+  - `self.is_connected_flag`: 监控连接状态
+  - `result`: 检查ASR返回结果
+
+- **调试输出**: 在断点处使用调试控制台查看变量状态
+
+#### 环境变量调试
+
+如果需要使用真实API密钥调试，可以在 `launch.json` 中添加环境变量：
+
+```json title=".vscode/launch.json"
+{
+    "env": {
+        "PYTHONPATH": "...",
+        "DEEPGRAM_API_KEY": "your_real_api_key_here"
+    }
+}
+```
+
+## 7. 集成测试（Guarder）
+
+### 环境变量配置
+
+创建 `.env` 文件配置真实 API 密钥：
+
+```bash title=".env"
+# Deepgram ASR API Key
+DEEPGRAM_API_KEY=your_real_deepgram_api_key_here
+```
+
+### 测试配置
+
+在 `tests/configs/` 下创建测试配置：
+
+```json title="tests/configs/property_en.json"
+{
+  "params": {
+    "api_key": "${env:DEEPGRAM_API_KEY}",
+    "language": "en-US"
+  }
+}
+```
+
+### 运行 Guarder 测试
+
+使用真实 API 密钥运行完整集成测试：
+
+```bash title="Terminal"
+cd ai_agents
+task asr-guarder-test EXTENSION=my_asr_extension
+```
+
+这将运行包括以下测试：
+
+- **ASR 结果测试**: 验证识别准确性和结果格式
+- **Finalize 测试**: 验证 EOS 信号处理和延迟优化效果
+- **音频处理测试**: 测试实时音频流处理
+- **错误处理测试**: 验证网络异常和 API 错误处理
+- **性能测试**: 测量 TTFW(Time To First Word) 和 TTLW(Time To Last Word) 指标
+- **多语言测试**: 验证不同语言的识别能力(英文和中文)
+
+#### 关键性能指标
+
+Guarder 测试会重点验证以下对话场景的关键指标：
+
+- **TTFW**: 首次识别结果延迟（通常 < 1000ms）
+- **TTLW**: Finalize 到最终结果延迟（通常 < 300ms）
+- **识别准确率**: 在不同音质条件下的准确性
+- **连接稳定性**: 长时间会话的连接保持能力
+
+## 8. 最佳实践
+
+### 配置管理
+
+- ✅ 使用 `params` 字典统一管理供应商参数
+- ✅ 通过 `@property` 方法提供类型安全的参数访问
+- ✅ 提供合理的默认值
+
+### 错误处理
+
+- ✅ 实现指数退避重连机制
+- ✅ 正确处理网络异常和 API 错误
+- ✅ 提供详细的错误日志和状态上报
+- ✅ 优雅处理连接中断和恢复
+
+### 性能优化
+
+- ✅ 异步处理音频流，避免阻塞
+- ✅ 实现音频缓存和批量发送
+- ✅ 合理管理 WebSocket 连接生命周期
+- ✅ 监控和报告关键性能指标
+
+### 日志打印
+
+- ✅ 使用 `ten_env.log_debug/info/warn/error` API 打印日志
+- ✅ 通过指定 `category` 让日志更加清晰
+- ✅ 对敏感信息（如 API Key）进行脱敏处理
+- ✅ 在关键节点记录状态变化和错误信息
+
+```python title="extension.py"
+from ten_ai_base.const import LOG_CATEGORY_KEY_POINT, LOG_CATEGORY_VENDOR
+
+class MyAsrExtension(AsyncASRBaseExtension):
+    @override
+    async def on_init(self, ten_env: AsyncTenEnv) -> None:
+        """初始化阶段 - 记录配置信息"""
+        await super().on_init(ten_env)
+        
+        # 读取并验证配置
+        try:
+            # ... 配置处理逻辑 ...
+            
+            # 关键点日志：加密打印配置，脱敏敏感信息
+            ten_env.log_info(
+                f"vendor_config: {self.config.to_json(sensitive_handling=True)}",
+                category=LOG_CATEGORY_KEY_POINT,
+            )
+        except Exception as e:
+            ten_env.log_error(f"Invalid property: {e}")
+    
+    async def _on_open(self, *args, **kwargs) -> None:
+        """连接建立 - 供应商状态变化"""
+        self.is_connected_flag = True
+        
+        # 供应商日志：连接状态变化
+        self.ten_env.log_info(
+            "vendor_status_changed: connection opened",
+            category=LOG_CATEGORY_VENDOR
+        )
+    
+    async def _on_close(self, *args, **kwargs) -> None:
+        """连接关闭 - 供应商状态变化"""
+        self.is_connected_flag = False
+        
+        # 供应商日志：连接状态变化
+        self.ten_env.log_warn(
+            "vendor_status_changed: connection closed",
+            category=LOG_CATEGORY_VENDOR
+        )
+    
+    async def _on_transcript(self, *args, **kwargs) -> None:
+        """收到转录结果 - 调试信息"""
+        result = args[1] if len(args) > 1 else None
+        if not result:
+            return
+        
+        # 供应商日志：调试级别记录原始结果
+        self.ten_env.log_debug(
+            f"vendor_result: on_transcript: {result.to_json()}",
+            category=LOG_CATEGORY_VENDOR
+        )
+        
+        # 处理结果...
+        transcript_text = result.channel.alternatives[0].transcript
+        is_final = result.is_final
+        
+        # 供应商日志：处理后的结果
+        self.ten_env.log_debug(
+            f"processed transcript: {transcript_text}, is_final: {is_final}",
+            category=LOG_CATEGORY_VENDOR
+        )
+    
+    async def _on_error(self, *args, **kwargs) -> None:
+        """供应商错误回调"""
+        error = args[1] if len(args) > 1 else "Unknown error"
+        
+        # 供应商日志：错误信息
+        self.ten_env.log_error(
+            f"vendor_error: {error}",
+            category=LOG_CATEGORY_VENDOR
+        )
+        
+        # 触发重连机制
+        await self._handle_reconnect()
+```
+
+#### 日志分类说明
+
+- **KEY_POINT**: 关键节点日志，用于记录重要的配置和状态信息
+- **VENDOR**: 供应商相关日志，包括连接状态、结果处理、错误信息
+- **默认分类**: 业务逻辑相关的一般日志
+
+#### 敏感信息脱敏
+
+```python title="config.py"
+def to_json(self, sensitive_handling: bool = False) -> str:
+    """序列化配置，支持敏感信息脱敏"""
+    config_dict = self.model_dump()
+    
+    if sensitive_handling:
+        # 脱敏处理敏感字段
+        if "api_key" in config_dict.get("params", {}):
+            api_key = config_dict["params"]["api_key"]
+            if len(api_key) > 6:
+                config_dict["params"]["api_key"] = f"{api_key[:2]}...{api_key[-2:]}"
+    
+    return json.dumps(config_dict)
+```
+
+### 调试支持
+
+- ✅ 提供音频 Dump 功能用于问题排查
+- ✅ 记录详细的事件和状态变化日志
+- ✅ 支持不同日志级别和分类
+- ✅ 提供性能和质量指标
+
+## 9. 扩展和贡献
+
+### 适配其他 ASR 服务
+
+基于本教程的框架，你可以参考 TEN Framework 仓库下的其他成品 ASR 扩展：
+
+1. **Azure Speech Services**: 参考 `azure_asr_python` 扩展的实现
+2. **Google Cloud Speech**: 参考 `google_asr_python` 扩展的实现  
+3. **科大讯飞**: 参考 `xfyun_asr_python` 扩展的实现
+4. **其他供应商**: 在 `ai_agents/agents/ten_packages/extension/` 目录下查看更多ASR扩展实现
+
+这些成品扩展都遵循相同的架构模式，可以作为适配新ASR服务的参考模板：
+
+```bash title="参考扩展位置"
+ten-framework/
+└── ai_agents/agents/ten_packages/extension/
+    ├── azure_asr_python/          # Azure Speech Services
+    ├── deepgram_asr_python/       # Deepgram ASR  
+    ├── google_asr_python/         # Google Cloud Speech
+    ├── xfyun_asr_python/          # 科大讯飞语音
+    └── ...                        # 更多ASR扩展
+```
+
+### 贡献到社区
+
+完成开发后，欢迎将你的 ASR 扩展贡献给 TEN Agent 社区：
+
+1. **代码规范**: 遵循项目的代码风格和命名约定
+2. **测试覆盖**: 确保单元测试和集成测试通过
+3. **文档完善**: 提供清晰的 README 和配置说明
+4. **性能验证**: 通过 Guarder 测试验证生产可用性
+
+### 发布到 TEN Store
+
+让你的 ASR 扩展被更多开发者使用：
+
+#### 1. 提交到主仓库
+
+```bash title="Terminal"
+# 1. Fork TEN Framework 仓库到你的 GitHub 账号
+# 2. 克隆你的 fork 仓库
+git clone https://github.com/your-username/ten-framework.git
+cd ten-framework
+
+# 3. 将你的扩展复制到正确位置
+cp -r /path/to/your/my_asr_extension ai_agents/agents/ten_packages/extension/
+
+# 4. 创建功能分支
+git checkout -b feat/add-my-asr-extension
+
+# 5. 提交更改
+git add ai_agents/agents/ten_packages/extension/my_asr_extension/
+git commit -m "feat: add my_asr_extension for [供应商名称] ASR service"
+
+# 6. 推送分支
+git push origin feat/add-my-asr-extension
+```
+
+#### 2. 创建 Pull Request
+
+1. **打开 GitHub**: 访问你的 fork 仓库页面
+2. **创建 PR**: 点击 "Compare & pull request"
+3. **填写信息**: 
+   - 标题: `feat: add my_asr_extension for [供应商名称] ASR service`
+   - 描述: 详细说明扩展功能、支持的特性和测试情况
+4. **提交 PR**: 等待代码审查和合并
+
+#### 3. 代码审查和合并
+
+- **自动测试**: CI/CD 系统会自动运行测试
+- **代码审查**: 维护者会审查代码质量和功能
+- **修改建议**: 根据反馈进行必要的修改
+- **合并**: 通过审查后，代码会被合并到 main 分支
+
+#### 4. 自动发布到 TEN Store
+
+一旦你的 PR 被合并到 main 分支：
+
+- ✅ **自动上传**: 扩展会自动上传到 TEN Store
+- ✅ **版本管理**: 系统会自动处理版本号和发布流程
+- ✅ **全球可用**: 你的扩展立即可供全球开发者下载使用
+
+#### 5. 使用你的扩展
+
+其他开发者现在可以通过以下方式使用你的扩展：
+
+```bash title="Terminal"
+# 安装你的 ASR 扩展
+tman install extension my_asr_extension
+
+# 或者在项目中声明依赖
+```
+
+```json title="manifest.json"
+{
+  "dependencies": [
+    {
+      "type": "extension",
+      "name": "my_asr_extension",
+      "version": "^1.0.0"
+    }
+  ]
+}
+```
+
+#### 发布注意事项
+
+- **扩展命名**: 使用描述性的名称，避免与现有扩展冲突
+- **版本兼容性**: 确保与当前 TEN Framework 版本兼容
+- **许可证**: 明确扩展的开源许可证
+- **维护承诺**: 准备好维护和更新你的扩展
+
+## 总结
+
+通过本教程，你已经掌握了：
+
+- ✅ 使用 ASR 模板快速创建扩展项目
+- ✅ 设计灵活的配置管理系统
+- ✅ 实现完整的 ASR 核心功能
+- ✅ 集成高级功能（重连、调试、错误处理）
+- ✅ 编写全面的单元测试和集成测试
+- ✅ 使用 Guarder 验证生产可用性
+
+现在你可以开始为 TEN Agent 生态系统贡献高质量的 ASR 扩展了！🎉
+
+<Callout title="下一步">
+  推荐阅读 [TTS 扩展开发指南] 和 [LLM 扩展开发指南]，掌握完整的 AI Agent 扩展开发技能。
+</Callout>
