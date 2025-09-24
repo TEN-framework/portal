@@ -133,7 +133,24 @@ export function getInitials(value: string) {
   return `${words[0].charAt(0)}${words[1].charAt(0)}`.toUpperCase()
 }
 
-export function getPrimaryWords(value: string) {
+function parseAccentWords(override?: string | string[]) {
+  if (!override) return []
+
+  const toWords = Array.isArray(override) ? override : override.split(/[|,\n]+/)
+
+  return toWords
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0)
+}
+
+export function getPrimaryWords(value: string, override?: string | string[]) {
+  const parsedOverride = parseAccentWords(override)
+  if (parsedOverride.length > 0) {
+    const primary = parsedOverride[0]
+    const secondary = parsedOverride[1] ?? ''
+    return [primary, secondary]
+  }
+
   const trimmed = value.trim()
   if (!trimmed) return ['TEN', 'Blog']
 
@@ -159,6 +176,7 @@ export type BlogFrontmatterMeta = {
   coverImage?: string
   coverImageAlt?: string
   accentColor?: string
+  accentWords?: string | string[]
   featuredLabel?: string
   articleLabel?: string
 }
@@ -169,6 +187,7 @@ type CoverArtworkProps = {
   coverImage?: string
   coverImageAlt: string
   featured?: boolean
+  accentWords?: string | string[]
   title: string
   showLabel?: boolean
 }
@@ -179,6 +198,7 @@ export function CoverArtwork({
   coverImageAlt,
   featured,
   articleLabel,
+  accentWords,
   title,
   showLabel = true,
 }: CoverArtworkProps) {
@@ -189,7 +209,7 @@ export function CoverArtwork({
   const lowlight = mixHexColors(accentColor, '#0f172a', 0.35)
   const gradientTilt = 120 + ((hashString(title) % 40) - 20)
   const softSweep = 45 + ((hashString(`${title}-sweep`) % 35) - 17)
-  const [primaryWord, secondaryWord] = getPrimaryWords(title)
+  const [primaryWord, secondaryWord] = getPrimaryWords(title, accentWords)
   const wordContainerClass = featured
     ? 'relative z-20 flex flex-col items-center gap-2 text-center uppercase tracking-[0.28em] text-white drop-shadow-[0_12px_28px_rgba(15,23,42,0.55)]'
     : 'relative z-10 flex flex-col items-center gap-1 text-center uppercase tracking-[0.35em] text-white/80'

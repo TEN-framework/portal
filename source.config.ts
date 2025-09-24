@@ -56,6 +56,7 @@ const blogFrontmatterSchema = (frontmatterSchema as any).extend({
   coverImage: z.string().optional(),
   coverImageAlt: z.string().optional(),
   accentColor: z.string().optional(),
+  accentWords: z.union([z.string(), z.array(z.string())]).optional(),
   featuredLabel: z.string().optional(),
   articleLabel: z.string().optional(),
 }) as z.ZodTypeAny
