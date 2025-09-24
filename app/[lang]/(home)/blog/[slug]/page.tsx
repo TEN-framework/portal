@@ -188,11 +188,8 @@ export default async function Page(props: {
                   accentColor={accentColor}
                   authorName={authorName}
                   published={published}
+                  tone="light"
                 />
-                <div className="flex flex-col text-sm text-white/85">
-                  <span>{t('publishedOn')}</span>
-                  <time className="font-medium text-white">{published}</time>
-                </div>
               </div>
 
               <div className="h-0.5 w-24 rounded-full" style={accentUnderlineStyle} />

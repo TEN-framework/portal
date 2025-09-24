@@ -66,7 +66,7 @@ export default function HomePage() {
         style={heroOffsetStyle}
       >
         <BackgroundVideo />
-        <Hero className="relative z-10" />
+        <Hero className="relative z-10 flex h-full w-full items-center justify-center translate-y-0 2xl:-translate-y-[10%]" />
         {/* <ProjectsShowcase /> */}
       </div>
     </>
