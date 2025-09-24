@@ -1,4 +1,3 @@
-import { ArrowRight } from 'lucide-react'
 import { getFormatter, getTranslations } from 'next-intl/server'
 
 import { Badge } from '@/components/ui/badge'
@@ -74,12 +73,7 @@ export default async function BlogHomePage(props: {
           <p className="mb-8 text-muted-foreground md:text-base lg:text-lg">
             {t('discoverLatestArticles')}
           </p>
-          <Button variant="link" className="gap-2 text-base" asChild>
-            <Link href={`/${locale}/blog`} locale={locale} scroll>
-              {buttonLabel}
-              <ArrowRight className="size-4" />
-            </Link>
-          </Button>
+          {/* Removed the view-all link button per request */}
         </div>
 
         {featuredPost && (
@@ -138,20 +132,12 @@ export default async function BlogHomePage(props: {
                       )}
                     </div>
 
-                    <div className="mt-auto flex flex-wrap items-center justify-between gap-4">
+                    <div className="mt-auto flex flex-wrap items-center gap-4">
                       <AuthorBadge
                         accentColor={accentColor}
                         authorName={authorName}
                         published={published}
                       />
-                      <Link
-                        href={featuredPost.url}
-                        locale={locale}
-                        className="inline-flex items-center gap-2 font-semibold text-primary text-sm transition-transform duration-300 hover:translate-x-1"
-                      >
-                        {t('readMore')}
-                        <ArrowRight className="size-4" />
-                      </Link>
                     </div>
                   </div>
                 </div>
@@ -220,20 +206,12 @@ export default async function BlogHomePage(props: {
                     </p>
                   </CardContent>
 
-                  <CardFooter className="mt-auto flex items-center justify-between px-6 pb-6">
+                  <CardFooter className="mt-auto flex items-center px-6 pb-6">
                     <AuthorBadge
                       accentColor={accentColor}
                       authorName={authorName}
                       published={published}
                     />
-                    <Link
-                      href={post.url}
-                      locale={locale}
-                      className="inline-flex items-center gap-2 font-semibold text-primary text-sm transition-transform duration-300 hover:translate-x-1"
-                    >
-                      {t('readMore')}
-                      <ArrowRight className="size-4" />
-                    </Link>
                   </CardFooter>
                 </Card>
               )
