@@ -10,6 +10,7 @@ import { blog } from '@/lib/source'
 import {
   AuthorBadge,
   CoverArtwork,
+  accentPalette,
   getAccentColor,
   type BlogFrontmatterMeta,
 } from './components/visuals'
@@ -39,6 +40,26 @@ export default async function BlogHomePage(props: {
   const fallbackLabel = isChinese ? '文章' : 'Article'
   const featuredLabel = isChinese ? '精选' : 'Featured'
   const fallbackAuthor = isChinese ? 'TEN 团队' : 'TEN Team'
+  const paletteSize = accentPalette.length
+  const usedAccentColors = new Set<string>()
+
+  const pickAccentColor = (frontmatter: BlogFrontmatterMeta) => {
+    let offset = 0
+    let accent = getAccentColor(frontmatter.accentColor, frontmatter.title, offset)
+
+    if (frontmatter.accentColor) {
+      usedAccentColors.add(accent)
+      return accent
+    }
+
+    while (usedAccentColors.has(accent) && offset < paletteSize - 1) {
+      offset += 1
+      accent = getAccentColor(undefined, frontmatter.title, offset)
+    }
+
+    usedAccentColors.add(accent)
+    return accent
+  }
 
   return (
     <section className="py-20 md:py-24 lg:py-32">
@@ -71,7 +92,7 @@ export default async function BlogHomePage(props: {
               day: 'numeric',
               year: 'numeric',
             })
-            const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
+            const accentColor = pickAccentColor(frontmatter)
             const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
             const featuredBadgeLabel = frontmatter.featuredLabel ?? featuredLabel
 
@@ -86,6 +107,7 @@ export default async function BlogHomePage(props: {
                     <div className="relative aspect-[3/2] md:h-full">
                       <CoverArtwork
                         accentColor={accentColor}
+                        accentWords={frontmatter.accentWords}
                         articleLabel={featuredBadgeLabel}
                         coverImage={frontmatter.coverImage}
                         coverImageAlt={coverImageAlt}
@@ -140,7 +162,7 @@ export default async function BlogHomePage(props: {
 
         {standardPosts.length > 0 && (
           <div className="grid w-full gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {standardPosts.map((post, index) => {
+            {standardPosts.map((post) => {
               const frontmatter = post.data as BlogFrontmatterMeta
               const description = frontmatter.description ?? ''
               const authorName = frontmatter.author ?? fallbackAuthor
@@ -151,10 +173,7 @@ export default async function BlogHomePage(props: {
                 year: 'numeric',
               })
 
-              const accentColor = getAccentColor(
-                frontmatter.accentColor,
-                frontmatter.title
-              )
+              const accentColor = pickAccentColor(frontmatter)
               const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
               const articleBadgeLabel = frontmatter.articleLabel ?? fallbackLabel
 
@@ -171,6 +190,7 @@ export default async function BlogHomePage(props: {
                     <div className="relative aspect-[16/9]">
                       <CoverArtwork
                         accentColor={accentColor}
+                        accentWords={frontmatter.accentWords}
                         articleLabel={articleBadgeLabel}
                         coverImage={frontmatter.coverImage}
                         coverImageAlt={coverImageAlt}
