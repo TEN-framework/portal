@@ -301,13 +301,27 @@ type AuthorBadgeProps = {
   accentColor: HexColor
   authorName: string
   published: string
+  tone?: 'light' | 'dark'
 }
 
-export function AuthorBadge({ accentColor, authorName, published }: AuthorBadgeProps) {
+export function AuthorBadge({
+  accentColor,
+  authorName,
+  published,
+  tone = 'dark',
+}: AuthorBadgeProps) {
   const badgeStart = mixHexColors(accentColor, '#ffffff', 0.25)
   const badgeEnd = mixHexColors(accentColor, '#000000', 0.3)
   const textColor = getReadableTextColor(badgeEnd)
   const initials = getInitials(authorName)
+  const primaryTextClass =
+    tone === 'light'
+      ? 'font-medium text-white text-sm'
+      : 'font-medium text-foreground text-sm'
+  const secondaryTextClass =
+    tone === 'light'
+      ? 'text-white/80 text-xs'
+      : 'text-muted-foreground text-xs'
 
   return (
     <div className="flex items-center gap-3">
@@ -321,8 +335,8 @@ export function AuthorBadge({ accentColor, authorName, published }: AuthorBadgeP
         {initials}
       </div>
       <div className="flex flex-col leading-tight">
-        <span className="font-medium text-foreground text-sm">{authorName}</span>
-        <span className="text-muted-foreground text-xs">{published}</span>
+        <span className={primaryTextClass}>{authorName}</span>
+        <span className={secondaryTextClass}>{published}</span>
       </div>
     </div>
   )
