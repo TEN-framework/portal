@@ -70,7 +70,7 @@ export default async function Page(props: {
   const isChinese = locale === 'cn'
   const fallbackAuthor = isChinese ? 'TEN 团队' : 'TEN Team'
   const authorName = frontmatter.author ?? fallbackAuthor
-  const articleLabel = isChinese ? '文章' : 'Article'
+  const articleLabel = frontmatter.articleLabel ?? (isChinese ? '文章' : 'Article')
   const accentColor = getAccentColor(frontmatter.accentColor, frontmatter.title)
   const postDate = frontmatter.date ?? page.data.date ?? new Date()
   const published = formatter.dateTime(new Date(postDate), {

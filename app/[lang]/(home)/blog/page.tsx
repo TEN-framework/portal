@@ -1,7 +1,6 @@
 import { getFormatter, getTranslations } from 'next-intl/server'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
@@ -35,7 +34,6 @@ export default async function BlogHomePage(props: {
 
   const isChinese = locale === 'cn'
   const badgeText = isChinese ? '博客' : 'Blog'
-  const buttonLabel = isChinese ? '浏览所有文章' : 'View all articles'
   const fallbackLabel = isChinese ? '文章' : 'Article'
   const featuredLabel = isChinese ? '精选' : 'Featured'
   const fallbackAuthor = isChinese ? 'TEN 团队' : 'TEN Team'
