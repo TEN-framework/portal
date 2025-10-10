@@ -1,0 +1,295 @@
+---
+title: Talk to AI via Phone Calls with Twilio and TEN Framework
+description: Build AI-powered phone call systems that handle both inbound and outbound calls with real-time voice conversation capabilities.
+author: Plutoless
+date: 2025-10-11
+articleLabel: use case
+accentWords: Twilio | Phone Calls | Voice AI
+---
+
+## Build AI Phone Call Systems with Twilio and TEN Framework
+
+The TEN Framework makes it possible to build **real-time, low-latency AI phone call systems** that can handle both inbound and outbound calls with natural voice conversations — all orchestrated through a single, unified pipeline.
+
+In this tutorial, we'll show you how to create an AI assistant that can **make and receive phone calls** using Twilio's Voice API and TEN Framework. The best part? You get **real-time speech recognition, intelligent responses, and natural text-to-speech** — all working together seamlessly.
+
+---
+
+## Project Structure
+
+You don't need to set everything up from scratch — TEN Framework already provides a **ready-to-use Twilio phone call example** in the repository.
+
+👉 You can find it here: [**voice-assistant-sip-twilio example on GitHub**](https://github.com/TEN-framework/ten-framework/tree/main/ai_agents/agents/examples/voice-assistant-sip-twilio)
+
+The folder layout looks like this (mirroring what you'll find on GitHub):
+
+```
+.
+├── tenapp/
+│   └── ten_packages/
+│       └── extension/
+│           └── main_python/
+│               ├── extension.py      → MainControlExtension (call orchestration)
+│               ├── server.py         → Twilio calls management
+│               └── config.py         → Configuration management
+├── frontend/                         → Next.js web interface
+├── server/                          → Standalone server to manage ten process
+└── property.json                    → TEN Framework configuration
+```
+
+This example shows how to implement **both inbound and outbound call handling** while reusing existing ASR, LLM, and TTS extensions.
+
+---
+
+## Getting Started
+
+We recommend following the [**official Getting Started guide**](https://theten.ai/docs/ten_agent/getting_started) for the basic setup steps (installations, API keys, environment, Docker, etc.).
+
+```bash
+cd agents/examples/voice-assistant-sip-twilio
+task install
+```
+
+This ensures you're running the **Twilio-integrated version** with full phone call capabilities.
+
+---
+
+## Required API Keys
+
+Before you start, you'll need accounts and API keys from these services:
+
+### 1. Twilio Account
+Get credentials from [Twilio Console](https://console.twilio.com/):
+- `TWILIO_ACCOUNT_SID` - Your Twilio Account SID
+- `TWILIO_AUTH_TOKEN` - Your Twilio Auth Token
+- `TWILIO_FROM_NUMBER` - Your Twilio phone number
+- `TWILIO_PUBLIC_SERVER_URL` - Your public server URL for webhooks
+
+### 2. Deepgram Account
+Get credentials from [Deepgram Console](https://console.deepgram.com/):
+- `DEEPGRAM_API_KEY` - Your Deepgram API key for speech-to-text
+
+### 3. OpenAI Account
+Get credentials from [OpenAI Platform](https://platform.openai.com/):
+- `OPENAI_API_KEY` - Your OpenAI API key for language model
+
+### 4. ElevenLabs Account
+Get credentials from [ElevenLabs](https://elevenlabs.io/):
+- `ELEVENLABS_TTS_KEY` - Your ElevenLabs API key for text-to-speech
+
+---
+
+## Test It Out
+
+Now that you've set everything up:
+
+1. Follow the [Getting Started guide](https://theten.ai/docs/ten_agent/getting_started)
+2. Prepare your environment variables by creating a `.env` file with all the required API keys:
+
+```bash
+# Twilio (required for call handling)
+TWILIO_ACCOUNT_SID=your_twilio_account_sid_here
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+TWILIO_FROM_NUMBER=+1234567890
+TWILIO_PUBLIC_SERVER_URL=https://your-domain.com
+
+# Deepgram (required for speech-to-text)
+DEEPGRAM_API_KEY=your_deepgram_api_key_here
+
+# OpenAI (required for language model)
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4
+
+# ElevenLabs (required for text-to-speech)
+ELEVENLABS_TTS_KEY=your_elevenlabs_api_key_here
+
+# Ngrok (required for local development)
+NGROK_AUTHTOKEN=your_ngrok_auth_token_here
+```
+
+3. Set up ngrok for local development (required for Twilio webhooks):
+
+```bash
+# Install ngrok if you haven't already
+# Download from https://ngrok.com/download or use package manager
+
+# Authenticate ngrok with your auth token (from your .env file)
+ngrok config add-authtoken $NGROK_AUTHTOKEN
+```
+
+4. Use the Twilio voice assistant:
+
+```bash
+cd agents/examples/voice-assistant-sip-twilio
+task install
+```
+
+5. Start the system:
+
+```bash
+task run
+```
+
+6. Access the web interface at http://localhost:3000
+7. Use the frontend to make outbound calls or handle inbound calls
+8. Start talking — your **AI phone system** will handle the entire conversation!
+
+✨ That's it — you now have a working **AI phone call system powered by Twilio and TEN Framework**!
+
+---
+
+## Outbound Call Flow: From API to Audio
+
+Let's trace through a complete outbound call to understand how the system works end-to-end:
+
+### 1. API Request to Create Call
+
+When you make an outbound call through the frontend or API:
+
+```python
+# From: tenapp/ten_packages/extension/main_python/server.py
+@self.app.post("/api/call")
+async def create_call(request: Request):
+    """Create a new outbound call"""
+    body = await request.json()
+    phone_number = body.get("phone_number")
+    message = body.get("message", "Hello from Twilio!")
+
+    # Create TwiML response with media stream
+    twiml_response = VoiceResponse()
+
+    # Configure WebSocket URL for real-time audio streaming
+    ws_protocol = "wss" if self.config.twilio_use_wss else "ws"
+    media_ws_url = f"{ws_protocol}://{self.config.twilio_public_server_url}/media"
+
+    connect = twiml_response.connect()
+    connect.stream(url=media_ws_url)  # This tells Twilio to connect to our WebSocket
+    twiml_response.append(connect)
+
+    # Create the call via Twilio API
+    call = self.twilio_client.calls.create(
+        to=phone_number,
+        from_=self.config.twilio_from_number,
+        twiml=str(twiml_response)
+    )
+```
+
+👉 **Key Point**: The TwiML includes a `<Stream>` instruction that tells Twilio to establish a WebSocket connection to our server for real-time audio streaming.
+
+### 2. WebSocket Connection Establishment
+
+When Twilio receives the call, it immediately tries to connect to our WebSocket endpoint:
+
+```python
+# From: tenapp/ten_packages/extension/main_python/server.py
+@self.app.websocket("/media")
+async def websocket_endpoint(websocket: WebSocket):
+    """WebSocket endpoint for Twilio media streaming"""
+    # Accept the connection immediately
+    await websocket.accept()
+
+    # Send confirmation message
+    await websocket.send_text(
+        '{"type": "connected", "message": "WebSocket connection established"}'
+    )
+
+    # Store the WebSocket connection for this call
+    call_sid = None
+
+    while True:
+        data = await websocket.receive_text()
+        message = json.loads(data)
+
+        if message.get("event") == "start":
+            # Extract call SID and store WebSocket connection
+            call_sid = message.get("start", {}).get("callSid", "")
+            self.active_call_sessions[call_sid]["websocket"] = websocket
+```
+
+👉 **Key Point**: Twilio establishes a persistent WebSocket connection that will carry all audio data in both directions.
+
+### 3. Receiving Phone Audio
+
+When the person answers the phone and starts speaking, Twilio sends audio data through the WebSocket:
+
+```python
+# From: tenapp/ten_packages/extension/main_python/server.py
+if message.get("event") == "media":
+    # Extract base64-encoded audio payload
+    audio_payload = message.get("media", {}).get("payload", "")
+    stream_sid = message.get("streamSid", "")
+
+    if audio_payload and call_sid:
+        # Forward audio to TEN framework for processing
+        await self.extension_instance._forward_audio_to_ten(
+            audio_payload, stream_sid
+        )
+```
+
+The audio then flows through the TEN framework:
+
+```python
+# From: tenapp/ten_packages/extension/main_python/extension.py
+async def _forward_audio_to_ten(self, audio_payload: str, call_sid: str):
+    """Forward audio data to TEN framework and dump PCM audio"""
+    # Decode base64 audio data from Twilio
+    audio_data = base64.b64decode(audio_payload)
+
+    # Send to ASR (speech-to-text) extension
+    await _send_data(self.ten_env, "audio", "stt", {
+        "audio_data": audio_data,
+        "session_id": call_sid,
+        "stream_id": 100
+    })
+```
+
+👉 **Key Point**: Phone audio → Twilio WebSocket → Base64 decode → TEN Framework → ASR processing.
+
+### 4. Sending Response Audio Back
+
+When the AI generates a response, it flows back through the system:
+
+```python
+# From: tenapp/ten_packages/extension/main_python/extension.py
+async def send_audio_to_twilio(self, audio_data: bytes, call_sid: str):
+    """Send audio data to Twilio via WebSocket"""
+    # Get the WebSocket connection for this call
+    websocket = self.server_instance.active_call_sessions[call_sid].get("websocket")
+
+    # Downsample audio from 16000 Hz to 8000 Hz for Twilio
+    source_rate = 16000  # TTS generated audio sample rate
+    target_rate = 8000   # Twilio required sample rate
+    downsampled_audio = audioop.ratecv(
+        audio_data, 2, 1, source_rate, target_rate, None
+    )[0]
+
+    # Encode as base64 for Twilio
+    encoded_audio = base64.b64encode(downsampled_audio).decode('utf-8')
+
+    # Send to Twilio via WebSocket
+    message = {
+        "event": "media",
+        "streamSid": call_sid,
+        "media": {
+            "payload": encoded_audio
+        }
+    }
+
+    await websocket.send_text(json.dumps(message))
+```
+
+👉 **Key Point**: TTS audio → Downsample to 8kHz → Base64 encode → WebSocket → Twilio → Phone speaker.
+
+### 5. Complete Audio Loop
+
+The complete flow creates a real-time conversation loop:
+
+1. **Phone → Twilio**: Person speaks into phone
+2. **Twilio → WebSocket**: Audio sent as base64-encoded chunks
+3. **WebSocket → TEN**: Audio forwarded to ASR extension
+4. **ASR → LLM**: Speech converted to text, sent to AI
+5. **LLM → TTS**: AI response converted to speech
+6. **TTS → WebSocket**: Audio sent back to Twilio
+7. **WebSocket → Twilio → Phone**: AI voice plays through phone
+
+All of this happens in **real-time** with minimal latency, creating natural phone conversations.
