@@ -51,6 +51,9 @@ AGORA_APP_CERTIFICATE=
 # ElevenLabs TTS key
 ELEVENLABS_TTS_KEY=
 
+# OpenAI API key
+OPENAI_API_KEY=
+
 # Extension: deepgram_asr
 # Deepgram ASR key
 DEEPGRAM_API_KEY=
@@ -75,19 +78,19 @@ check the `/examples` folder for more examples
 
 ```bash
 # use the default agent
-task use
-
-# this is equivalent to following command
-task use AGENT=agents/examples/voice-assistant
+cd agents/examples/voice-assistant
 
 # you can also change the command to setup other examples
-task use AGENT=agents/examples/<example_name>
+cd agents/examples/<example_name>
+
+task install
 ```
 
-##### 6. Start the web server
+##### 6. Start the app
 
 ```bash
 task run
+# the frontend will be running on http://localhost:3000
 ```
 
 ### Step ⓷ - Customize your agent with TMAN Designer
