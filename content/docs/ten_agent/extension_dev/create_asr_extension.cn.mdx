@@ -7,6 +7,66 @@ description: 从零开始创建、开发、测试并发布一个完整的 ASR �
 
 本教程将指导你从零开始创建一个生产级别的 ASR（自动语音识别） Extension，涵盖从项目创建、核心开发、测试验证到发布上线的完整流程。
 
+## 什么是 ASR Extension
+
+ASR Extension 是 TEN Framework 生态系统中的一个**标准扩展积木**（Standard Extension），专门用于实现自动语音识别（Automatic Speech Recognition）功能。
+
+### 核心功能
+
+ASR Extension 的主要职责包括：
+
+1. **接收音频流**: 从上游扩展持续接收实时音频数据流（通常为 PCM 格式）
+2. **实时转写**: 将音频数据实时转换成对应的文字结果
+3. **发送结果**: 将识别的文字结果传递给下游扩展进行后续处理
+
+### 在对话流中的位置
+
+作为标准积木，ASR Extension 在 TEN Agent 对话流中扮演着**音频到文本转换**的关键角色：
+
+```
+[上游积木]  ──音频流──>  [ASR Extension]  ──文字流──>  [下游积木]
+```
+
+**典型的上游积木**：
+- **RTC Extension**: 从 RTC 频道拉取远端音频流
+- **Audio Capture Extension**: 从麦克风或音频文件获取音频数据
+- **Audio Processing Extension**: 提供经过预处理的音频流（如降噪、回声消除等）
+
+**典型的下游积木**：
+- **LLM Extension**: 将识别的文字作为输入，进行对话理解和生成
+- **Translation Extension**: 对识别的文字进行跨语言翻译
+- **Intent Recognition Extension**: 提取用户意图和关键信息
+
+### 实际应用场景
+
+**场景1: AI 语音对话助手**
+```
+RTC Extension → ASR Extension → LLM Extension → TTS Extension → RTC Extension
+```
+从 RTC 频道采集用户的语音，ASR 将语音转写成文字，LLM 理解语义并生成回复，TTS 将回复转换成语音后推送到 RTC 频道。
+
+**场景2: 实时语音翻译**
+```
+RTC Extension → ASR Extension → Translation Extension → TTS Extension → RTC Extension
+```
+采集用户的中文语音，ASR 识别成中文文字，Translation 积木转换成目标语言（如英文），TTS 将译文转换成语音输出。
+
+**场景3: 语音智能控制**
+```
+Microphone Extension → ASR Extension → Intent Recognition Extension → Action Executor Extension
+```
+通过麦克风采集语音指令，ASR 转写成文字，Intent Recognition 提取控制意图，Action Executor 执行相应的设备控制动作。
+
+### 标准化 ASR Extension 的意义
+
+将 ASR 功能封装成标准扩展积木，带来以下核心价值：
+
+- **🔌 即插即用**: 轻松切换不同的 ASR 服务商（Deepgram、Azure、Google 等），无需修改上下游积木
+- **🔄 灵活组合**: 与其他标准积木自由组合，快速构建各类 AI 应用场景
+- **🛠️ 易于维护**: 独立开发、测试、升级，不影响其他积木的稳定性
+- **📦 高度复用**: 一次开发，多个项目复用，显著提升开发效率
+- **🌐 生态共享**: 发布到 TEN Store，让全球开发者受益
+
 ## 📋 你将学到什么
 
 - 🚀 使用 ASR 模板快速创建扩展项目
@@ -94,121 +154,89 @@ my_asr_extension/
 
 ### ASR Extension 接口规范
 
-ASR Extension 作为 TEN Extension 的标准接口，在 `ten_ai_base/api/asr-interface.json` 中有完整定义。
+ASR Extension 遵循 TEN Framework 的标准接口规范。使用模板创建的 ASR Extension 会自动配置好接口继承关系和必要的 API 声明。
 
-#### 配置规范
+#### Manifest 配置
 
-**Property 配置要求**（接口标准）：
+ASR Extension 的 `manifest.json` 文件中需要正确配置接口和属性声明：
+
+**1. Interface 继承**
+
+在 `manifest.json` 的 `api.interface` 中声明继承自 `ten_ai_base` 系统包下的标准 ASR 接口：
+
+```json title="manifest.json"
+{
+  "api": {
+    "interface": [
+      {
+        "import_uri": "../../system/ten_ai_base/api/asr-interface.json"
+      }
+    ]
+  }
+}
+```
+
+该接口文件（`asr-interface.json`）中定义了所有 ASR Extension 必须遵循的标准属性，包括：
 - `dump`: 布尔值，配置是否开启音频 dump
-- `dump_path`: 字符串，音频 dump 的存储路径  
+- `dump_path`: 字符串，音频 dump 的存储路径
 
-**扩展配置**（实现相关）：
-- `params`: 对象，供应商相关配置项（如 `api_key`、`language`、`model` 等）
+**2. Property 声明**
 
-#### 输入数据处理
+除了继承标准接口外，每个 ASR Extension 还需要在 `api.property` 中声明自己特有的配置属性，特别是 `params` 对象中的必填字段。
 
-**1. PCM 音频帧** (`pcm_frame`)：
-- **格式**: PCM 格式音频数据
-- **采样率**: 默认16kHz
-- **声道数**: 默认单声道
-- **采样位宽**: 默认2字节/16位
-- **帧长度**: 默认10ms/帧
-- **处理方法**: 实现 `send_audio()` 方法处理音频帧
+例如如下配置：
 
-**2. Finalize 指令** (`asr_finalize`)：
-- **触发时机**: VAD 检测到人声结束
-- **处理方法**: 实现 `finalize()` 方法响应信号
-- **响应要求**: 必须调用 `send_asr_finalize_end()` 通知完成
-
-#### 输出数据格式
-
-**1. ASR 识别结果** (`asr_result`)：
-```python
-# 接口要求的必填字段
-ASRResult(
-    id="uuid",                     # 自动生成：本轮识别唯一标识
-    text="识别的文本内容",           # 必填：整句结果文本
-    final=True,                    # 必填：是否为稳态结果
-    start_ms=1000,                 # 必填：相对音频时间轴的起始偏移（毫秒）
-    duration_ms=2000,              # 必填：文本对应音频时长（毫秒）
-    language="zh-CN",              # 必填：语种标识（遵循 IETF BCP 47 标准）
-    words=[                        # 可选：分词结果
-        {
-            "word": "hello",
-            "start_ms": 1000,
-            "duration_ms": 500,
-            "stable": true
-        }
+```json title="manifest.json"
+{
+  "api": {
+    "interface": [
+      {
+        "import_uri": "../../system/ten_ai_base/api/asr-interface.json"
+      }
     ],
-    metadata={                     # 自动填充：会话元数据
-        "session_id": "session_123"
-    }
-)
-```
-
-**2. Finalize 完成通知** (`asr_finalize_end`)：
-- **调用方法**: `send_asr_finalize_end()`
-
-**3. 错误信息** (`error`)：
-```json
-{
-    "name": "error",
     "property": {
-        "id": "string",           // 自动生成
-        "module": "asr",          // 固定值
-        "code": 1000,             // 必填：错误码（FATAL_ERROR=-1000, NON_FATAL_ERROR=1000），FATAL_ERROR 为致命错误，NON_FATAL_ERROR 为非致命错误
-        "message": "string",      // 必填：错误描述
-        "vendor_info": {          // 可选：供应商错误信息
-            "vendor": "deepgram",
-            "code": "invalid_token",
-            "message": "Authentication failed"
-        },
-        "metadata": {             // 自动填充
-            "session_id": "string"
+      "properties": {
+        "params": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "language": {
+              "type": "string"
+            }
+          }
         }
+      }
     }
-}
-```
-- **调用方法**: `send_asr_error(error: ModuleError, vendor_info: ModuleErrorVendorInfo | None)`
-
-**4. 性能指标** (`metrics`)：
-```json
-{
-    "name": "metrics", 
-    "property": {
-        "id": "string",           // 自动生成
-        "module": "asr",          // 固定值
-        "vendor": "deepgram",     // 来自 vendor() 方法
-        "metrics": {              // 指标数据
-            "ttfw": 280,          // Time To First Word (ms)
-            "ttlw": 150,          // Time To Last Word (ms)
-            "actual_send": 5000,  // 实际发送音频时长 (ms)
-            "connect_delay": 120, // 连接延迟 (ms)
-            "vendor_metrics": {}  // 供应商自定义指标
-        },
-        "metadata": {             // 自动填充
-            "session_id": "string"
-        }
-    }
+  }
 }
 ```
 
-- **自动上报**: 基类自动上报性能指标
+**关键说明**：
+- **标准属性**（如 `dump`、`dump_path`）：通过 `interface` 继承自 `asr-interface.json`，所有 ASR Extension 共有
+- **扩展属性**（如 `params.key`、`params.language`）：在 `api.property` 中声明，根据不同的 ASR 服务商而异
 
-#### 音频缓冲策略
+使用模板创建 ASR Extension 时，这些配置会自动生成，但需要根据实际的服务商需求调整 `params` 中的属性。
 
-基类提供两种音频缓冲策略，通过 `buffer_strategy()` 方法配置：
+#### 输入输出数据格式
 
-**1. 丢弃模式** (`ASRBufferConfigModeDiscard`)：
-- 连接断开时直接丢弃音频帧
-- 适用于实时性要求高的场景
+ASR 标准接口（`asr-interface.json`）中除了属性配置外，还定义了输入和输出的数据格式规范：
 
-**2. 保持模式** (`ASRBufferConfigModeKeep`)：
-- 连接断开时缓存音频帧，连接恢复后发送
-- 通过 `byte_limit` 控制缓存大小
-- 适用于需要完整音频处理的场景
+**输入数据**：
+- **PCM 音频帧** (`pcm_frame`): 从上游接收的音频数据流
+- **Finalize 事件** (`asr_finalize`): VAD 检测到人声结束时触发
 
-我们推荐使用保持模式，这样可以保证时间戳计算的准确性，避免因为丢音频导致时间戳偏小，影响对话效果。
+**输出数据**：
+- **识别结果** (`asr_result`): ASR 转写的文字结果
+- **Finalize 完成通知** (`asr_finalize_end`): Finalize 处理完成的通知
+- **错误信息** (`error`): 发生错误时的错误详情
+- **性能指标** (`metrics`): TTFW、TTLW 等性能数据
+
+详细的数据结构定义和字段说明请参考 `asr-interface.json` 文件。
 
 ### 核心继承关系
 
@@ -218,7 +246,26 @@ AsyncASRBaseExtension  # TEN AI Base 提供的抽象基类
 MyAsrExtension         # 你的具体实现
 ```
 
-`AsyncASRBaseExtension` 提供了 ASR 扩展的通用框架，你需要实现以下关键方法：
+#### 基类功能概述
+
+`AsyncASRBaseExtension` 是 TEN AI Base 提供的 ASR 扩展抽象基类，它为所有 ASR Extension 提供了统一的框架和开箱即用的功能：
+
+**核心职责**：
+
+1. **生命周期管理**：自动处理扩展的初始化、启动、停止等生命周期事件
+2. **音频帧处理**：
+   - 接收上游的音频帧并放入异步队列
+   - 根据连接状态自动执行缓冲策略（丢弃或保持）
+   - 提取和管理 session_id、metadata 等元信息
+3. **Finalize 事件处理**：接收 `asr_finalize` 数据，调用子类的 `finalize()` 方法
+4. **性能指标自动计算**：
+   - TTFW（Time To First Word）：首词延迟
+   - TTLW（Time To Last Word）：末词延迟
+   - 音频发送时长统计和定期上报
+5. **标准化输出**：提供统一的 API 发送识别结果、错误信息、性能指标等数据
+6. **会话管理**：自动为每轮对话生成唯一 ID，管理 metadata 传递
+
+通过继承基类，开发者只需专注于实现与具体 ASR 服务商交互的核心逻辑，无需关心框架层的通用处理。
 
 #### 必须实现的抽象方法
 
@@ -506,6 +553,34 @@ async def send_audio(self, audio_frame: AudioFrame) -> bool:
         return False
 ```
 
+#### 配置音频缓冲策略
+
+asr base class 在收到 audio frame 后会根据当前的 `is_connected` 状态来决定是否要调用 `send_audio` 方法发给供应商，或是丢掉/缓存音频帧。
+
+基类提供两种音频缓冲策略，通过实现 `buffer_strategy()` 方法配置：
+
+**1. 丢弃模式** (`ASRBufferConfigModeDiscard`)：
+- 连接断开时直接丢弃音频帧
+- 适用于实时性要求高的场景
+
+**2. 保持模式** (`ASRBufferConfigModeKeep`)：
+- 连接断开时缓存音频帧，连接恢复后发送
+- 通过 `byte_limit` 控制缓存大小
+- 适用于需要完整音频处理的场景
+
+```python title="extension.py"
+from ten_ai_base.asr import ASRBufferConfig, ASRBufferConfigModeKeep
+
+@override
+def buffer_strategy(self) -> ASRBufferConfig:
+    """配置音频缓冲策略"""
+    return ASRBufferConfig(
+        mode=ASRBufferConfigModeKeep(byte_limit=10 * 1024 * 1024)  # 10MB 缓存上限
+    )
+```
+
+**推荐使用保持模式**，这样可以保证时间戳计算的准确性，避免因为丢音频导致时间戳偏小，影响对话效果。
+
 #### 实现 finalize 方法
 
 finalize 会**在VAD检测到人声结束后自动执行**，用于触发ASR服务返回final结果。
@@ -658,8 +733,6 @@ async def _on_transcript(self, *args, **kwargs) -> None:
 
 **关键要点**：供应商错误必须打印日志、上报错误并触发自动重连。
 
-tips: 重连实现可以参考azure/deepgram asr extension中的 `reconnect_manager.py`。
-
 ```python title="extension.py"
 async def _on_error(self, *args, **kwargs) -> None:
     """供应商错误回调"""
@@ -687,9 +760,68 @@ async def _on_error(self, *args, **kwargs) -> None:
         )
     )
     
-    # 触发自动重连
+    # 触发自动重连（详细实现见"高级功能实现"章节）
     await self._handle_reconnect()
+```
 
+<Callout type="info">
+  重连机制的完整实现请参考后续的 [重连机制](#重连机制) 章节，其中介绍了如何使用 `ReconnectManager` 实现智能重连。
+</Callout>
+
+## 5. 🚀 高级功能实现
+
+### 重连机制
+
+当 ASR 服务出现连接错误或意外断连时，需要有健壮的重连机制来保证服务的稳定性。推荐使用 `ReconnectManager` 来实现智能重连。
+
+<Callout type="tip">
+  `ReconnectManager` 的完整实现可参考 `azure_asr_python` 或 `deepgram_asr_python` 扩展中的 `reconnect_manager.py` 文件。
+</Callout>
+
+#### 使用 ReconnectManager
+
+**1. 初始化 ReconnectManager**
+
+在扩展的构造函数中创建 ReconnectManager 实例：
+
+```python title="extension.py"
+from .reconnect_manager import ReconnectManager
+
+class MyAsrExtension(AsyncASRBaseExtension):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.config: MyAsrConfig = MyAsrConfig()
+        self.deepgram_client: Optional[AsyncListenWebSocketClient] = None
+        self.is_connected_flag: bool = False
+        
+        # 初始化重连管理器：最多重连5次，基础延迟0.5秒
+        self.reconnect_manager = ReconnectManager(max_attempts=5, base_delay=0.5)
+```
+
+**2. 连接成功时重置计数器**
+
+在连接成功的回调中重置重连计数器：
+
+```python title="extension.py"
+async def _on_open(self, *args, **kwargs) -> None:
+    """连接建立成功回调"""
+    self.is_connected_flag = True
+    
+    self.ten_env.log_info(
+        "vendor_status_changed: connection opened",
+        category=LOG_CATEGORY_VENDOR
+    )
+    
+    # 连接成功，重置重连计数器
+    if self.reconnect_manager:
+        self.reconnect_manager.mark_connection_successful()
+```
+
+**3. 实现重连处理逻辑**
+
+当发生错误或断连时，调用重连处理：
+
+```python title="extension.py"
 async def _handle_reconnect(self) -> None:
     """处理重连逻辑"""
     if not self.reconnect_manager:
@@ -706,7 +838,7 @@ async def _handle_reconnect(self) -> None:
                 f"Maximum reconnection attempts ({self.reconnect_manager.max_attempts}) reached",
                 category=LOG_CATEGORY_VENDOR
             )
-            # 发送致命错误
+            # 达到最大重连次数，发送致命错误
             await self.send_asr_error(
                 ModuleError(
                     module=MODULE_NAME_ASR,
@@ -722,9 +854,9 @@ async def _handle_reconnect(self) -> None:
             category=LOG_CATEGORY_VENDOR
         )
         
+        # 调用 ReconnectManager 的 handle_reconnect 方法
         success = await self.reconnect_manager.handle_reconnect(
-            connection_func=self.start_connection,
-            error_handler=self.send_asr_error
+            connect_func=self.start_connection
         )
         
         if success:
@@ -745,51 +877,61 @@ async def _handle_reconnect(self) -> None:
         )
 ```
 
-## 5. 🚀 高级功能实现
+**4. 在错误和断连时触发重连**
 
-### 重连机制
+```python title="extension.py"
+async def _on_close(self, *args, **kwargs) -> None:
+    """连接关闭回调"""
+    self.is_connected_flag = False
+    
+    self.ten_env.log_warn(
+        "vendor_status_changed: connection closed",
+        category=LOG_CATEGORY_VENDOR
+    )
+    
+    # 检查是否为意外断连（客户端存在说明非主动关闭）
+    if self.deepgram_client:
+        self.ten_env.log_warn(
+            "Unexpected disconnection detected, attempting reconnection",
+            category=LOG_CATEGORY_VENDOR
+        )
+        # 触发重连
+        await self._handle_reconnect()
 
-创建 `reconnect_manager.py` 实现智能重连：
-
-```python title="reconnect_manager.py"
-import asyncio
-from typing import Callable, Awaitable, Optional
-
-class ReconnectManager:
-    def __init__(self, max_attempts: int = 5, base_delay: float = 0.5):
-        self.max_attempts = max_attempts
-        self.base_delay = base_delay
-        self.current_attempts = 0
-        
-    def reset_counter(self) -> None:
-        """重置重连计数器"""
-        self.current_attempts = 0
-        
-    def mark_connection_successful(self) -> None:
-        """标记连接成功，重置计数器"""
-        self.reset_counter()
-        
-    def can_retry(self) -> bool:
-        """检查是否可以重试"""
-        return self.current_attempts < self.max_attempts
-        
-    async def handle_reconnect(self, connect_func: Callable[[], Awaitable[None]]) -> bool:
-        """处理重连逻辑"""
-        if not self.can_retry():
-            return False
-            
-        self.current_attempts += 1
-        
-        # 指数退避延迟
-        delay = self.base_delay * (2 ** (self.current_attempts - 1))
-        await asyncio.sleep(delay)
-        
-        try:
-            await connect_func()
-            return True
-        except Exception:
-            return False
+async def _on_error(self, *args, **kwargs) -> None:
+    """供应商错误回调"""
+    error = args[1] if len(args) > 1 else None
+    if not error:
+        return
+    
+    self.ten_env.log_error(
+        f"vendor_error: {error}",
+        category=LOG_CATEGORY_VENDOR
+    )
+    
+    await self.send_asr_error(
+        ModuleError(
+            module=MODULE_NAME_ASR,
+            code=ModuleErrorCode.NON_FATAL_ERROR.value,
+            message=f"Vendor error: {str(error)}",
+        ),
+        ModuleErrorVendorInfo(
+            vendor="deepgram",
+            code=getattr(error, 'code', 'unknown'),
+            message=str(error),
+        )
+    )
+    
+    # 触发重连
+    await self._handle_reconnect()
 ```
+
+#### ReconnectManager 关键特性
+
+- **指数退避**：每次重连的延迟时间按指数增长（0.5s → 1s → 2s → 4s → 8s），避免过于频繁的重连
+- **次数限制**：设置最大重连次数，避免无限重连
+- **状态管理**：连接成功后自动重置计数器，为下次可能的断连做好准备
+- **错误区分**：达到最大重连次数后上报致命错误（FATAL_ERROR），其他情况上报非致命错误（NON_FATAL_ERROR）
 
 ### 音频调试功能
 
