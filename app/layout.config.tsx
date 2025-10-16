@@ -1,6 +1,6 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 import { GitHubStarButton } from '@/components/ui/github-star-button'
 import { Logo } from '@/components/ui/logo'
+import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 
 import { i18n } from '@/lib/i18n'
 import cn from '@/messages/cn.json'
@@ -38,11 +38,6 @@ export function baseOptions(locale: string): BaseLayoutProps {
       {
         text: messages.nav.blog,
         url: `/${locale}/blog`,
-        active: 'nested-url',
-      },
-      {
-        text: messages.nav.hackathon,
-        url: `/${locale}/hackathon`,
         active: 'nested-url',
       },
       {
