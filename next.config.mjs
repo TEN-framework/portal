@@ -11,15 +11,8 @@ const config = {
     domains: ['ten-framework-assets.s3.amazonaws.com'],
     unoptimized: process.env.NODE_ENV === 'development',
   },
-  // Optimize build performance
-  swcMinify: true,
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  experimental: {
-    turbo: {
-      memoryLimit: 512,
-    },
   },
 }
 
