@@ -47,6 +47,29 @@ export function PrizesSection({ className }: { className?: string }) {
     },
   ]
 
+  const awardWinners = [
+    {
+      title: 'TEN Voice Innovation Award - First Place',
+      teams: '1 team',
+      projects: ['SoundMind: An Always-On Voice AI Assistant'],
+    },
+    {
+      title: 'TEN Voice Innovation Award - Second Place',
+      teams: '1 team',
+      projects: ['ReminiscencePostcard'],
+    },
+    {
+      title: 'TEN Voice Innovation Award - Third Place',
+      teams: '2 teams',
+      projects: ['XiaoLu Light Memory Assistant', 'JWTT'],
+    },
+    {
+      title: 'TEN Technical Award',
+      teams: '1 team',
+      projects: ['Livecap'],
+    },
+  ]
+
   return (
     <section className={cn('bg-gray-50 py-16 dark:bg-gray-900', className)}>
       <div className="container mx-auto max-w-[72rem] px-6">
@@ -159,6 +182,53 @@ export function PrizesSection({ className }: { className?: string }) {
             <div className="mt-4 font-semibold text-2xl text-gray-900 md:mt-0 dark:text-white">
               {t('prizes.technical.amount')}
             </div>
+          </div>
+        </motion.div>
+
+        {/* Award Winners */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.2, delay: 0.25 }}
+          viewport={{ once: true }}
+          className="mb-12 rounded-2xl border border-purple-200 bg-white/70 p-8 shadow-sm dark:border-purple-800 dark:bg-gray-900/70"
+        >
+          <div className="mb-6 text-center">
+            <h3 className="font-semibold text-gray-900 text-2xl dark:text-white">
+              Award-Winning Projects
+            </h3>
+            <p className="mt-2 text-gray-600 dark:text-gray-400">
+              Congratulations to the teams recognized for their outstanding TEN Hackathon submissions.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {awardWinners.map((award) => (
+              <div
+                key={award.title}
+                className="rounded-xl border border-gray-200 bg-white/80 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80"
+              >
+                <h4 className="font-semibold text-gray-900 text-lg dark:text-white">
+                  {award.title}{' '}
+                  <span className="font-normal text-gray-500 dark:text-gray-400">
+                    ({award.teams})
+                  </span>
+                </h4>
+                <div className="mt-3 text-sm text-gray-700 dark:text-gray-300">
+                  <p className="font-medium">
+                    Award-winning Project{award.projects.length > 1 ? 's' : ''}:
+                  </p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5">
+                    {award.projects.map((project) => (
+                      <li key={project}>
+                        <span className="font-semibold text-gray-900 dark:text-white">
+                          {project}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ))}
           </div>
         </motion.div>
 
