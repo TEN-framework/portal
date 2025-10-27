@@ -1,14 +1,13 @@
 {
   "name": "portal",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
-    "lint": "biome check --reporter=pretty .",
-    "format": "biome format --write .",
+    "lint": "biome check --write",
     "typecheck": "tsc --noEmit",
     "lint:links": "bun run scripts/validate-links.ts",
     "check": "bun run typecheck && bun run lint && bun run lint:links"
@@ -36,7 +35,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "2.3.0",
     "@tailwindcss/postcss": "^4.1.4",
     "@types/canvas-confetti": "^1.9.0",
     "@types/mdx": "^2.0.13",
