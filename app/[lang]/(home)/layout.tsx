@@ -4,7 +4,7 @@ import { baseOptions } from '@/app/layout.config'
 
 export default async function Layout({
   params,
-  children,
+  children
 }: {
   params: Promise<{ lang: string }>
   children: ReactNode

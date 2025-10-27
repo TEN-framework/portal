@@ -3,7 +3,7 @@ import {
   DocsBody,
   DocsDescription,
   DocsPage,
-  DocsTitle,
+  DocsTitle
 } from 'fumadocs-ui/page'
 import { notFound } from 'next/navigation'
 
@@ -28,16 +28,16 @@ export default async function Page(props: {
       toc={page.data.toc}
       full={page.data.full}
       tableOfContent={{
-        style: 'clerk',
+        style: 'clerk'
       }}
       tableOfContentPopover={{
-        style: 'clerk',
+        style: 'clerk'
       }}
       editOnGithub={{
         owner: 'TEN-framework',
         repo: 'portal',
         sha: gitSha,
-        path: `content/docs/${page.file.path}`,
+        path: `content/docs/${page.file.path}`
       }}
       lastUpdate={page.data.lastModified}
     >
@@ -50,7 +50,7 @@ export default async function Page(props: {
           components={{
             ...defaultMdxComponents,
             // this allows you to link to other pages with relative file paths
-            a: createRelativeLink(source, page),
+            a: createRelativeLink(source, page)
             // you can add other MDX components here
           }}
         />
@@ -72,6 +72,6 @@ export async function generateMetadata(props: {
 
   return {
     title: page.data.title,
-    description: page.data.description,
+    description: page.data.description
   }
 }

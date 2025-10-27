@@ -1,18 +1,18 @@
 'use client'
 
-import { RootProvider } from 'fumadocs-ui/provider'
 import type { Translations } from 'fumadocs-ui/i18n'
+import { RootProvider } from 'fumadocs-ui/provider'
 import type { ReactNode } from 'react'
 
 const availableLocales = [
   {
     name: 'English',
-    locale: 'en',
+    locale: 'en'
   },
   {
     name: '中文',
-    locale: 'cn',
-  },
+    locale: 'cn'
+  }
 ] as const
 
 interface LocaleProvidersProps {
@@ -24,14 +24,14 @@ interface LocaleProvidersProps {
 export function LocaleProviders({
   locale,
   translations,
-  children,
+  children
 }: LocaleProvidersProps) {
   return (
     <RootProvider
       i18n={{
         locale,
         locales: [...availableLocales],
-        translations,
+        translations
       }}
     >
       {children}

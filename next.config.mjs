@@ -9,11 +9,11 @@ const config = {
   turbopack: true,
   images: {
     domains: ['ten-framework-assets.s3.amazonaws.com'],
-    unoptimized: process.env.NODE_ENV === 'development',
+    unoptimized: process.env.NODE_ENV === 'development'
   },
   eslint: {
-    ignoreDuringBuilds: true,
-  },
+    ignoreDuringBuilds: true
+  }
 }
 
 export default withNextIntl(withMDX(config))

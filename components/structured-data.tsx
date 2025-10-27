@@ -1,7 +1,7 @@
 export function WebsiteStructuredData() {
   return (
     <script
-      type="application/ld+json"
+      type='application/ld+json'
       dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           '@context': 'https://schema.org',
@@ -14,11 +14,11 @@ export function WebsiteStructuredData() {
             '@type': 'SearchAction',
             target: {
               '@type': 'EntryPoint',
-              urlTemplate: 'https://theten.ai/search?q={search_term_string}',
+              urlTemplate: 'https://theten.ai/search?q={search_term_string}'
             },
-            'query-input': 'required name=search_term_string',
-          },
-        }),
+            'query-input': 'required name=search_term_string'
+          }
+        })
       }}
     />
   )
@@ -27,7 +27,7 @@ export function WebsiteStructuredData() {
 export function OrganizationStructuredData() {
   return (
     <script
-      type="application/ld+json"
+      type='application/ld+json'
       dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           '@context': 'https://schema.org',
@@ -39,9 +39,9 @@ export function OrganizationStructuredData() {
             'https://twitter.com/TenFramework',
             'https://www.linkedin.com/company/ten-framework',
             'https://discord.gg/VnPftUzAMJ',
-            'https://huggingface.co/TEN-framework',
-          ],
-        }),
+            'https://huggingface.co/TEN-framework'
+          ]
+        })
       }}
     />
   )

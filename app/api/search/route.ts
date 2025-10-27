@@ -9,13 +9,13 @@ export const { GET } = createFromSource(source, undefined, {
 
     cn: {
       components: {
-        tokenizer: createTokenizer(),
+        tokenizer: createTokenizer()
       },
       search: {
         threshold: 0,
-        tolerance: 0,
-      },
+        tolerance: 0
+      }
     },
-    en: 'english',
-  },
+    en: 'english'
+  }
 })

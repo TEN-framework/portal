@@ -1,12 +1,11 @@
-import { createElement } from 'react'
-
 import {
-  InferMetaType,
-  InferPageType,
-  loader,
+  type InferMetaType,
+  type InferPageType,
+  loader
 } from 'fumadocs-core/source'
 import { createMDXSource } from 'fumadocs-mdx'
 import { icons } from 'lucide-react'
+import { createElement } from 'react'
 
 import { blogPosts, docs } from '@/.source'
 import { i18n } from '@/lib/i18n'
@@ -21,13 +20,13 @@ export const source = loader({
     if (name && name in icons) {
       return createElement(icons[name as keyof typeof icons])
     }
-  },
+  }
 })
 
 export const blog = loader({
   baseUrl: '/blog',
   source: createMDXSource(blogPosts),
-  i18n,
+  i18n
 })
 
 export type DocPage = InferPageType<typeof source>
