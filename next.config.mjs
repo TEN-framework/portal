@@ -8,11 +8,13 @@ const withNextIntl = createNextIntlPlugin('./lib/next-intl-requests.ts')
 const config = {
   turbopack: true,
   images: {
-    domains: ['ten-framework-assets.s3.amazonaws.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'ten-framework-assets.s3.amazonaws.com'
+      }
+    ],
     unoptimized: process.env.NODE_ENV === 'development'
-  },
-  eslint: {
-    ignoreDuringBuilds: true
   }
 }
 

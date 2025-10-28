@@ -1,3 +1,4 @@
+import { defineI18nUI } from 'fumadocs-ui/i18n'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
@@ -6,7 +7,7 @@ import { getMessages } from 'next-intl/server'
 import type { ReactNode } from 'react'
 import { LocaleProviders } from '@/app/[lang]/providers'
 import { generateSiteMetadata } from '@/app/metadata.config'
-import { nextIntlRouting } from '@/lib/i18n'
+import { i18n, nextIntlRouting } from '@/lib/i18n'
 import cnMessages from '@/messages/cn.json'
 import enMessages from '@/messages/en.json'
 
@@ -17,14 +18,9 @@ const fumaTranslations = {
   en: enMessages.fuma
 } as const
 
-type FumaLocale = keyof typeof fumaTranslations
-
-const getFumaTranslations = (locale: string) => {
-  if (locale in fumaTranslations) {
-    return fumaTranslations[locale as FumaLocale]
-  }
-  return enMessages.fuma
-}
+const { provider: I18nUIProvider } = defineI18nUI(i18n, {
+  translations: fumaTranslations
+})
 
 export async function generateMetadata({
   params: paramsPromise
@@ -77,10 +73,7 @@ export default async function Layout({
       </head>
       <body className='flex min-h-screen flex-col'>
         <NextIntlClientProvider locale={lang} messages={messages}>
-          <LocaleProviders
-            locale={lang}
-            translations={getFumaTranslations(lang)}
-          >
+          <LocaleProviders i18n={I18nUIProvider(lang)}>
             {children}
           </LocaleProviders>
         </NextIntlClientProvider>

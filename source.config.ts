@@ -12,16 +12,16 @@ import {
 import { z } from 'zod'
 
 // Casting to `any` avoids TS's deep instantiation errors with the extended shape.
-const docFrontmatterSchema = (frontmatterSchema as any).extend({
+const docFrontmatterSchema = frontmatterSchema.extend({
   description: z.string().optional(),
   index: z.boolean().default(false),
   preview: z.string().optional()
-}) as z.ZodTypeAny
+})
 
 // Same cast rationale as above; the extended schema blows up the TS checker otherwise.
-const docMetaSchema = (metaSchema as any).extend({
+const docMetaSchema = metaSchema.extend({
   description: z.string().optional()
-}) as z.ZodTypeAny
+})
 
 export const docs = defineDocs({
   dir: 'content/docs',
@@ -50,7 +50,7 @@ export default defineConfig({
 })
 
 // https://fumadocs.vercel.app/blog/make-a-blog
-const blogFrontmatterSchema = (frontmatterSchema as any).extend({
+const blogFrontmatterSchema = frontmatterSchema.extend({
   author: z.string(),
   date: z.coerce.date(),
   coverImage: z.string().optional(),
@@ -59,7 +59,7 @@ const blogFrontmatterSchema = (frontmatterSchema as any).extend({
   accentWords: z.union([z.string(), z.array(z.string())]).optional(),
   featuredLabel: z.string().optional(),
   articleLabel: z.string().optional()
-}) as z.ZodTypeAny
+})
 
 export const blogPosts = defineCollections({
   type: 'doc',

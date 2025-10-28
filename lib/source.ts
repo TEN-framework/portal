@@ -3,10 +3,9 @@ import {
   type InferPageType,
   loader
 } from 'fumadocs-core/source'
-import { createMDXSource } from 'fumadocs-mdx'
+import { createMDXSource } from 'fumadocs-mdx/runtime/next'
 import { icons } from 'lucide-react'
 import { createElement } from 'react'
-
 import { blogPosts, docs } from '@/.source'
 import { i18n } from '@/lib/i18n'
 
