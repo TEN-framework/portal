@@ -4,6 +4,10 @@
     "blog": "Blog",
     "hackathon": "Hackathon"
   },
+  "languages": {
+    "cn": "中文",
+    "en": "English"
+  },
   "fuma": {
     "search": "Search",
     "searchNoResult": "No results found",

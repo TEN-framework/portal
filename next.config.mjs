@@ -16,7 +16,7 @@ const config = {
         port: '',
         pathname: '/**'
       }
-    ],
+    ]
     // unoptimized: process.env.NODE_ENV === 'development'
   }
 }

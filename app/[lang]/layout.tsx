@@ -14,8 +14,14 @@ import enMessages from '@/messages/en.json'
 import '../global.css'
 
 const fumaTranslations = {
-  cn: cnMessages.fuma,
-  en: enMessages.fuma
+  cn: {
+    ...cnMessages.fuma,
+    displayName: cnMessages.languages.cn
+  },
+  en: {
+    ...enMessages.fuma,
+    displayName: enMessages.languages.en
+  }
 } as const
 
 const { provider: I18nUIProvider } = defineI18nUI(i18n, {
