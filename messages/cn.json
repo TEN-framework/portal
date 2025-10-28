@@ -4,6 +4,10 @@
     "blog": "博客",
     "hackathon": "黑客松"
   },
+  "languages": {
+    "cn": "中文",
+    "en": "English"
+  },
   "fuma": {
     "search": "搜索",
     "searchNoResult": "未找到结果",

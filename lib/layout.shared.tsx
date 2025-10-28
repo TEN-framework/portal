@@ -1,6 +1,6 @@
+import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 import { GitHubStarButton } from '@/components/ui/github-star-button'
 import { Logo } from '@/components/ui/logo'
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared'
 
 import { i18n } from '@/lib/i18n'
 import cn from '@/messages/cn.json'
@@ -10,7 +10,7 @@ const getMessages = (locale?: string) => {
   switch (locale) {
     case 'cn':
       return cn
-    case 'en':
+    // case 'en':
     default:
       return en
   }
@@ -22,32 +22,32 @@ export function baseOptions(locale: string): BaseLayoutProps {
     i18n,
     nav: {
       title: (
-        <div className="mt-0.5 flex items-center gap-2">
+        <div className='mt-0.5 flex items-center gap-2'>
           <Logo height={33} width={66} />
         </div>
       ),
       url: `/${locale}`,
-      transparentMode: 'top',
+      transparentMode: 'top'
     },
     links: [
       {
         text: messages.nav.docs,
         url: `/${locale}/docs`,
-        active: 'nested-url',
+        active: 'nested-url'
       },
       {
         text: messages.nav.blog,
         url: `/${locale}/blog`,
-        active: 'nested-url',
+        active: 'nested-url'
       },
       {
         type: 'custom',
-        children: <GitHubStarButton repo="TEN-framework/ten-framework" />,
-      },
+        children: <GitHubStarButton repo='TEN-framework/ten-framework' />
+      }
     ],
     themeSwitch: {
       enabled: true,
-      mode: 'light-dark-system',
-    },
+      mode: 'light-dark-system'
+    }
   }
 }

@@ -15,7 +15,7 @@ export function CaptionedImage({
   alt,
   caption,
   className,
-  priority,
+  priority
 }: CaptionedImageProps) {
   return (
     <figure
@@ -24,17 +24,19 @@ export function CaptionedImage({
         className
       )}
     >
-      <div className="relative w-full max-w-4xl overflow-hidden rounded-2xl shadow-lg">
+      <div className='relative w-full max-w-4xl overflow-hidden rounded-2xl shadow-lg'>
         <Image
           src={src}
           alt={alt}
           width={1280}
           height={720}
-          className="h-auto w-full object-cover"
+          className='h-auto w-full object-cover'
           priority={priority}
         />
       </div>
-      <figcaption className="text-sm text-muted-foreground">{caption}</figcaption>
+      <figcaption className='text-muted-foreground text-sm'>
+        {caption}
+      </figcaption>
     </figure>
   )
 }
