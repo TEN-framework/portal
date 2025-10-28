@@ -7,8 +7,8 @@ import {
 } from 'fumadocs-ui/page'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { getMDXComponents } from '@/components/mdx'
 import { source } from '@/lib/source'
-import { getMDXComponents } from '@/mdx-components'
 
 export default async function Page(props: {
   params: Promise<{ lang: string; slug?: string[] }>
