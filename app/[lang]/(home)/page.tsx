@@ -1,9 +1,9 @@
 'use client'
 
-import { Hero } from '@/app/[lang]/(home)/_components'
 import { useTheme } from 'next-themes'
-import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Hero } from '@/app/[lang]/(home)/_components'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
@@ -24,7 +24,7 @@ const BackgroundVideo = () => {
       videoRef.current.load()
       videoRef.current.play()
     }
-  }, [resolvedTheme])
+  }, [])
 
   if (!mounted) return null
 
@@ -45,7 +45,7 @@ const BackgroundVideo = () => {
         isLoaded ? 'opacity-37 dark:opacity-57' : 'opacity-0'
       }`}
     >
-      <source src={videoSrc} type="video/mp4" />
+      <source src={videoSrc} type='video/mp4' />
       Your browser does not support the video tag.
     </video>
   )
@@ -55,20 +55,18 @@ export default function HomePage() {
   const heroOffsetStyle = useMemo<CSSProperties>(() => {
     const navHeightVar = 'var(--fd-nav-height, 3.5rem)'
     return {
-      marginTop: `calc(${navHeightVar} * -0.5)`,
+      marginTop: `calc(${navHeightVar} * -0.5)`
     }
   }, [])
 
   return (
-    <>
-      <div
-        className="relative flex min-h-[100dvh] flex-1 flex-col justify-center overflow-hidden text-center"
-        style={heroOffsetStyle}
-      >
-        <BackgroundVideo />
-        <Hero className="relative z-10 flex h-full w-full items-center justify-center" />
-        {/* <ProjectsShowcase /> */}
-      </div>
-    </>
+    <div
+      className='relative flex min-h-dvh flex-1 flex-col justify-center overflow-hidden text-center'
+      style={heroOffsetStyle}
+    >
+      <BackgroundVideo />
+      <Hero className='relative z-10 flex h-full w-full items-center justify-center' />
+      {/* <ProjectsShowcase /> */}
+    </div>
   )
 }

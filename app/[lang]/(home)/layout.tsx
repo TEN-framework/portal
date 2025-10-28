@@ -1,10 +1,10 @@
 import { HomeLayout } from 'fumadocs-ui/layouts/home'
 import type { ReactNode } from 'react'
-import { baseOptions } from '@/app/layout.config'
+import { baseOptions } from '@/lib/layout.shared'
 
 export default async function Layout({
   params,
-  children,
+  children
 }: {
   params: Promise<{ lang: string }>
   children: ReactNode

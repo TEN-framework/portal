@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react'
 import { AboutSection } from './components/AboutSection'
-import { CTASection } from './components/CTASection'
 import { ChallengeSection } from './components/ChallengeSection'
+import { CTASection } from './components/CTASection'
 import { DiscordSection } from './components/DiscordSection'
 import { EligibilitySection } from './components/EligibilitySection'
 import { FooterSection } from './components/FooterSection'
@@ -26,7 +26,7 @@ const ASCII_EASTER_EGG = [
   '/__   \\/__\\/\\ \\ \\   /\\  /\\__ _  ___| | ____ _| |_| |__   ___  _ __  ',
   "  / /\\/_\\ /  \\/ /  / /_/ / _` |/ __| |/ / _` | __| '_ \\ / _ \\| '_ \\ ",
   ' / / //__/ /\\  /  / __  / (_| | (__|   < (_| | |_| | | | (_) | | | |',
-  ' \\/  \\__/\\_\\ \\/   \\/ /_/ \\__,_|\\___|_|\\_\\\\__,_|\\__|_| |_|\\___/|_| |_|',
+  ' \\/  \\__/\\_\\ \\/   \\/ /_/ \\__,_|\\___|_|\\_\\\\__,_|\\__|_| |_|\\___/|_| |_|'
 ].join('\n')
 
 export default function HackathonPage() {
@@ -35,9 +35,9 @@ export default function HackathonPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950">
+    <div className='min-h-screen bg-white dark:bg-gray-950'>
       <HackathonHero />
-      <div className="pb-0">
+      <div className='pb-0'>
         <AboutSection />
         <FrameworkSection />
         <ChallengeSection />

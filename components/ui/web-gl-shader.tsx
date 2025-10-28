@@ -28,7 +28,7 @@ export function WebGLShader() {
     renderer: null,
     mesh: null,
     uniforms: null,
-    animationId: null,
+    animationId: null
   })
 
   useEffect(() => {
@@ -82,12 +82,12 @@ export function WebGLShader() {
         time: { value: 0.0 },
         xScale: { value: 1.0 },
         yScale: { value: 0.5 },
-        distortion: { value: 0.05 },
+        distortion: { value: 0.05 }
       }
 
       const position = [
         -1.0, -1.0, 0.0, 1.0, -1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0,
-        1.0, 0.0, 1.0, 1.0, 0.0,
+        1.0, 0.0, 1.0, 1.0, 0.0
       ]
 
       const positions = new THREE.BufferAttribute(new Float32Array(position), 3)
@@ -98,7 +98,7 @@ export function WebGLShader() {
         vertexShader,
         fragmentShader,
         uniforms: refs.uniforms as unknown as Record<string, THREE.IUniform>,
-        side: THREE.DoubleSide,
+        side: THREE.DoubleSide
       })
 
       refs.mesh = new THREE.Mesh(geometry, material)
@@ -144,7 +144,7 @@ export function WebGLShader() {
   return (
     <canvas
       ref={canvasRef}
-      className="pointer-events-none fixed top-0 left-1/2 h-full w-full -translate-x-1/2 md:w-[120vw]"
+      className='-translate-x-1/2 pointer-events-none fixed top-0 left-1/2 h-full w-full md:w-[120vw]'
     />
   )
 }

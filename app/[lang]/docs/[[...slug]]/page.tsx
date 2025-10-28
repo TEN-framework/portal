@@ -1,12 +1,13 @@
-import defaultMdxComponents, { createRelativeLink } from 'fumadocs-ui/mdx'
+import { createRelativeLink } from 'fumadocs-ui/mdx'
 import {
   DocsBody,
   DocsDescription,
   DocsPage,
-  DocsTitle,
+  DocsTitle
 } from 'fumadocs-ui/page'
+import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-
+import { getMDXComponents } from '@/components/mdx'
 import { source } from '@/lib/source'
 
 export default async function Page(props: {
@@ -28,16 +29,16 @@ export default async function Page(props: {
       toc={page.data.toc}
       full={page.data.full}
       tableOfContent={{
-        style: 'clerk',
+        style: 'clerk'
       }}
       tableOfContentPopover={{
-        style: 'clerk',
+        style: 'clerk'
       }}
       editOnGithub={{
         owner: 'TEN-framework',
         repo: 'portal',
         sha: gitSha,
-        path: `content/docs/${page.file.path}`,
+        path: `content/docs/${page.url}`
       }}
       lastUpdate={page.data.lastModified}
     >
@@ -47,12 +48,11 @@ export default async function Page(props: {
       ) : null}
       <DocsBody>
         <MDXContent
-          components={{
-            ...defaultMdxComponents,
+          components={getMDXComponents({
             // this allows you to link to other pages with relative file paths
-            a: createRelativeLink(source, page),
+            a: createRelativeLink(source, page)
             // you can add other MDX components here
-          }}
+          })}
         />
       </DocsBody>
     </DocsPage>
@@ -65,13 +65,13 @@ export async function generateStaticParams() {
 
 export async function generateMetadata(props: {
   params: Promise<{ lang: string; slug?: string[] }>
-}) {
+}): Promise<Metadata> {
   const params = await props.params
   const page = source.getPage(params.slug, params.lang)
   if (!page) notFound()
 
   return {
     title: page.data.title,
-    description: page.data.description,
+    description: page.data.description
   }
 }
