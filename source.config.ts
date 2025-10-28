@@ -41,7 +41,6 @@ export default defineConfig({
     rehypeCodeOptions: {
       ...rehypeCodeDefaultOptions,
       lazy: true,
-      experimentalJSEngine: true,
       inline: 'tailing-curly-colon'
     },
     remarkPlugins: [remarkSteps],

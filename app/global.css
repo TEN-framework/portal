@@ -1,8 +1,8 @@
 @import "tailwindcss";
+@plugin "tailwindcss-motion";
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
 @import "tw-animate-css";
-@plugin "tailwindcss-motion";
 
 @custom-variant dark (&:is(.dark *));
 
