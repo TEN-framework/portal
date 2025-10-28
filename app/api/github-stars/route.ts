@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     // Add authentication if GitHub token is available (server-side only)
     const githubToken = process.env.GITHUB_TOKEN
     if (githubToken) {
-      headers['Authorization'] = `Bearer ${githubToken}`
+      headers.Authorization = `Bearer ${githubToken}`
     }
 
     const response = await fetch(`https://api.github.com/repos/${repo}`, {
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
       // Handle rate limit exceeded
       const rateLimitReset = response.headers.get('X-RateLimit-Reset')
       const resetTime = rateLimitReset
-        ? new Date(parseInt(rateLimitReset) * 1000)
+        ? new Date(parseInt(rateLimitReset, 10) * 1000)
         : null
 
       console.warn(

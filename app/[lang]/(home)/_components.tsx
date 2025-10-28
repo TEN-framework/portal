@@ -173,7 +173,7 @@ export function Hero(props: { className?: string }) {
                 &nbsp;
                 {TITLES.map((title, index) => (
                   <motion.span
-                    key={index}
+                    key={`title-${title}`}
                     className='absolute font-bold'
                     initial='hidden'
                     animate={titleNumber === index ? 'visible' : 'hidden'}

@@ -67,7 +67,7 @@ export function ChallengeSection({ className }: { className?: string }) {
         <div className='grid gap-8 md:grid-cols-3'>
           {examples.map((example, index) => (
             <motion.div
-              key={index}
+              key={`example-${example.title}`}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.2, delay: 0.05 * index }}

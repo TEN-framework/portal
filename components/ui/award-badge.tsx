@@ -350,6 +350,7 @@ export const AwardBadge = ({ type, place, link, label }: AwardBadgeProps) => {
           transition: 'transform 200ms ease-out'
         }}
       >
+        {/** biome-ignore lint/a11y/noSvgWithoutTitle: <allow here> */}
         <svg
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 260 54'
@@ -425,6 +426,7 @@ export const AwardBadge = ({ type, place, link, label }: AwardBadgeProps) => {
 
               return (
                 <g
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <allow here>
                   key={index}
                   style={{
                     transform: `rotate(${rotation}deg)`,

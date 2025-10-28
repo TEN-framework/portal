@@ -10,7 +10,7 @@ const getMessages = (locale?: string) => {
   switch (locale) {
     case 'cn':
       return cn
-    case 'en':
+    // case 'en':
     default:
       return en
   }

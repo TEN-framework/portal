@@ -24,7 +24,7 @@ const BackgroundVideo = () => {
       videoRef.current.load()
       videoRef.current.play()
     }
-  }, [resolvedTheme])
+  }, [])
 
   if (!mounted) return null
 
@@ -60,15 +60,13 @@ export default function HomePage() {
   }, [])
 
   return (
-    <>
-      <div
-        className='relative flex min-h-[100dvh] flex-1 flex-col justify-center overflow-hidden text-center'
-        style={heroOffsetStyle}
-      >
-        <BackgroundVideo />
-        <Hero className='relative z-10 flex h-full w-full items-center justify-center' />
-        {/* <ProjectsShowcase /> */}
-      </div>
-    </>
+    <div
+      className='relative flex min-h-dvh flex-1 flex-col justify-center overflow-hidden text-center'
+      style={heroOffsetStyle}
+    >
+      <BackgroundVideo />
+      <Hero className='relative z-10 flex h-full w-full items-center justify-center' />
+      {/* <ProjectsShowcase /> */}
+    </div>
   )
 }

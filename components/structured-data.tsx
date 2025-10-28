@@ -1,7 +1,10 @@
+// todo: use OG and static-params to generate structured data
+
 export function WebsiteStructuredData() {
   return (
     <script
       type='application/ld+json'
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: <allow here>
       dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           '@context': 'https://schema.org',
@@ -28,6 +31,7 @@ export function OrganizationStructuredData() {
   return (
     <script
       type='application/ld+json'
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: <allow here>
       dangerouslySetInnerHTML={{
         __html: JSON.stringify({
           '@context': 'https://schema.org',

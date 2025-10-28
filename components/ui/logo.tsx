@@ -46,6 +46,7 @@ export const Logo = ({
       style={style}
       className={cn('h-full w-full', className)}
     >
+      <title className='sr-only'>TEN Logo</title>
       <defs>
         <style>
           {`

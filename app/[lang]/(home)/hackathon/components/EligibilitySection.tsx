@@ -55,7 +55,7 @@ export function EligibilitySection({ className }: { className?: string }) {
         <div className='mb-12 grid gap-8 md:grid-cols-2'>
           {eligibility.map((rule, index) => (
             <motion.div
-              key={index}
+              key={`eligibility-${rule.title}`}
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}

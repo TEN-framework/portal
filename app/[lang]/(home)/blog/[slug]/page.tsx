@@ -1,14 +1,14 @@
+import { ImageZoom } from 'fumadocs-ui/components/image-zoom'
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc'
-import defaultMdxComponents from 'fumadocs-ui/mdx'
 import { notFound } from 'next/navigation'
 import { getFormatter, getTranslations } from 'next-intl/server'
-import type { CSSProperties, ImgHTMLAttributes } from 'react'
-
+import type { CSSProperties } from 'react'
 import { SITE_URL } from '@/app/metadata.config'
+import { getMDXComponents } from '@/components/mdx'
 import { i18n } from '@/lib/i18n'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
-
+import { cn } from '@/lib/utils'
 import {
   AuthorBadge,
   type BlogFrontmatterMeta,
@@ -120,21 +120,11 @@ export default async function Page(props: {
     }
   }
 
-  const mdxComponents = {
-    ...defaultMdxComponents,
-    img: (props: ImgHTMLAttributes<HTMLImageElement>) => (
-      <img
-        {...props}
-        loading={props.loading ?? 'lazy'}
-        className={['rounded-2xl', props.className].filter(Boolean).join(' ')}
-      />
-    )
-  }
-
   return (
     <>
       <script
         type='application/ld+json'
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: <allow here>
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <div className='pb-16'>
@@ -151,6 +141,7 @@ export default async function Page(props: {
                 viewBox='0 0 24 24'
                 stroke='currentColor'
               >
+                <title className='sr-only'>Back to Blog</title>
                 <path
                   strokeLinecap='round'
                   strokeLinejoin='round'
@@ -206,7 +197,19 @@ export default async function Page(props: {
         <article className='container relative mx-auto mt-14 max-w-3xl px-4'>
           <div className='prose prose-lg dark:prose-invert mx-auto'>
             <InlineTOC items={page.data.toc} />
-            <Mdx components={mdxComponents} />
+            <Mdx
+              components={getMDXComponents({
+                img: (props) => (
+                  <ImageZoom
+                    width={600}
+                    height={400}
+                    // biome-ignore lint/suspicious/noExplicitAny: <allow any>
+                    {...(props as any)}
+                    className={cn('rounded-2xl', props.className)}
+                  />
+                )
+              })}
+            />
           </div>
         </article>
       </div>

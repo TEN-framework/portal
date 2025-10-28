@@ -1,7 +1,7 @@
 'use client'
 
 import confetti from 'canvas-confetti'
-import { ArrowRight, ExternalLink } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import { Orbitron } from 'next/font/google'
 import { useEffect, useRef, useState } from 'react'
 
@@ -135,9 +135,9 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
                     'flex items-center justify-center gap-[0.3em] font-black text-[clamp(4.5rem,12vw,9.5rem)] text-amber-50 tracking-[0.08em] drop-shadow-[0_25px_60px_rgba(245,158,11,0.6)]'
                   )}
                 >
-                  {starCharacters.map((char, index) => (
+                  {starCharacters.map((char) => (
                     <span
-                      key={`${char}-${index}`}
+                      key={`star-character-${char}`}
                       className='inline-flex w-[0.75em] justify-center tabular-nums'
                     >
                       {char}
