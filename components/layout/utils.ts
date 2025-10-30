@@ -6,10 +6,15 @@
  * @returns The version after the product name from the pathname or null if not found
  *
  * Example:
+ * pathname: /docs/ten_framework/0.11.25/message_system
+ * productName: ten_framework
+ * options: { versionPrefix: '' }
+ * returns: 0.11.25
+ *
  * pathname: /docs/ten_framework/v0.11.25/message_system
  * productName: ten_framework
  * options: { versionPrefix: 'v' }
- * returns: v0.11.25
+ * returns: 0.11.25
  */
 export const getVersionFromPathname = (
   pathname: string,
@@ -18,14 +23,16 @@ export const getVersionFromPathname = (
     versionPrefix?: string
   }
 ) => {
-  const { versionPrefix = 'v' } = options ?? {}
+  const { versionPrefix = '' } = options ?? {}
 
   const version = pathname?.split(`/${productName}/`)?.[1]?.split('/')?.[0]
 
   if (!version || !version.startsWith(versionPrefix)) return null
 
   // Judge if the version string looks like a version (e.g., v0.11.25, 1.2.3, v1, etc.)
-  const versionLikeRegex = new RegExp(`^${versionPrefix}?[0-9]+(\\.[0-9]+)*$`)
+  const versionLikeRegex = new RegExp(
+    `^${versionPrefix || '.'}?[0-9]+(\\.[0-9]+)*$`
+  )
   if (versionLikeRegex.test(version)) {
     // If versionPrefix present, remove it
     if (version.startsWith(versionPrefix)) {
@@ -44,7 +51,7 @@ export const sortVersions = (
     sort?: 'asc' | 'desc'
   }
 ) => {
-  const { versionPrefix = 'v', sort = 'asc' } = options ?? {}
+  const { versionPrefix = '', sort = 'asc' } = options ?? {}
 
   const parsedVersions = versions
     .map((version) => {

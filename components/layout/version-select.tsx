@@ -41,16 +41,11 @@ const TenFrameworkVersionSelectorDynamic = (props: { className?: string }) => {
       const productVersion = getVersionFromPathname(pathname, productName) ?? ''
       const restPath =
         pathname?.split(
-          `/${productName}${productVersion ? `/v${productVersion}` : ''}/`
+          `/${productName}${productVersion ? `/${productVersion}` : ''}/`
         )?.[1] ?? ''
       const prefixPath = pathname?.split(`/${productName}/`)?.[0] ?? ''
       return [productName, productVersion, restPath, prefixPath]
     }, [pathname])
-
-  console.log('productName', productName)
-  console.log('productVersion', productVersion)
-  console.log('restPath', restPath)
-  console.log('prefixPath', prefixPath)
 
   // notice: sortedVersions item has no prefix 'v'
   const sortedVersions = React.useMemo(() => {
@@ -65,7 +60,7 @@ const TenFrameworkVersionSelectorDynamic = (props: { className?: string }) => {
     if (value === 'latest') {
       router.push(`${prefixPath}/${productName}/${restPath}`)
     } else {
-      router.push(`${prefixPath}/${productName}/v${value}/${restPath}`)
+      router.push(`${prefixPath}/${productName}/${value}/${restPath}`)
     }
   }
 
