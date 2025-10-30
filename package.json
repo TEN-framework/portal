@@ -16,6 +16,7 @@
     "@orama/orama": "^3.1.16",
     "@orama/stopwords": "^3.1.16",
     "@orama/tokenizers": "^3.1.16",
+    "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.3",
     "canvas-confetti": "^1.9.4",
     "class-variance-authority": "^0.7.1",

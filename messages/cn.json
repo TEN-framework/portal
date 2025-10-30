@@ -165,5 +165,12 @@
       "communitySupport": "社区支持",
       "socialMedia": "社交媒体"
     }
+  },
+  "components": {
+    "version-select": {
+      "label": "版本",
+      "placeholder": "选择一个版本",
+      "latest": "最新"
+    }
   }
 }
