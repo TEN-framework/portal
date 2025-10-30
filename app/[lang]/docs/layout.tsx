@@ -1,12 +1,11 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/notebook'
 import type { ReactNode } from 'react'
-
-import { baseOptions } from '@/app/layout.config'
+import { baseOptions } from '@/lib/layout.shared'
 import { source } from '@/lib/source'
 
 export default async function Layout({
   params,
-  children,
+  children
 }: {
   params: Promise<{ lang: string }>
   children: ReactNode
@@ -19,7 +18,7 @@ export default async function Layout({
     <DocsLayout
       {...layoutProps}
       nav={{ ...nav, mode: 'top' }}
-      tabMode="sidebar"
+      tabMode='sidebar'
       tree={source.pageTree[lang]}
     >
       {children}

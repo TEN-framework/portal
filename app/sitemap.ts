@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/${lang}/blog/${post.url}`,
       lastModified: new Date(post.data.date),
       changeFrequency: 'monthly' as const,
-      priority: 0.7,
+      priority: 0.7
     }))
   )
 
@@ -23,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/${lang}/docs/${page.url}`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
-      priority: 0.8,
+      priority: 0.8
     }))
   )
 
@@ -33,14 +33,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/${lang}`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
-      priority: 1,
+      priority: 1
     },
     {
       url: `${baseUrl}/${lang}/blog`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
-      priority: 0.9,
-    },
+      priority: 0.9
+    }
   ])
 
   return [...staticPages, ...blogUrls, ...docUrls]

@@ -11,7 +11,7 @@ export function PrizesSection({ className }: { className?: string }) {
   const prizes = [
     {
       place: 'first',
-      icon: <Trophy className="h-8 w-8" />,
+      icon: <Trophy className='h-8 w-8' />,
       emoji: '🥇',
       title: t('prizes.secondPlace.title'),
       amount: t('prizes.secondPlace.amount'),
@@ -19,11 +19,11 @@ export function PrizesSection({ className }: { className?: string }) {
       bgGradient:
         'from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20',
       scale: 'lg:scale-110',
-      order: 'lg:order-2',
+      order: 'lg:order-2'
     },
     {
       place: 'second',
-      icon: <Award className="h-8 w-8" />,
+      icon: <Award className='h-8 w-8' />,
       emoji: '🥈',
       title: t('prizes.firstPlace.title'),
       amount: t('prizes.firstPlace.amount'),
@@ -31,11 +31,11 @@ export function PrizesSection({ className }: { className?: string }) {
       bgGradient:
         'from-gray-50 to-slate-50 dark:from-gray-900/20 dark:to-slate-900/20',
       scale: '',
-      order: 'lg:order-1',
+      order: 'lg:order-1'
     },
     {
       place: 'third',
-      icon: <Star className="h-8 w-8" />,
+      icon: <Star className='h-8 w-8' />,
       emoji: '🥉',
       title: t('prizes.thirdPlace.title'),
       amount: t('prizes.thirdPlace.amount'),
@@ -43,53 +43,53 @@ export function PrizesSection({ className }: { className?: string }) {
       bgGradient:
         'from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20',
       scale: '',
-      order: 'lg:order-3',
-    },
+      order: 'lg:order-3'
+    }
   ]
 
   const awardWinners = [
     {
       title: 'TEN Voice Innovation Award - First Place',
       teams: '1 team',
-      projects: ['SoundMind: An Always-On Voice AI Assistant'],
+      projects: ['SoundMind: An Always-On Voice AI Assistant']
     },
     {
       title: 'TEN Voice Innovation Award - Second Place',
       teams: '1 team',
-      projects: ['ReminiscencePostcard'],
+      projects: ['ReminiscencePostcard']
     },
     {
       title: 'TEN Voice Innovation Award - Third Place',
       teams: '2 teams',
-      projects: ['XiaoLu Light Memory Assistant', 'JWTT'],
+      projects: ['XiaoLu Light Memory Assistant', 'JWTT']
     },
     {
       title: 'TEN Technical Award',
       teams: '1 team',
-      projects: ['Livecap'],
-    },
+      projects: ['Livecap']
+    }
   ]
 
   return (
     <section className={cn('bg-gray-50 py-16 dark:bg-gray-900', className)}>
-      <div className="container mx-auto max-w-[72rem] px-6">
+      <div className='container mx-auto max-w-[72rem] px-6'>
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.2 }}
           viewport={{ once: true }}
-          className="mx-auto max-w-4xl text-center"
+          className='mx-auto max-w-4xl text-center'
         >
-          <h2 className="mb-4 font-bold text-4xl text-gray-900 dark:text-white">
+          <h2 className='mb-4 font-bold text-4xl text-gray-900 dark:text-white'>
             {t('prizes.title')}
           </h2>
-          <p className="mb-12 font-semibold text-green-600 text-xl dark:text-green-400">
+          <p className='mb-12 font-semibold text-green-600 text-xl dark:text-green-400'>
             💰 USD 11,000 Total Prize Pool
           </p>
         </motion.div>
 
         {/* Main Prizes */}
-        <div className="mb-16 grid gap-6 md:grid-cols-3">
+        <div className='mb-16 grid gap-6 md:grid-cols-3'>
           {prizes.map((prize, index) => (
             <motion.div
               key={prize.place}
@@ -99,59 +99,59 @@ export function PrizesSection({ className }: { className?: string }) {
                 duration: 0.6,
                 delay: index * 0.1,
                 type: 'spring',
-                stiffness: 100,
+                stiffness: 100
               }}
               viewport={{ once: true }}
               whileHover={{
                 y: -10,
                 scale: 1.02,
-                boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
               }}
               className={`rounded-lg border border-gray-200 bg-white p-8 dark:border-gray-700 dark:bg-gray-800 ${prize.order} relative overflow-hidden`}
             >
               {/* Animated background gradient */}
               <motion.div
-                className="absolute inset-0 opacity-10"
+                className='absolute inset-0 opacity-10'
                 style={{
-                  background: `linear-gradient(45deg, ${prize.gradient.includes('yellow') ? '#fbbf24' : prize.gradient.includes('gray') ? '#6b7280' : '#d97706'}, ${prize.gradient.includes('orange') ? '#f97316' : prize.gradient.includes('slate') ? '#475569' : '#92400e'})`,
+                  background: `linear-gradient(45deg, ${prize.gradient.includes('yellow') ? '#fbbf24' : prize.gradient.includes('gray') ? '#6b7280' : '#d97706'}, ${prize.gradient.includes('orange') ? '#f97316' : prize.gradient.includes('slate') ? '#475569' : '#92400e'})`
                 }}
                 animate={{
-                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                  backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
                 }}
                 transition={{
                   duration: 3,
                   repeat: Number.POSITIVE_INFINITY,
-                  ease: 'linear',
+                  ease: 'linear'
                 }}
               />
 
-              <div className="relative z-10 text-center">
+              <div className='relative z-10 text-center'>
                 <motion.div
-                  className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-gray-200 bg-black text-white dark:border-gray-700 dark:bg-white dark:text-black"
+                  className='mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-gray-200 bg-black text-white dark:border-gray-700 dark:bg-white dark:text-black'
                   whileHover={{
                     rotate: 360,
-                    scale: 1.1,
+                    scale: 1.1
                   }}
                   transition={{
                     duration: 0.6,
                     type: 'spring',
-                    stiffness: 200,
+                    stiffness: 200
                   }}
                 >
                   {prize.icon}
                 </motion.div>
-                <h3 className="mb-2 font-medium text-base text-gray-800 dark:text-gray-200">
+                <h3 className='mb-2 font-medium text-base text-gray-800 dark:text-gray-200'>
                   {prize.title}
                 </h3>
                 <motion.div
-                  className="font-semibold text-2xl text-gray-900 dark:text-white"
+                  className='font-semibold text-2xl text-gray-900 dark:text-white'
                   initial={{ scale: 0.8 }}
                   whileInView={{ scale: 1 }}
                   transition={{
                     duration: 0.5,
                     delay: index * 0.1 + 0.3,
                     type: 'spring',
-                    stiffness: 200,
+                    stiffness: 200
                   }}
                 >
                   {prize.amount}
@@ -167,19 +167,19 @@ export function PrizesSection({ className }: { className?: string }) {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.2 }}
           viewport={{ once: true }}
-          className="mb-12 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-900"
+          className='mb-12 rounded-lg border border-gray-200 bg-gray-50 p-8 dark:border-gray-700 dark:bg-gray-900'
         >
-          <div className="flex flex-col items-center text-center md:flex-row md:text-left">
-            <div className="mb-4 text-3xl md:mr-6 md:mb-0">⚙️</div>
-            <div className="flex-1">
-              <h3 className="mb-2 font-medium text-gray-900 text-xl dark:text-white">
+          <div className='flex flex-col items-center text-center md:flex-row md:text-left'>
+            <div className='mb-4 text-3xl md:mr-6 md:mb-0'>⚙️</div>
+            <div className='flex-1'>
+              <h3 className='mb-2 font-medium text-gray-900 text-xl dark:text-white'>
                 {t('prizes.technical.title')}
               </h3>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className='text-gray-600 dark:text-gray-400'>
                 For projects using TEN VAD or Turn Detection features
               </p>
             </div>
-            <div className="mt-4 font-semibold text-2xl text-gray-900 md:mt-0 dark:text-white">
+            <div className='mt-4 font-semibold text-2xl text-gray-900 md:mt-0 dark:text-white'>
               {t('prizes.technical.amount')}
             </div>
           </div>
@@ -191,36 +191,37 @@ export function PrizesSection({ className }: { className?: string }) {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.25 }}
           viewport={{ once: true }}
-          className="mb-12 rounded-2xl border border-purple-200 bg-white/70 p-8 shadow-sm dark:border-purple-800 dark:bg-gray-900/70"
+          className='mb-12 rounded-2xl border border-purple-200 bg-white/70 p-8 shadow-sm dark:border-purple-800 dark:bg-gray-900/70'
         >
-          <div className="mb-6 text-center">
-            <h3 className="font-semibold text-gray-900 text-2xl dark:text-white">
+          <div className='mb-6 text-center'>
+            <h3 className='font-semibold text-2xl text-gray-900 dark:text-white'>
               Award-Winning Projects
             </h3>
-            <p className="mt-2 text-gray-600 dark:text-gray-400">
-              Congratulations to the teams recognized for their outstanding TEN Hackathon submissions.
+            <p className='mt-2 text-gray-600 dark:text-gray-400'>
+              Congratulations to the teams recognized for their outstanding TEN
+              Hackathon submissions.
             </p>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className='grid gap-4 md:grid-cols-2'>
             {awardWinners.map((award) => (
               <div
                 key={award.title}
-                className="rounded-xl border border-gray-200 bg-white/80 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80"
+                className='rounded-xl border border-gray-200 bg-white/80 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80'
               >
-                <h4 className="font-semibold text-gray-900 text-lg dark:text-white">
+                <h4 className='font-semibold text-gray-900 text-lg dark:text-white'>
                   {award.title}{' '}
-                  <span className="font-normal text-gray-500 dark:text-gray-400">
+                  <span className='font-normal text-gray-500 dark:text-gray-400'>
                     ({award.teams})
                   </span>
                 </h4>
-                <div className="mt-3 text-sm text-gray-700 dark:text-gray-300">
-                  <p className="font-medium">
+                <div className='mt-3 text-gray-700 text-sm dark:text-gray-300'>
+                  <p className='font-medium'>
                     Award-winning Project{award.projects.length > 1 ? 's' : ''}:
                   </p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5">
+                  <ul className='mt-2 list-disc space-y-1 pl-5'>
                     {award.projects.map((project) => (
                       <li key={project}>
-                        <span className="font-semibold text-gray-900 dark:text-white">
+                        <span className='font-semibold text-gray-900 dark:text-white'>
                           {project}
                         </span>
                       </li>
@@ -238,25 +239,25 @@ export function PrizesSection({ className }: { className?: string }) {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.2, delay: 0.3 }}
           viewport={{ once: true }}
-          className="space-y-6"
+          className='space-y-6'
         >
           {/* Kiro Prize */}
-          <div className="rounded-xl border border-gray-200 bg-white/60 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/60">
-            <h4 className="mb-2 font-semibold text-gray-900 text-lg dark:text-white">
+          <div className='rounded-xl border border-gray-200 bg-white/60 p-6 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/60'>
+            <h4 className='mb-2 font-semibold text-gray-900 text-lg dark:text-white'>
               🏆 {t('prizes.kiro.title')}
             </h4>
-            <div className="text-gray-600 dark:text-gray-400">
+            <div className='text-gray-600 dark:text-gray-400'>
               <p>{t('prizes.kiro.subscription')}</p>
-              <p className="mt-2">{t('prizes.kiro.cash')}</p>
+              <p className='mt-2'>{t('prizes.kiro.cash')}</p>
             </div>
           </div>
 
           {/* Eligibility Notes */}
-          <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20">
-            <h4 className="mb-2 font-semibold text-lg text-yellow-800 dark:text-yellow-200">
+          <div className='rounded-xl border border-yellow-200 bg-yellow-50 p-6 dark:border-yellow-800 dark:bg-yellow-900/20'>
+            <h4 className='mb-2 font-semibold text-lg text-yellow-800 dark:text-yellow-200'>
               📋 Prize Eligibility
             </h4>
-            <div className="space-y-2 text-sm text-yellow-700 dark:text-yellow-300">
+            <div className='space-y-2 text-sm text-yellow-700 dark:text-yellow-300'>
               <p>• {t('prizes.eligibilityNote')}</p>
               <p>• {t('prizes.technicalNote')}</p>
             </div>

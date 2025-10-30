@@ -1,16 +1,15 @@
+import NextLink from 'next/link'
 import { getFormatter, getTranslations } from 'next-intl/server'
-
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Link } from '@/lib/next-intl-navigation'
+import { i18n } from '@/lib/i18n'
 import { blog } from '@/lib/source'
-
 import {
   AuthorBadge,
-  CoverArtwork,
   accentPalette,
-  getAccentColor,
   type BlogFrontmatterMeta,
+  CoverArtwork,
+  getAccentColor
 } from './components/visuals'
 
 export default async function BlogHomePage(props: {
@@ -19,7 +18,7 @@ export default async function BlogHomePage(props: {
   const params = await props.params
   const locale = await params.lang
 
-  const posts = blog.getPages()
+  const posts = blog.getPages(locale || i18n.defaultLanguage)
 
   const t = await getTranslations({ locale, namespace: 'blog' })
   const formatter = await getFormatter({ locale })
@@ -42,7 +41,11 @@ export default async function BlogHomePage(props: {
 
   const pickAccentColor = (frontmatter: BlogFrontmatterMeta) => {
     let offset = 0
-    let accent = getAccentColor(frontmatter.accentColor, frontmatter.title, offset)
+    let accent = getAccentColor(
+      frontmatter.accentColor,
+      frontmatter.title,
+      offset
+    )
 
     if (frontmatter.accentColor) {
       usedAccentColors.add(accent)
@@ -59,22 +62,22 @@ export default async function BlogHomePage(props: {
   }
 
   return (
-    <section className="py-20 md:py-24 lg:py-32">
-      <div className="container mx-auto flex flex-col items-center gap-16 px-4 lg:px-16">
-        <div className="w-full max-w-3xl text-center">
-          <Badge variant="secondary" className="mb-6">
+    <section className='py-20 md:py-24 lg:py-32'>
+      <div className='container mx-auto flex flex-col items-center gap-16 px-4 lg:px-16'>
+        <div className='w-full max-w-3xl text-center'>
+          <Badge variant='secondary' className='mb-6'>
             {badgeText}
           </Badge>
-          <h1 className="mb-3 text-pretty font-semibold text-3xl md:mb-4 md:text-4xl lg:mb-6 lg:text-5xl">
+          <h1 className='mb-3 text-pretty font-semibold text-3xl md:mb-4 md:text-4xl lg:mb-6 lg:text-5xl'>
             {t('latestPosts')}
           </h1>
-          <p className="mb-8 text-muted-foreground md:text-base lg:text-lg">
+          <p className='mb-8 text-muted-foreground md:text-base lg:text-lg'>
             {t('discoverLatestArticles')}
           </p>
           {/* Removed the view-all link button per request */}
         </div>
 
-        {featuredPost && (
+        {featuredPost &&
           (() => {
             const frontmatter = featuredPost.data as BlogFrontmatterMeta
             const authorName = frontmatter.author ?? fallbackAuthor
@@ -82,21 +85,22 @@ export default async function BlogHomePage(props: {
             const published = formatter.dateTime(new Date(postDate), {
               month: 'short',
               day: 'numeric',
-              year: 'numeric',
+              year: 'numeric'
             })
             const accentColor = pickAccentColor(frontmatter)
             const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
-            const featuredBadgeLabel = frontmatter.featuredLabel ?? featuredLabel
+            const featuredBadgeLabel =
+              frontmatter.featuredLabel ?? featuredLabel
 
             return (
-              <Card className="group w-full overflow-hidden border-border/60 bg-background/80 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl">
-                <div className="grid gap-0 md:grid-cols-[1.6fr_1fr]">
-                  <Link
+              <Card className='group hover:-translate-y-2 w-full overflow-hidden border-border/60 bg-background/80 shadow-lg transition-all duration-500 hover:shadow-2xl'>
+                <div className='grid gap-0 md:grid-cols-[1.6fr_1fr]'>
+                  <NextLink
                     href={featuredPost.url}
                     locale={locale}
-                    className="group/cover relative block h-full"
+                    className='group/cover relative block h-full'
                   >
-                    <div className="relative aspect-[3/2] md:h-full">
+                    <div className='relative aspect-[3/2] md:h-full'>
                       <CoverArtwork
                         accentColor={accentColor}
                         accentWords={frontmatter.accentWords}
@@ -107,30 +111,30 @@ export default async function BlogHomePage(props: {
                         title={frontmatter.title}
                       />
                     </div>
-                  </Link>
+                  </NextLink>
 
-                  <div className="flex flex-col gap-6 p-6 md:p-8">
-                    <div className="flex flex-col gap-4">
-                      <time className="text-[0.8rem] font-medium uppercase tracking-wide text-muted-foreground">
+                  <div className='flex flex-col gap-6 p-6 md:p-8'>
+                    <div className='flex flex-col gap-4'>
+                      <time className='font-medium text-[0.8rem] text-muted-foreground uppercase tracking-wide'>
                         {published}
                       </time>
-                      <h2 className="text-left font-semibold text-2xl leading-tight text-foreground transition-colors duration-300 group-hover:text-primary">
-                        <Link
+                      <h2 className='text-left font-semibold text-2xl text-foreground leading-tight transition-colors duration-300 group-hover:text-primary'>
+                        <NextLink
                           href={featuredPost.url}
                           locale={locale}
-                          className="hover:underline"
+                          className='hover:underline'
                         >
                           {frontmatter.title}
-                        </Link>
+                        </NextLink>
                       </h2>
                       {frontmatter.description && (
-                        <p className="text-muted-foreground text-base leading-relaxed">
+                        <p className='text-base text-muted-foreground leading-relaxed'>
                           {frontmatter.description}
                         </p>
                       )}
                     </div>
 
-                    <div className="mt-auto flex flex-wrap items-center gap-4">
+                    <div className='mt-auto flex flex-wrap items-center gap-4'>
                       <AuthorBadge
                         accentColor={accentColor}
                         authorName={authorName}
@@ -141,11 +145,10 @@ export default async function BlogHomePage(props: {
                 </div>
               </Card>
             )
-          })()
-        )}
+          })()}
 
         {standardPosts.length > 0 && (
-          <div className="grid w-full gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className='grid w-full gap-8 md:grid-cols-2 lg:grid-cols-3'>
             {standardPosts.map((post) => {
               const frontmatter = post.data as BlogFrontmatterMeta
               const description = frontmatter.description ?? ''
@@ -154,24 +157,26 @@ export default async function BlogHomePage(props: {
               const published = formatter.dateTime(new Date(postDate), {
                 month: 'short',
                 day: 'numeric',
-                year: 'numeric',
+                year: 'numeric'
               })
 
               const accentColor = pickAccentColor(frontmatter)
-              const coverImageAlt = frontmatter.coverImageAlt ?? frontmatter.title
-              const articleBadgeLabel = frontmatter.articleLabel ?? fallbackLabel
+              const coverImageAlt =
+                frontmatter.coverImageAlt ?? frontmatter.title
+              const articleBadgeLabel =
+                frontmatter.articleLabel ?? fallbackLabel
 
               return (
                 <Card
                   key={post.url}
-                  className="group flex h-full flex-col overflow-hidden border-border/60 bg-background/70 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+                  className='group hover:-translate-y-2 flex h-full flex-col overflow-hidden border-border/60 bg-background/70 shadow-sm transition-all duration-300 hover:shadow-xl'
                 >
-                  <Link
+                  <NextLink
                     href={post.url}
                     locale={locale}
-                    className="group/cover relative block"
+                    className='group/cover relative block'
                   >
-                    <div className="relative aspect-[16/9]">
+                    <div className='relative aspect-[16/9]'>
                       <CoverArtwork
                         accentColor={accentColor}
                         accentWords={frontmatter.accentWords}
@@ -181,30 +186,30 @@ export default async function BlogHomePage(props: {
                         title={frontmatter.title}
                       />
                     </div>
-                  </Link>
+                  </NextLink>
 
-                  <CardHeader className="flex flex-col gap-3 px-6 pt-6">
-                    <time className="text-[0.7rem] font-medium uppercase tracking-wide text-muted-foreground">
+                  <CardHeader className='flex flex-col gap-3 px-6 pt-6'>
+                    <time className='font-medium text-[0.7rem] text-muted-foreground uppercase tracking-wide'>
                       {published}
                     </time>
-                    <h2 className="text-left font-semibold text-xl leading-snug text-foreground transition-colors duration-300 group-hover:text-primary">
-                      <Link
+                    <h2 className='text-left font-semibold text-foreground text-xl leading-snug transition-colors duration-300 group-hover:text-primary'>
+                      <NextLink
                         href={post.url}
                         locale={locale}
-                        className="hover:underline"
+                        className='hover:underline'
                       >
                         {frontmatter.title}
-                      </Link>
+                      </NextLink>
                     </h2>
                   </CardHeader>
 
-                  <CardContent className="px-6">
-                    <p className="line-clamp-3 text-muted-foreground text-sm md:text-base">
+                  <CardContent className='px-6'>
+                    <p className='line-clamp-3 text-muted-foreground text-sm md:text-base'>
                       {description}
                     </p>
                   </CardContent>
 
-                  <CardFooter className="mt-auto flex items-center px-6 pb-6">
+                  <CardFooter className='mt-auto flex items-center px-6 pb-6'>
                     <AuthorBadge
                       accentColor={accentColor}
                       authorName={authorName}

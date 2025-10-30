@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       stargazers_count: cached.stargazers_count,
       cached_at: new Date(cached.timestamp).toISOString(),
-      from_cache: true,
+      from_cache: true
     })
   }
 
@@ -33,17 +33,17 @@ export async function GET(request: NextRequest) {
     const headers: HeadersInit = {
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'TEN-Portal-Website',
+      'User-Agent': 'TEN-Portal-Website'
     }
 
     // Add authentication if GitHub token is available (server-side only)
     const githubToken = process.env.GITHUB_TOKEN
     if (githubToken) {
-      headers['Authorization'] = `Bearer ${githubToken}`
+      headers.Authorization = `Bearer ${githubToken}`
     }
 
     const response = await fetch(`https://api.github.com/repos/${repo}`, {
-      headers,
+      headers
     })
 
     if (response.ok) {
@@ -56,13 +56,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         stargazers_count: starCount,
         cached_at: new Date().toISOString(),
-        from_cache: false,
+        from_cache: false
       })
     } else if (response.status === 403) {
       // Handle rate limit exceeded
       const rateLimitReset = response.headers.get('X-RateLimit-Reset')
       const resetTime = rateLimitReset
-        ? new Date(parseInt(rateLimitReset) * 1000)
+        ? new Date(parseInt(rateLimitReset, 10) * 1000)
         : null
 
       console.warn(
@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
           stargazers_count: fallbackCount,
           error: 'Rate limit exceeded',
           reset_time: resetTime?.toISOString(),
-          from_cache: !!cached,
+          from_cache: !!cached
         },
         { status: 429 }
       )
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
         {
           error: 'Failed to fetch repository data',
           stargazers_count: fallbackCount,
-          from_cache: !!cached,
+          from_cache: !!cached
         },
         { status: response.status }
       )
@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
       {
         error: 'Internal server error',
         stargazers_count: fallbackCount,
-        from_cache: !!cached,
+        from_cache: !!cached
       },
       { status: 500 }
     )

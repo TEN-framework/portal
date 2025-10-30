@@ -5,8 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/private/'],
+      disallow: ['/api/', '/private/']
     },
-    sitemap: 'https://theten.ai/sitemap.xml',
+    sitemap: 'https://theten.ai/sitemap.xml'
   }
 }
