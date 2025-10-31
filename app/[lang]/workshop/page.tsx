@@ -145,7 +145,7 @@ export default function WorkshopPage() {
               <ExternalLink className='size-4' />
             </a>
             <a
-              href='https://discord.gg/tenframework'
+              href='https://discord.gg/VnPftUzAMJ'
               target='_blank'
               rel='noreferrer'
               className='inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 font-semibold text-sm text-white transition hover:border-white hover:bg-white/10'
