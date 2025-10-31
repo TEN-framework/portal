@@ -1,0 +1,125 @@
+name: Sync Remote Docs
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_tag:
+        description: "Target Tag"
+        required: true
+        default: "0.11.26"
+
+jobs:
+  main:
+    name: "Sync Remote Docs"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Remote Repository with target tag
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch full history including all tags
+          repository: TEN-framework/ten-framework
+          ref: ${{ github.event.inputs.target_tag }}
+          path: ten_framework/${{ github.event.inputs.target_tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Previous Docs Version
+        id: previous_docs_version
+        run: |
+          cat portal/content/docs/ten_framework/_version.json | jq -r '.latest'
+          latest=$(cat portal/content/docs/ten_framework/_version.json | jq -r '.latest')
+          echo "latest=$latest" >> $GITHUB_OUTPUT
+          cd ${{ github.workspace }}
+
+      - name: Diff remote docs between target tag and previous docs version
+        id: diff_remote_docs
+        run: |
+          cd ten_framework/${{ github.event.inputs.target_tag }}
+
+          # list all ADDED files in target tag
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A
+          added_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A)
+          echo "added_files=$added_files" >> $GITHUB_OUTPUT
+          # list all DELETED files in previous docs version
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D
+          deleted_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D)
+          echo "deleted_files=$deleted_files" >> $GITHUB_OUTPUT
+          # list all MODIFIED files in target tag
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M
+          modified_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M)
+          echo "modified_files=$modified_files" >> $GITHUB_OUTPUT
+          # list all RENAMED files in target tag
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R
+          renamed_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R)
+          echo "renamed_files=$renamed_files" >> $GITHUB_OUTPUT
+          cd ${{ github.workspace }}
+
+
+          cd portal
+
+          # checkout to a new branch for sync
+          git checkout -b sync/${{ github.event.inputs.target_tag }}
+          # create new records in .tmp/diff.json
+          mkdir -p .tmp
+          touch .tmp/diff.json
+          echo "{\"added_files\":[], \"deleted_files\":[], \"modified_files\":[], \"renamed_files\":[]}" > .tmp/diff.json
+          # Save all files (added, deleted, modified, renamed) as string arrays by key in .tmp/diff.json
+          jq -n \
+            --arg added "$added_files" \
+            --arg deleted "$deleted_files" \
+            --arg modified "$modified_files" \
+            --arg renamed "$renamed_files" \
+            '{
+              added_files: ($added | split("\n") | map(select(. != ""))),
+              deleted_files: ($deleted | split("\n") | map(select(. != ""))),
+              modified_files: ($modified | split("\n") | map(select(. != ""))),
+              renamed_files: ($renamed | split("\n") | map(select(. != "")))
+            }' > .tmp/diff.json
+          cd ${{ github.workspace }}
+
+      - name: Checkout Remote Repository with current tag
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch full history including all tags
+          repository: TEN-framework/ten-framework
+          ref: ${{ steps.previous_docs_version.outputs.latest }}
+          path: ten_framework/${{ steps.previous_docs_version.outputs.latest }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout Local Repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch full history including all tags
+          path: portal
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Run Scripts
+        run: |
+          cd portal
+
+          # git status
+          git status
+          # git config
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@github.com"
+
+          # install dependencies
+          bun i
+          # run scripts
+          bun run scripts:sync-remote-docs --new-version ${{ github.event.inputs.target_tag }} --diff-json ${{ github.workspace }}/portal/.tmp/diff.json --prev-repo ${{ github.workspace }}/ten_framework/${{ steps.previous_docs_version.outputs.latest }} --latest-repo ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }} --doc-config ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }}/docs/_portal_config.json
+          # git status
+          git status
+          # git add all files under content/docs/ten_framework
+          git add content/docs/ten_framework
+          # git commit
+          git commit -m "[sync-remote-docs] sync remote docs for ${{ github.event.inputs.target_tag }}"
+          # git push
+          git push origin sync/${{ github.event.inputs.target_tag }}
+          # create a pull request
+          gh pr create --title "Sync remote docs for ${{ github.event.inputs.target_tag }}" --body "Sync remote docs for ${{ github.event.inputs.target_tag }}"
+          # upload diff.json to actions artifact
+          gh run upload ${{ github.run_id }} .tmp/diff.json

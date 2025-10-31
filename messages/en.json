@@ -165,5 +165,12 @@
       "communitySupport": "Community Support",
       "socialMedia": "Social Media"
     }
+  },
+  "components": {
+    "version-select": {
+      "label": "Version",
+      "placeholder": "Select a version",
+      "latest": "Latest"
+    }
   }
 }
