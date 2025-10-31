@@ -10,7 +10,8 @@
     "lint": "biome check --write",
     "typecheck": "tsc --noEmit",
     "lint:links": "bun run scripts/validate-links.ts",
-    "check": "bun run typecheck && bun run lint && bun run lint:links"
+    "check": "bun run typecheck && bun run lint && bun run lint:links",
+    "scripts:sync-remote-docs": "bun run scripts/sync-remote-docs/index.ts"
   },
   "dependencies": {
     "@orama/orama": "^3.1.16",
@@ -26,7 +27,7 @@
     "fumadocs-ui": "^16.0.4",
     "lucide-react": "^0.486.0",
     "motion": "^12.23.24",
-    "next": "^16.0.0",
+    "next": "^16.0.1",
     "next-intl": "^4.4.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -44,6 +45,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@types/three": "^0.180.0",
+    "gray-matter": "^4.0.3",
     "next-validate-link": "^1.6.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.16",
