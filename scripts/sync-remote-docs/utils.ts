@@ -10,7 +10,7 @@ import {
   rmdir
 } from 'node:fs/promises'
 import { resolve, join } from 'node:path'
-import * as matter from 'gray-matter'
+import matter from 'gray-matter'
 import {
   DEFAULT_LOCAL_DOCS_RELATIVE_PATH,
   DEFAULT_LOCAL_LATEST_DOCS_RELATIVE_PATH,
@@ -37,7 +37,7 @@ const _checkFileExists = async (
     return true
   } catch {
     if (createIfNotExists) {
-      await mkdir(filePath, { recursive: true })
+      await mkdir(resolve(filePath, '..'), { recursive: true })
     }
     return false
   }
@@ -302,11 +302,10 @@ export const readRemoteDocFile = async (
 }
 
 const _deleteLocalDocFile = async (filePath: string): Promise<void> => {
-  const { frontmatter } = await readRemoteDocFile(filePath)
   const localDocPath = resolve(
     process.cwd(),
     ...DEFAULT_LOCAL_LATEST_DOCS_RELATIVE_PATH,
-    frontmatter._portal_target
+    filePath
   )
   await _deleteFile(localDocPath)
   console.debug(
@@ -339,6 +338,7 @@ export const handleDiff = async (
 ) => {
   const { previousRepoPath, latestRepoPath } = options
 
+  console.log(`[sync-remote-docs] Handling added files:`, diffJson.added_files)
   for (const file of diffJson.added_files) {
     const remoteDocPath = resolve(
       latestRepoPath,
@@ -348,6 +348,11 @@ export const handleDiff = async (
     const { frontmatter, raw } = await readRemoteDocFile(remoteDocPath)
     await _createLocalDocFile(frontmatter._portal_target, raw)
   }
+
+  console.log(
+    `[sync-remote-docs] Handling deleted files:`,
+    diffJson.deleted_files
+  )
   for (const file of diffJson.deleted_files) {
     const remoteDocPath = resolve(
       previousRepoPath,
@@ -357,6 +362,11 @@ export const handleDiff = async (
     const { frontmatter } = await readRemoteDocFile(remoteDocPath)
     await _deleteLocalDocFile(frontmatter._portal_target)
   }
+
+  console.log(
+    `[sync-remote-docs] Handling modified files:`,
+    diffJson.modified_files
+  )
   for (const file of diffJson.modified_files) {
     const remoteNewDocPath = resolve(
       latestRepoPath,
