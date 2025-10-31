@@ -1,15 +1,15 @@
 import {
   access,
-  readdir,
-  stat,
-  mkdir,
   copyFile,
+  mkdir,
+  readdir,
   readFile,
+  rmdir,
+  stat,
   unlink,
-  writeFile,
-  rmdir
+  writeFile
 } from 'node:fs/promises'
-import { resolve, join } from 'node:path'
+import { join, resolve } from 'node:path'
 import matter from 'gray-matter'
 import {
   DEFAULT_LOCAL_DOCS_RELATIVE_PATH,
@@ -17,7 +17,6 @@ import {
   DEFAULT_LOCAL_VERSION_JSON_RELATIVE_PATH,
   DEFAULT_REMOTE_DOCS_FOLDER,
   type DiffJson,
-  FileAction,
   IDENTIFIER_ROOT,
   LocalVersionJson,
   MAX_LOCAL_VERSION_COUNT,
@@ -26,6 +25,22 @@ import {
 } from './constant'
 
 const LOG_INDENTIFIER = `${IDENTIFIER_ROOT} [utils] `
+
+// #region Private LOG Variables
+const ACTION_FAILURE_LOGS: string[] = []
+export const _addActionFailureLog = (log: string) => {
+  ACTION_FAILURE_LOGS.push(log)
+}
+export const _addMultipleActionFailureLogs = (logs: string[]) => {
+  ACTION_FAILURE_LOGS.push(...logs)
+}
+export const _printAndExitOnActionFailureLogs = () => {
+  if (ACTION_FAILURE_LOGS.length > 0) {
+    console.error(LOG_INDENTIFIER, `Action failure logs:`, ACTION_FAILURE_LOGS)
+    process.exit(1)
+  }
+}
+// #endregion
 
 // #region Private Functions
 const _checkFileExists = async (
@@ -51,6 +66,7 @@ const _deleteFile = async (filePath: string): Promise<void> => {
       `Failed to delete file at ${filePath}`,
       error
     )
+    _addActionFailureLog(`Failed to delete file at ${filePath}`)
     // process.exit(1)
     // allow to continue
   }
@@ -68,6 +84,7 @@ const _createFile = async (
       `Failed to create file at ${filePath}`,
       error
     )
+    ACTION_FAILURE_LOGS.push(`Failed to create file at ${filePath}`)
     // process.exit(1)
     // allow to continue
   }
@@ -81,6 +98,7 @@ const _deleteFolder = async (folderPath: string): Promise<void> => {
       `Failed to delete folder at ${folderPath}`,
       error
     )
+    _addActionFailureLog(`Failed to delete folder at ${folderPath}`)
     // process.exit(1)
     // allow to continue
   }
@@ -92,7 +110,8 @@ const _readFile = async (filePath: string): Promise<string> => {
     return await readFile(filePath, 'utf-8')
   } catch (error) {
     console.error(LOG_INDENTIFIER, `Failed to read file at ${filePath}`, error)
-    process.exit(1)
+    _addActionFailureLog(`Failed to read file at ${filePath}`)
+    throw error
   }
 }
 // version: xx.xx.xx such as 0.11.26, versions are sorted from oldest to newest
@@ -192,7 +211,7 @@ export const versioningDocs = async (newVersion: string) => {
 
 export const getDiff = async (diffJsonPath: string): Promise<DiffJson> => {
   try {
-    const diffContent = await readFile(diffJsonPath, 'utf-8')
+    const diffContent = await _readFile(diffJsonPath)
     const diffJson: DiffJson = JSON.parse(diffContent)
     console.debug(
       LOG_INDENTIFIER,
@@ -213,9 +232,6 @@ export const getPortalConfig = async (
   portalConfigPath: string
 ): Promise<PortalConfig> => {
   try {
-    console.log(
-      `[sync-remote-docs] Reading portal config from ${portalConfigPath}`
-    )
     const portalConfigContent = await _readFile(portalConfigPath)
     const portalConfig: PortalConfig = JSON.parse(portalConfigContent)
     console.debug(
@@ -338,7 +354,7 @@ export const handleDiff = async (
 ) => {
   const { previousRepoPath, latestRepoPath } = options
 
-  console.log(`[sync-remote-docs] Handling added files:`, diffJson.added_files)
+  console.debug(LOG_INDENTIFIER, `Handling added files:`, diffJson.added_files)
   for (const file of diffJson.added_files) {
     const remoteDocPath = resolve(
       latestRepoPath,
@@ -349,8 +365,9 @@ export const handleDiff = async (
     await _createLocalDocFile(frontmatter._portal_target, raw)
   }
 
-  console.log(
-    `[sync-remote-docs] Handling deleted files:`,
+  console.debug(
+    LOG_INDENTIFIER,
+    `Handling deleted files:`,
     diffJson.deleted_files
   )
   for (const file of diffJson.deleted_files) {
@@ -363,8 +380,9 @@ export const handleDiff = async (
     await _deleteLocalDocFile(frontmatter._portal_target)
   }
 
-  console.log(
-    `[sync-remote-docs] Handling modified files:`,
+  console.debug(
+    LOG_INDENTIFIER,
+    `Handling modified files:`,
     diffJson.modified_files
   )
   for (const file of diffJson.modified_files) {

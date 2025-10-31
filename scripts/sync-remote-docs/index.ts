@@ -1,10 +1,14 @@
+import { IDENTIFIER_ROOT } from './constant'
 import {
+  _printAndExitOnActionFailureLogs,
   filterDiffByMatcher,
   getDiff,
   getPortalConfig,
   handleDiff,
   versioningDocs
 } from './utils'
+
+const LOG_INDENTIFIER = `${IDENTIFIER_ROOT}`
 
 // Simple CLI arg parsing
 function getArg(flag: string): string | undefined {
@@ -37,28 +41,45 @@ async function main() {
     process.exit(1)
   }
 
-  console.log(`[sync-remote-docs] Starting sync remote docs...`)
+  console.log(LOG_INDENTIFIER, `Starting sync remote docs...`)
 
-  console.log(`[sync-remote-docs] Using new version: ${newVersion}`)
-  console.log(`[sync-remote-docs] Reading diff from: ${diffJsonPath}`)
-  console.log(
-    `[sync-remote-docs] Using previous docs from: ${previousRepoPath}`
-  )
-  console.log(`[sync-remote-docs] Using latest docs from: ${latestRepoPath}`)
-  console.log(`[sync-remote-docs] Using doc config from: ${docConfigPath}`)
+  console.log(LOG_INDENTIFIER, `========================================`)
+  console.log(LOG_INDENTIFIER, `New version       : ${newVersion}`)
+  console.log(LOG_INDENTIFIER, `Diff JSON         : ${diffJsonPath}`)
+  console.log(LOG_INDENTIFIER, `Previous repo     : ${previousRepoPath}`)
+  console.log(LOG_INDENTIFIER, `Latest repo       : ${latestRepoPath}`)
+  console.log(LOG_INDENTIFIER, `Doc config        : ${docConfigPath}`)
+  console.log(LOG_INDENTIFIER, `========================================`)
 
   // main logic
   // 0. versioning docs
+  console.debug('\n\n', LOG_INDENTIFIER, `=== Step 0: Versioning docs ===`)
   await versioningDocs(newVersion)
   // 1. get diff
+  console.debug('\n\n', LOG_INDENTIFIER, `=== Step 1: Getting diff ===`)
   const rawDiffJson = await getDiff(diffJsonPath)
   // 2. get portal config
+  console.debug(
+    '\n\n',
+    LOG_INDENTIFIER,
+    `=== Step 2: Getting portal config ===`
+  )
   const portalConfig = await getPortalConfig(docConfigPath)
   // 3. filter diff by portal config
+  console.debug(
+    '\n\n',
+    LOG_INDENTIFIER,
+    `=== Step 3: Filtering diff by portal config ===`
+  )
   const filteredDiffJson = await filterDiffByMatcher(rawDiffJson, portalConfig)
-  console.log(`[sync-remote-docs] Filtered diff:`, filteredDiffJson)
+  console.debug(LOG_INDENTIFIER, `Filtered diff:`, filteredDiffJson)
   // 4. handle file
+  console.debug('\n\n', LOG_INDENTIFIER, `=== Step 4: Handling diff ===`)
   await handleDiff(filteredDiffJson, { previousRepoPath, latestRepoPath })
+
+  _printAndExitOnActionFailureLogs()
+
+  console.debug('\n\n', LOG_INDENTIFIER, `=== Completed successfully! ===`)
 }
 
 main()
