@@ -70,7 +70,7 @@ const steps: StepItem[] = [
       '打开 TEN Framework 的 GitHub 仓库，点击右上角的 Fork，将项目复制到你的个人空间，方便后续使用 Codespaces。',
     link: {
       label: '打开 TEN Framework 仓库',
-      href: 'https://github.com/TEN-framework/TEN'
+      href: 'https://github.com/TEN-framework/TEN-framework'
     }
   },
   {
@@ -136,7 +136,7 @@ export default function WorkshopPage() {
           </p>
           <div className='mt-10 flex flex-wrap gap-4'>
             <a
-              href='https://github.com/TEN-framework/TEN'
+              href='https://github.com/TEN-framework/TEN-framework'
               target='_blank'
               rel='noreferrer'
               className='inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-slate-900 text-sm shadow-sm transition hover:bg-slate-100'
