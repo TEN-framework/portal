@@ -63,3 +63,11 @@ export const RemoteDocFrontmatter = frontmatterSchema.extend({
   })
 })
 export type RemoteDocFrontmatter = z.infer<typeof RemoteDocFrontmatter>
+
+export const MetaJson = z.object({
+  title: z.string(),
+  description: z.string(),
+  root: z.boolean().optional(),
+  pages: z.array(z.string()).optional()
+})
+export type MetaJson = z.infer<typeof MetaJson>

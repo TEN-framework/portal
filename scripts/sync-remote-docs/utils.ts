@@ -20,6 +20,7 @@ import {
   IDENTIFIER_ROOT,
   LocalVersionJson,
   MAX_LOCAL_VERSION_COUNT,
+  MetaJson,
   PortalConfig,
   RemoteDocFrontmatter
 } from './constant'
@@ -193,16 +194,39 @@ export const versioningDocs = async (newVersion: string) => {
       )
     }
     // 3. copy latest docs to old version docs(latest => previous version docs)
+    // 3.1 get previous version docs path
     const previousVersionDocsPath = resolve(
       process.cwd(),
       ...DEFAULT_LOCAL_DOCS_RELATIVE_PATH,
       localVersionJsonData.latest
     )
+    // 3.2 copy latest docs to previous version docs
     await copyFolderWithFiles(localLatestDocsPath, previousVersionDocsPath)
     console.info(
       LOG_INDENTIFIER,
       `Versioning docs successfully from ${localLatestDocsPath} to ${previousVersionDocsPath}`
     )
+    // 3.3 update meta.json in previous version docs
+    const previousVersionMetaJsonPath = resolve(
+      previousVersionDocsPath,
+      'meta.json'
+    )
+    const previousVersionMetaJson = await _readFile(previousVersionMetaJsonPath)
+    const previousVersionMetaJsonData: MetaJson = MetaJson.parse(
+      JSON.parse(previousVersionMetaJson)
+    )
+    previousVersionMetaJsonData.description = `v${localVersionJsonData.latest}`
+    previousVersionMetaJsonData.title = `${previousVersionMetaJsonData.title} v${localVersionJsonData.latest}`
+    await writeFile(
+      previousVersionMetaJsonPath,
+      JSON.stringify(previousVersionMetaJsonData, null, 2)
+    )
+    console.debug(
+      LOG_INDENTIFIER,
+      `Meta.json in previous version docs updated successfully`
+    )
+
+    console.debug(LOG_INDENTIFIER, `Versioning docs successfully`)
   } catch (error) {
     console.error(LOG_INDENTIFIER, `Failed to versioning docs}`, error)
     process.exit(1)
