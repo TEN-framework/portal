@@ -13,25 +13,25 @@ function getArg(flag: string): string | undefined {
 }
 
 async function main() {
-  const newVersion = getArg('--new-version')
-  const diffJsonPath = getArg('--diff-json')
-  const previousDocsPath = getArg('--prev-docs')
-  const latestDocsPath = getArg('--latest-docs')
-  const docConfigPath = getArg('--doc-config')
+  const newVersion = getArg('--new-version') // 0.11.27
+  const diffJsonPath = getArg('--diff-json') // .tmp/diff.json
+  const previousRepoPath = getArg('--prev-repo') // .tmp/ten_framework/0.11.26
+  const latestRepoPath = getArg('--latest-repo') // .tmp/ten_framework/0.11.27
+  const docConfigPath = getArg('--doc-config') // .tmp/ten_framework/0.11.27/docs/_portal_config.json
 
   if (
     !newVersion ||
     !diffJsonPath ||
-    !previousDocsPath ||
-    !latestDocsPath ||
+    !previousRepoPath ||
+    !latestRepoPath ||
     !docConfigPath
   ) {
     console.error(
       'Usage: bun run scripts/sync-remote-docs \\',
       '\n  --new-version <tag> \\',
       '\n  --diff-json <diff.json> \\',
-      '\n  --prev-docs <path> \\',
-      '\n  --latest-docs <path> \\',
+      '\n  --prev-repo <path> \\',
+      '\n  --latest-repo <path> \\',
       '\n  --doc-config <path>'
     )
     process.exit(1)
@@ -42,9 +42,9 @@ async function main() {
   console.log(`[sync-remote-docs] Using new version: ${newVersion}`)
   console.log(`[sync-remote-docs] Reading diff from: ${diffJsonPath}`)
   console.log(
-    `[sync-remote-docs] Using previous docs from: ${previousDocsPath}`
+    `[sync-remote-docs] Using previous docs from: ${previousRepoPath}`
   )
-  console.log(`[sync-remote-docs] Using latest docs from: ${latestDocsPath}`)
+  console.log(`[sync-remote-docs] Using latest docs from: ${latestRepoPath}`)
   console.log(`[sync-remote-docs] Using doc config from: ${docConfigPath}`)
 
   // main logic
@@ -58,7 +58,7 @@ async function main() {
   const filteredDiffJson = await filterDiffByMatcher(rawDiffJson, portalConfig)
   console.log(`[sync-remote-docs] Filtered diff:`, filteredDiffJson)
   // 4. handle file
-  await handleDiff(filteredDiffJson, { previousDocsPath, latestDocsPath })
+  await handleDiff(filteredDiffJson, { previousRepoPath, latestRepoPath })
 }
 
 main()

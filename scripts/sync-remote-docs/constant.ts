@@ -6,8 +6,8 @@ export const IDENTIFIER_ROOT = '[sync-remote-docs]'
 export const MAX_LOCAL_VERSION_COUNT = 10
 
 // Relative path to the root of the ten-framework repository
-export const DEFAULT_REMOTE_DOCS_PATH = '/docs'
-export const DEFAULT_DOC_CONFIG_PATH = `${DEFAULT_REMOTE_DOCS_PATH}/_portal_config.json`
+export const DEFAULT_REMOTE_DOCS_FOLDER = 'docs'
+export const DEFAULT_DOC_CONFIG_FILENAME = `_portal_config.json`
 export const PortalConfig = z.looseObject({
   matcher: z
     .array(z.string())

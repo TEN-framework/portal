@@ -15,6 +15,7 @@ import {
   DEFAULT_LOCAL_DOCS_RELATIVE_PATH,
   DEFAULT_LOCAL_LATEST_DOCS_RELATIVE_PATH,
   DEFAULT_LOCAL_VERSION_JSON_RELATIVE_PATH,
+  DEFAULT_REMOTE_DOCS_FOLDER,
   type DiffJson,
   FileAction,
   IDENTIFIER_ROOT,
@@ -332,25 +333,41 @@ const _createLocalDocFile = async (
 export const handleDiff = async (
   diffJson: DiffJson,
   options: {
-    previousDocsPath: string
-    latestDocsPath: string
+    previousRepoPath: string
+    latestRepoPath: string
   }
 ) => {
-  const { previousDocsPath, latestDocsPath } = options
+  const { previousRepoPath, latestRepoPath } = options
 
   for (const file of diffJson.added_files) {
-    const remoteDocPath = resolve(latestDocsPath, file)
+    const remoteDocPath = resolve(
+      latestRepoPath,
+      DEFAULT_REMOTE_DOCS_FOLDER,
+      file
+    )
     const { frontmatter, raw } = await readRemoteDocFile(remoteDocPath)
     await _createLocalDocFile(frontmatter._portal_target, raw)
   }
   for (const file of diffJson.deleted_files) {
-    const remoteDocPath = resolve(previousDocsPath, file)
+    const remoteDocPath = resolve(
+      previousRepoPath,
+      DEFAULT_REMOTE_DOCS_FOLDER,
+      file
+    )
     const { frontmatter } = await readRemoteDocFile(remoteDocPath)
     await _deleteLocalDocFile(frontmatter._portal_target)
   }
   for (const file of diffJson.modified_files) {
-    const remoteNewDocPath = resolve(latestDocsPath, file)
-    const remoteOldDocPath = resolve(previousDocsPath, file)
+    const remoteNewDocPath = resolve(
+      latestRepoPath,
+      DEFAULT_REMOTE_DOCS_FOLDER,
+      file
+    )
+    const remoteOldDocPath = resolve(
+      previousRepoPath,
+      DEFAULT_REMOTE_DOCS_FOLDER,
+      file
+    )
     const { frontmatter: newFrontmatter, raw: newRaw } =
       await readRemoteDocFile(remoteNewDocPath)
     const { frontmatter: oldFrontmatter } =
