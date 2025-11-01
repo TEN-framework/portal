@@ -242,6 +242,16 @@ export default function WorkshopPage() {
           </ol>
         </div>
       </section>
+
+      <div className='fixed bottom-6 right-6 z-50 flex max-w-xs flex-col gap-2 rounded-2xl bg-amber-400/90 px-5 py-4 text-slate-950 shadow-2xl ring-4 ring-amber-300/40 backdrop-blur'>
+        <span className='text-xs font-semibold uppercase tracking-widest text-amber-900/80'>
+          Wi-Fi 信息
+        </span>
+        <div className='space-y-1 text-sm font-medium'>
+          <p>账号：多瑙厅</p>
+          <p>密码：DN20251101</p>
+        </div>
+      </div>
     </div>
   )
 }
