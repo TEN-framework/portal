@@ -53,7 +53,7 @@ const prerequisites: PrerequisiteItem[] = [
 const envSnippet = [
   'AGORA_APP_ID=d83b679bc7b3406c83f63864cb74aa99',
   'DEEPSEEK_API_KEY=sk-61a43a61c84e45078a1ade4ef5113af0',
-  'DEEPGRAM_API_KEY=92366fdabbcc9da1013a3ed5ead4e6aa0c31173',
+  'DEEPGRAM_API_KEY=2e79a064da8d2041105445702140edb37aca1cb3',
   'ELEVENLABS_API_KEY=<请填入你申请的 Key>'
 ].join('\n')
 
