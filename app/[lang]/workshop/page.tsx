@@ -53,7 +53,7 @@ const prerequisites: PrerequisiteItem[] = [
 const envSnippet = [
   'AGORA_APP_ID=d83b679bc7b3406c83f63864cb74aa99',
   'DEEPSEEK_API_KEY=sk-61a43a61c84e45078a1ade4ef5113af0',
-  'DEEPGRAM_API_KEY=92366fdabbcc9da1013a3ed5ead4e6aa0c31173',
+  'DEEPGRAM_API_KEY=2e79a064da8d2041105445702140edb37aca1cb3',
   'ELEVENLABS_API_KEY=<请填入你申请的 Key>'
 ].join('\n')
 
@@ -242,6 +242,16 @@ export default function WorkshopPage() {
           </ol>
         </div>
       </section>
+
+      <div className='fixed bottom-6 right-6 z-50 flex max-w-xs flex-col gap-2 rounded-2xl bg-amber-400/90 px-5 py-4 text-slate-950 shadow-2xl ring-4 ring-amber-300/40 backdrop-blur'>
+        <span className='text-xs font-semibold uppercase tracking-widest text-amber-900/80'>
+          Wi-Fi 信息
+        </span>
+        <div className='space-y-1 text-sm font-medium'>
+          <p>账号：多瑙厅</p>
+          <p>密码：DN20251101</p>
+        </div>
+      </div>
     </div>
   )
 }
