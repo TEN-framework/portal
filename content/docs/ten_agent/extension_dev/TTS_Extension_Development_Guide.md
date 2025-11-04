@@ -1743,3 +1743,277 @@ tests/
 6. **边界测试**：测试边界条件和极限情况
 7. **并发测试**：测试并发请求处理能力
 8. **配置测试**：测试各种配置参数组合
+
+
+## 提Pull Request前检查清单
+
+在提交Pull Request之前，请确保已完成以下所有检查项：
+
+### 1. 功能实现 ✅
+
+**要求**：完成所有核心功能的实现
+
+**检查项**：
+- [ ] 实现`request_tts()`方法，能够正确处理文本输入并生成音频
+- [ ] 实现`vendor()`方法，返回正确的供应商名称
+- [ ] 实现`synthesize_audio_sample_rate()`方法，返回正确的采样率
+- [ ] 如果使用HTTP模式，实现`create_config()`和`create_client()`方法
+- [ ] 如果使用HTTP模式，实现配置类和客户端类的所有必需方法
+- [ ] 正确实现错误处理，区分`FATAL_ERROR`和`NON_FATAL_ERROR`
+- [ ] 正确处理flush请求，实现`cancel_tts()`方法
+- [ ] 正确发送`tts_audio_start`和`tts_audio_end`事件
+- [ ] 正确计算和上报TTFB指标
+- [ ] 正确计算和上报音频时长
+- [ ] 正确发送metrics数据
+
+### 2. 单元测试（UT）✅
+
+**要求**：完成所有单元测试，确保代码质量
+
+**检查项**：
+- [ ] 所有单元测试通过
+- [ ] 测试所有主要功能路径
+- [ ] 测试错误处理逻辑
+- [ ] 测试边界条件
+- [ ] 测试参数验证逻辑
+- [ ] 测试配置加载和验证
+
+**运行命令**：
+```bash
+# 方式1：使用task命令（推荐）
+# 在项目根目录（ten-framework/ai_agents）下运行
+task test-extension EXTENSION=agents/ten_packages/extension/your_extension_name
+
+# 方式2：手动运行
+cd agents/ten_packages/extension/your_extension_name
+tman -y install --standalone
+./tests/bin/start
+
+# 方式3：运行所有Extension的测试
+task test-agent-extensions
+```
+
+**注意**：
+- 确保在项目根目录（`ten-framework/ai_agents`）下运行task命令
+- 如果Extension没有安装依赖，task命令会自动安装
+- 测试配置文件应在`tests/configs/`目录下
+
+
+### 3. Ten Agent自测 ✅
+
+**要求**：在Ten Agent中完成自测，确保Extension能够正常工作
+
+**检查项**：
+- [ ] 在Ten Agent中成功加载Extension
+- [ ] 能够听到Agent声音
+- [ ] 能够正常多轮对话
+- [ ] 能够正常打断对话
+
+
+
+### 4. Guarder集成测试 ✅
+
+**要求**：通过所有Guarder集成测试，并将测试结果贴在PR评论中
+
+**测试位置**：`ten-framework/ai_agents/agents/integration_tests/tts_guarder`
+
+**运行命令**：
+```bash
+# 方式1：使用task命令（推荐）
+# 在项目根目录（ten-framework/ai_agents）下运行
+task tts-guarder-test EXTENSION=your_extension_name CONFIG_DIR=tests/configs
+
+# 方式2：手动运行
+cd agents/integration_tests/tts_guarder
+./scripts/install_deps_and_build.sh linux x64
+./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs
+
+# 运行单个测试文件
+./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs tests/test_basic_audio_setting.py
+```
+
+**环境变量设置**：
+```bash
+# 在项目根目录创建.env文件，或设置环境变量
+# 根据实际供应商设置API Key
+export VENDOR_TTS_API_KEY=your_api_key_here
+# 例如：
+export ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+# 或在.env文件中：
+# ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+```
+
+**注意**：
+- 确保在项目根目录（`ten-framework/ai_agents`）下运行task命令
+- 测试配置文件应在Extension目录下的`tests/configs/`目录中
+- 如果使用task命令，会自动从`.env`文件读取环境变量
+- 确保Extension已正确安装依赖
+
+**测试结果要求**：
+- [ ] 所有Guarder测试通过
+- [ ] 在PR评论中粘贴guarder 测试结果
+- [ ] 如有测试失败，说明原因并提供解决方案
+
+
+### Guarder测试点说明
+
+Guarder集成测试包含以下测试点，确保Extension符合TEN Framework的标准：
+
+#### 1. **基础音频设置测试** (`test_basic_audio_setting.py`)
+
+**测试目标**：验证Extension能够根据配置正确设置音频参数
+
+**测试点**：
+- 验证不同配置文件的采样率设置是否正确
+- 验证Extension能够正确读取和响应不同的采样率配置
+- 验证音频帧的采样率与实际配置一致
+
+**预期结果**：
+- 不同配置文件产生不同的采样率输出
+- 所有音频帧的采样率保持一致
+- 没有错误或异常
+
+#### 2. **边界输入测试** (`test_corner_input.py`)
+
+**测试目标**：验证Extension对边界输入的处理
+
+**测试点**：
+- 验证Extension能够处理边界输入
+- 验证Extension能够正确上报metrics数据
+- 验证metrics在`tts_audio_end`之前上报
+
+**预期结果**：
+- Extension能够处理边界输入并生成音频
+- 能够接收到metrics数据
+- metrics在`tts_audio_end`之前发送
+
+#### 3. **PCM Dump功能测试** (`test_dump.py`)
+
+**测试目标**：验证PCM音频文件导出功能
+
+**测试点**：
+- 验证启用dump功能时，能够生成PCM文件
+- 验证PCM文件保存在指定路径
+- 验证PCM文件不为空
+
+**预期结果**：
+- 当`dump=true`时，在`dump_path`目录下生成PCM文件
+- PCM文件包含音频数据
+- 文件命名符合规范
+
+#### 4. **按请求ID导出测试** (`test_dump_each_request_id.py`)
+
+**测试目标**：验证每个请求ID都能生成独立的dump文件
+
+**测试点**：
+- 验证多个请求能够生成多个独立的dump文件
+- 验证每个请求ID对应一个dump文件
+- 验证dump文件数量正确
+
+**预期结果**：
+- 发送N个请求，生成N个dump文件
+- 每个dump文件对应一个request_id
+- 文件命名包含request_id信息
+
+#### 5. **Flush功能测试** (`test_flush.py`)
+
+**测试目标**：验证flush请求的处理
+
+**测试点**：
+- 验证收到flush请求时，能够正确中断当前请求
+- 验证flush时发送的`tts_audio_end`事件，`reason`应为`2`（INTERRUPTED）
+- 验证flush完成后发送`tts_flush_end`事件
+- 验证事件顺序：`tts_audio_end`在`tts_flush_end`之前
+
+**预期结果**：
+- 收到flush请求后，能够中断当前TTS合成
+- 发送`tts_audio_end`事件，`reason=2`（INTERRUPTED）
+- 发送`tts_flush_end`事件
+- 事件顺序正确
+
+#### 6. **指标上报测试** (`test_metrics.py`)
+
+**测试目标**：验证指标数据的正确上报
+
+**测试点**：
+- 验证Extension能够上报metrics数据
+- 验证metrics在`tts_audio_end`之前发送
+- 验证metrics包含必需字段（module、vendor、metrics等）
+
+**预期结果**：
+- 能够接收到metrics数据
+- metrics在`tts_audio_end`之前发送
+- metrics数据格式正确，包含必需字段
+
+#### 7. **无效必需参数测试** (`test_invalid_required_params.py`)
+
+**测试目标**：验证对无效必需参数的错误处理
+
+**测试点**：
+- 验证当配置参数无效时（如API key格式错误），能够正确返回错误
+- 验证错误代码为`FATAL_ERROR`（-1000）
+- 验证错误消息清晰，便于用户定位问题
+
+**预期结果**：
+- Extension能够检测到无效的必需参数
+- 返回错误，错误代码为`-1000`（FATAL_ERROR）
+- 错误消息包含问题描述
+
+#### 8. **无效文本处理测试** (`test_invalid_text_handling.py`)
+
+**测试目标**：验证Extension对无效文本的处理能力
+
+**测试点**：
+- 验证当文本无效时（如空字符串、纯标点、纯空格等），能够正确处理
+- 验证返回错误代码为`NON_FATAL_ERROR`（1000）
+- 验证错误包含`vendor_info`字段
+- 验证在错误后，发送有效文本能够正常工作
+
+**测试的无效文本类型**：
+- 空字符串
+- 纯空格、制表符、换行符
+- 纯标点符号（中英文）
+- 表情符号和特殊字符
+- 数学公式、化学方程式
+- 混合无效字符
+
+**预期结果**：
+- 无效文本返回错误，错误代码为`1000`（NON_FATAL_ERROR）
+- 错误包含`vendor_info`，包含供应商名称、错误代码和消息
+- 错误后，发送有效文本能够正常生成音频
+
+#### 9. **缺少必需参数测试** (`test_miss_required_params.py`)
+
+**测试目标**：验证对缺少必需参数的错误处理
+
+**测试点**：
+- 验证当缺少必需参数时（如缺少API key），能够正确返回错误
+- 验证错误代码为`FATAL_ERROR`（-1000）
+- 验证错误消息提示缺少的参数
+
+**预期结果**：
+- Extension能够检测到缺少的必需参数
+- 返回错误，错误代码为`-1000`（FATAL_ERROR）
+- 错误消息明确提示缺少的参数
+
+### 测试注意事项
+
+1. **环境准备**：确保设置正确的环境变量（API key等）
+2. **配置准备**：确保测试配置文件正确，包含有效的API凭证
+3. **网络连接**：确保能够访问TTS供应商的API服务
+4. **测试隔离**：每次测试运行前清理dump目录，确保测试结果准确
+5. **错误分析**：如果测试失败，仔细查看日志输出，定位问题原因
+6. **测试顺序**：某些测试可能有依赖关系，建议按顺序运行
+7. **资源清理**：测试完成后清理临时文件和资源
+
+### PR提交检查清单总结
+
+在提交PR之前，请确认以下所有项目已完成：
+
+- [ ] **功能实现**：所有核心功能已实现并通过自测
+- [ ] **单元测试**：所有UT通过，覆盖率达标
+- [ ] **Ten Agent自测**：在Ten Agent中验证功能正常
+- [ ] **Guarder测试**：所有Guarder测试通过
+- [ ] **测试结果**：在PR评论中粘贴Guarder测试结果
+- [ ] **代码审查**：代码已自检，符合编码规范
+- [ ] **提交信息**：PR描述清晰，包含变更说明和测试结果
