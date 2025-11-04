@@ -1,18 +1,93 @@
-# TTS Extension 开发指南
+---
+title: 创建 TTS 扩展
+description: 从零开始创建、开发、测试并发布一个完整的 TTS 扩展
+---
 
-## 概述
+# 创建 TTS Extension完整指南
+
 本教程将指导你从零开始创建一个生产级别的 TTS（Text-to-Speech） Extension，涵盖从项目创建、核心开发、测试验证到发布上线的完整流程。
 
-### 什么是TTS Extension
-TTS（Text-to-Speech）Extension 是TEN Framework中用于将文本转换为语音的核心组件。本指南将帮助开发者快速实现新的TTS供应商客户端，支持不同的通信协议和实现模式。
+## 什么是 TTS Extension
+
+TTS Extension 是 TEN Framework 生态系统中的一个**标准扩展积木**（Standard Extension），专门用于实现文本转语音（Text-to-Speech）功能。
 
 ### 核心功能
-TTS Extension的主要职责包括：
-1. 接收文字：从上游Extension持续接受需要转换成语音的文字（通常来自于大模型）。
-2. 请求TTS 厂商生成音频：将文字发送给TTS厂商并且接收返回的音频（通常为PCM格式）
-3. 发送音频：将音频发送给下游Extension
-[上游Extension]---文字--->[TTS Extension]---音频--->[下游Extension]
 
+TTS Extension 的主要职责包括：
+
+1. **接收文字**: 从上游扩展持续接收需要转换成语音的文字（通常来自于大模型）
+2. **实时合成**: 将文字实时转换成对应的音频数据流
+3. **发送音频**: 将合成的音频数据传递给下游扩展进行后续处理
+
+### 在对话流中的位置
+
+作为标准积木，TTS Extension 在 TEN Agent 对话流中扮演着**文本到音频转换**的关键角色：
+
+```
+[上游积木]  ──文字流──>  [TTS Extension]  ──音频流──>  [下游积木]
+```
+
+**典型的上游积木**：
+- **LLM Extension**: 生成对话回复文字
+- **Translation Extension**: 翻译后的文字结果
+- **Text Processing Extension**: 经过预处理的文字内容
+
+**典型的下游积木**：
+- **RTC Extension**: 将音频推送到 RTC 频道
+- **Audio Playback Extension**: 本地播放音频
+- **Audio Processing Extension**: 对音频进行后处理（如混音、音效等）
+
+### 实际应用场景
+
+**场景1: AI 语音对话助手**
+```
+RTC Extension → ASR Extension → LLM Extension → TTS Extension → RTC Extension
+```
+从 RTC 频道采集用户的语音，ASR 将语音转写成文字，LLM 理解语义并生成回复，TTS 将回复转换成语音后推送到 RTC 频道。
+
+**场景2: 实时语音翻译**
+```
+RTC Extension → ASR Extension → Translation Extension → TTS Extension → RTC Extension
+```
+采集用户的中文语音，ASR 识别成中文文字，Translation 积木转换成目标语言（如英文），TTS 将译文转换成语音输出。
+
+**场景3: 多语言内容播报**
+```
+Content Extension → TTS Extension → Audio Broadcast Extension
+```
+从内容源获取文字信息，TTS 转换成多语言音频，Audio Broadcast 进行广播播放。
+
+### 标准化 TTS Extension 的意义
+
+将 TTS 功能封装成标准扩展积木，带来以下核心价值：
+
+- **🔌 即插即用**: 轻松切换不同的 TTS 服务商（ElevenLabs、Azure、Google 等），无需修改上下游积木
+- **🔄 灵活组合**: 与其他标准积木自由组合，快速构建各类 AI 应用场景
+- **🛠️ 易于维护**: 独立开发、测试、升级，不影响其他积木的稳定性
+- **📦 高度复用**: 一次开发，多个项目复用，显著提升开发效率
+- **🌐 生态共享**: 发布到 TEN Store，让全球开发者受益
+
+## 📋 你将学到什么
+
+- 🚀 使用 TTS 模板快速创建扩展项目
+- ⚙️ 理解 TTS Extension 接口规范  
+- 🔧 实现 TTS Extension 核心功能
+- 🧪 编写全面的单元测试和集成测试
+- 📊 掌握日志记录、错误处理等最佳实践
+- 🌐 发布扩展到 TEN Store 供社区使用
+
+## 📚 前置条件
+
+开始本教程前，请确保你已具备：
+
+- **基础知识**: 熟悉 [TEN Agent 架构](/docs/ten_agent/getting_started) 和 TTS 服务基本概念
+- **技术能力**: 掌握 Python 异步编程（`asyncio`、`async/await`）
+- **开发环境**: 在开发容器内开发（安装好tman）
+- **API 资源**: 准备好 TTS 服务商的 API 密钥（用于测试验证）
+
+<Callout type="info">
+  **示例说明**: 本教程以 ElevenLabs TTS 为例进行讲解，但所介绍的方法和模式同样适用于其他 TTS 服务商或者本地TTS模型。
+</Callout>
 
 ### 架构介绍
 
@@ -34,7 +109,6 @@ TTS Extension基于 `AsyncTTS2BaseExtension` 基类构建，该基类提供了�
 | **HTTP流式** | 使用HTTP流式请求，适合简单的TTS服务 | 传统REST API的TTS服务 | Rime |
 | **SDK集成** | 使用官方SDK，提供更丰富的功能 | 大厂提供的完整SDK | Google, Azure |
 
-
 ### 实现模式选择指南
 
 **选择WebSocket模式：**
@@ -52,9 +126,24 @@ TTS Extension基于 `AsyncTTS2BaseExtension` 基类构建，该基类提供了�
 - 需要利用SDK的高级功能
 - 追求稳定性和功能完整性
 
-## 接口规范
+#### 输入输出数据格式
 
-TTS Extension的接口规范定义了与上下游Extension之间的数据交换格式。开发者需要了解这些接口定义，以便正确处理输入数据和输出数据。
+TTS 标准接口（`tts-interface.json`）中除了属性配置外，还定义了输入和输出的数据格式规范：
+
+**输入数据**：
+- **文本输入** (`tts_text_input`): 从上游接收的文本数据流
+- **刷新请求** (`tts_flush`): 取消当前请求并清空队列
+
+**输出数据**：
+- **文本结果** (`tts_text_result`): 包含时间戳的文本结果（当`enable_words=true`时）
+- **音频开始** (`tts_audio_start`): 音频开始事件
+- **音频结束** (`tts_audio_end`): 音频结束事件，包含时长统计
+- **刷新完成** (`tts_flush_end`): 刷新处理完成的通知
+- **错误信息** (`error`): 发生错误时的错误详情
+- **性能指标** (`metrics`): TTFB、音频时长等性能数据
+- **PCM音频帧** (`pcm_frame`): 向下游发送的音频数据流
+
+详细的数据结构定义和字段说明请参考 `tts-interface.json` 文件。
 
 ### Extension属性配置
 
@@ -309,6 +398,34 @@ Extension支持以下通用配置属性：
 4. **时间戳计算**：准确计算和上报时间相关指标（TTFB、音频时长等）
 5. **流式处理**：支持流式文本输入和音频输出，不要等待完整文本才开始处理
 6. **资源清理**：正确处理flush请求，及时清理资源和取消请求
+
+### 核心继承关系
+
+```python
+AsyncTTS2BaseExtension  # TEN AI Base 提供的抽象基类
+    ↓
+MyTTSExtension         # 你的具体实现
+```
+
+#### 基类功能概述
+
+`AsyncTTS2BaseExtension` 是 TEN AI Base 提供的 TTS 扩展抽象基类，它为所有 TTS Extension 提供了统一的框架和开箱即用的功能：
+
+**核心职责**：
+
+1. **生命周期管理**：自动处理扩展的初始化、启动、停止等生命周期事件
+2. **消息队列处理**：
+   - 接收上游的文本输入并放入异步队列
+   - 根据连接状态自动执行缓冲策略（丢弃或保持）
+   - 提取和管理 session_id、metadata 等元信息
+3. **Flush 事件处理**：接收 `tts_flush` 数据，调用子类的 `cancel_tts()` 方法
+4. **性能指标自动计算**：
+   - TTFB（Time To First Byte）：首字节延迟
+   - 音频时长统计和定期上报
+5. **标准化输出**：提供统一的 API 发送音频数据、错误信息、性能指标等数据
+6. **会话管理**：自动为每轮对话生成唯一 ID，管理 metadata 传递
+
+通过继承基类，开发者只需专注于实现与具体 TTS 服务商交互的核心逻辑，无需关心框架层的通用处理。
 
 ## 核心代码介绍
 
@@ -878,119 +995,248 @@ class AsyncTTS2HttpClient:
 
 **注意**：两种路径都需要在配置类中支持`dump`和`dump_path`参数来启用PCM功能。
 
-## 项目初始化
+## 1. 🚀 项目初始化
+
+### 创建扩展项目
+
 使用 TMan 的 TTS 专用模板快速创建项目骨架：
 
-### 进入扩展目录
+```bash title="Terminal"
+# 进入扩展目录
 cd ten-framework/ai_agents/agents/ten_packages/extension
 
-### 创建TTS扩展项目
+# 创建TTS扩展项目
 tman create extension my_tts_extension --template default_tts_python --template-data class_name_prefix=MyTts
+```
+
 创建成功后会显示：
 
+```bash title="输出信息"
 Package 'extension:my_tts_extension' created successfully in 'my_tts_extension' in 2 seconds.
+```
 
-###安装项目依赖
-先在 requirements.txt 中添加 所需依赖：
+### 安装项目依赖
 
-###安装 TEN 依赖
+#### 添加第三方库依赖
+
+首先在 `requirements.txt` 中添加所需的第三方库依赖：
+
+```text title="requirements.txt"
+websockets~=14.0
+pydantic
+requests
+httpx
+aiofiles
+```
+
+#### 安装 TEN 依赖
+
 进入创建的扩展目录并安装依赖：
 
-cd my_asr_extension
+```bash title="Terminal"
+cd my_tts_extension
 tman install --standalone
-这会根据 manifest.json 中声明的依赖构建依赖树，并安装到 .ten 目录下。
-
-## 项目结构规范
-
-### 必需文件列表
-
-每个TTS Extension项目必须包含以下文件：
-
-```
-{vendor}_tts_python/
-├── __init__.py                    # Python包初始化文件
-├── config.py                      # 配置管理类
-├── {vendor}_tts.py                # TTS客户端核心实现
-├── extension.py                   # Extension业务逻辑控制(tman 创建Extension时生成)
-├── manifest.json                  # Extension元数据配置(tman 创建Extension时生成)
-├── property.json                  # 默认配置参数(tman 创建Extension时生成)
-├── requirements.txt               # Python依赖管理
-├── README.md                      # 项目说明文档
-└── tests/                         # 测试目录(推荐包含的最基本测试)
-    ├── __init__.py
-    ├── conftest.py               # pytest配置和fixtures
-    ├── test_basic.py             # 基础功能ut测试
-    ├── test_error_msg.py         # 错误处理ut测试
-    ├── test_params.py            # 参数配置ut测试
-    ├── test_robustness.py        # 健壮性ut测试
-    └── configs/                  # 测试配置文件，用于guarder 测试
-        └── test_config.json
 ```
 
-### 文件命名规范
+这会根据 `manifest.json` 中声明的依赖构建依赖树，并安装到 `.ten` 目录下。
 
-- **目录名**：`{vendor}_tts_python` 或 `{vendor}_tts2_python`（v2版本）
-- **核心文件**：`{vendor}_tts.py` 或 `{vendor}_tts2.py`
-- **配置类**：`{Vendor}TTSConfig` 或 `{Vendor}TTS2Config`
-- **客户端类**：`{Vendor}TTS` 或 `{Vendor}TTS2`
-- **Extension类**：`{Vendor}TTS Extension` 或 `{Vendor}TTS2Extension`
+## 2. 🏗️ 扩展架构设计
 
-### 文件作用说明
+### 项目结构概览
 
-#### 1. `__init__.py`
-```python
-# 包初始化文件，通常为空或包含版本信息
-__version__ = "0.1.0"
+```
+my_tts_extension/
+├── .vscode/               # VS Code 调试配置
+│   └── launch.json       # 调试启动配置
+├── manifest.json          # 扩展元数据和依赖声明
+├── property.json          # 默认配置参数  
+├── requirements.txt       # Python 依赖
+├── config.py              # 配置管理类
+├── {vendor}_tts.py        # TTS客户端核心实现
+├── extension.py           # 主要实现文件
+└── tests/                 # 测试文件
+    ├── bin/start          # 测试启动脚本
+    ├── test_basic.py      # 单元测试
+    └── configs/           # 测试配置
 ```
 
-#### 2. `config.py`
-- 定义配置类，继承自 `pydantic.BaseModel`
-- 处理敏感信息加密
-- 参数验证和更新机制
-- 供应商特定参数映射
-- 参数黑名单控制
+### TTS Extension 接口规范
 
-#### 3. `{vendor}_tts.py`
-- 实现TTS客户端核心逻辑
-- 处理与供应商API的通信
-- 定义事件系统和错误处理
-- 管理连接生命周期
+TTS Extension 遵循 TEN Framework 的标准接口规范。使用模板创建的 TTS Extension 会自动配置好接口继承关系和必要的 API 声明。
 
-#### 4. `extension.py`
-- 继承 `AsyncTTS2BaseExtension`
-- 实现业务逻辑控制
-- 处理音频数据流
-- 管理请求生命周期
+#### Manifest 配置
 
-#### 5. `manifest.json`
-- Extension元数据定义
-- API接口声明
-- 依赖关系配置
-- 属性schema定义
+TTS Extension 的 `manifest.json` 文件中需要正确配置接口和属性声明：
 
-#### 6. `property.json`
-- 默认配置参数
-- 环境变量支持
-- 供应商特定配置
+**1. Interface 继承**
 
-#### 7. `requirements.txt`
-- Python依赖包列表
-- 版本约束
-- 供应商SDK依赖
+在 `manifest.json` 的 `api.interface` 中声明继承自 `ten_ai_base` 系统包下的标准 TTS 接口：
 
-#### 8. `tests/` 目录
-- 完整的测试套件
-- Mock测试支持
-- 配置文件测试
-- 错误场景测试
+```json title="manifest.json"
+{
+  "api": {
+    "interface": [
+      {
+        "import_uri": "../../system/ten_ai_base/api/tts-interface.json"
+      }
+    ]
+  }
+}
+```
 
-### 目录结构最佳实践
+该接口文件（`tts-interface.json`）中定义了所有 TTS Extension 必须遵循的标准属性，包括：
+- `dump`: 布尔值，配置是否开启音频 dump
+- `dump_path`: 字符串，音频 dump 的存储路径
+- `enable_words`: 布尔值，配置是否启用字幕对齐功能
 
-1. **保持一致性**：所有TTS Extension应遵循相同的目录结构
-2. **模块化设计**：将不同功能分离到不同文件
-3. **测试覆盖**：确保每个功能都有对应的测试
-4. **文档完整**：README.md应包含使用说明和配置示例
-5. **版本管理**：使用语义化版本号，在manifest.json中声明
+**2. Property 声明**
+
+除了继承标准接口外，每个 TTS Extension 还需要在 `api.property` 中声明自己特有的配置属性，特别是 `params` 对象中的必填字段。
+
+**关键说明**：
+- **标准属性**（如 `dump`、`dump_path`、`enable_words`）：通过 `interface` 继承自 `tts-interface.json`，所有 TTS Extension 共有
+- **扩展属性**（如 `params.api_key`、`params.voice_id`）：在 `api.property` 中声明，根据不同的 TTS 服务商而异
+
+使用模板创建 TTS Extension 时，这些配置会自动生成，但需要根据实际的服务商需求调整 `params` 中的属性。
+
+## 3. ⚙️ 配置管理设计
+
+### 设计配置类
+
+创建灵活的配置类，支持必填参数和可选透传参数：
+
+```python title="config.py"
+from pydantic import BaseModel
+from typing import Dict, Optional
+
+class MyTTSConfig(BaseModel):
+    # 所有TTS参数都在params中，包括必填和可选参数
+    params: Dict[str, Optional[str]] = {}
+    
+    # 音频dump相关配置 - 所有TTS扩展的标准实现
+    dump: bool = False
+    dump_path: Optional[str] = None
+```
+
+### 读取扩展配置
+
+在 `on_init` 阶段读取和初始化配置：
+
+```python title="extension.py"
+from ten_ai_base.const import LOG_CATEGORY_KEY_POINT, LOG_CATEGORY_VENDOR
+from ten_ai_base.message import ModuleError, ModuleErrorCode
+
+@override
+async def on_init(self, ten_env: AsyncTenEnv) -> None:
+    await super().on_init(ten_env)
+    
+    # 读取完整的扩展配置
+    config_json, _ = await ten_env.get_property_to_json("")
+    
+    try:
+        # 反序列化配置为配置类实例
+        self.config = MyTTSConfig.model_validate_json(config_json)
+        
+        # 打印配置信息（敏感信息脱敏）
+        ten_env.log_info(
+            f"config: {self.config.to_json(sensitive_handling=True)}",
+            category=LOG_CATEGORY_KEY_POINT,
+        )
+            
+    except Exception as e:
+        ten_env.log_error(
+            f"invalid property: {e}",
+            category=LOG_CATEGORY_KEY_POINT
+        )
+        # 配置错误时使用默认配置
+        self.config = MyTTSConfig.model_validate_json("{}")
+        # 发送致命错误
+        await self.send_tts_error(
+            ModuleError(
+                module=MODULE_NAME_TTS,
+                code=ModuleErrorCode.FATAL_ERROR.value,
+                message=str(e),
+            ),
+        )
+```
+
+### 配置敏感信息脱敏
+
+为配置类添加脱敏方法，保护敏感信息：
+
+```python title="config.py"
+from ten_ai_base.utils import encrypt
+
+class MyTTSConfig(BaseModel):
+    params: Dict[str, Optional[str]] = {}
+    dump: bool = False
+    dump_path: Optional[str] = None
+    
+    def to_json(self, sensitive_handling: bool = False) -> str:
+        """
+        序列化配置为 JSON，支持敏感信息脱敏
+        
+        Args:
+            sensitive_handling: 是否对敏感信息进行脱敏处理
+        """
+        if not sensitive_handling:
+            return self.model_dump_json()
+        
+        # 深拷贝配置对象
+        config = self.model_copy(deep=True)
+        
+        # 对 params 中的敏感字段进行脱敏
+        if config.params:
+            encrypted_params = {}
+            for key, value in config.params.items():
+                # 对包含 'key'、'token'、'secret' 等敏感词的字段进行加密
+                if (key in ['api_key', 'key', 'token', 'secret', 'password'] 
+                    and isinstance(value, str) and value):
+                    encrypted_params[key] = encrypt(value)
+                else:
+                    encrypted_params[key] = value
+            config.params = encrypted_params
+            
+        return config.model_dump_json()
+```
+
+### 配置默认参数
+
+在 `property.json` 中提供默认配置：
+
+```json title="property.json"
+{
+  "params": {
+    "api_key": "your_tts_api_key_here",
+    "voice_id": "default_voice",
+    "model": "default_model",
+    "sample_rate": "24000"
+  },
+  "dump": false,
+  "dump_path": "/tmp/tts_audio_dump"
+}
+```
+
+## 4. 🔧 核心功能实现
+
+### 实现基础方法
+
+```python title="extension.py"
+class MyTTSExtension(AsyncTTS2BaseExtension):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.config: MyTTSConfig = MyTTSConfig()
+        
+    @override
+    def vendor(self) -> str:
+        """返回TTS服务商名称"""
+        return "vendor_name"
+    
+    @override
+    def synthesize_audio_sample_rate(self) -> int:
+        """返回音频采样率"""
+        return int(self.config.params.get("sample_rate", 24000) or 24000)
+```
 
 ## WebSocket模式规范
 
@@ -1529,7 +1775,7 @@ async def reset(self):
 7. **性能优化**：使用流式处理，减少延迟
 8. **兼容性**：确保SDK版本兼容性，处理API变更
 
-## config.py规范
+## 5. ⚙️ 配置管理设计
 
 ### 配置类功能
 
@@ -1602,7 +1848,7 @@ async def reset(self):
 7. **默认值设置**：为所有参数提供合理的默认值
 8. **错误信息清晰**：提供清晰的错误信息，便于调试
 
-## {vendor}_tts.py规范
+## 6. 🔧 核心功能实现
 
 ### 客户端类功能
 
@@ -1712,7 +1958,7 @@ async def reset(self):
 8. **异步处理**：使用异步编程提高性能
 
 
-## 测试规范
+## 7. 🧪 单元测试
 
 ### 测试文件结构
 
@@ -1744,6 +1990,246 @@ tests/
 7. **并发测试**：测试并发请求处理能力
 8. **配置测试**：测试各种配置参数组合
 
+
+## 8. 🔗 集成测试（Guarder）
+
+### 环境变量配置
+
+创建 `.env` 文件配置真实 API 密钥：
+
+```bash title=".env"
+# TTS Vendor Services API Key
+VENDOR_TTS_API_KEY=your_api_key_here
+# 例如：
+ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+```
+
+### 测试配置
+
+在 `tests/configs/` 目录下创建以下测试配置文件，Guarder 测试会使用这些配置：
+
+#### 1. 基础音频设置配置
+
+**`property_basic_audio_setting1.json`** - 用于基础音频设置测试、边界输入测试、指标测试、无效文本处理测试：
+
+```json title="tests/configs/property_basic_audio_setting1.json"
+{
+  "dump": true,
+  "dump_path": "./tests/keep_dump_output/",
+  "params": {
+    "output_format": "pcm_44100",
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+**`property_basic_audio_setting2.json`** - 用于基础音频设置测试（对比不同的采样率配置）：
+
+```json title="tests/configs/property_basic_audio_setting2.json"
+{
+  "dump": true,
+  "dump_path": "./tests/keep_dump_output/",
+  "params": {
+    "output_format": "pcm_44100",
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+**注意**：根据你的 TTS 服务商，可能需要调整参数名称（如 `key`、`api_key`、`sample_rate`、`output_format` 等）。
+
+#### 2. Dump 功能测试配置
+
+**`property_dump.json`** - 用于 dump 功能测试、flush 测试、按请求ID导出测试：
+
+```json title="tests/configs/property_dump.json"
+{
+  "dump": true,
+  "dump_path": "./tests/dump_output/",
+  "params": {
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+#### 3. 错误处理测试配置
+
+**`property_invalid.json`** - 用于无效必需参数测试（测试无效的 API Key）：
+
+```json title="tests/configs/property_invalid.json"
+{
+  "params": {
+    "key": "invalid"
+  }
+}
+```
+
+**`property_miss_required.json`** - 用于缺少必需参数测试（测试缺少 API Key）：
+
+```json title="tests/configs/property_miss_required.json"
+{
+  "params": {
+    "key": ""
+  }
+}
+```
+
+#### 4. 完整配置示例（可选）
+
+**`property_bechmarl.json`** - 完整配置示例，包含多个参数，可用于基准测试：
+
+```json title="tests/configs/property_bechmarl.json"
+{
+  "dump": true,
+  "dump_path": "./tests/keep_dump_output/",
+  "params": {
+    "output_format": "pcm_44100",
+    "language": "en",
+    "voice_id": "your_voice_id",
+    "model_id": "your_model_id",
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+### 配置文件说明
+
+**关键配置项**：
+
+- **`params.key`** 或 **`params.api_key`**：TTS 服务商的 API Key，使用 `${env:VENDOR_TTS_API_KEY}` 从环境变量读取
+- **`dump`**：是否启用音频 dump 功能（`true` 或 `false`）
+- **`dump_path`**：音频 dump 文件的保存路径
+- **`params.sample_rate`** 或 **`params.output_format`**：音频采样率配置，根据服务商不同而不同
+
+**环境变量支持**：
+
+配置文件中可以使用 `${env:VARIABLE_NAME}` 格式从环境变量读取值，这样可以在不修改配置文件的情况下切换不同的 API Key。
+
+### 运行 Guarder 测试
+
+使用真实 API 密钥运行完整集成测试：
+
+```bash title="Terminal"
+cd ai_agents
+task tts-guarder-test EXTENSION=your_extension_name CONFIG_DIR=tests/configs
+```
+
+## 9. 🌐 端到端测试
+
+完成开发后，可以使用 TMan Designer 快速替换 TEN Agent 对话图中的 TTS 扩展，验证在实际对话场景下的效果。
+
+### 使用 TMan Designer 替换 TTS 扩展
+
+```bash title="Terminal"
+# 在 TEN Agent 项目目录下启动
+cd /path/to/your/ten-agent-project
+tman designer
+```
+
+TMan Designer 会打开可视化界面，你可以：
+
+1. **选择 TTS 节点**: 点击现有的 TTS 扩展积木
+2. **替换为你的扩展**: 选择 `my_tts_extension`
+3. **配置参数**: 设置 API Key、语音ID等参数
+4. **一键应用**: 完成替换并启动测试
+
+替换完成后，通过真实对话验证扩展的音频质量、响应速度和稳定性。
+
+## 10. 📊 最佳实践
+
+### 配置管理
+
+- ✅ 使用 `params` 字典统一管理供应商参数
+- ✅ 通过 `@property` 方法提供类型安全的参数访问
+- ✅ 提供合理的默认值
+
+### 错误处理
+
+- ✅ 实现指数退避重连机制
+- ✅ 正确处理网络异常和 API 错误
+- ✅ 提供详细的错误日志和状态上报
+- ✅ 优雅处理连接中断和恢复
+
+### 性能优化
+
+- ✅ 异步处理文本流，避免阻塞
+- ✅ 实现音频缓存和批量发送
+- ✅ 合理管理 WebSocket 连接生命周期
+- ✅ 监控和报告关键性能指标
+
+### 日志打印
+
+- ✅ 使用 `ten_env.log_debug/info/warn/error` API 打印日志
+- ✅ 通过指定 `category` 让日志更加清晰
+- ✅ 对敏感信息（如 API Key）进行脱敏处理
+- ✅ 在关键节点记录状态变化和错误信息
+
+#### 日志分类说明
+
+- **KEY_POINT**: 关键节点日志，用于记录重要的配置和状态信息
+- **VENDOR**: 供应商相关日志，包括连接状态、结果处理、错误信息
+- **默认分类**: 业务逻辑相关的一般日志
+
+### 错误上报
+
+除了日志记录，还需要通过 `self.send_tts_error` API 进行结构化的错误上报
+
+#### 错误分类策略
+
+**🔥 致命错误 (FATAL_ERROR)**
+- 配置解析失败
+- 无效的API密钥
+- 无法建立初始连接
+- 扩展无法继续工作的情况
+
+**⚠️ 非致命错误 (NON_FATAL_ERROR)** 
+- 临时的网络连接问题
+- 供应商服务暂时不可用
+- 音频处理错误
+- 可通过重试恢复的错误
+
+#### 供应商信息 (VendorInfo)
+
+对于供应商返回的错误，应包含详细的供应商信息：
+
+```python
+ModuleErrorVendorInfo(
+    vendor="elevenlabs",           # 供应商名称
+    code="400",                    # 供应商错误码
+    message="Invalid API key",     # 供应商错误消息
+)
+```
+
+这样可以帮助运维团队快速定位问题来源，区分是扩展问题还是供应商服务问题。
+
+### 调试支持
+
+- ✅ 提供音频 Dump 功能用于问题排查
+- ✅ 记录详细的事件和状态变化日志
+- ✅ 支持不同日志级别和分类
+- ✅ 提供性能和质量指标
+
+## 11. 🌟 扩展和贡献
+
+### 适配其他 TTS 服务
+
+基于本教程的框架，你可以参考 TEN Framework 仓库下的其他成品 TTS 扩展：
+
+1. **ElevenLabs TTS**: 参考 `elevenlabs_tts2_python` 扩展的实现
+2. **Azure Cognitive Services**: 参考 `azure_tts_python` 扩展的实现  
+3. **Google Cloud TTS**: 参考 `google_tts_python` 扩展的实现
+4. **其他供应商**: 在 `ai_agents/agents/ten_packages/extension/` 目录下查看更多TTS扩展实现
+
+这些成品扩展都遵循相同的架构模式，可以作为适配新TTS服务的参考模板。
+
+### 贡献到社区
+
+完成开发后，欢迎将你的 TTS 扩展贡献给 TEN Agent 社区：
+
+1. **代码规范**: 遵循项目的代码风格和命名约定
+2. **测试覆盖**: 确保单元测试和集成测试通过
+3. **文档完善**: 提供清晰的 README 和配置说明
+4. **性能验证**: 通过 Guarder 测试验证生产可用性
 
 ## 提Pull Request前检查清单
 
@@ -2017,3 +2503,33 @@ Guarder集成测试包含以下测试点，确保Extension符合TEN Framework的
 - [ ] **测试结果**：在PR评论中粘贴Guarder测试结果
 - [ ] **代码审查**：代码已自检，符合编码规范
 - [ ] **提交信息**：PR描述清晰，包含变更说明和测试结果
+
+## 📚 总结
+
+恭喜你完成了 TTS 扩展开发的完整学习之旅！
+
+### 🎯 掌握的核心技能
+
+- ✅ **项目搭建**: 使用 TTS 模板快速创建项目骨架
+- ✅ **架构设计**: 深入理解 TTS Extension 接口规范和基类功能
+- ✅ **功能开发**: 实现请求处理、音频处理、事件处理等核心功能
+- ✅ **高级特性**: 集成重连机制、音频调试、指标上报等高级特性
+- ✅ **质量保证**: 编写单元测试、集成测试、端到端测试的完整覆盖
+- ✅ **生产就绪**: 掌握日志记录、错误处理、性能优化等最佳实践
+
+### 🚀 下一步行动
+
+现在你可以：
+
+1. **实践应用**: 选择你熟悉的 TTS 服务商，创建自己的扩展
+2. **深入学习**: 研究其他 TEN 扩展类型（ASR、LLM等）的实现模式  
+3. **贡献社区**: 提交 PR 到 TEN Framework，分享你的成果
+4. **生态建设**: 发布到 TEN Store，让更多开发者受益
+
+<Callout type="success">
+  **开发愉快！** 如果在开发过程中遇到问题，欢迎在 [TEN Framework GitHub](https://github.com/TEN-framework/TEN-Agent) 上提 Issue 或参与讨论。
+</Callout>
+
+<Callout title="下一步">
+  推荐阅读 [ASR 扩展开发指南] 和 [LLM 扩展开发指南]，掌握完整的 AI Agent 扩展开发技能。
+</Callout>
