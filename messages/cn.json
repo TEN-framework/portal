@@ -177,8 +177,9 @@
     "tagline": "一个专为构建实时对话式 AI Agent 而设计的开源框架",
     "product": {
       "title": "产品",
+      "openSourceTitle": "开源产品",
       "framework": "TEN Framework",
-      "agent": "TEN Agent",
+      "agentExamples": "Agent 示例",
       "vad": "TEN VAD",
       "turnDetection": "TEN Turn Detection"
     },
@@ -188,11 +189,18 @@
       "blog": "博客",
       "huggingFace": "Hugging Face Space"
     },
+    "developers": {
+      "title": "开发者",
+      "documentation": "文档",
+      "blog": "博客",
+      "huggingFace": "Hugging Face Space"
+    },
     "community": {
       "title": "社区",
       "github": "GitHub",
       "discord": "Discord",
-      "twitter": "Twitter"
+      "twitter": "Twitter",
+      "xTwitter": "X/Twitter"
     },
     "copyright": "© {year} TEN Framework. 版权所有。",
     "supportedBy": "由 TEN 社区和以下机构支持"
