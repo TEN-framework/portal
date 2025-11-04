@@ -166,6 +166,13 @@
       "socialMedia": "社交媒体"
     }
   },
+  "components": {
+    "version-select": {
+      "label": "版本",
+      "placeholder": "选择一个版本",
+      "latest": "最新"
+    }
+  },
   "footer": {
     "tagline": "一个专为构建实时对话式 AI Agent 而设计的开源框架",
     "product": {

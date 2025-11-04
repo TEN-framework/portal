@@ -166,6 +166,13 @@
       "socialMedia": "Social Media"
     }
   },
+  "components": {
+    "version-select": {
+      "label": "Version",
+      "placeholder": "Select a version",
+      "latest": "Latest"
+    }
+  },
   "footer": {
     "tagline": "An open-source framework designed for building real-time conversational AI agents",
     "product": {
