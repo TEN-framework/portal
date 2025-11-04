@@ -1,8 +1,11 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/notebook'
 import type { ReactNode } from 'react'
 import { Banner } from '@/components/layout/sidebar'
+import { Footer } from '@/components/ui/footer'
 import { baseOptions } from '@/lib/layout.shared'
 import { source } from '@/lib/source'
+
+import './docs.css'
 
 export default async function Layout({
   params,
@@ -32,6 +35,7 @@ export default async function Layout({
       }}
     >
       {children}
+      <Footer />
     </DocsLayout>
   )
 }

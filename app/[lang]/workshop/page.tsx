@@ -51,9 +51,9 @@ const prerequisites: PrerequisiteItem[] = [
 ]
 
 const envSnippet = [
-  'AGORA_APP_ID=d83b679bc7b3406c83f63864cb74aa99',
-  'DEEPSEEK_API_KEY=sk-61a43a61c84e45078a1ade4ef5113af0',
-  'DEEPGRAM_API_KEY=92366fdabbcc9da1013a3ed5ead4e6aa0c31173',
+  'AGORA_APP_ID=<请填入你申请的 Key>',
+  'DEEPSEEK_API_KEY=<请填入你申请的 Key>',
+  'DEEPGRAM_API_KEY=<请填入你申请的 Key>',
   'ELEVENLABS_API_KEY=<请填入你申请的 Key>'
 ].join('\n')
 
@@ -70,7 +70,7 @@ const steps: StepItem[] = [
       '打开 TEN Framework 的 GitHub 仓库，点击右上角的 Fork，将项目复制到你的个人空间，方便后续使用 Codespaces。',
     link: {
       label: '打开 TEN Framework 仓库',
-      href: 'https://github.com/TEN-framework/TEN'
+      href: 'https://github.com/TEN-framework/TEN-framework'
     }
   },
   {
@@ -136,7 +136,7 @@ export default function WorkshopPage() {
           </p>
           <div className='mt-10 flex flex-wrap gap-4'>
             <a
-              href='https://github.com/TEN-framework/TEN'
+              href='https://github.com/TEN-framework/TEN-framework'
               target='_blank'
               rel='noreferrer'
               className='inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 font-semibold text-slate-900 text-sm shadow-sm transition hover:bg-slate-100'
@@ -145,7 +145,7 @@ export default function WorkshopPage() {
               <ExternalLink className='size-4' />
             </a>
             <a
-              href='https://discord.gg/tenframework'
+              href='https://discord.gg/VnPftUzAMJ'
               target='_blank'
               rel='noreferrer'
               className='inline-flex items-center gap-2 rounded-full border border-white/40 px-6 py-3 font-semibold text-sm text-white transition hover:border-white hover:bg-white/10'
@@ -242,6 +242,16 @@ export default function WorkshopPage() {
           </ol>
         </div>
       </section>
+
+      <div className='fixed right-6 bottom-6 z-50 flex max-w-xs flex-col gap-2 rounded-2xl bg-amber-400/90 px-5 py-4 text-slate-950 shadow-2xl ring-4 ring-amber-300/40 backdrop-blur'>
+        <span className='font-semibold text-amber-900/80 text-xs uppercase tracking-widest'>
+          Wi-Fi 信息
+        </span>
+        <div className='space-y-1 font-medium text-sm'>
+          <p>账号：多瑙厅</p>
+          <p>密码：DN20251101</p>
+        </div>
+      </div>
     </div>
   )
 }
