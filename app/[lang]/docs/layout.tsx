@@ -1,7 +1,10 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/notebook'
 import type { ReactNode } from 'react'
+import { Footer } from '@/components/ui/footer'
 import { baseOptions } from '@/lib/layout.shared'
 import { source } from '@/lib/source'
+
+import './docs.css'
 
 export default async function Layout({
   params,
@@ -22,6 +25,7 @@ export default async function Layout({
       tree={source.pageTree[lang]}
     >
       {children}
+      <Footer />
     </DocsLayout>
   )
 }

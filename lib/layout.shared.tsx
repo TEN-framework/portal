@@ -27,7 +27,7 @@ export function baseOptions(locale: string): BaseLayoutProps {
         </div>
       ),
       url: `/${locale}`,
-      transparentMode: 'top'
+      transparentMode: 'always'
     },
     links: [
       {
