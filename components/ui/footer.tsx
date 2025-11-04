@@ -37,21 +37,21 @@ export function Footer({ className }: { className?: string }) {
 
   const productLinks = [
     { name: t('product.framework'), href: 'https://github.com/ten-framework/ten-framework' },
-    { name: t('product.agent'), href: 'https://agent.theten.ai' },
+    { name: t('product.agentExamples'), href: 'https://agent.theten.ai' },
     { name: t('product.vad'), href: 'https://github.com/ten-framework/ten-vad' },
     { name: t('product.turnDetection'), href: 'https://github.com/ten-framework/ten-turn-detection' }
   ]
 
-  const resourceLinks = [
-    { name: t('resources.documentation'), href: '/docs' },
-    { name: t('resources.blog'), href: '/blog' },
-    { name: t('resources.huggingFace'), href: 'https://huggingface.co/spaces/TEN-framework/ten-agent-demo', external: true }
+  const developerLinks = [
+    { name: t('developers.documentation'), href: '/docs' },
+    { name: t('developers.blog'), href: '/blog' },
+    { name: t('developers.huggingFace'), href: 'https://huggingface.co/spaces/TEN-framework/ten-agent-demo', external: true }
   ]
 
   const communityLinks = [
     { name: t('community.github'), href: 'https://github.com/ten-framework/ten-framework', external: true },
     { name: t('community.discord'), href: 'https://discord.gg/VnPftUzAMJ', external: true },
-    { name: t('community.twitter'), href: 'https://twitter.com/TENFramework', external: true }
+    { name: t('community.xTwitter'), href: 'https://twitter.com/TENFramework', external: true }
   ]
 
   return (
@@ -97,10 +97,10 @@ export function Footer({ className }: { className?: string }) {
             </div>
           </div>
 
-          {/* Product Links */}
+          {/* Open-Source Products Links */}
           <div className='space-y-4'>
             <h3 className='font-semibold text-foreground text-sm'>
-              {t('product.title')}
+              {t('product.openSourceTitle')}
             </h3>
             <ul className='space-y-3'>
               {productLinks.map((link) => (
@@ -118,13 +118,13 @@ export function Footer({ className }: { className?: string }) {
             </ul>
           </div>
 
-          {/* Resources Links */}
+          {/* Developers Links */}
           <div className='space-y-4'>
             <h3 className='font-semibold text-foreground text-sm'>
-              {t('resources.title')}
+              {t('developers.title')}
             </h3>
             <ul className='space-y-3'>
-              {resourceLinks.map((link) => (
+              {developerLinks.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}

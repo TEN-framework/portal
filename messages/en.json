@@ -177,8 +177,9 @@
     "tagline": "An open-source framework designed for building real-time conversational AI agents",
     "product": {
       "title": "Product",
+      "openSourceTitle": "Open-Source Products",
       "framework": "TEN Framework",
-      "agent": "TEN Agent",
+      "agentExamples": "Agent Examples",
       "vad": "TEN VAD",
       "turnDetection": "TEN Turn Detection"
     },
@@ -188,11 +189,18 @@
       "blog": "Blog",
       "huggingFace": "Hugging Face Space"
     },
+    "developers": {
+      "title": "Developers",
+      "documentation": "Documentation",
+      "blog": "Blog",
+      "huggingFace": "Hugging Face Space"
+    },
     "community": {
       "title": "Community",
       "github": "GitHub",
       "discord": "Discord",
-      "twitter": "Twitter"
+      "twitter": "Twitter",
+      "xTwitter": "X/Twitter"
     },
     "copyright": "© {year} TEN Framework. All rights reserved.",
     "supportedBy": "Supported by the TEN Community and"

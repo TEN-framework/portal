@@ -126,7 +126,7 @@ export function Hero(props: { className?: string }) {
   return (
     <div className={cn('w-full text-foreground', className)}>
       <div className='container mx-auto'>
-        <div className='flex flex-col items-center justify-center gap-6 pt-4 pb-10 sm:pb-12 md:gap-8 md:pb-16 lg:pt-8 xl:pb-24 2xl:pb-60'>
+        <div className='flex flex-col items-center justify-center gap-6 py-0 sm:py-1 md:gap-8 md:py-2 lg:py-3 xl:py-4 2xl:py-6'>
           <div>
             <Button
               variant='secondary'
