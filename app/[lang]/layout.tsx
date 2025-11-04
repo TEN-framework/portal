@@ -63,7 +63,7 @@ export default async function Layout({
           crossOrigin='anonymous'
         />
         <link
-          href='https://fonts.googleapis.com/css2?family=Audiowide&display=swap'
+          href='https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700&display=swap'
           rel='stylesheet'
         />
         <Script id='posthog-analytics' strategy='afterInteractive'>
