@@ -62,6 +62,9 @@ export function Footer({ className }: { className?: string }) {
       )}
     >
       <div className='container mx-auto px-4 py-12 md:py-16'>
+        {/* Divider */}
+        <div className='mb-8 h-px bg-gradient-to-r from-transparent via-border to-transparent' />
+
         {/* Main Content */}
         <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-5'>
           {/* Brand Section */}
@@ -158,11 +161,8 @@ export function Footer({ className }: { className?: string }) {
           </div>
         </div>
 
-        {/* Divider */}
-        <div className='my-8 h-px bg-gradient-to-r from-transparent via-border to-transparent' />
-
         {/* Bottom Section */}
-        <div className='flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left'>
+        <div className='mt-12 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left'>
           <p className='text-muted-foreground text-sm'>
             {t('copyright', { year: new Date().getFullYear() })}
           </p>
