@@ -50,6 +50,11 @@ body {
   font-weight: 500;
 }
 
+/* Remove header border for transparent effect */
+[data-transparent] {
+  border-bottom: none !important;
+}
+
 /* Animation delay utilities for sparkles effect */
 .animation-delay-300 {
   animation-delay: 300ms;

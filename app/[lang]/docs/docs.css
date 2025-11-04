@@ -1,0 +1,20 @@
+/* Override font for docs section only */
+:root {
+  --font-inter: "Inter", system-ui, sans-serif;
+}
+
+/* Apply Inter font to all elements within the docs layout */
+body {
+  font-family: var(--font-inter);
+  font-weight: 400;
+}
+
+/* Ensure headings also use Inter */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-inter);
+}
+
+/* Override any Jokker font usage in docs */
+* {
+  font-family: var(--font-inter);
+}
