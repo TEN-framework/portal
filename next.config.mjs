@@ -18,6 +18,14 @@ const config = {
       }
     ]
     // unoptimized: process.env.NODE_ENV === 'development'
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/docs/:path*.mdx',
+        destination: '/llms.mdx/:path*'
+      }
+    ]
   }
 }
 

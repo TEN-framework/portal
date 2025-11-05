@@ -26,7 +26,10 @@ const docMetaSchema = metaSchema.extend({
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
-    schema: docFrontmatterSchema
+    schema: docFrontmatterSchema,
+    postprocess: {
+      includeProcessedMarkdown: true
+    }
   } as const,
   meta: {
     schema: docMetaSchema
