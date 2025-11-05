@@ -8,7 +8,7 @@ import {
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getMDXComponents } from '@/components/mdx'
-import { source } from '@/lib/source'
+import { getDocPageImage, source } from '@/lib/source'
 
 export default async function Page(props: {
   params: Promise<{ lang: string; slug?: string[] }>
@@ -72,6 +72,9 @@ export async function generateMetadata(props: {
 
   return {
     title: page.data.title,
-    description: page.data.description
+    description: page.data.description,
+    openGraph: {
+      images: getDocPageImage(page).url
+    }
   }
 }
