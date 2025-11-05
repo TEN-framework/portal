@@ -3,14 +3,14 @@ const DEFAULT_LOCALE = 'en-US'
 const baseDateFormatter = (locale: string, timeZone: string) =>
   new Intl.DateTimeFormat(locale, {
     dateStyle: 'full',
-    timeZone,
+    timeZone
   })
 
 const baseTimeFormatter = (locale: string, timeZone: string) =>
   new Intl.DateTimeFormat(locale, {
     hour: 'numeric',
     minute: '2-digit',
-    timeZone,
+    timeZone
   })
 
 const baseTimeWithZoneFormatter = (locale: string, timeZone: string) =>
@@ -18,7 +18,7 @@ const baseTimeWithZoneFormatter = (locale: string, timeZone: string) =>
     hour: 'numeric',
     minute: '2-digit',
     timeZone,
-    timeZoneName: 'short',
+    timeZoneName: 'short'
   })
 
 const toLocalKey = (date: Date, timeZone: string) =>
@@ -26,7 +26,7 @@ const toLocalKey = (date: Date, timeZone: string) =>
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
-    timeZone,
+    timeZone
   }).format(date)
 
 export const getTimeZoneAbbreviation = (
@@ -49,7 +49,8 @@ export const formatWorkshopDateRange = (
 ) => {
   const startDate = new Date(start)
   const endDate = new Date(end)
-  const sameDay = toLocalKey(startDate, timeZone) === toLocalKey(endDate, timeZone)
+  const sameDay =
+    toLocalKey(startDate, timeZone) === toLocalKey(endDate, timeZone)
 
   const dateFormatter = baseDateFormatter(locale, timeZone)
   const timeFormatter = baseTimeFormatter(locale, timeZone)

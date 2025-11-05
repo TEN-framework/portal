@@ -4,7 +4,6 @@ import { useTheme } from 'next-themes'
 import type { CSSProperties } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Hero } from '@/app/[lang]/(home)/_components'
-import { Footer } from '@/components/ui/footer'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
