@@ -2,15 +2,19 @@
 
 import { Sparkles, Star } from 'lucide-react'
 import { useMotionValue, useSpring } from 'motion/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface GitHubStarButtonProps {
   repo: string // Format: "owner/repo"
   className?: string
 }
 
-function useCountAnimation(to: number | null, from: number = 0, duration: number = 2) {
-  const ref = useRef<number>(from)
+function useCountAnimation(
+  to: number | null,
+  from: number = 0,
+  duration: number = 2
+) {
+  // const ref = useRef<number>(from)
   const [displayValue, setDisplayValue] = useState(from)
   const motionValue = useMotionValue(from)
 

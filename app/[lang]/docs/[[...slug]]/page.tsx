@@ -8,7 +8,8 @@ import {
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { getMDXComponents } from '@/components/mdx'
-import { source } from '@/lib/source'
+import { LLMCopyButton, ViewOptions } from '@/components/page-actions'
+import { getDocPageImage, source } from '@/lib/source'
 
 export default async function Page(props: {
   params: Promise<{ lang: string; slug?: string[] }>
@@ -44,8 +45,17 @@ export default async function Page(props: {
     >
       <DocsTitle>{page.data.title}</DocsTitle>
       {page.data.description ? (
-        <DocsDescription>{page.data.description}</DocsDescription>
+        <DocsDescription className='mb-0'>
+          {page.data.description}
+        </DocsDescription>
       ) : null}
+      <div className='flex flex-row items-center gap-2 border-b pt-2 pb-6'>
+        <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
+        <ViewOptions
+          markdownUrl={`${page.url}.mdx`}
+          githubUrl={`https://github.com/TEN-framework/portal/blob/main/content/docs/${page.path}`}
+        />
+      </div>
       <DocsBody>
         <MDXContent
           components={getMDXComponents({
@@ -72,6 +82,9 @@ export async function generateMetadata(props: {
 
   return {
     title: page.data.title,
-    description: page.data.description
+    description: page.data.description,
+    openGraph: {
+      images: getDocPageImage(page).url
+    }
   }
 }

@@ -30,3 +30,20 @@ export const blog = loader({
 
 export type DocPage = InferPageType<typeof source>
 export type DocMeta = InferMetaType<typeof source>
+export function getDocPageImage(page: DocPage) {
+  const segments = [...page.slugs, 'image.png']
+  return {
+    segments,
+    url: `/og/docs/${segments.join('/')}`
+  }
+}
+
+export type BlogPage = InferPageType<typeof blog>
+export type BlogMeta = InferMetaType<typeof blog>
+export function getBlogPageImage(page: BlogPage) {
+  const segments = [...page.slugs, 'image.png']
+  return {
+    segments,
+    url: `/og/blog/${segments.join('/')}`
+  }
+}

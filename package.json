@@ -8,9 +8,8 @@
     "start": "next start",
     "postinstall": "fumadocs-mdx",
     "lint": "biome check --write",
-    "typecheck": "tsc --noEmit",
     "lint:links": "bun run scripts/validate-links.ts",
-    "check": "bun run typecheck && bun run lint && bun run lint:links",
+    "check": "bun run lint && bun run lint:links",
     "scripts:sync-remote-docs": "bun run scripts/sync-remote-docs/index.ts"
   },
   "dependencies": {

@@ -171,6 +171,11 @@
       "label": "版本",
       "placeholder": "选择一个版本",
       "latest": "最新"
+    },
+    "page-actions": {
+      "copy-markdown": "复制 Markdown",
+      "open-in-vendor": "在 {vendor} 上打开",
+      "open": "打开"
     }
   },
   "footer": {

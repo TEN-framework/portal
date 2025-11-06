@@ -171,6 +171,11 @@
       "label": "Version",
       "placeholder": "Select a version",
       "latest": "Latest"
+    },
+    "page-actions": {
+      "copy-markdown": "Copy Markdown",
+      "open-in-vendor": "Open in {vendor}",
+      "open": "Open"
     }
   },
   "footer": {
