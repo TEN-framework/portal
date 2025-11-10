@@ -681,138 +681,6 @@ cd ai_agents
 task tts-guarder-test EXTENSION=your_extension_name CONFIG_DIR=tests/configs
 ```
 
-## 🌐 端到端测试
-
-完成开发后，可以使用 TMan Designer 快速替换 TEN Agent 对话图中的 TTS 扩展，验证在实际对话场景下的效果。
-
-### 使用 TMan Designer 替换 TTS 扩展
-
-```bash title="Terminal"
-# 在 TEN Agent 项目目录下启动
-cd /path/to/your/ten-agent-project
-tman designer
-```
-
-TMan Designer 会打开可视化界面，你可以：
-
-1. **选择 TTS 节点**: 点击现有的 TTS 扩展积木
-2. **替换为你的扩展**: 选择 `my_tts_extension`
-3. **配置参数**: 设置 API Key、语音ID等参数
-4. **一键应用**: 完成替换并启动测试
-
-替换完成后，通过真实对话验证扩展的音频质量、响应速度和稳定性。
-
-## 提Pull Request前检查清单
-
-在提交Pull Request之前，请确保已完成以下所有检查项：
-
-### 1. 功能实现 ✅
-
-**要求**：完成所有核心功能的实现
-
-**检查项**：
-- [ ] 实现`request_tts()`方法，能够正确处理文本输入并生成音频
-- [ ] 实现`vendor()`方法，返回正确的供应商名称
-- [ ] 实现`synthesize_audio_sample_rate()`方法，返回正确的采样率
-- [ ] 如果使用HTTP模式，实现`create_config()`和`create_client()`方法
-- [ ] 如果使用HTTP模式，实现配置类和客户端类的所有必需方法
-- [ ] 如果是websocket模式，要有自动重连机制
-- [ ] 正确实现错误处理，区分`FATAL_ERROR`和`NON_FATAL_ERROR`
-- [ ] 正确处理flush请求，实现`cancel_tts()`方法
-- [ ] 正确发送`tts_audio_start`和`tts_audio_end`事件
-- [ ] 正确计算和上报TTFB指标
-- [ ] 正确计算和上报音频时长
-- [ ] 正确发送metrics数据
-- [ ] 日志记录符合要求
-
-### 2. 单元测试（UT）✅
-
-**要求**：完成所有单元测试，确保代码质量
-
-**检查项**：
-- [ ] 所有单元测试通过
-- [ ] 测试所有主要功能路径
-- [ ] 测试错误处理逻辑
-- [ ] 测试边界条件
-- [ ] 测试参数验证逻辑
-- [ ] 测试配置加载和验证
-
-**运行命令**：
-```bash
-# 方式1：使用task命令（推荐）
-# 在项目根目录（ten-framework/ai_agents）下运行
-task test-extension EXTENSION=agents/ten_packages/extension/your_extension_name
-
-# 方式2：手动运行
-cd agents/ten_packages/extension/your_extension_name
-tman -y install --standalone
-./tests/bin/start
-
-# 方式3：运行所有Extension的测试
-task test-agent-extensions
-```
-
-**注意**：
-- 确保在项目根目录（`ten-framework/ai_agents`）下运行task命令
-- 如果Extension没有安装依赖，task命令会自动安装
-- 测试配置文件应在`tests/configs/`目录下
-
-
-### 3. Ten Agent自测 ✅
-
-**要求**：在Ten Agent中完成自测，确保Extension能够正常工作
-
-**检查项**：
-- [ ] 在Ten Agent中成功加载Extension
-- [ ] 能够听到Agent声音
-- [ ] 能够正常多轮对话
-- [ ] 能够正常打断对话
-
-
-
-### 4. Guarder集成测试 ✅
-
-**要求**：通过所有Guarder集成测试，并将测试结果贴在PR评论中
-
-**测试位置**：`ten-framework/ai_agents/agents/integration_tests/tts_guarder`
-
-**运行命令**：
-```bash
-# 方式1：使用task命令（推荐）
-# 在项目根目录（ten-framework/ai_agents）下运行
-task tts-guarder-test EXTENSION=your_extension_name CONFIG_DIR=tests/configs
-
-# 方式2：手动运行
-cd agents/integration_tests/tts_guarder
-./scripts/install_deps_and_build.sh linux x64
-./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs
-
-# 运行单个测试文件
-./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs tests/test_basic_audio_setting.py
-```
-
-**环境变量设置**：
-```bash
-# 在项目根目录创建.env文件，或设置环境变量
-# 根据实际供应商设置API Key
-export VENDOR_TTS_API_KEY=your_api_key_here
-# 例如：
-export ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
-# 或在.env文件中：
-# ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
-```
-
-**注意**：
-- 确保在项目根目录（`ten-framework/ai_agents`）下运行task命令
-- 测试配置文件应在Extension目录下的`tests/configs/`目录中
-- 如果使用task命令，会自动从`.env`文件读取环境变量
-- 确保Extension已正确安装依赖
-
-**测试结果要求**：
-- [ ] 所有Guarder测试通过
-- [ ] 在PR评论中粘贴guarder 测试结果
-- [ ] 如有测试失败，说明原因并提供解决方案
-
 
 ### Guarder测试点说明
 
@@ -965,11 +833,153 @@ Guarder集成测试包含以下测试点，确保Extension符合TEN Framework的
 6. **测试顺序**：某些测试可能有依赖关系，建议按顺序运行
 7. **资源清理**：测试完成后清理临时文件和资源
 
+## 🌐 端到端测试
+
+完成开发后，可以使用 TMan Designer 快速替换 TEN Agent 对话图中的 TTS 扩展，验证在实际对话场景下的效果。
+
+### 使用 TMan Designer 替换 TTS 扩展
+
+```bash title="Terminal"
+# 在 TEN Agent 项目目录下启动
+cd /path/to/your/ten-agent-project
+tman designer
+```
+
+TMan Designer 会打开可视化界面，你可以：
+
+1. **选择 TTS 节点**: 点击现有的 TTS 扩展积木
+2. **替换为你的扩展**: 选择 `my_tts_extension`
+3. **配置参数**: 设置 API Key、语音ID等参数
+4. **一键应用**: 完成替换并启动测试
+
+替换完成后，通过真实对话验证扩展的音频质量、响应速度和稳定性。
+
+## 提Pull Request前检查清单
+
+在提交Pull Request之前，请确保已完成以下所有检查项：
+
+### 1. 功能实现 ✅
+
+**要求**：完成所有核心功能的实现
+
+**检查项**：
+- [ ] 实现`request_tts()`方法，能够正确处理文本输入并生成音频
+- [ ] 实现`vendor()`方法，返回正确的供应商名称
+- [ ] 实现`synthesize_audio_sample_rate()`方法，返回正确的采样率
+- [ ] 如果使用HTTP模式，实现`create_config()`和`create_client()`方法
+- [ ] 如果使用HTTP模式，实现配置类和客户端类的所有必需方法
+- [ ] 如果是websocket模式，要有自动重连机制
+- [ ] 正确实现错误处理，区分`FATAL_ERROR`和`NON_FATAL_ERROR`
+- [ ] 正确处理flush请求，实现`cancel_tts()`方法
+- [ ] 正确发送`tts_audio_start`和`tts_audio_end`事件
+- [ ] 正确计算和上报TTFB指标
+- [ ] 正确计算和上报音频时长
+- [ ] 正确发送metrics数据
+- [ ] 日志记录符合要求
+
+### 2. 提交的文件 ✅
+- [ ] **厂商交互功代码**：通常为xxx_tts.py
+- [ ] **主控制代码**：通常为extension.py
+- [ ] **单元测试代码**：通常在tests文件夹下
+- [ ] **Guarder测试配置文件**：通常在tests/configs文件夹下
+- [ ] **最小启动参数文件**：property.json
+- [ ] **版本、依赖、接口定义文件**：manifest.json
+
+### 3. 单元测试（UT）✅
+
+**要求**：完成所有单元测试，确保代码质量
+
+**检查项**：
+- [ ] 所有单元测试通过
+- [ ] 测试所有主要功能路径
+- [ ] 测试错误处理逻辑
+- [ ] 测试边界条件
+- [ ] 测试参数验证逻辑
+- [ ] 测试配置加载和验证
+
+**运行命令**：
+```bash
+# 方式1：使用task命令（推荐）
+# 在项目根目录（ten-framework/ai_agents）下运行
+task test-extension EXTENSION=agents/ten_packages/extension/your_extension_name
+
+# 方式2：手动运行
+cd agents/ten_packages/extension/your_extension_name
+tman -y install --standalone
+./tests/bin/start
+
+# 方式3：运行所有Extension的测试
+task test-agent-extensions
+```
+
+**注意**：
+- 确保在项目根目录（`ten-framework/ai_agents`）下运行task命令
+- 如果Extension没有安装依赖，task命令会自动安装
+- 测试配置文件应在`tests/configs/`目录下
+
+
+### 4. Ten Agent自测 ✅
+
+**要求**：在Ten Agent中完成自测，确保Extension能够正常工作
+
+**检查项**：
+- [ ] 在Ten Agent中成功加载Extension
+- [ ] 能够听到Agent声音
+- [ ] 能够正常多轮对话
+- [ ] 能够正常打断对话
+
+
+
+### 5. Guarder集成测试 ✅
+
+**要求**：通过所有Guarder集成测试，并将测试结果贴在PR评论中
+
+**测试位置**：`ten-framework/ai_agents/agents/integration_tests/tts_guarder`
+
+**运行命令**：
+```bash
+# 方式1：使用task命令（推荐）
+# 在项目根目录（ten-framework/ai_agents）下运行
+task tts-guarder-test EXTENSION=your_extension_name CONFIG_DIR=tests/configs
+
+# 方式2：手动运行
+cd agents/integration_tests/tts_guarder
+./scripts/install_deps_and_build.sh linux x64
+./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs
+
+# 运行单个测试文件
+./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs tests/test_basic_audio_setting.py
+```
+
+**环境变量设置**：
+```bash
+# 在项目根目录创建.env文件，或设置环境变量
+# 根据实际供应商设置API Key
+export VENDOR_TTS_API_KEY=your_api_key_here
+# 例如：
+export ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+# 或在.env文件中：
+# ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+```
+
+**注意**：
+- 确保在项目根目录（`ten-framework/ai_agents`）下运行task命令
+- 测试配置文件应在Extension目录下的`tests/configs/`目录中
+- 如果使用task命令，会自动从`.env`文件读取环境变量
+- 确保Extension已正确安装依赖
+
+**测试结果要求**：
+- [ ] 所有Guarder测试通过
+- [ ] 在PR评论中粘贴guarder 测试结果
+- [ ] 如有测试失败，说明原因并提供解决方案
+
+
 ### PR提交检查清单总结
 
 在提交PR之前，请确认以下所有项目已完成：
 
 - [ ] **功能实现**：所有核心功能已实现并通过自测
+- [ ] **所有必备文件都已提交**：代码运行的必备文件
 - [ ] **单元测试**：所有UT通过，覆盖率达标
 - [ ] **Ten Agent自测**：在Ten Agent中验证功能正常
 - [ ] **Guarder测试**：所有Guarder测试通过
