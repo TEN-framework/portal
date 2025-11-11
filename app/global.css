@@ -52,7 +52,7 @@ body {
 
 /* Remove header border for transparent effect */
 [data-transparent] {
-  border-bottom: none !important;
+  border-bottom: none;
 }
 
 /* Animation delay utilities for sparkles effect */

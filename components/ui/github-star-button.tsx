@@ -1,51 +1,50 @@
 'use client'
 
 import { Sparkles, Star } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useMotionValue, useSpring } from 'motion/react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface GitHubStarButtonProps {
   repo: string // Format: "owner/repo"
   className?: string
 }
 
-function useCountAnimation(endValue: number | null, duration: number = 8000) {
-  const [count, setCount] = useState(0)
-  const countRef = useRef<number>(0)
-  const startTimeRef = useRef<number | null>(null)
+function useCountAnimation(
+  to: number | null,
+  from: number = 0,
+  duration: number = 2
+) {
+  // const ref = useRef<number>(from)
+  const [displayValue, setDisplayValue] = useState(from)
+  const motionValue = useMotionValue(from)
+
+  const damping = 20 + 40 * (1 / duration)
+  const stiffness = 100 * (1 / duration)
+
+  const springValue = useSpring(motionValue, {
+    damping,
+    stiffness
+  })
+
+  const formatValue = useCallback((latest: number) => {
+    return Math.floor(latest)
+  }, [])
 
   useEffect(() => {
-    if (!endValue) return
-
-    const animate = (currentTime: number) => {
-      if (startTimeRef.current === null) {
-        startTimeRef.current = currentTime
-      }
-
-      const elapsed = currentTime - startTimeRef.current
-      const progress = Math.min(elapsed / duration, 1)
-      const easeOutExpo = progress === 1 ? 1 : 1 - 2 ** (-10 * progress)
-
-      const startValue = countRef.current
-      const newValue = Math.floor(
-        startValue + (endValue - startValue) * easeOutExpo
-      )
-      countRef.current = newValue
-      setCount(newValue)
-
-      if (progress < 1) {
-        requestAnimationFrame(animate)
-      }
+    if (to !== null) {
+      motionValue.set(to)
     }
+  }, [to, motionValue])
 
-    startTimeRef.current = null
-    requestAnimationFrame(animate)
+  useEffect(() => {
+    const unsubscribe = springValue.on('change', (latest: number) => {
+      setDisplayValue(formatValue(latest))
+    })
 
-    return () => {
-      startTimeRef.current = null
-    }
-  }, [endValue, duration])
+    return () => unsubscribe()
+  }, [springValue, formatValue])
 
-  return count
+  return displayValue
 }
 
 export function GitHubStarButton({
@@ -54,7 +53,7 @@ export function GitHubStarButton({
 }: GitHubStarButtonProps) {
   const [starCount, setStarCount] = useState<number | null>(null)
   const [isHovered, setIsHovered] = useState(false)
-  const animatedCount = useCountAnimation(starCount)
+  const animatedCount = useCountAnimation(starCount, 0, 2)
 
   useEffect(() => {
     const fetchStarCount = async () => {
@@ -107,8 +106,8 @@ export function GitHubStarButton({
 
   return (
     <div className='relative'>
-      {/* Sparkles effect */}
-      {!isHovered && (
+      {/* Sparkles effect - only on hover */}
+      {isHovered && (
         <div className='-inset-2 pointer-events-none absolute hidden sm:block'>
           <Sparkles className='absolute top-0 left-0 h-3 w-3 animate-ping text-yellow-400' />
           <Sparkles className='animation-delay-300 absolute top-0 right-0 h-2 w-2 animate-ping text-blue-400' />
