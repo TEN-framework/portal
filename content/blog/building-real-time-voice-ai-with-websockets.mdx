@@ -1,0 +1,505 @@
+---
+title: Building Real-Time Voice AI with WebSockets - A Deep Dive into TEN Framework's WebSocket Implementation
+description: Learn how to build production-ready voice AI applications using WebSockets instead of WebRTC. Explore TEN Framework's simple yet powerful JSON-based protocol for real-time STT → LLM → TTS pipelines.
+author: Elliot Chen
+date: 2025-11-11
+articleLabel: use case
+accentWords: WebSocket | Voice Assistant | Real-Time
+---
+
+Real-time voice interaction has become the cornerstone of modern AI applications. While many voice assistants rely on WebRTC for audio streaming, **WebSockets offer a simpler, more flexible alternative** that's easier to implement and debug.
+
+In this article, we'll explore how the **TEN Framework's WebSocket implementation** delivers production-ready voice AI with minimal complexity.
+
+---
+
+## Why WebSockets for Voice AI?
+
+When building voice assistants, developers traditionally reach for WebRTC due to its real-time capabilities. However, **WebSockets provide a compelling alternative** that addresses common pain points:
+
+- **Simplicity** → JSON-based protocol instead of complex WebRTC signaling
+- **Debuggability** → Easy to inspect messages with standard browser tools
+- **Base64 Audio** → No need for complex audio codec negotiations
+- **Universal Support** → Works in any environment that supports WebSocket connections
+
+The TEN Framework's WebSocket voice assistant example demonstrates how to build a complete **STT → LLM → TTS pipeline** using nothing but WebSocket connections and JSON messages.
+
+---
+
+## Architecture Overview
+
+The WebSocket implementation follows a clean, modular architecture that separates concerns while maintaining real-time performance:
+
+```
+┌─────────────────┐
+│ WebSocket Client│
+└────────┬────────┘
+         │ {"audio": "<base64>"}
+         ▼
+┌─────────────────┐  pcm_frame  ┌─────┐  asr_result  ┌──────────────┐
+│ websocket_server├────────────►│ STT ├─────────────►│ main_control │
+└────────┬────────┘              └─────┘              └──────┬───────┘
+         │                                                    │
+         │ {"type": "audio|data|cmd"}                        │
+         │                                                    ▼
+         │                                                 ┌─────┐
+         │                                                 │ LLM │
+         │                                                 └──┬──┘
+         │                                                    │
+         │ pcm_frame                                          ▼
+         │                                                 ┌─────┐
+         └─────────────────────────────────────────────────┤ TTS │
+                                                           └─────┘
+```
+
+### Key Components
+
+1. **WebSocket Server** → Python-based server handling bidirectional audio streaming
+2. **Client Manager** → TypeScript client with auto-reconnection and message routing
+3. **Main Control** → Orchestrates data flow between STT, LLM, and TTS
+4. **Audio Processing** → React hooks managing microphone capture and audio playback
+
+---
+
+## The Protocol: Simple Yet Powerful
+
+One of the most elegant aspects of this implementation is its **straightforward JSON protocol**. Instead of complex binary protocols, everything is JSON with base64-encoded audio.
+
+### Sending Audio (Client → Server)
+
+```javascript
+// Send 16kHz, mono, 16-bit PCM audio
+ws.send(JSON.stringify({
+  audio: audioBase64,  // Base64-encoded PCM data
+  metadata: {
+    session_id: "session-123",
+    timestamp: Date.now()
+  }
+}));
+```
+
+### Receiving Messages (Server → Client)
+
+The server sends **four message types**, each serving a distinct purpose:
+
+#### 1. Audio Messages
+TTS output ready for playback:
+
+```javascript
+{
+  type: "audio",
+  audio: "<base64-pcm-data>",
+  metadata: {
+    sample_rate: 16000,
+    channels: 1,
+    bytes_per_sample: 2
+  }
+}
+```
+
+#### 2. Data Messages
+Transcriptions and LLM responses:
+
+```javascript
+{
+  type: "data",
+  name: "text_data",
+  data: {
+    data_type: "transcribe",
+    role: "user",
+    text: "What's the weather like?",
+    is_final: true
+  }
+}
+```
+
+#### 3. Command Messages
+System events:
+
+```javascript
+{
+  type: "cmd",
+  name: "tool_register",
+  data: { /* tool configuration */ }
+}
+```
+
+#### 4. Error Messages
+Error handling:
+
+```javascript
+{
+  type: "error",
+  error: "Processing failed: invalid audio format"
+}
+```
+
+---
+
+## Client Implementation: React Hooks Architecture
+
+The frontend demonstrates **modern React patterns** with custom hooks that separate concerns cleanly.
+
+### WebSocket Manager
+
+The `WebSocketManager` class provides a clean abstraction over the native WebSocket API:
+
+```typescript
+const wsManager = new WebSocketManager({
+  url: 'ws://localhost:8765',
+  reconnectInterval: 3000,
+  maxReconnectAttempts: -1  // Unlimited retries
+});
+
+// Type-safe message handlers
+wsManager.onAudio((message) => {
+  // Handle TTS audio
+});
+
+wsManager.onData((message) => {
+  if (message.name === 'text_data') {
+    // Handle transcription
+  }
+});
+```
+
+### Audio Recording Hook
+
+The `useAudioRecorder` hook encapsulates microphone capture:
+
+```typescript
+const { isRecording, startRecording, stopRecording } =
+  useAudioRecorder(wsManager);
+
+// Records and automatically streams to WebSocket
+await startRecording();
+```
+
+This hook handles:
+- Microphone permission requests
+- PCM audio conversion (16kHz, mono, 16-bit)
+- Chunking audio into optimal packet sizes
+- Automatic base64 encoding and streaming
+
+### Automatic Reconnection
+
+Network interruptions are inevitable in production. The WebSocket manager implements **automatic reconnection with configurable retry attempts**:
+
+```typescript
+private attemptReconnect(): void {
+  if (this.isIntentionalClose) return;
+
+  this.reconnectAttempts++;
+  console.log(`Reconnecting... (attempt ${this.reconnectAttempts})`);
+
+  setTimeout(() => {
+    this.connect();
+  }, this.config.reconnectInterval);
+}
+```
+
+---
+
+## Server Implementation: Python AsyncIO
+
+The server-side implementation uses **Python's asyncio** for efficient concurrent handling of WebSocket connections and audio processing.
+
+### Single-Client Architecture
+
+Unlike typical chat servers, this voice assistant intentionally supports **only one client at a time**:
+
+```python
+async def _handle_client(self, websocket: Any) -> None:
+    client_id = f"{websocket.remote_address[0]}:{websocket.remote_address[1]}"
+
+    # Reject if another client is connected
+    async with self._client_lock:
+        if self.current_client is not None:
+            await self._send_error(
+                websocket,
+                "Connection rejected: only one connection allowed"
+            )
+            await websocket.close(1008, "Only one connection allowed")
+            return
+        self.current_client = websocket
+```
+
+This design ensures:
+- Clear audio ownership (no cross-talk)
+- Simplified state management
+- Predictable resource usage
+
+### Audio Processing Pipeline
+
+When audio arrives, it flows through the **TEN Framework's extension graph**:
+
+```python
+async def _process_message(self, message: str, websocket: Any, client_id: str):
+    data = json.loads(message)
+
+    # Decode base64 to PCM
+    pcm_data = base64.b64decode(data["audio"])
+
+    # Create audio data container
+    audio_data = AudioData(
+        pcm_data=pcm_data,
+        client_id=client_id,
+        metadata=data.get("metadata", {})
+    )
+
+    # Forward to TEN framework
+    await self.on_audio_callback(audio_data)
+```
+
+The framework then routes this PCM data through the configured extensions (STT → LLM → TTS), with results flowing back through the same WebSocket.
+
+---
+
+## Dynamic Port Assignment
+
+One convenient feature is **dynamic port management**. Instead of hardcoding ports, the frontend generates random ports (8000-9000) and stores them in localStorage:
+
+```typescript
+export function getOrGeneratePort(): number {
+  const stored = localStorage.getItem('websocket_port');
+  if (stored) return parseInt(stored, 10);
+
+  const port = Math.floor(Math.random() * 1000) + 8000;
+  localStorage.setItem('websocket_port', port.toString());
+  return port;
+}
+```
+
+When starting the agent, the port is passed via API:
+
+```typescript
+await fetch('/api/agents/start', {
+  method: 'POST',
+  body: JSON.stringify({
+    properties: { port }  // Override default port
+  })
+});
+```
+
+This prevents **port conflicts** when running multiple instances and makes local development smoother.
+
+---
+
+## Message Flow: A Complete Conversation
+
+Let's trace a complete conversation through the system:
+
+### 1. User Speaks
+```
+Browser Microphone → AudioRecorder
+  → Base64 Encoding
+  → WebSocket.send()
+  → Server receives {"audio": "..."}
+```
+
+### 2. Speech Recognition
+```
+WebSocket Server → PCM Frame
+  → Deepgram STT Extension
+  → ASR Result: {"text": "What's the weather?", "is_final": true}
+  → Main Control Extension
+```
+
+### 3. LLM Processing
+```
+Main Control → LLM Extension (OpenAI)
+  → Streaming Response
+  → Sentence Parsing (for TTS chunking)
+  → Text Data back to Main Control
+```
+
+### 4. Speech Synthesis
+```
+Main Control → TTS Extension (ElevenLabs)
+  → PCM Audio Frames
+  → WebSocket Server
+  → Base64 Encoded {"type": "audio", "audio": "..."}
+  → Client Audio Playback
+```
+
+### 5. UI Updates
+```
+WebSocket Client receives messages
+  → useWebSocket hook
+  → Zustand store updates
+  → React components re-render
+  → Chat history & transcription display update
+```
+
+---
+
+## Handling Interruptions
+
+A critical feature in voice assistants is **interruption handling**. When a user starts speaking while the AI is responding, the system must gracefully stop:
+
+```python
+async def _interrupt(self):
+    """Stop ongoing LLM and TTS generation"""
+    self.sentence_fragment = ""
+    await self.agent.flush_llm()
+
+    # Flush TTS queue
+    await _send_data(
+        self.ten_env,
+        "tts_flush",
+        "tts",
+        {"flush_id": str(uuid.uuid4())}
+    )
+
+    self.ten_env.log_info("Interrupt signal sent")
+```
+
+The `_on_asr_result` handler triggers interruption when detecting user speech:
+
+```python
+@agent_event_handler(ASRResultEvent)
+async def _on_asr_result(self, event: ASRResultEvent):
+    if event.final or len(event.text) > 2:
+        await self._interrupt()  # User is speaking, stop AI
+```
+
+---
+
+## Configuration and Customization
+
+The entire agent pipeline is configured **declaratively** in `property.json`:
+
+```json
+{
+  "ten": {
+    "predefined_graphs": [{
+      "name": "voice_assistant",
+      "nodes": [
+        {
+          "name": "websocket_server",
+          "addon": "websocket_server",
+          "property": {
+            "port": 8765,
+            "sample_rate": 16000
+          }
+        },
+        {
+          "name": "stt",
+          "addon": "deepgram_asr_python"
+        },
+        {
+          "name": "llm",
+          "addon": "openai_llm2_python"
+        },
+        {
+          "name": "tts",
+          "addon": "elevenlabs_tts2_python"
+        }
+      ]
+    }]
+  }
+}
+```
+
+Want to **swap Deepgram for Azure STT**? Just change the addon. Prefer **Google TTS over ElevenLabs**? Update the configuration. The WebSocket layer remains unchanged.
+
+---
+
+## Production Considerations
+
+### Error Handling
+
+The implementation includes comprehensive error handling:
+
+```python
+async def _send_error(self, websocket: Any, error: str):
+    """Send error to client and log"""
+    try:
+        error_msg = json.dumps({"type": "error", "error": error})
+        await websocket.send(error_msg)
+    except Exception as e:
+        self.ten_env.log_error(f"Failed to send error: {e}")
+```
+
+### Security
+
+For production deployments, consider:
+- **TLS/WSS** → Use secure WebSocket connections (wss://)
+- **Authentication** → Add token-based auth before accepting connections
+- **Rate Limiting** → Prevent audio flooding attacks
+- **Input Validation** → Validate audio metadata and size limits
+
+### Performance
+
+The implementation is optimized for real-time performance:
+- **Chunked Audio** → Processes audio in small chunks (100ms) for low latency
+- **Streaming TTS** → Sends audio as soon as sentences are complete
+- **Async I/O** → Python asyncio ensures non-blocking operations
+- **Efficient Encoding** → Base64 adds ~33% overhead but keeps implementation simple
+
+---
+
+## Getting Started
+
+Ready to try it yourself? The example is fully functional and requires just **three API keys**:
+
+```bash
+# Set environment variables
+export DEEPGRAM_API_KEY="your_deepgram_key"
+export OPENAI_API_KEY="your_openai_key"
+export ELEVENLABS_TTS_KEY="your_elevenlabs_key"
+
+# Clone the repository (if you haven't already)
+git clone https://github.com/TEN-framework/TEN-framework.git
+cd TEN-framework/ai_agents/agents/examples/websocket-example
+
+# Install and run
+task install
+task run
+```
+
+Visit **http://localhost:3000** and start talking!
+
+The complete source code is available in the [**TEN Framework repository**](https://github.com/TEN-framework/TEN-framework/tree/main/ai_agents/agents/examples/websocket-example).
+
+---
+
+## When to Choose WebSockets Over WebRTC
+
+### WebSockets excel when:
+- ✅ You want **simple, inspectable JSON protocols**
+- ✅ You're building **proof-of-concepts or MVPs**
+- ✅ **Browser compatibility** is critical
+- ✅ You need **flexibility in audio processing pipelines**
+- ✅ Your team **lacks WebRTC expertise**
+
+### WebRTC may be better when:
+- 🎯 **Ultra-low latency** is critical (&lt;100ms)
+- 🎯 You need built-in **STUN/TURN for NAT traversal**
+- 🎯 You require advanced features like **bandwidth adaptation**
+- 🎯 You're building **video conferencing features**
+
+---
+
+## Conclusion
+
+The TEN Framework's WebSocket voice assistant demonstrates that **building real-time voice AI doesn't require complex protocols** or steep learning curves.
+
+With **JSON messages, base64 audio, and a clean extension architecture**, you can create production-ready voice applications that are maintainable and debuggable.
+
+The **modular design** means you can swap STT, LLM, and TTS providers without touching the WebSocket layer. The **React hooks pattern** keeps the frontend clean and testable. And the **asyncio-based Python server** handles concurrent operations efficiently.
+
+Whether you're building a **customer service bot, a virtual assistant, or an AI companion**, this implementation provides a solid foundation that scales from prototype to production.
+
+---
+
+**Ready to build your own voice AI?**
+
+👉 Explore the [**WebSocket Example**](https://github.com/TEN-framework/TEN-framework/tree/main/ai_agents/agents/examples/websocket-example)
+
+💬 Join our [**Discord Community**](https://discord.gg/VnPftUzAMJ) to share what you're building
+
+**Learn More:**
+- [TEN Framework Documentation](https://doc.theten.ai)
+- [TMAN Designer: Visual Agent Builder](https://doc.theten.ai/ten_agent/customize_agent/tman-designer)
+- [WebSocket Example Repository](https://github.com/TEN-framework/TEN-framework/tree/main/ai_agents/agents/examples/websocket-example)
