@@ -22,6 +22,14 @@ jobs:
           path: ten_framework/${{ github.event.inputs.target_tag }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Checkout Remote Repository with target tag
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch full history including all tags
+          repository: TEN-framework/portal
+          path: portal
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Get Previous Docs Version
         id: previous_docs_version
         run: |
@@ -29,6 +37,15 @@ jobs:
           latest=$(cat portal/content/docs/ten_framework/_version.json | jq -r '.latest')
           echo "latest=$latest" >> $GITHUB_OUTPUT
           cd ${{ github.workspace }}
+
+      - name: Checkout Remote Repository with target tag
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch full history including all tags
+          repository: TEN-framework/ten-framework
+          ref: ${{ steps.previous_docs_version.outputs.latest }}
+          path: ten_framework/${{ steps.previous_docs_version.outputs.latest }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Diff remote docs between target tag and previous docs version
         id: diff_remote_docs
@@ -52,7 +69,6 @@ jobs:
           renamed_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R)
           echo "renamed_files=$renamed_files" >> $GITHUB_OUTPUT
           cd ${{ github.workspace }}
-
 
           cd portal
 
