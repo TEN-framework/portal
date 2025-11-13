@@ -4,7 +4,6 @@ import { useTheme } from 'next-themes'
 import type { CSSProperties } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Hero } from '@/app/[lang]/(home)/_components'
-import { Footer } from '@/components/ui/footer'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
@@ -72,7 +71,7 @@ export default function HomePage() {
       {/* Content */}
       <div className='relative z-10'>
         <div
-          className='flex min-h-screen flex-1 flex-col justify-center text-center lg:-mt-[10vh]'
+          className='lg:-mt-[10vh] flex min-h-screen flex-1 flex-col justify-center text-center'
           style={heroOffsetStyle}
         >
           <Hero className='flex h-full w-full items-center justify-center' />

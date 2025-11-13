@@ -14,7 +14,7 @@ const formatRange = (start: Date, end: Date) => {
   const resolvedZone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const formatter = new Intl.DateTimeFormat(undefined, {
     dateStyle: 'medium',
-    timeStyle: 'short',
+    timeStyle: 'short'
   })
 
   const startLabel = formatter.format(start)
@@ -35,7 +35,7 @@ export function LocalTimeNotice({ start, end, className }: LocalTimeProps) {
   if (!label) return null
 
   return (
-    <p className={cn('text-xs text-gray-400 dark:text-gray-500', className)}>
+    <p className={cn('text-gray-400 text-xs dark:text-gray-500', className)}>
       Shows in your timezone: {label}
     </p>
   )

@@ -5,6 +5,7 @@ import { getFormatter, getTranslations } from 'next-intl/server'
 import type { CSSProperties } from 'react'
 import { SITE_URL } from '@/app/metadata.config'
 import { getMDXComponents } from '@/components/mdx'
+import { SITE_META } from '@/constants'
 import { i18n } from '@/lib/i18n'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
@@ -39,7 +40,7 @@ export async function generateMetadata(props: {
       publishedTime: new Date(page.data.date).toISOString(),
       authors: [page.data.author],
       url: blogUrl,
-      siteName: 'TEN Framework'
+      siteName: SITE_META.name
     },
     twitter: {
       card: 'summary_large_image',

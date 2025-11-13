@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import type { Workshop, WorkshopCategory } from '@/constants'
 import { workshopCategories } from '@/constants'
 import { formatWorkshopDateRange, getTimeZoneAbbreviation } from '@/lib/date'
-import { cn } from '@/lib/utils'
 
 import { LocalTimeNotice } from './local-time'
 
