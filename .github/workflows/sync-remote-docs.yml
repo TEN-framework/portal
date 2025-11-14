@@ -123,6 +123,8 @@ jobs:
           bun-version: latest
 
       - name: Run Scripts
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           cd portal
 
