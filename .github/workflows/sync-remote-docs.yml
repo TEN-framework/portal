@@ -54,29 +54,29 @@ jobs:
 
           # list all ADDED files in target tag
           echo "-------------------------------- added_files --------------------------------"
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A ./docs
-          added_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A  ./docs)
+          git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=A ./docs
+          added_files=$(git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=A  ./docs)
           # echo "added_files=$added_files" >> $GITHUB_OUTPUT
           echo $added_files
           echo "----------------------------------------------------------------"
           # list all DELETED files in previous docs version
           echo "-------------------------------- deleted_files --------------------------------"
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D ./docs
-          deleted_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D ./docs)
+          git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=D ./docs
+          deleted_files=$(git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=D ./docs)
           # echo "deleted_files=$deleted_files" >> $GITHUB_OUTPUT
           echo $deleted_files
           echo "----------------------------------------------------------------"
           # list all MODIFIED files in target tag
           echo "-------------------------------- modified_files --------------------------------"
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M ./docs
-          modified_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M ./docs)
+          git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=M ./docs
+          modified_files=$(git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=M ./docs)
           # echo "modified_files=$modified_files" >> $GITHUB_OUTPUT
           echo $modified_files
           echo "----------------------------------------------------------------"
           # list all RENAMED files in target tag
           echo "-------------------------------- renamed_files --------------------------------"
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R ./docs
-          renamed_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R ./docs)
+          git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=R ./docs
+          renamed_files=$(git diff ${{ steps.previous_docs_version.outputs.latest }}..${{ github.event.inputs.target_tag }} --name-only --diff-filter=R ./docs)
           # echo "renamed_files=$renamed_files" >> $GITHUB_OUTPUT
           echo $renamed_files
           echo "----------------------------------------------------------------"
