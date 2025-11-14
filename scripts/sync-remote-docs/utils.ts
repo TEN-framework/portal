@@ -298,18 +298,35 @@ export const getAllowedFiles = async (
   return allowedFiles
 }
 
+const handleRemovePrefixFromFiles = (files: string[]): string[] => {
+  return files.map((file) =>
+    file.startsWith(`${DEFAULT_REMOTE_DOCS_FOLDER}/`)
+      ? file.slice(`${DEFAULT_REMOTE_DOCS_FOLDER}/`.length)
+      : file
+  )
+}
+
 export const filterDiffByMatcher = async (
   diffJson: DiffJson,
   portalConfig: PortalConfig
 ): Promise<DiffJson> => {
   const result: DiffJson = {
-    added_files: await getAllowedFiles(diffJson.added_files, portalConfig),
-    deleted_files: await getAllowedFiles(diffJson.deleted_files, portalConfig),
-    modified_files: await getAllowedFiles(
-      diffJson.modified_files,
+    added_files: await getAllowedFiles(
+      handleRemovePrefixFromFiles(diffJson.added_files),
       portalConfig
     ),
-    renamed_files: await getAllowedFiles(diffJson.renamed_files, portalConfig)
+    deleted_files: await getAllowedFiles(
+      handleRemovePrefixFromFiles(diffJson.deleted_files),
+      portalConfig
+    ),
+    modified_files: await getAllowedFiles(
+      handleRemovePrefixFromFiles(diffJson.modified_files),
+      portalConfig
+    ),
+    renamed_files: await getAllowedFiles(
+      handleRemovePrefixFromFiles(diffJson.renamed_files),
+      portalConfig
+    )
   }
   console.debug(
     LOG_INDENTIFIER,
