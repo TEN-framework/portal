@@ -53,19 +53,19 @@ jobs:
           cd ten_framework/${{ github.event.inputs.target_tag }}
 
           # list all ADDED files in target tag
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A ./docs
           added_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A)
           echo "added_files=$added_files" >> $GITHUB_OUTPUT
           # list all DELETED files in previous docs version
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D ./docs
           deleted_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D)
           echo "deleted_files=$deleted_files" >> $GITHUB_OUTPUT
           # list all MODIFIED files in target tag
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M ./docs
           modified_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M)
           echo "modified_files=$modified_files" >> $GITHUB_OUTPUT
           # list all RENAMED files in target tag
-          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R
+          git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R ./docs
           renamed_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R)
           echo "renamed_files=$renamed_files" >> $GITHUB_OUTPUT
           cd ${{ github.workspace }}
