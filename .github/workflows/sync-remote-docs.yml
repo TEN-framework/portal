@@ -54,20 +54,33 @@ jobs:
 
           # list all ADDED files in target tag
           git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A ./docs
-          added_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A)
+          added_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=A  ./docs)
           echo "added_files=$added_files" >> $GITHUB_OUTPUT
+          echo "-------------------------------- added_files --------------------------------"
+          echo $added_files
+          echo "----------------------------------------------------------------"
           # list all DELETED files in previous docs version
           git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D ./docs
-          deleted_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D)
+          deleted_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=D ./docs)
           echo "deleted_files=$deleted_files" >> $GITHUB_OUTPUT
+          echo "-------------------------------- deleted_files --------------------------------"
+          echo $deleted_files
+          echo "----------------------------------------------------------------"
           # list all MODIFIED files in target tag
           git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M ./docs
-          modified_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M)
+          modified_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=M ./docs)
           echo "modified_files=$modified_files" >> $GITHUB_OUTPUT
+          echo "-------------------------------- modified_files --------------------------------"
+          echo $modified_files
+          echo "----------------------------------------------------------------"
           # list all RENAMED files in target tag
           git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R ./docs
-          renamed_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R)
+          renamed_files=$(git diff ${{ github.event.inputs.target_tag }}..${{ steps.previous_docs_version.outputs.latest }} --name-only --diff-filter=R ./docs)
           echo "renamed_files=$renamed_files" >> $GITHUB_OUTPUT
+          echo "-------------------------------- renamed_files --------------------------------"
+          echo $renamed_files
+          echo "----------------------------------------------------------------"
+
           cd ${{ github.workspace }}
 
           cd portal
@@ -90,6 +103,8 @@ jobs:
               modified_files: ($modified | split("\n") | map(select(. != ""))),
               renamed_files: ($renamed | split("\n") | map(select(. != "")))
             }' > .tmp/diff.json
+          echo "-------------------------------- diff.json --------------------------------"
+          cat .tmp/diff.json
           cd ${{ github.workspace }}
 
       - name: Checkout Remote Repository with current tag
