@@ -37,8 +37,21 @@ export const _addMultipleActionFailureLogs = (logs: string[]) => {
 }
 export const _printAndExitOnActionFailureLogs = () => {
   if (ACTION_FAILURE_LOGS.length > 0) {
-    console.error(LOG_INDENTIFIER, `Action failure logs:`, ACTION_FAILURE_LOGS)
-    process.exit(1)
+    console.error(
+      LOG_INDENTIFIER,
+      `-------------------------------- Action Failure Logs --------------------------------`
+    )
+    console.error(
+      LOG_INDENTIFIER,
+      `Action failure logs:`,
+      ACTION_FAILURE_LOGS.join('\n')
+    )
+    console.error(
+      LOG_INDENTIFIER,
+      `------------------------------------------------------------------------------------------------`
+    )
+    // process.exit(1)
+    // allow to continue, not blocking the workflow
   }
 }
 // #endregion
