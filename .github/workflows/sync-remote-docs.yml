@@ -148,5 +148,5 @@ jobs:
           git push origin sync/${{ github.event.inputs.target_tag }}
           # create a pull request
           gh pr create --title "[sync-remote-docs] ${{ github.event.inputs.target_tag }}" --body "Sync remote docs for ${{ github.event.inputs.target_tag }}"
-          # upload diff.json to actions artifact
-          gh run upload ${{ github.run_id }} .tmp/diff.json
+          # # upload diff.json to actions artifact
+          # gh run upload ${{ github.run_id }} .tmp/diff.json
