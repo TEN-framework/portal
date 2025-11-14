@@ -124,7 +124,7 @@ jobs:
 
       - name: Run Scripts
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.TEN_FRAMEWORK_PORTAL_ACTION_PAT }}
         run: |
           cd portal
 
