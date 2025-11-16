@@ -3,10 +3,17 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { i18n } from '@/lib/i18n'
+import { Inter } from 'next/font/google'
+import { GuideSteps } from '@/components/guide/Steps'
+import { CopyCode } from '@/components/guide/CopyCode'
+import { InlineCodeText } from '@/components/guide/InlineCode'
+import { BlogQuickstart } from '@/components/guide/BlogQuickstart'
 
 const locales = ['en', 'cn'] as const
 
 type Locale = (typeof locales)[number]
+
+const inter = Inter({ subsets: ['latin'], display: 'swap' })
 
 type Step = {
   number: string
@@ -547,18 +554,18 @@ export const metadata: Metadata = {
 }
 
 type GuidePageProps = {
-  params: Promise<{ lang: string }>
+  params: { lang: string }
 }
 
 export default async function GuidePage({ params }: GuidePageProps) {
-  const { lang } = await params
-  const locale: Locale = locales.includes(lang as Locale)
+  const { lang } = params
+  const locale: Locale = (locales as readonly string[]).includes(lang)
     ? (lang as Locale)
-    : i18n.defaultLanguage
+    : (i18n.defaultLanguage as Locale)
   const t = guideContent[locale]
 
   return (
-    <div className='guide-theme flex flex-col'>
+    <div className={`${inter.className} guide-theme flex flex-col`}>
       <section className='guide-hero'>
         <div className='mx-auto flex w-full max-w-5xl flex-col gap-6 px-6 py-20 sm:py-24'>
           <span className='guide-chip inline-flex w-fit items-center gap-2 rounded-full border px-4 py-1 font-medium text-sm'>
@@ -571,6 +578,17 @@ export default async function GuidePage({ params }: GuidePageProps) {
           <p className='guide-text-muted max-w-3xl text-lg'>
             {t.hero.description}
           </p>
+          <div className='flex flex-wrap gap-3'>
+            <a href='#steps' className='guide-cta-primary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'>
+              {locale === 'cn' ? '开始指南' : 'Start guide'}
+            </a>
+            <a href='#commands' className='guide-cta-secondary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'>
+              {locale === 'cn' ? '常用命令' : 'Commands'}
+            </a>
+            <a href='#quickstart' className='guide-cta-secondary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'>
+              {locale === 'cn' ? '快速上手' : 'Quickstart'}
+            </a>
+          </div>
           {t.hero.note ? (
             <p className='guide-text-muted text-sm'>{t.hero.note}</p>
           ) : null}
@@ -598,7 +616,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
         </div>
       </section>
 
-      <section className='guide-section py-16'>
+      <section id='steps' className='guide-section py-16'>
         <div className='mx-auto flex w-full max-w-5xl flex-col gap-10 px-6'>
           <div>
             <p className='guide-text-muted font-medium text-sm uppercase tracking-[0.2em]'>
@@ -609,52 +627,35 @@ export default async function GuidePage({ params }: GuidePageProps) {
               {t.flow.description}
             </p>
           </div>
-          <div className='guide-panel overflow-hidden rounded-3xl'>
-            <Image
-              src='/images/contribution-flow.svg'
-              alt={t.flow.caption}
-              width={1200}
-              height={420}
-              className='w-full'
-              priority
-            />
+          <div className='guide-panel rounded-3xl p-6'>
+            <ol className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
+              {t.steps.map((s) => (
+                <li key={`flow-${s.number}`} className='flex items-center gap-3'>
+                  <span className='guide-step-badge inline-flex size-8 items-center justify-center rounded-full'>
+                    {s.number}
+                  </span>
+                  <span className='font-medium'>{s.title}</span>
+                </li>
+              ))}
+            </ol>
           </div>
           <p className='guide-text-muted text-sm'>{t.flow.caption}</p>
         </div>
       </section>
 
-      <section className='guide-section py-16'>
+      <section id='quickstart' className='guide-section py-16'>
+        <div className='mx-auto flex w-full max-w-5xl flex-col gap-8 px-6'>
+          <BlogQuickstart locale={locale} />
+        </div>
+      </section>
+
+      <section id='commands' className='guide-section py-16'>
         <div className='mx-auto w-full max-w-5xl px-6'>
           <div className='flex flex-col gap-6'>
             <h2 className='font-semibold text-3xl'>
               {locale === 'cn' ? '逐步完成以下任务' : 'Work through each step'}
             </h2>
-            <div className='grid gap-6 md:grid-cols-2'>
-              {t.steps.map((step) => (
-                <div key={step.number} className='guide-panel rounded-3xl p-6'>
-                  <div className='guide-text-muted flex items-center gap-3 font-semibold text-sm'>
-                    <span className='guide-step-badge inline-flex size-10 items-center justify-center rounded-full'>
-                      {step.number}
-                    </span>
-                    {step.title}
-                  </div>
-                  <p className='guide-text-muted mt-4 text-base'>
-                    {step.summary}
-                  </p>
-                  <ul className='mt-4 space-y-2 text-sm'>
-                    {step.bullets.map((entry) => (
-                      <li
-                        key={`${step.number}-${entry}`}
-                        className='guide-text-muted flex gap-2'
-                      >
-                        <CheckCircle2 className='guide-check mt-0.5 size-4' />
-                        <span>{entry}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+            <GuideSteps steps={t.steps} locale={locale} />
           </div>
         </div>
       </section>
@@ -670,7 +671,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
                   className='guide-text-muted flex gap-3'
                 >
                   <span className='guide-dot mt-1 size-2 rounded-full' />
-                  <span>{item}</span>
+                  <InlineCodeText text={item} />
                 </li>
               ))}
             </ul>
@@ -684,20 +685,49 @@ export default async function GuidePage({ params }: GuidePageProps) {
                   className='guide-text-muted flex gap-3'
                 >
                   <span className='guide-dot mt-1 size-2 rounded-full' />
-                  <span>{item}</span>
+                  <InlineCodeText text={item} />
                 </li>
               ))}
             </ul>
           </div>
           <div className='lg:col-span-2'>
-            <div className='guide-panel overflow-hidden rounded-3xl'>
-              <Image
-                src='/images/blog-doc-checklist.svg'
-                alt='Blog vs Docs checklist diagram'
-                width={1200}
-                height={520}
-                className='w-full'
-              />
+            <div className='guide-panel overflow-hidden rounded-3xl p-6'>
+              <h3 className='font-semibold text-xl'>
+                {locale === 'cn' ? 'Blog vs. Docs 修改清单' : 'Blog vs. Docs checklist'}
+              </h3>
+              <p className='guide-text-muted mt-2 text-sm'>
+                {locale === 'cn'
+                  ? '对照确认 Frontmatter、文件命名、预览路径等关键动作'
+                  : 'Cross-check frontmatter, filenames, preview paths and common steps'}
+              </p>
+              <div className='mt-6 grid gap-6 md:grid-cols-2'>
+                <div className='rounded-2xl border p-4'>
+                  <h4 className='font-semibold'>
+                    {locale === 'cn' ? 'Blog（content/blog）' : 'Blog (content/blog)'}
+                  </h4>
+                  <ul className='mt-3 space-y-2 text-sm'>
+                    {t.blogChecklist.map((item) => (
+                      <li key={`card-blog-${item}`} className='guide-text-muted flex gap-3'>
+                        <span className='guide-dot mt-1 size-2 rounded-full' />
+                        <InlineCodeText text={item} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className='rounded-2xl border p-4'>
+                  <h4 className='font-semibold'>
+                    {locale === 'cn' ? 'Docs（content/docs）' : 'Docs (content/docs)'}
+                  </h4>
+                  <ul className='mt-3 space-y-2 text-sm'>
+                    {t.docsChecklist.map((item) => (
+                      <li key={`card-docs-${item}`} className='guide-text-muted flex gap-3'>
+                        <span className='guide-dot mt-1 size-2 rounded-full' />
+                        <InlineCodeText text={item} />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -725,9 +755,7 @@ export default async function GuidePage({ params }: GuidePageProps) {
                 <p className='guide-text-muted mt-2 text-sm'>
                   {snippet.description}
                 </p>
-                <pre className='guide-code mt-4 overflow-auto rounded-2xl p-4 text-sm'>
-                  <code className='whitespace-pre'>{snippet.code}</code>
-                </pre>
+                <CopyCode code={snippet.code} />
               </div>
             ))}
           </div>
