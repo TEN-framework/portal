@@ -40,8 +40,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.9
+    },
+    {
+      url: `${baseUrl}/${lang}/guide`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9
     }
   ])
 
-  return [...staticPages, ...blogUrls, ...docUrls]
+  const localizedGuideEntry = [
+    {
+      url: `${baseUrl}/guide`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8
+    }
+  ]
+
+  return [...staticPages, ...localizedGuideEntry, ...blogUrls, ...docUrls]
 }
