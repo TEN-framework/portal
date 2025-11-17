@@ -5,7 +5,7 @@ import {
   scanURLs,
   validateFiles
 } from 'next-validate-link'
-import { source } from '@/.source'
+import { source } from '@/lib/source'
 
 async function checkLinks() {
   const scanned = await scanURLs({
@@ -38,16 +38,21 @@ function toPopulateEntry(page: InferPageType<typeof source>) {
 }
 
 function getHeadingHashes(page: InferPageType<typeof source>) {
-  return page.data.toc.map((item) => item.url.slice(1))
+  return (page.data.toc ?? []).map((item) => item.url.slice(1))
 }
 
 function toFile(page: InferPageType<typeof source>): FileObject {
   return {
     data: page.data,
     url: page.url,
-    path: page.absolutePath,
+    path: stripQuery(page.absolutePath),
     content: page.data.content
   }
+}
+
+function stripQuery(path: string) {
+  const queryIndex = path.indexOf('?')
+  return queryIndex === -1 ? path : path.slice(0, queryIndex)
 }
 
 void checkLinks()

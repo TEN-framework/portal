@@ -3,6 +3,7 @@
   "description": "latest",
   "root": true,
   "pages": [
+    "getting-started",
     "concept_overview",
     "preparation",
     "version_system",

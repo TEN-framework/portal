@@ -1,0 +1,406 @@
+---
+title: Get Started with TEN Framework in 5 Minutes
+description: A quick start guide to building your first real-time multi-language AI application with TEN Framework. Set up a voice transcription demo using Go, Python, and TypeScript in under 5 minutes.
+author: Elliot Chen
+date: 2025-11-14
+articleLabel: getting started
+accentWords: Quick Start | Multi-Language
+---
+
+## Get Started with TEN Framework in 5 Minutes
+
+Building real-time AI applications often means wrestling with complex architectures, language barriers, and integration headaches. The TEN Framework eliminates these pain points by letting you **orchestrate multi-language extensions through a unified runtime**—and you can have your first app running in under 5 minutes.
+
+This guide walks through the quick start process using the transcriber demo, a real-world example that showcases **Go for WebSocket handling, Python for speech recognition, and TypeScript for subtitle generation**—all working together seamlessly.
+
+---
+
+## Why TEN Framework?
+
+Before diving into the setup, here's what makes TEN different:
+
+- **Multi-Language by Design** → Use the best tool for each job: Go for networking, Python for AI, TypeScript for UI logic
+- **Real-Time First** → Built-in support for audio/video streaming and low-latency data flows
+- **Extension-Based** → Modular architecture lets you swap components without rewriting your entire stack
+- **Production Ready** → Handles cross-language communication, memory management, and concurrency out of the box
+
+The framework abstracts away the complexity of multi-language orchestration while preserving the performance characteristics of each language.
+
+---
+
+## System Requirements
+
+Before you begin, verify your system meets these requirements:
+
+### Supported Platforms
+- Linux (x64)
+- macOS Intel (x64)
+- macOS Apple Silicon (arm64)
+
+### Required Software
+- **Python 3.10** → For AI extensions and speech processing
+- **Go 1.20+** → For WebSocket and networking extensions
+- **Node.js & npm** → For frontend and TypeScript extensions
+
+### Quick Verification
+
+Run these commands to check your setup:
+
+```bash
+python --version    # Should show 3.10.x
+go version         # Should show 1.20 or higher
+node --version     # Should show recent version
+```
+
+### Python Environment Setup
+
+The guide recommends using virtual environments to avoid conflicts with system Python. You can use either `pyenv` or `venv`:
+
+```bash
+# Using pyenv
+pyenv install 3.10
+pyenv local 3.10
+
+# Or using venv
+python3.10 -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+## Installation Process
+
+### Step 1: Install TEN Manager
+
+The TEN Manager handles project creation, dependency management, and builds. Install it with a single command:
+
+```bash
+curl -fsSL https://get.theten.ai/install.sh | bash
+```
+
+After installation, verify it's in your PATH:
+
+```bash
+tman --version
+```
+
+If the command isn't found, add `/usr/local/bin` to your PATH:
+
+```bash
+export PATH="/usr/local/bin:$PATH"
+echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc  # or ~/.zshrc
+```
+
+### Step 2: Create Your First Project
+
+Now generate the transcriber demo application:
+
+```bash
+tman create transcriber_demo
+cd transcriber_demo
+```
+
+This scaffolds a complete project structure with all necessary configuration files, extension definitions, and the multi-language runtime graph.
+
+### Step 3: Install Dependencies
+
+The framework needs to install two types of dependencies:
+
+```bash
+# Install TEN packages and programming language dependencies
+tman install
+```
+
+This step typically takes **1-2 minutes** and:
+- Downloads required TEN framework packages
+- Installs Python dependencies (speech recognition libraries)
+- Sets up Go modules (WebSocket handling)
+- Configures TypeScript dependencies (subtitle generation)
+
+### Step 4: Build the Project
+
+Compile all extensions across all languages:
+
+```bash
+tman build
+```
+
+The build process takes approximately **30 seconds** and compiles:
+- Go extensions → Native binaries for WebSocket functions
+- Python extensions → Bytecode and dependency linking
+- TypeScript extensions → Transpiled JavaScript modules
+
+---
+
+## Configuration
+
+Before running the demo, you need to configure your speech service credentials. The transcriber demo uses **Azure Speech Service** by default.
+
+### Create Environment File
+
+Create a `.env` file in your project root:
+
+```bash
+cp .env.example .env
+```
+
+### Add Azure Credentials
+
+Open `.env` and add your Azure Speech Service credentials:
+
+```bash
+AZURE_SPEECH_KEY=your_azure_speech_key_here
+AZURE_SPEECH_REGION=your_region  # e.g., eastus, westus2
+```
+
+Don't have Azure credentials? You can:
+- Sign up for a [free Azure account](https://azure.microsoft.com/free/) (includes free tier for Speech Service)
+- Or swap in a different STT provider by modifying the extension configuration
+
+---
+
+## Running Your First TEN Application
+
+With everything configured, start the application:
+
+```bash
+tman start
+```
+
+The framework will:
+1. Initialize the multi-language runtime
+2. Load and connect all extensions (Go, Python, TypeScript)
+3. Start the WebSocket server
+4. Launch the web interface on **port 8080**
+
+### Access the Demo
+
+Open your browser and navigate to:
+
+```
+http://localhost:8080
+```
+
+You should see the transcriber interface with two main features:
+
+1. **Real-Time Voice Transcription** → Click to allow microphone access, then start speaking. Your speech appears as text in real-time.
+
+2. **Audio File Upload** → Upload pre-recorded audio files and watch as subtitles are generated with timestamps.
+
+---
+
+## Understanding the Demo Architecture
+
+The transcriber demo showcases TEN's multi-language orchestration capabilities. Here's how data flows through the system:
+
+```
+┌─────────────────┐
+│  Browser/Client │
+└────────┬────────┘
+         │ WebSocket Audio Stream
+         ▼
+┌─────────────────┐
+│  Go Extension   │ ← WebSocket handling & audio routing
+└────────┬────────┘
+         │ PCM Audio Frames
+         ▼
+┌─────────────────┐
+│ Python Extension│ ← Azure Speech Recognition
+└────────┬────────┘
+         │ Transcription Events
+         ▼
+┌─────────────────┐
+│TypeScript Ext.  │ ← Subtitle formatting & timestamps
+└────────┬────────┘
+         │ Formatted Subtitles
+         ▼
+┌─────────────────┐
+│  Browser/Client │
+└─────────────────┘
+```
+
+### Why This Architecture Matters
+
+- **Go handles I/O** → Efficient WebSocket connections and audio streaming
+- **Python processes AI** → Leverages Azure's Python SDK and ML libraries
+- **TypeScript manages UI logic** → Format subtitles, manage timestamps, handle display
+
+Each component runs in its native runtime but communicates through TEN's unified messaging system. You get the **performance of Go, the AI ecosystem of Python, and the web integration of TypeScript**—without manual IPC, serialization, or protocol design.
+
+---
+
+## Common Issues and Solutions
+
+### macOS Library Loading Failures
+
+**Symptom**: Error loading dynamic libraries on macOS
+
+**Solution**: Grant terminal permissions for the app:
+```bash
+xattr -d com.apple.quarantine /path/to/tman
+```
+
+### Network Connectivity Problems
+
+**Symptom**: Can't reach Azure Speech Service
+
+**Solutions**:
+- Check your firewall settings
+- Verify internet connectivity
+- Confirm Azure credentials in `.env`
+- Test with a different network
+
+### Port Already in Use
+
+**Symptom**: "Address already in use: port 8080"
+
+**Solution**: Either stop the conflicting process or change the port:
+```bash
+# Find what's using port 8080
+lsof -i :8080
+
+# Or change the port in config/server.json
+{
+  "port": 8081
+}
+```
+
+### Build Errors
+
+**Symptom**: Compilation fails with missing dependencies
+
+**Solutions**:
+- Re-run `tman install` to ensure all dependencies are present
+- Check that Go, Python, and Node.js versions meet requirements
+- Clear build cache: `tman clean && tman build`
+
+### Dependency Installation Challenges
+
+**Symptom**: `tman install` fails with package resolution errors
+
+**Solutions**:
+- Use a virtual environment for Python isolation
+- Check network access to package registries
+- Try clearing package cache: `rm -rf ~/.tman/cache`
+
+---
+
+## What's Actually Happening Under the Hood
+
+When you run the demo, TEN Framework:
+
+1. **Loads the Runtime Graph** → Parses your configuration to understand which extensions connect to which
+2. **Spawns Language Runtimes** → Starts separate processes for Go, Python, and TypeScript
+3. **Establishes Message Channels** → Creates high-performance IPC channels between languages
+4. **Routes Data** → Forwards audio frames from Go → Python, transcriptions from Python → TypeScript
+5. **Handles Lifecycle** → Manages startup, shutdown, and crash recovery across all components
+
+All of this happens transparently. Your extensions just send and receive messages through the TEN API—no manual process management, no custom serialization, no protocol design.
+
+---
+
+## Next Steps: Building Your Own Extensions
+
+Once you've run the demo successfully, you're ready to build custom extensions. The framework makes it easy to:
+
+### Swap Out Components
+Replace Azure Speech with a different STT provider:
+```bash
+tman extension add deepgram_stt
+# Update graph configuration to use new extension
+```
+
+### Add New Languages
+TEN supports C++, Rust, and more. Add a Rust extension for audio processing:
+```bash
+tman extension create my_audio_processor --language rust
+```
+
+### Extend Functionality
+Add sentiment analysis to transcriptions:
+```bash
+tman extension create sentiment_analyzer --language python
+# Connect it after the STT extension in your graph
+```
+
+### Create Custom Workflows
+Build a complete voice assistant by chaining:
+- STT → Transcription
+- LLM → Response generation
+- TTS → Voice synthesis
+- WebSocket → Real-time delivery
+
+---
+
+## Performance Characteristics
+
+The transcriber demo showcases TEN's real-time capabilities:
+
+- **Audio Latency** → Sub-100ms from microphone to STT extension (Go WebSocket handling)
+- **Transcription Speed** → Real-time processing (Azure's streaming API via Python)
+- **End-to-End** → Text appears in browser typically within 200-300ms of speech
+- **Cross-Language Overhead** → Minimal—TEN uses zero-copy message passing where possible
+
+This performance holds even as you add more extensions. The framework's message routing scales linearly with the complexity of your graph.
+
+---
+
+## Beyond the Quick Start
+
+This 5-minute guide gets you running, but TEN Framework offers much more:
+
+- **Visual Graph Designer** → Build extension graphs with TMAN Designer's drag-and-drop interface
+- **Production Deployment** → Docker support, Kubernetes orchestration, and cloud-native tooling
+- **Advanced Patterns** → Implement pub/sub, request/response, and streaming patterns
+- **Extension Marketplace** → Reuse community extensions for common tasks
+
+The transcription demo is intentionally minimal to show the core concepts. In production, you'd add error handling, state management, authentication, and monitoring—all supported by the framework's extension API.
+
+---
+
+## Why This Matters
+
+Traditional approaches to multi-language integration force you to choose:
+
+1. **Single Language** → Use one language and accept its limitations for certain tasks
+2. **Microservices** → Build separate services with REST/gRPC, accept network latency
+3. **FFI/Bindings** → Write complex C bindings, manage memory across language boundaries
+
+TEN Framework gives you a fourth option: **language-native extensions orchestrated by a real-time runtime**. You write idiomatic code in each language, and the framework handles the rest.
+
+The result? **Go's concurrency, Python's AI ecosystem, TypeScript's web integration**—all in a single application, with real-time performance.
+
+---
+
+## Conclusion
+
+In five minutes, you've:
+- Installed the TEN Framework toolchain
+- Created a multi-language AI application
+- Configured external services
+- Run a real-time transcription system
+- Understood the extension architecture
+
+The transcriber demo is just the beginning. Use it as a template for:
+- Live captioning systems
+- Voice assistants
+- Meeting transcription tools
+- Real-time translation services
+- Accessibility features
+
+The framework abstracts the hard parts—process management, serialization, language interop—so you can focus on building features that matter.
+
+---
+
+**Ready to build something real?**
+
+👉 Explore the [TEN Framework Documentation](https://theten.ai/docs)
+
+💬 Join the [Discord Community](https://discord.gg/VnPftUzAMJ) to connect with other developers
+
+📦 Browse [Extension Marketplace](https://theten.ai/extensions) for reusable components
+
+**Continue Learning:**
+- [Building Real-Time Voice AI with WebSockets](https://theten.ai/blog/building-real-time-voice-ai-with-websockets)
+- [TEN Framework: World's First Real-Time Multimodal Agent Framework](https://theten.ai/blog/ten-world-first-truly-real-time-multimodal-agent-framework)
+- [TMAN Designer Guide](https://theten.ai/docs/tman-designer)

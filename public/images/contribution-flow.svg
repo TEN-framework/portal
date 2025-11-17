@@ -1,0 +1,84 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">TEN Portal 贡献全流程示意</title>
+  <desc id="desc">展示从 Fork 仓库到合并 Pull Request 的关键步骤</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0f4ff" />
+      <stop offset="100%" stop-color="#e1f6ff" />
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1200" height="420" fill="url(#bg)" rx="24" />
+  <style>
+    text { font-family: Inter, 'Noto Sans SC', Arial, sans-serif; fill: #0f172a; }
+    .title { font-size: 26px; font-weight: 600; }
+    .subtitle { font-size: 18px; fill: #475569; }
+    .box { fill: #fff; stroke: #94a3b8; stroke-width: 1; rx: 16; }
+    .step-title { font-size: 18px; font-weight: 600; }
+    .step-body { font-size: 14px; fill: #475569; }
+    .arrow { stroke: #38bdf8; stroke-width: 3; marker-end: url(#arrowHead); }
+  </style>
+  <marker id="arrowHead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+    <polygon points="0,0 12,6 0,12" fill="#38bdf8" />
+  </marker>
+  <text class="title" x="60" y="60">TEN Portal 内容贡献流程</text>
+  <text class="subtitle" x="60" y="92">Fork → 本地修改 → 提交 PR → 合并</text>
+  <!-- Row 1 -->
+  <g transform="translate(40,120)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">1. Fork 仓库</text>
+    <text class="step-body" x="18" y="66">登录 GitHub，点击 Fork</text>
+    <text class="step-body" x="18" y="90">为自己创建副本</text>
+  </g>
+  <g transform="translate(320,120)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">2. Clone & 配置</text>
+    <text class="step-body" x="18" y="66">`git clone` 自己的仓库</text>
+    <text class="step-body" x="18" y="90">添加 upstream=官方仓库</text>
+  </g>
+  <g transform="translate(600,120)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">3. 安装依赖</text>
+    <text class="step-body" x="18" y="66">安装 Node 22+、Bun 1.1+</text>
+    <text class="step-body" x="18" y="90">运行 `bun install`</text>
+  </g>
+  <g transform="translate(880,120)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">4. 新建分支</text>
+    <text class="step-body" x="18" y="66">`git checkout -b feature/...`</text>
+    <text class="step-body" x="18" y="90">准备开始写作</text>
+  </g>
+  <!-- Row 2 -->
+  <g transform="translate(40,260)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">5. 编辑内容</text>
+    <text class="step-body" x="18" y="66">在 `content/blog` 或</text>
+    <text class="step-body" x="18" y="90">`content/docs` 修改</text>
+  </g>
+  <g transform="translate(320,260)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">6. 预览与自测</text>
+    <text class="step-body" x="18" y="66">`bun dev` 本地预览</text>
+    <text class="step-body" x="18" y="90">`bun run check`</text>
+  </g>
+  <g transform="translate(600,260)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">7. 提交并推送</text>
+    <text class="step-body" x="18" y="66">`git commit` & `git push`</text>
+    <text class="step-body" x="18" y="90">到你的远程仓库</text>
+  </g>
+  <g transform="translate(880,260)">
+    <rect class="box" width="240" height="110" />
+    <text class="step-title" x="18" y="36">8. 发起 PR & 合并</text>
+    <text class="step-body" x="18" y="66">在 GitHub 打开 PR</text>
+    <text class="step-body" x="18" y="90">通过后合并到 main</text>
+  </g>
+  <!-- arrows -->
+  <g stroke-linecap="round">
+    <line class="arrow" x1="280" y1="175" x2="320" y2="175" />
+    <line class="arrow" x1="560" y1="175" x2="600" y2="175" />
+    <line class="arrow" x1="840" y1="175" x2="880" y2="175" />
+    <line class="arrow" x1="280" y1="315" x2="320" y2="315" />
+    <line class="arrow" x1="560" y1="315" x2="600" y2="315" />
+    <line class="arrow" x1="840" y1="315" x2="880" y2="315" />
+  </g>
+</svg>
