@@ -7,6 +7,10 @@ const withNextIntl = createNextIntlPlugin('./lib/next-intl-requests.ts')
 /** @type {import('next').NextConfig} */
 const config = {
   turbopack: true,
+  productionBrowserSourceMaps: false, // Disables browser source maps in production
+  experimental: {
+    serverSourceMaps: false, // Disables server-side source maps
+  },
   images: {
     dangerouslyAllowLocalIP: true,
     remotePatterns: [

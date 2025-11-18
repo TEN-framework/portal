@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "postbuild": "find .next -name '*.map' -delete",
     "dev": "next dev",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
