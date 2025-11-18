@@ -1,0 +1,925 @@
+---
+title: Create an ASR Extension
+description: Build, test, and publish a production-ready ASR (Automatic Speech Recognition) extension from scratch
+---
+
+# Create ASR Extension - Complete Guide
+
+This guide walks you through creating a production-grade ASR (Automatic Speech Recognition) extension from scratch, covering project setup, core development, testing, and publishing.
+
+## What is an ASR Extension
+
+An ASR Extension is a standard building block in the TEN Framework that focuses on automatic speech recognition.
+
+### Core responsibilities
+
+1. Receive audio stream from upstream modules (typically PCM)
+2. Transcribe audio to text in real time
+3. Deliver recognized text to downstream modules
+
+### Where it fits in the pipeline
+
+ASR plays the key role of converting audio to text in a TEN Agent conversation flow:
+
+```
+[Upstream]  ── audio ──>  [ASR Extension]  ── text ──>  [Downstream]
+```
+
+Typical upstream modules:
+- RTC Extension: pull remote audio stream from an RTC channel
+- Audio Capture Extension: capture from microphone or audio files
+- Audio Processing Extension: provide preprocessed audio (e.g., denoise, AEC)
+
+Typical downstream modules:
+- LLM Extension: consume text to understand and generate responses
+- Translation Extension: translate recognized text across languages
+- Intent Recognition Extension: extract intents and key information
+
+### Real-world scenarios
+
+Scenario 1: AI Voice Assistant
+```
+RTC Extension → ASR Extension → LLM Extension → TTS Extension → RTC Extension
+```
+Collect user voice from RTC channel, ASR transcribes to text, LLM generates a reply, TTS converts the reply to speech, and streams it back to RTC.
+
+Scenario 2: Real-time Speech Translation
+```
+RTC Extension → ASR Extension → Translation Extension → TTS Extension → RTC Extension
+```
+Recognize Chinese speech to text, translate to English, then synthesize audio and push to RTC.
+
+Scenario 3: Voice Control
+```
+Microphone Extension → ASR Extension → Intent Recognition Extension → Action Executor Extension
+```
+Recognize voice commands to text, extract intent, and execute device actions.
+
+### Why standardize the ASR Extension
+
+- Plug-and-play: swap among vendors (Deepgram, Azure, Google, etc.) without changing neighbors
+- Composable: freely compose with other building blocks to form rich applications
+- Maintainable: upgrade and maintain in isolation
+- Reusable: develop once, reuse across projects
+- Ecosystem-ready: publish to TEN Store for community use
+
+## What you will learn
+
+- 🚀 Use the ASR template to scaffold a project
+- ⚙️ Understand the ASR Extension interface spec
+- 🔧 Implement the core logic of an ASR Extension
+- 🧪 Write unit and integration tests
+- 📊 Adopt logging and error-handling best practices
+- 🌐 Publish your extension to the TEN Store
+
+## Prerequisites
+
+- Knowledge: TEN Agent architecture and fundamentals of ASR
+- Skills: Python async programming (`asyncio`, `async/await`)
+- Environment: develop inside the dev container (tman installed)
+- API access: ASR vendor API key for testing
+
+<Callout type="info">
+  If you don't have the TEN Framework repository yet, clone it first:
+
+```bash
+git clone https://github.com/TEN-framework/ten-framework.git
+cd ten-framework
+```
+
+This tutorial assumes you're working from the TEN Framework repository root.
+</Callout>
+
+<Callout type="info">
+  The examples use Deepgram as the vendor, but the same design patterns apply to other vendors or local ASR models.
+</Callout>
+
+## 1. 🚀 Project initialization
+
+### Create a new extension
+
+Use TMan's ASR template to create the project skeleton:
+
+```bash title="Terminal"
+# go to the extension folder
+cd ai_agents/agents/ten_packages/extension
+
+# create an ASR extension
+tman create extension my_asr_extension --template default_asr_python --template-data class_name_prefix=MyAsr
+```
+
+After creation you should see:
+
+```bash title="Output"
+Package 'extension:my_asr_extension' created successfully in 'my_asr_extension' in 2 seconds.
+```
+
+### Install dependencies
+
+#### Third-party libraries
+
+Add the Deepgram SDK in `requirements.txt`:
+
+```text title="requirements.txt"
+websockets~=14.0
+pydantic
+requests
+deepgram-sdk
+aiofiles
+```
+
+#### Install TEN dependencies
+
+Enter the project and install dependencies:
+
+```bash title="Terminal"
+cd my_asr_extension
+tman install --standalone
+```
+
+This builds the dependency tree from `manifest.json` and installs them into `.ten`.
+
+## 2. 🏗️ Architecture
+
+### Project layout
+
+```
+my_asr_extension/
+├── manifest.json          # Extension metadata
+├── property.json          # Default runtime properties
+├── requirements.txt       # Python dependencies
+├── extension.py           # Main implementation
+├── addon.py               # Extension entry point
+├── __init__.py            # Python package initialization
+├── docs/                  # Documentation
+├── .vscode/               # VS Code debug configuration
+│   └── launch.json        # Debug launch config
+└── tests/                 # Tests
+    ├── bin/start          # Test runner script
+    ├── test_basic.py      # Unit tests
+    └── configs/           # Test configs
+```
+
+#### File descriptions
+
+**manifest.json and property.json** are standard metadata files for TEN Extensions:
+- `manifest.json`: Contains the extension's **name, version, description, dependencies, and schema definitions**
+- `property.json`: Defines the extension's **default property values**
+
+<Callout type="info">
+For a detailed understanding of TEN Framework's metadata system, refer to the [Metadata System documentation](/docs/ten_framework/metadata_system/metadata_system).
+</Callout>
+
+**requirements.txt** is specific to Python extensions and is used to declare the extension's **dependencies on third-party pip packages**.
+
+**extension.py** is the **core source code** of the extension, containing all the business logic implementation.
+
+**tests/** folder is used for **standalone extension testing**, including unit tests and test configurations.
+
+### ASR Extension interface spec
+
+ASR Extensions follow the standard interface from TEN Framework. When using the template, the interface inheritance and required API section will be generated automatically.
+
+#### Required methods
+
+```python
+vendor() -> str                                          
+    # Return vendor name (e.g., "deepgram", "azure")
+
+start_connection() -> None                               
+    # Establish connection to the vendor
+
+stop_connection() -> None                                
+    # Stop connection
+
+send_audio(frame: AudioFrame, session_id: str | None) -> bool  
+    # Send audio frame to vendor
+    # session_id: audio source identifier (can be ignored for single-user scenarios)
+    # Returns True if sent successfully
+
+finalize(session_id: str | None) -> None                 
+    # Called when VAD detects end of speech, trigger final results
+
+is_connected() -> bool                                   
+    # Return current connection status
+
+input_audio_sample_rate() -> int                         
+    # Return expected audio sample rate (e.g., 16000)
+```
+
+#### What the base class handles
+
+The `AsyncASRBaseExtension` base class already handles:
+
+- Audio frame reception and queue management
+- Performance metrics calculation (TTFW, TTLW)
+- Session management and metadata passing
+
+You only need to focus on integrating with your specific ASR vendor.
+
+## 3. ⚙️ Configuration design
+
+### Config model design
+
+```python
+from pydantic import BaseModel
+from typing import Dict, Optional
+
+class MyAsrConfig(BaseModel):
+    # Vendor parameters (pass-through design)
+    params: Dict[str, Optional[str]] = {}
+    
+    # Audio dump functionality
+    dump: bool = False
+    dump_path: Optional[str] = None
+```
+
+### Benefits of params pass-through design
+
+`params` is a dictionary that stores **all vendor-related parameters**. These parameters are **directly passed through to the vendor SDK** without needing to be enumerated in the Extension code.
+
+**Why this design?**
+
+✅ **Flexibility**: Users can configure any parameters supported by the vendor through `property.json`, without being limited by Extension implementation
+
+✅ **Extensibility**: When vendors add new parameters, Extension code doesn't need to be modified
+
+✅ **Simplicity**: Avoids defining a configuration field for each parameter
+
+**Example**:
+
+```json title="property.json"
+{
+  "params": {
+    "api_key": "your_api_key_here",
+    "language": "zh-CN",
+    "model": "nova-2",
+    "punctuate": "true",
+    "custom_param": "any_value"  // any parameter supported by the vendor
+  },
+  "dump": false
+}
+```
+
+Usage - directly pass through to vendor:
+
+```python
+# Read from params and pass to vendor
+api_key = self.config.params.get("api_key")
+language = self.config.params.get("language", "en-US")  # with default value
+```
+
+<Callout type="warning">
+**Note**: The template generates an empty `property.json` file (`{}`). You need to manually add your configuration.
+</Callout>
+
+### Read configuration
+
+```python
+@override
+async def on_init(self, ten_env: AsyncTenEnv) -> None:
+    await super().on_init(ten_env)
+    
+    # Read configuration from property.json
+    config_json, _ = await ten_env.get_property_to_json("")
+    self.config = MyAsrConfig.model_validate_json(config_json)
+    
+    ten_env.log_info(f"Config loaded: {self.config.model_dump_json()}")
+```
+
+## 4. 🔧 Core implementation
+
+### Basic methods
+
+```python
+class MyAsrExtension(AsyncASRBaseExtension):
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.config: MyAsrConfig = MyAsrConfig()
+        self.client = None  # Vendor SDK client
+        self.is_connected_flag = False
+        
+    @override
+    def vendor(self) -> str:
+        return "my_vendor"  # Change to your vendor name
+    
+    @override
+    def input_audio_sample_rate(self) -> int:
+        # Read from params with default value
+        return int(self.config.params.get("sample_rate", "16000"))
+    
+    @override
+    def is_connected(self) -> bool:
+        return self.is_connected_flag
+```
+
+### Connection management
+
+<Callout type="warning">
+**Important**: The following code is example only. The actual implementation depends on your vendor.
+
+Different vendors have very different connection approaches:
+- Some provide ready-made **SDKs** (e.g., Azure, Deepgram)
+- Some require direct **WebSocket** connections
+- Some use **HTTP streaming APIs**
+
+Refer to your vendor documentation and use the appropriate connection method.
+</Callout>
+
+#### Establish connection
+
+```python
+@override
+async def start_connection(self) -> None:
+    """Establish connection to the vendor"""
+    try:
+        await self.stop_connection()  # Stop existing connection first
+        
+        # 1. Initialize vendor client
+        # Pass through parameters from params to vendor SDK
+        # Example (adjust based on actual vendor):
+        self.client = VendorClient(
+            api_key=self.config.params.get("api_key"),
+            language=self.config.params.get("language", "en-US"),
+            # ... other parameters read directly from params and passed through
+        )
+        
+        # 2. Register event handlers
+        # Different vendors have different event mechanisms, this is just an example
+        self.client.on("connected", self._on_open)
+        self.client.on("result", self._on_transcript)
+        self.client.on("error", self._on_error)
+        
+        # 3. Start connection
+        await self.client.connect()
+        
+    except Exception as e:
+        self.ten_env.log_error(f"Failed to connect: {e}")
+
+@override
+async def stop_connection(self) -> None:
+    """Stop connection"""
+    if self.client:
+        await self.client.disconnect()
+        self.client = None
+        self.is_connected_flag = False
+```
+
+<Callout type="tip">
+**Value of params pass-through**: All parameters are read from the `params` dictionary and passed through to the vendor SDK, allowing users to flexibly configure any parameters supported by the vendor without modifying code.
+
+**Reference existing implementations**:
+- `azure_asr_python` - Using Azure SDK
+- `deepgram_asr_python` - Using Deepgram SDK
+</Callout>
+
+### Handle audio
+
+The base class decides whether to forward or buffer/drop frames based on `is_connected`.
+
+```python
+@override
+async def send_audio(self, audio_frame: AudioFrame, session_id: str | None) -> bool:
+    """Send audio data to the vendor
+    
+    Args:
+        audio_frame: The audio frame to send
+        session_id: Session ID for tracking conversation turns
+        
+    Returns:
+        bool: True if sent successfully, False otherwise
+    """
+    if not self.is_connected() or not self.client:
+        return False
+
+    try:
+        audio_buf = audio_frame.get_buf()
+        if not audio_buf:
+            return False
+
+        await self.client.send(bytes(audio_buf))
+        return True
+    except Exception as e:
+        self.ten_env.log_error(f"Failed to send audio: {e}")
+        return False
+```
+
+### Handle recognition results
+
+The vendor returns recognition results through callback functions, which you need to convert to standard format and send:
+
+```python
+async def _on_transcript(self, result):
+    """Handle recognition result"""
+    # 1. Extract text
+    text = result.text.strip()
+    if not text:
+        return
+    
+    # 2. Convert to standard ASR result
+    asr_result = ASRResult(
+        text=text,
+        final=result.is_final,           # Whether it's a final result
+        start_ms=result.start_time_ms,   # Start time
+        duration_ms=result.duration_ms   # Duration
+    )
+    
+    # 3. Send to downstream
+    await self.send_asr_result(asr_result)
+```
+
+Other required event handlers:
+
+```python
+async def _on_open(self):
+    """Connection established"""
+    self.is_connected_flag = True
+    self.ten_env.log_info("Connection opened")
+
+async def _on_error(self, error):
+    """Handle error"""
+    self.ten_env.log_error(f"Vendor error: {error}")
+```
+
+### Implement finalize
+
+When VAD detects the user has finished speaking, the `finalize()` method is called to notify the vendor to return final results quickly:
+
+```python
+@override
+async def finalize(self, session_id: str | None) -> None:
+    """Trigger final results"""
+    if self.client:
+        # Different vendors have different finalize approaches:
+        # 1. Call finalize API (recommended)
+        await self.client.finalize()
+        
+        # 2. Or send silence packets
+        # await self.client.send_silence()
+        
+        # 3. Or disconnect and reconnect
+        # await self.stop_connection()
+        # await self.start_connection()
+        
+        # Notify completion
+        await self.send_asr_finalize_end()
+```
+
+<Callout type="info">
+Different vendors have different finalize mechanisms. Choose the one most suitable for your vendor. See detailed explanation in [Advanced section](#8-optimize-finalize-mechanism).
+</Callout>
+
+This completes the basic functionality! Next, let's test it.
+
+## 5. Testing
+
+### 5.1 Unit testing
+
+Unit tests verify that the basic functionality of the ASR Extension works correctly.
+
+#### Test objectives
+
+Basic functionality should at least verify:
+
+1. **Configuration loading**: Can correctly read configuration from `property.json`
+2. **Connection establishment**: Can successfully connect to the vendor
+3. **Audio processing**: Can receive and send audio frames
+4. **Result output**: Can output results in standard `ASRResult` format
+
+#### Test flow example
+
+A typical unit test will:
+
+1. **Prepare test audio**: Load PCM audio data from file
+2. **Send frame by frame**: Send audio frame by frame to ASR Extension
+3. **Verify results**: Check if standard format `ASRResult` is received
+
+**ASRResult standard format**:
+```python
+ASRResult(
+    text="recognized text",          # Required: recognized text
+    final=True,                       # Required: whether it's final result
+    start_ms=0,                       # Optional: start time (milliseconds)
+    duration_ms=1000,                 # Optional: duration (milliseconds)
+    language="zh-CN",                 # Optional: language
+    words=[]                          # Optional: word-level information
+)
+```
+
+#### Run tests
+
+```bash
+cd my_asr_extension
+./tests/bin/start
+```
+
+<Callout type="tip">
+The template already includes basic test cases. You can add more tests in `tests/test_basic.py`.
+
+Reference existing implementations' tests:
+- `azure_asr_python/tests/test_asr_result.py` - Test result output
+- `deepgram_asr_python/tests/test_basic.py` - Basic functionality tests
+</Callout>
+
+### 5.2 End-to-end testing
+
+Use TMan Designer in TEN Agent project to replace the ASR extension:
+
+```bash
+cd /path/to/your/ten-agent-project
+tman designer
+```
+
+Through the visual interface:
+1. Select existing ASR node
+2. Replace with your `my_asr_extension`
+3. Configure API Key and other parameters
+4. Start and conduct real conversation testing
+
+## 6. Basic Development Checklist
+
+Complete the following checklist to ensure basic functionality works:
+
+- [ ] **Project creation**: Successfully created project using template, installed dependencies
+- [ ] **Configuration management**: Can correctly read configuration from property and properly pass through to vendor SDK
+- [ ] **Connection establishment**: `start_connection` can successfully connect to vendor
+- [ ] **Audio sending**: Can send audio frames to vendor through `send_audio`
+- [ ] **Result reception**: Can correctly receive recognition results from vendor and convert to standard format
+- [ ] **Result sending**: Can send standardized results through `send_asr_result`
+- [ ] **Finalize**: Implemented `finalize` method (even if simple implementation)
+- [ ] **Connection cleanup**: `stop_connection` can properly close connection
+- [ ] **Unit testing**: Basic test cases pass
+- [ ] **End-to-end testing**: Can complete basic conversations in TEN Agent
+
+<Callout type="success">
+After completing the above checklist, your ASR Extension has basic functionality and can be used in real scenarios.
+</Callout>
+
+### Reconnection strategy
+
+When the vendor connection breaks or errors occur, use `ReconnectManager` to implement retry with exponential backoff.
+
+How to use:
+1) Initialize `ReconnectManager` in your constructor: `self.reconnect_manager = ReconnectManager(max_attempts=5, base_delay=0.5)`
+2) On successful open (`_on_open`), call `self.reconnect_manager.mark_connection_successful()`
+3) Implement `_handle_reconnect()` to:
+   - check `can_retry()`
+   - call `handle_reconnect(connect_func=self.start_connection)`
+   - log success/failure and send fatal error when max attempts reached
+4) Trigger `_handle_reconnect()` from `_on_close` and `_on_error`
+
+<Callout type="tip">
+  For a reference implementation, check `reconnect_manager.py` in either `azure_asr_python` or `deepgram_asr_python`.
+</Callout>
+
+### Audio debugging (Dump)
+
+Integrate optional dumping to help debug audio issues.
+
+```python title="extension.py"
+import os
+from ten_ai_base.dumper import Dumper
+
+DUMP_FILE_NAME = "my_asr_in.pcm"
+
+class MyAsrExtension(AsyncASRBaseExtension):
+    @override
+    async def on_init(self, ten_env: AsyncTenEnv) -> None:
+        await super().on_init(ten_env)
+        if self.config.dump:
+            dump_file_path = os.path.join(self.config.dump_path, DUMP_FILE_NAME)
+            self.audio_dumper = Dumper(dump_file_path)
+            await self.audio_dumper.start()
+
+    @override
+    async def on_deinit(self, ten_env: AsyncTenEnv) -> None:
+        await super().on_deinit(ten_env)
+        if self.audio_dumper:
+            await self.audio_dumper.stop()
+            self.audio_dumper = None
+```
+
+## 6. 🧪 Unit testing
+
+Advanced unit tests need to cover production-level features. Use Mock to avoid real API calls, ensuring tests are fast, stable, and repeatable.
+
+### Test case design
+
+Referring to the implementation in `azure_asr_python/tests`, advanced tests should cover:
+
+**1. Reconnection capability test** (`test_reconnect.py`)
+
+**Test objective**: Verify Extension can automatically reconnect and restore service
+
+**Test design**:
+```python
+# Simulate vendor disconnection scenario
+def test_reconnect():
+    # 1. Mock vendor: first 3 connections will disconnect, 4th succeeds
+    # 2. Verify Extension automatically retries
+    # 3. Verify normal operation after successful reconnection
+    # 4. Check error report count (should have 3 NON_FATAL_ERROR)
+```
+
+**Verification points**:
+- ✅ Automatically trigger reconnection after disconnection
+- ✅ Use exponential backoff strategy
+- ✅ Report FATAL_ERROR when max reconnection attempts reached
+- ✅ Reset counter after successful reconnection
+
+---
+
+**2. Invalid parameters test** (`test_invalid_params.py`)
+
+**Test objective**: Verify error handling when configuration is incorrect
+
+**Test design**:
+```python
+# Start Extension with invalid parameters
+def test_invalid_params():
+    # 1. Provide empty or invalid params (e.g., missing api_key)
+    # 2. Start Extension
+    # 3. Verify FATAL_ERROR received
+    # 4. Check if error message contains useful information
+```
+
+**Verification points**:
+- ✅ Report FATAL_ERROR when configuration validation fails
+- ✅ Error message is clear and easy to troubleshoot
+- ✅ Extension doesn't crash
+
+---
+
+**3. Audio dump test** (`test_dump.py`)
+
+**Test objective**: Verify completeness of audio dump functionality
+
+**Test design**:
+```python
+# Send audio after enabling dump
+def test_dump():
+    # 1. Configure dump=True and dump_path
+    # 2. Send N frames of audio (each frame has specific byte pattern)
+    # 3. Check dump file after test ends
+    # 4. Verify file size = N * frame size
+    # 5. Verify each frame content is identical
+```
+
+**Verification points**:
+- ✅ Dump file is created
+- ✅ All sent audio is completely dumped
+- ✅ Dump content is identical to sent content (byte-by-byte verification)
+- ✅ Frame order is correct
+
+---
+
+**4. Finalize latency test** (`test_finalize.py`)
+
+**Test objective**: Verify Extension can quickly output final results
+
+**Test design**:
+```python
+# Test finalize response speed
+def test_finalize():
+    # 1. Continuously send audio
+    # 2. Send asr_finalize event after 1.5 seconds
+    # 3. Mock vendor quickly returns final result after receiving finalize
+    # 4. Verify asr_finalize_end event received
+    # 5. Check if finalize_id and metadata are correctly passed
+```
+
+**Verification points**:
+- ✅ Trigger vendor's finalize after receiving `asr_finalize`
+- ✅ Quickly receive final result (< 300ms typical)
+- ✅ Send `asr_finalize_end` to notify downstream
+- ✅ `finalize_id` and `session_id` correctly passed
+
+---
+
+**5. Result format test** (`test_asr_result.py`)
+
+**Test objective**: Verify standard format of ASR results
+
+**Test design**:
+```python
+# Verify output result data structure
+def test_asr_result():
+    # 1. Mock vendor returns recognition results
+    # 2. Verify ASRResult contains all required fields
+    # 3. Verify both interim and final results are correct
+    # 4. Verify metadata is correctly passed (e.g., session_id)
+```
+
+**Verification points**:
+- ✅ Contains required fields: `text`, `final`, `start_ms`, `duration_ms`, `language`
+- ✅ Optional fields correctly filled: `words`, `metadata`
+- ✅ `session_id` correctly passed from input to output
+
+---
+
+**6. Error reporting test** (`test_vendor_error.py`)
+
+**Test objective**: Verify error classification and vendor information reporting
+
+**Test design**:
+```python
+# Simulate vendor returning errors
+def test_vendor_error():
+    # 1. Mock vendor returns different types of errors
+    # 2. Verify Extension reports correct error types
+    # 3. Check if ModuleErrorVendorInfo is included
+```
+
+**Verification points**:
+- ✅ Temporary errors report NON_FATAL_ERROR
+- ✅ Serious errors report FATAL_ERROR
+- ✅ Contains vendor error code and message
+- ✅ Error information is helpful for debugging
+
+---
+
+**7. Performance metrics test** (`test_metrics.py`)
+
+**Test objective**: Verify performance metrics are correctly calculated and reported
+
+**Test design**:
+```python
+# Test TTFW, TTLW metrics
+def test_metrics():
+    # 1. Send audio
+    # 2. Mock vendor returns first and last word at specific times
+    # 3. Verify calculated TTFW and TTLW metrics
+```
+
+**Verification points**:
+- ✅ TTFW (first word latency) correctly calculated
+- ✅ TTLW (last word latency) correctly calculated
+- ✅ Metrics reported through `metrics` message
+
+---
+
+### Run tests
+
+```bash
+cd my_asr_extension
+./tests/bin/start
+```
+
+<Callout type="info">
+**Importance of Mock**: Reasons for using Mock instead of real API:
+- 🚀 **Fast**: Tests complete in seconds
+- 💰 **Zero cost**: Doesn't consume API quota
+- 🎯 **Controllable**: Can precisely simulate various scenarios (disconnection, errors, latency)
+- 🔁 **Repeatable**: Stable results, suitable for CI/CD
+
+Refer to `azure_asr_python/tests/mock.py` to learn how to implement Mock.
+</Callout>
+
+## 7. 🔗 Integration testing (Guarder)
+
+Prepare `.env` with real keys, create configs under `tests/configs/`, and run:
+
+```bash title=".env"
+# Deepgram ASR API Key
+DEEPGRAM_API_KEY=your_real_deepgram_api_key_here
+```
+
+Example property config:
+
+```json title="tests/configs/property_en.json"
+{
+  "params": {
+    "api_key": "${env:DEEPGRAM_API_KEY}",
+    "language": "en-US"
+  }
+}
+```
+
+```bash title="Terminal"
+cd ai_agents
+task asr-guarder-test EXTENSION=my_asr_extension
+```
+
+Focus metrics:
+- TTFW < 1000ms (typical)
+- TTLW < 300ms (typical)
+- Accuracy under varied audio quality
+- Long-session stability
+
+## 8. 🌐 End-to-end testing
+
+Use TMan Designer to replace the ASR node in a real conversation graph, configure parameters, and verify accuracy, latency, and stability.
+
+```bash title="Terminal"
+# In your TEN Agent project
+cd /path/to/your/ten-agent-project
+tman designer
+```
+
+TMan Designer opens a visual UI where you can:
+1. Select the ASR node
+2. Replace it with `my_asr_extension`
+3. Configure parameters (API Key, language, etc.)
+4. Apply and start testing
+
+## 9. 📊 Best practices
+
+Config:
+- Keep vendor params in a single `params` dict
+- Provide safe accessors and defaults
+
+Errors:
+- Exponential backoff for reconnection
+- Clear logging and structured reporting
+
+Performance:
+- Async audio processing
+- Audio buffering and batching
+- Proper WebSocket lifecycle management
+- Monitor and report key metrics
+
+Logging:
+- Use `ten_env.log_debug/info/warn/error`
+- Use categories to organize logs
+- Mask sensitive data (e.g., API keys)
+
+#### Log categories
+
+- KEY_POINT: important configuration and state logs
+- VENDOR: vendor-related logs (connection status, results, errors)
+- Default: general business logic logs
+
+## 10. 🌟 Extend and contribute
+
+See other ASR extensions in `ai_agents/agents/ten_packages/extension/` such as `azure_asr_python`, `deepgram_asr_python`, `google_asr_python`, and `xfyun_asr_python`.
+
+```bash title="Reference locations"
+ten-framework/
+└── ai_agents/agents/ten_packages/extension/
+    ├── azure_asr_python/          # Azure Speech Services
+    ├── deepgram_asr_python/       # Deepgram ASR
+    ├── google_asr_python/         # Google Cloud Speech
+    ├── xfyun_asr_python/          # iFlytek (XFYun)
+    └── ...                        # More ASR extensions
+```
+
+### Contribute to the community
+
+1. Code style: follow project conventions
+2. Test coverage: ensure unit and integration tests pass
+3. Documentation: provide clear README and configuration notes
+4. Performance validation: pass Guarder tests for production readiness
+
+### Publish to TEN Store
+
+1) Fork and clone TEN Framework
+2) Copy your extension into `ai_agents/agents/ten_packages/extension/`
+3) Create a branch, commit, and open a PR
+4) Once merged into `main`, it will be uploaded to TEN Store automatically
+
+```bash title="Terminal"
+git clone https://github.com/your-username/ten-framework.git
+cd ten-framework
+cp -r /path/to/your/my_asr_extension ai_agents/agents/ten_packages/extension/
+git checkout -b feat/add-my-asr-extension
+git add ai_agents/agents/ten_packages/extension/my_asr_extension/
+git commit -m "feat: add my_asr_extension for [Vendor] ASR service"
+git push origin feat/add-my-asr-extension
+```
+
+Open a PR on GitHub and provide a clear description of features and tests.
+
+#### Use your extension
+
+```bash title="Terminal"
+# Install your ASR extension
+tman install extension my_asr_extension
+```
+
+Or declare it as a dependency:
+
+```json title="manifest.json"
+{
+  "dependencies": [
+    {
+      "type": "extension",
+      "name": "my_asr_extension",
+      "version": "^1.0.0"
+    }
+  ]
+}
+```
+
+## 🎯 Summary
+
+You learned how to scaffold, implement, test, and publish a production-ready ASR Extension, and how to integrate advanced features such as reconnection and audio dump.
+
+<Callout type="success">
+  Happy hacking! If you run into issues, open an issue on the TEN Framework GitHub.
+</Callout>
+
+<Callout title="Next steps">
+  Consider reading the TTS and LLM extension development guides to build a complete AI Agent skill set.
+</Callout>
+
+
