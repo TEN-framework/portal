@@ -2,59 +2,59 @@
 title: Overview
 ---
 
-TEN Agent is a conversational AI agent powered by the TEN, integrating Gemini 2.0 Live, OpenAI Realtime, RTC, and more. It delivers real-time capabilities to see, hear, and speak, while being fully compatible with popular workflow platforms like Dify and Coze.
+TEN Agent is the reference application for the TEN ecosystem. It combines real-time RTC transport, multimodal perception, and LLM-assisted reasoning so an agent can see, hear, and respond without noticeable latency. The project ships opinionated defaults (OpenAI Realtime, Gemini 2.0 Live, Deepgram ASR, ElevenLabs TTS, and Agora RTC), but every stage is swappable through TEN’s extension system and compatible with workflow tools such as Dify or Coze.
 
-## Links
+## Quick Links
 
-- [TEN Agent](https://github.com/TEN-framework/TEN-Agent)
+- [TEN Agent repository](https://github.com/TEN-framework/TEN-Agent)
 - [TEN Framework](https://github.com/TEN-framework/ten-framework)
+- [Getting Started](./getting_started)
+- [Project structure](./project_structure)
 
-## Architecture
+## High-level Architecture
 
-The TEN Agent project is organized into the following major components, offering clarity and extensibility for developers:
+At a glance TEN Agent is made up of three collaborating layers:
 
-1. **Agents**: Contains the core logic, binaries, and examples for building and running AI agents. Within the Agents folder, there is a subfolder called `ten_packages,` which houses a variety of ready-to-use extensions. By leveraging these extensions, developers can build and customize powerful agents tailored to specific tasks or workflows.
+1. **TEN runtime** — The `agents/` directory contains the runnable graphs, `property.json`, and the `ten_packages` directory. Each package is a self-contained extension (Python, Go, or C++) that plugs sensors, LLMs, or business logic into the graph.
+2. **Control plane services** — A lightweight Go web server (`server/`) starts and stops agents, exposes REST endpoints, and proxies metadata to the UI. Supporting scripts and tasks live under `scripts/`.
+3. **User interfaces** — The React playground (`playground/`) and the production demo (`demo/`) talk to the server to configure graphs, supply credentials, and showcase end-to-end scenarios.
 
-2. **Dev Server**: Backend services, orchestrating agents and handling extensions.
-3. **Web Server**: Runs on port 8080 and serves the frontend interface. The web server handles HTTP requests and delivers assets.
-4. **Extensions**: Modular integrations for LLMs, TTS/STT, and external APIs, enabling easy customization.
-5. **Playground**: An interactive environment for testing, configuring, and fine-tuning agents.
-6. **Demo**: A deployment-ready setup to showcase real-world applications of TEN Agent.
+The diagram below is covered in more detail in [Project structure](./project_structure), but the overview above reflects the latest repo layout.
 
-## Docker Containers
+## Docker Services
 
-There are two Docker containers in TEN Agent:
+Running `docker compose up -d` provisions a complete development sand-box:
 
-- `ten_agent_dev`: The main development container that powers TEN Agent. It contains the core runtime environment, development tools, and dependencies needed to build and run agents. This container lets you execute commands like `task use` to build agents and `task run` to start the web server.
+- `ten_agent_dev` (container shell, port 49483) bundles the TEN runtime, TMAN Designer, and build tooling. Use it to run `task use`, `task run`, and other CLI tasks.
+- `ten_agent_playground` (port 3000) serves the UI for configuring graphs, swapping extensions, and testing agents in a browser.
+- `ten_agent_demo` (port 3002) is an optional showcase build that mirrors a production deployment for demos or benchmarking.
 
-- `ten_agent_playground`: Port 3000, a dedicated container for the web frontend interface. It serves the compiled frontend assets and provides an interactive environment where users can configure modules, select extensions, and test their agents. The playground UI allows you to visually select graph types (like Voice Agent or Realtime Agent), choose modules, and configure API settings.
+Each container is hot-reload friendly: file changes mounted into `agents/` or `playground/` are reflected without rebuilding images.
 
-- `ten_agent_demo`: Port 3002, a deployment-focused container that provides a production-ready sample setup. It demonstrates how users can deploy their configured agents in real-world scenarios, with all necessary components packaged together for easy deployment.
+## Key Directories
 
-## Agents
+| Path | Purpose |
+| ---- | ------- |
+| `agents/` | Entry point for agent graphs and binaries. `agents/examples/` holds turnkey templates (voice assistant, realtime avatar, interrupt detector, etc.). |
+| `agents/ten_packages/extension/` | Custom extensions that implement orchestration logic, LLM adapters, or tool integrations. Ship your own package here and wire it through `property.json`. |
+| `agents/ten_packages/system/` | Shared system extensions distributed with TEN (RTC bridges, messaging glue, telemetry, and more). |
+| `server/` | Go web server that exposes `/start`, `/stop`, and `/ping` endpoints to manage agent lifecycles. |
+| `playground/` | Next.js app used for local experimentation. It lets you edit graph properties, inspect module bindings, and trigger runs directly from the browser. |
+| `demo/` | Production-style sample front end. Useful for validating a workflow end to end or for stakeholder demos. |
+| `scripts/` | Helper scripts and task definitions (the `task` CLI wraps these). |
 
-The Agents folder is the heart of the project, housing:
+## Developer Workflow
 
-- Core binaries and examples that define agent behaviors.
-- Scripts and outputs that enable flexible configurations for various AI use cases.
-- Tools for developers to create, modify, and enhance AI agents.
+1. **Bootstrap containers** — Follow the [Getting Started](./getting_started) guide to clone the repo, create `.env`, and run `docker compose up -d`.
+2. **Enter `ten_agent_dev`** — `docker exec -it ten_agent_dev bash`, then `task use` to build an example graph.
+3. **Launch services** — `task run` starts the Go server. Visit `http://localhost:49483` to open TMAN Designer or `http://localhost:3000` to use the playground UI.
+4. **Iterate** — Modify extensions in `ten_packages`, tweak graph nodes in TMAN Designer, and redeploy via the playground or CLI.
+5. **Demo or ship** — Use the `demo/` app or the `/start` API to integrate the agent into your own client applications.
 
-With its structured design, the Agents folder allows you to build agents tailored to specific applications, whether it’s voice assistants, chatbots, or task automation.
+## Why this structure?
 
-## Demo
+- **Isolation of concerns** keeps runtime extensions (`ten_packages`) versioned alongside graphs while front-end clients evolve independently.
+- **Hot-swappable extensions** mean you can replace any LLM, ASR, or TTS service by editing `property.json` and, if needed, dropping a new package into `ten_packages/extension`.
+- **Consistent tooling** (`task` scripts, Docker services, TMAN Designer) streamlines onboarding across teams and ensures parity between development, testing, and demos.
 
-The Demo folder provides a deployment-ready environment for showcasing TEN Agent in action. It includes:
-
-- Example configurations for running agents in production.
-- Prebuilt agents and workflows to highlight the framework’s capabilities.
-- Tools for demonstrating real-world applications to users, clients, or collaborators.
-
-## Playground
-
-Once the playground is up and running, users can leverage the module picker to:
-
-- Select and configure extensions from a range of prebuilt modules.
-- Experiment with different AI models, TTS/STT systems, and real-time communication tools.
-- Test agent behaviors in a safe, interactive environment.
-
-The playground serves as a hub for innovation, empowering developers to explore and fine-tune their AI systems effortlessly.
+With this layout you can experiment rapidly, share reproducible demos, and progress toward production without re-architecting your agent each time requirements change.
