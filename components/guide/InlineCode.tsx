@@ -1,14 +1,16 @@
-import type { ReactNode } from "react"
-
 export function InlineCodeText({ text }: { text: string }) {
   const parts = splitInline(text)
   return (
     <span>
       {parts.map((p, i) =>
-        typeof p === "string" ? (
+        typeof p === 'string' ? (
+          // biome-ignore lint/suspicious/noArrayIndexKey: <ignore index>
           <span key={i}>{p}</span>
         ) : (
-          <code key={i} className="guide-code-inline">{p.content}</code>
+          // biome-ignore lint/suspicious/noArrayIndexKey: <ignore index>
+          <code key={i} className='guide-code-inline'>
+            {p.content}
+          </code>
         )
       )}
     </span>
@@ -18,11 +20,11 @@ export function InlineCodeText({ text }: { text: string }) {
 function splitInline(input: string): (string | { content: string })[] {
   const out: (string | { content: string })[] = []
   let rest = input
-  while (rest.includes("`")) {
-    const start = rest.indexOf("`")
+  while (rest.includes('`')) {
+    const start = rest.indexOf('`')
     if (start === -1) break
     const afterStart = rest.slice(start + 1)
-    const end = afterStart.indexOf("`")
+    const end = afterStart.indexOf('`')
     if (end === -1) break
     const before = rest.slice(0, start)
     if (before) out.push(before)

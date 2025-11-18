@@ -1,13 +1,12 @@
-import { ArrowRight, CheckCircle2, ExternalLink, Github } from 'lucide-react'
+import { ArrowRight, ExternalLink, Github } from 'lucide-react'
 import type { Metadata } from 'next'
-import Image from 'next/image'
-import Link from 'next/link'
-import { i18n } from '@/lib/i18n'
 import { Inter } from 'next/font/google'
-import { GuideSteps } from '@/components/guide/Steps'
+import Link from 'next/link'
+import { BlogQuickstart } from '@/components/guide/BlogQuickstart'
 import { CopyCode } from '@/components/guide/CopyCode'
 import { InlineCodeText } from '@/components/guide/InlineCode'
-import { BlogQuickstart } from '@/components/guide/BlogQuickstart'
+import { GuideSteps } from '@/components/guide/Steps'
+import { i18n } from '@/lib/i18n'
 
 const locales = ['en', 'cn'] as const
 
@@ -579,13 +578,22 @@ export default async function GuidePage({ params }: GuidePageProps) {
             {t.hero.description}
           </p>
           <div className='flex flex-wrap gap-3'>
-            <a href='#steps' className='guide-cta-primary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'>
+            <a
+              href='#steps'
+              className='guide-cta-primary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'
+            >
               {locale === 'cn' ? '开始指南' : 'Start guide'}
             </a>
-            <a href='#commands' className='guide-cta-secondary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'>
+            <a
+              href='#commands'
+              className='guide-cta-secondary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'
+            >
               {locale === 'cn' ? '常用命令' : 'Commands'}
             </a>
-            <a href='#quickstart' className='guide-cta-secondary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'>
+            <a
+              href='#quickstart'
+              className='guide-cta-secondary inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm'
+            >
               {locale === 'cn' ? '快速上手' : 'Quickstart'}
             </a>
           </div>
@@ -630,7 +638,10 @@ export default async function GuidePage({ params }: GuidePageProps) {
           <div className='guide-panel rounded-3xl p-6'>
             <ol className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
               {t.steps.map((s) => (
-                <li key={`flow-${s.number}`} className='flex items-center gap-3'>
+                <li
+                  key={`flow-${s.number}`}
+                  className='flex items-center gap-3'
+                >
                   <span className='guide-step-badge inline-flex size-8 items-center justify-center rounded-full'>
                     {s.number}
                   </span>
@@ -693,7 +704,9 @@ export default async function GuidePage({ params }: GuidePageProps) {
           <div className='lg:col-span-2'>
             <div className='guide-panel overflow-hidden rounded-3xl p-6'>
               <h3 className='font-semibold text-xl'>
-                {locale === 'cn' ? 'Blog vs. Docs 修改清单' : 'Blog vs. Docs checklist'}
+                {locale === 'cn'
+                  ? 'Blog vs. Docs 修改清单'
+                  : 'Blog vs. Docs checklist'}
               </h3>
               <p className='guide-text-muted mt-2 text-sm'>
                 {locale === 'cn'
@@ -703,11 +716,16 @@ export default async function GuidePage({ params }: GuidePageProps) {
               <div className='mt-6 grid gap-6 md:grid-cols-2'>
                 <div className='rounded-2xl border p-4'>
                   <h4 className='font-semibold'>
-                    {locale === 'cn' ? 'Blog（content/blog）' : 'Blog (content/blog)'}
+                    {locale === 'cn'
+                      ? 'Blog（content/blog）'
+                      : 'Blog (content/blog)'}
                   </h4>
                   <ul className='mt-3 space-y-2 text-sm'>
                     {t.blogChecklist.map((item) => (
-                      <li key={`card-blog-${item}`} className='guide-text-muted flex gap-3'>
+                      <li
+                        key={`card-blog-${item}`}
+                        className='guide-text-muted flex gap-3'
+                      >
                         <span className='guide-dot mt-1 size-2 rounded-full' />
                         <InlineCodeText text={item} />
                       </li>
@@ -716,11 +734,16 @@ export default async function GuidePage({ params }: GuidePageProps) {
                 </div>
                 <div className='rounded-2xl border p-4'>
                   <h4 className='font-semibold'>
-                    {locale === 'cn' ? 'Docs（content/docs）' : 'Docs (content/docs)'}
+                    {locale === 'cn'
+                      ? 'Docs（content/docs）'
+                      : 'Docs (content/docs)'}
                   </h4>
                   <ul className='mt-3 space-y-2 text-sm'>
                     {t.docsChecklist.map((item) => (
-                      <li key={`card-docs-${item}`} className='guide-text-muted flex gap-3'>
+                      <li
+                        key={`card-docs-${item}`}
+                        className='guide-text-muted flex gap-3'
+                      >
                         <span className='guide-dot mt-1 size-2 rounded-full' />
                         <InlineCodeText text={item} />
                       </li>
