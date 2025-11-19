@@ -1,5 +1,5 @@
 [build]
-  command = "bun run build && ps auxw ; false"
+  command = "pnpm run build && ps auxw ; false"
   publish = ".next"
 
 [[plugins]]
