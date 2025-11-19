@@ -6,7 +6,7 @@ description: The full step-by-step experience now lives at theten.ai/guide.
 > [!IMPORTANT]
 > The in-depth contributor journey now lives on a standalone marketing-style page with cards, diagrams, command snippets, and FAQ.
 
-👉 **[Visit theten.ai/guide](https://theten.ai/guide){target=\"_blank\"}**
+👉 **[Visit theten.ai/guide](https://theten.ai/guide){target="_blank"}**
 
 The new page covers:
 
@@ -15,4 +15,4 @@ The new page covers:
 - Frequently used commands and troubleshooting tips;
 - Direct links to the repo, Discord, and CONTRIBUTING checklist.
 
-Feel free to bookmark the URL or share it with first-time contributors.*** End Patch
+Feel free to bookmark the URL or share it with first-time contributors.

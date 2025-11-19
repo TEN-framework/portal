@@ -39,7 +39,7 @@ ${isCn ? '这里写正文，可以使用 MDX 组件。' : 'Write your content he
               ? '安装依赖并启动开发服务器'
               : 'Install dependencies and start the dev server'}
           </p>
-          <CopyCode code={`pnpm install\npnpm dev`} />
+          <CopyCode code={`bun install\nbun dev`} />
         </li>
         <li className='space-y-2'>
           <p className='guide-text-muted'>
@@ -61,7 +61,7 @@ ${isCn ? '这里写正文，可以使用 MDX 组件。' : 'Write your content he
             {isCn ? '运行检查并提交代码' : 'Run checks and commit your changes'}
           </p>
           <CopyCode
-            code={`pnpm check\ngit add .\ngit commit -m "feat(blog): add ${slug}"\ngit push -u origin feature/add-${slug}`}
+            code={`bun run check\ngit add .\ngit commit -m "feat(blog): add ${slug}"\ngit push -u origin feature/add-${slug}`}
           />
         </li>
         <li className='space-y-2'>
@@ -70,7 +70,7 @@ ${isCn ? '这里写正文，可以使用 MDX 组件。' : 'Write your content he
               ? '在 GitHub 上发起 Pull Request'
               : 'Open a Pull Request on GitHub'}
           </p>
-          <CopyCode code={`https://github.com/TEN-framework/portal/compare`} />
+          <CopyCode code='https://github.com/TEN-framework/portal/compare' />
         </li>
       </ol>
     </div>

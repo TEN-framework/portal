@@ -553,11 +553,11 @@ export const metadata: Metadata = {
 }
 
 type GuidePageProps = {
-  params: { lang: string }
+  params: Promise<{ lang: string }>
 }
 
 export default async function GuidePage({ params }: GuidePageProps) {
-  const { lang } = params
+  const { lang } = await params
   const locale: Locale = (locales as readonly string[]).includes(lang)
     ? (lang as Locale)
     : (i18n.defaultLanguage as Locale)

@@ -54,20 +54,20 @@ export function GuideSteps({
           </div>
           <div className='flex gap-2'>
             <button
-              type='button'
               className='guide-cta-secondary inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs'
               onClick={() => setCompleted({})}
+              type='button'
             >
               {locale === 'cn' ? '重置' : 'Reset'}
             </button>
             <button
-              type='button'
               className='guide-cta-primary inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs'
               onClick={() =>
                 setCompleted(
                   Object.fromEntries(steps.map((s) => [s.number, true]))
                 )
               }
+              type='button'
             >
               {locale === 'cn' ? '全部完成' : 'Mark all'}
             </button>
@@ -83,7 +83,7 @@ export function GuideSteps({
 
       <div className='grid gap-6 md:grid-cols-2'>
         {steps.map((step) => {
-          const isDone = !!completed[step.number]
+          const isDone = Boolean(completed[step.number])
           return (
             <div
               key={step.number}
@@ -91,7 +91,6 @@ export function GuideSteps({
             >
               <div className='guide-text-muted flex items-center gap-3 font-semibold text-sm'>
                 <button
-                  type='button'
                   aria-pressed={isDone}
                   onClick={() =>
                     setCompleted((prev) => ({
@@ -100,6 +99,7 @@ export function GuideSteps({
                     }))
                   }
                   className={`inline-flex size-10 items-center justify-center rounded-full ${isDone ? 'guide-step-badge--done' : 'guide-step-badge'}`}
+                  type='button'
                 >
                   {step.number}
                 </button>
