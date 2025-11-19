@@ -45,11 +45,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/${lang}/guide`,
       lastModified: new Date(),
       changeFrequency: 'weekly' as const,
-      priority: 0.9
+      priority: 0.8
     }
   ])
 
-  const localizedGuideEntry = [
+  const guidePage = [
     {
       url: `${baseUrl}/guide`,
       lastModified: new Date(),
@@ -58,5 +58,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
   ]
 
-  return [...staticPages, ...localizedGuideEntry, ...blogUrls, ...docUrls]
+  return [...staticPages, ...guidePage, ...blogUrls, ...docUrls]
 }
