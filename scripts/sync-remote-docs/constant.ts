@@ -3,7 +3,7 @@ import * as z from 'zod'
 
 export const IDENTIFIER_ROOT = '[sync-remote-docs]'
 
-export const MAX_LOCAL_VERSION_COUNT = 10
+export const MAX_LOCAL_VERSION_COUNT = 3
 
 // Relative path to the root of the ten-framework repository
 export const DEFAULT_REMOTE_DOCS_FOLDER = 'docs'
