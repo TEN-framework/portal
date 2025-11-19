@@ -1,17 +1,19 @@
----
 title: 🧭 零基础贡献指南
-description: 全新的可视化流程页位于 theten.ai/guide，欢迎直接访问。
+description: 访问全新 theten.ai/guide 页面，体验式了解贡献流程，并查看速查要点。
 ---
 
 > [!IMPORTANT]
-> 本指南已升级为独立页面，包含交互式卡片、流程图、命令速查与 FAQ。
+> 交互式贡献旅程现已上线：**[theten.ai/guide](https://theten.ai/guide){target="_blank"}**。
 
-👉 **[点击访问 theten.ai/guide](https://theten.ai/guide){target="_blank"}**
+页面亮点：
 
-在新页面中你可以：
+- 🌀 5 个阶段化步骤（Fork → Run → Create → Check → PR），配有操作提示与动画反馈；
+- 🧾 抽屉式速查区整合命令、规范与 13 步全流程；
+- 📈 进度条 + Action 卡片，点击即可进入下一阶段。
 
-- 查看 Fork → 本地修改 → PR → 合并的 13 个步骤；
-- 下载 Blog / Docs 双清单、命令速查表与常见问题；
-- 直接跳转到 GitHub Fork、Discord 与 CONTRIBUTING 清单。
+文本速记版：
 
-如仍需在文档体系内查阅，可将该链接收藏到浏览器或团队协作文档中。
+- **仓库流程**：阅读 [`CONTRIBUTING.md`](https://github.com/TEN-framework/portal/blob/main/CONTRIBUTING.md)，了解 Fork、分支命名与 PR 规范。
+- **文档贡献**：在 `content/docs` 中编辑 Markdown，使用 `bun run docs:dev` 本地预览。
+- **博客投稿**：更新 `content/blog` 下的文章，遵守 Frontmatter 模板，并通过 `bun run blog:dev` 预览。
+- **质量检查**：提交 PR 前执行 `bun run check`（必要时再 `bun run format`），一次完成 lint / type check / 格式化。
