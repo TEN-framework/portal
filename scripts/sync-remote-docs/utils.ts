@@ -105,14 +105,17 @@ const _createFile = async (
 }
 const _deleteFolder = async (folderPath: string): Promise<void> => {
   try {
-    await rmdir(folderPath)
+    // Recursively delete the folder and all contents
+    await rmdir(folderPath, { recursive: true })
   } catch (error) {
     console.error(
       LOG_INDENTIFIER,
-      `Failed to delete folder at ${folderPath}`,
+      `Failed to delete folder and its contents at ${folderPath}`,
       error
     )
-    _addActionFailureLog(`Failed to delete folder at ${folderPath}`)
+    _addActionFailureLog(
+      `Failed to delete folder and its contents at ${folderPath}`
+    )
     // process.exit(1)
     // allow to continue
   }
