@@ -1,6 +1,6 @@
 {
-  "title": "TEN Agent",
-  "description": "TEN Agent",
+  "title": "TEN Agent Examples",
+  "description": "TEN Agent Examples",
   "root": true,
   "pages": [
     "overview",
