@@ -1,8 +1,9 @@
 {
-  "title": "TEN Framework v0.11.26",
-  "description": "v0.11.26",
+  "title": "TEN Framework v0.11.29",
+  "description": "v0.11.29",
   "root": true,
   "pages": [
+    "getting-started",
     "concept_overview",
     "preparation",
     "version_system",
