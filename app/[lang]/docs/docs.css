@@ -7,36 +7,36 @@
   /* Fumadocs tokens (light) */
   --color-fd-primary: #475569;
   --color-fd-primary-foreground: #ffffff;
-  --color-fd-accent: #E5E7EB;
-  --color-fd-accent-foreground: #0F172A;
+  --color-fd-accent: #e5e7eb;
+  --color-fd-accent-foreground: #0f172a;
 
   /* Tailwind/Shadcn tokens (light) */
   --primary: #475569;
   --primary-foreground: #ffffff;
-  --accent: #E5E7EB;
-  --accent-foreground: #0F172A;
+  --accent: #e5e7eb;
+  --accent-foreground: #0f172a;
 
   /* Sidebar chip (optional) */
-  --color-sidebar-accent: #F1F5F9;
-  --color-sidebar-accent-foreground: #0F172A;
+  --color-sidebar-accent: #f1f5f9;
+  --color-sidebar-accent-foreground: #0f172a;
 }
 
 .dark .docs-theme {
   /* Fumadocs tokens (dark) */
-  --color-fd-primary: #64748B;
+  --color-fd-primary: #64748b;
   --color-fd-primary-foreground: #ffffff;
   --color-fd-accent: #374151;
-  --color-fd-accent-foreground: #E5E7EB;
+  --color-fd-accent-foreground: #e5e7eb;
 
   /* Tailwind/Shadcn tokens (dark) */
-  --primary: #64748B;
+  --primary: #64748b;
   --primary-foreground: #ffffff;
   --accent: #374151;
-  --accent-foreground: #E5E7EB;
+  --accent-foreground: #e5e7eb;
 
   /* Sidebar chip (optional) */
-  --color-sidebar-accent: #0F172A;
-  --color-sidebar-accent-foreground: #E2E8F0;
+  --color-sidebar-accent: #0f172a;
+  --color-sidebar-accent-foreground: #e2e8f0;
 }
 
 /* Blog theme - uses Geist font */

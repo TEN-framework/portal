@@ -1,8 +1,6 @@
 'use client'
 
 import type * as React from 'react'
-import { usePathname } from 'next/navigation'
-import { Link } from '@/lib/next-intl-navigation'
 import { VersionSelector } from '@/components/layout/version-select'
 import { cn } from '@/lib/utils'
 
