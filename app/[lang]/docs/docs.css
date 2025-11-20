@@ -1,5 +1,9 @@
 /* Docs theme overrides */
 .docs-theme {
+  /* Use Geist font for docs */
+  font-family: var(--font-geist);
+  font-weight: 400;
+
   /* Fumadocs tokens (light) */
   --color-fd-primary: #475569;
   --color-fd-primary-foreground: #ffffff;
@@ -33,4 +37,10 @@
   /* Sidebar chip (optional) */
   --color-sidebar-accent: #0F172A;
   --color-sidebar-accent-foreground: #E2E8F0;
+}
+
+/* Blog theme - uses Geist font */
+.blog-theme {
+  font-family: var(--font-geist);
+  font-weight: 400;
 }

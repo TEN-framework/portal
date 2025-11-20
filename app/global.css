@@ -8,6 +8,7 @@
 
 @source "../node_modules/fumadocs-ui/dist/**/*.js";
 
+/* Jokker Font for landing/marketing pages */
 @font-face {
   font-family: "Jokker";
   src: url("/fonts/Jokker.woff2") format("woff2");
@@ -40,9 +41,43 @@
   font-display: swap;
 }
 
-/* Apply Jokker font to all text by default */
+/* Geist Sans Font for docs/blog pages */
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/Geist-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Font variables */
 :root {
   --font-jokker: "Jokker", system-ui, sans-serif;
+  --font-geist: "Geist", "Geist Fallback", system-ui, sans-serif;
   --background: oklch(0.9818 0.0054 95.0986);
   --foreground: oklch(0.3438 0.0269 95.7226);
   --card: oklch(0.9818 0.0054 95.0986);
