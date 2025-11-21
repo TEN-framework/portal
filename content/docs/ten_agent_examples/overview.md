@@ -43,9 +43,3 @@ Real-world examples demonstrating specific use cases and patterns.
 **Multi-Language Support**: Build extensions in Python, Node.js, Go, or C++. Mix and match languages in a single agent.
 
 **Production-Ready**: TEN Agent provides the infrastructure and patterns needed for deploying conversational AI at scale.
-
-## Related Resources
-
-- [TEN Agent Repository](https://github.com/TEN-framework/TEN-Agent) — Source code and examples
-- [TEN Framework Docs](/docs/ten_framework) — Deep dive into the framework
-- [TEN Framework Repository](https://github.com/TEN-framework/ten-framework) — Core framework

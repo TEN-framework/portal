@@ -1,5 +1,5 @@
 ---
-title: Deploy TEN Agent Service
+title: Deploy TEN Agent Example 
 ---
 
 Once you have customized your agent (either by using the playground or editing property.json directly), you can deploy it by creating a release docker image for your service.
