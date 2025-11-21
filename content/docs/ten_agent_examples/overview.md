@@ -1,60 +1,51 @@
 ---
-title: Overview
+title: TEN Agent Examples Overview
 ---
 
-TEN Agent is a conversational AI agent powered by the TEN, integrating Gemini 2.0 Live, OpenAI Realtime, RTC, and more. It delivers real-time capabilities to see, hear, and speak, while being fully compatible with popular workflow platforms like Dify and Coze.
+TEN Agent Examples is your comprehensive guide to building conversational AI agents with the TEN Framework. These examples demonstrate best practices for creating real-time, multimodal voice agents integrated with modern LLMs like Gemini 2.0 Live and OpenAI Realtime API.
 
-## Links
+## What You'll Learn
 
-- [TEN Agent](https://github.com/TEN-framework/TEN-Agent)
-- [TEN Framework](https://github.com/TEN-framework/ten-framework)
+The TEN Agent Examples section provides practical, hands-on documentation to help you:
 
-## Architecture
+- **Get started quickly** — Set up and run your first voice agent in under 10 minutes
+- **Understand architecture** — Learn how TEN Agent orchestrates ASR, LLM, TTS, and RTC components
+- **Customize agents** — Extend and modify agent behavior through the modular "main" extension
+- **Build extensions** — Create custom extensions for LLMs, speech services, and external APIs
+- **Deploy agents** — Package and deploy your agents in production environments
 
-The TEN Agent project is organized into the following major components, offering clarity and extensibility for developers:
+## Documentation Structure
 
-1. **Agents**: Contains the core logic, binaries, and examples for building and running AI agents. Within the Agents folder, there is a subfolder called `ten_packages,` which houses a variety of ready-to-use extensions. By leveraging these extensions, developers can build and customize powerful agents tailored to specific tasks or workflows.
+### Getting Started
+Start here if you're new to TEN Agent. You'll set up your development environment and run your first voice agent.
 
-2. **Dev Server**: Backend services, orchestrating agents and handling extensions.
-3. **Web Server**: Runs on port 8080 and serves the frontend interface. The web server handles HTTP requests and delivers assets.
-4. **Extensions**: Modular integrations for LLMs, TTS/STT, and external APIs, enabling easy customization.
-5. **Playground**: An interactive environment for testing, configuring, and fine-tuning agents.
-6. **Demo**: A deployment-ready setup to showcase real-world applications of TEN Agent.
+### Architecture & Design
+Understand how TEN Agent works under the hood, including real-time communication flow, event handling, and component interaction.
 
-## Docker Containers
+### Customization Guide
+Learn how to modify and extend agents to fit your specific needs through the flexible main extension pattern.
 
-There are two Docker containers in TEN Agent:
+### Extension Development
+Build your own extensions for LLMs, STT/TTS providers, and custom integrations.
 
-- `ten_agent_dev`: The main development container that powers TEN Agent. It contains the core runtime environment, development tools, and dependencies needed to build and run agents. This container lets you execute commands like `task use` to build agents and `task run` to start the web server.
+### API Reference
+Complete reference documentation for events, schemas, and configuration options.
 
-- `ten_agent_playground`: Port 3000, a dedicated container for the web frontend interface. It serves the compiled frontend assets and provides an interactive environment where users can configure modules, select extensions, and test their agents. The playground UI allows you to visually select graph types (like Voice Agent or Realtime Agent), choose modules, and configure API settings.
+### Tutorials & Examples
+Real-world examples demonstrating specific use cases and patterns.
 
-- `ten_agent_demo`: Port 3002, a deployment-focused container that provides a production-ready sample setup. It demonstrates how users can deploy their configured agents in real-world scenarios, with all necessary components packaged together for easy deployment.
+## Key Concepts
 
-## Agents
+**Real-Time Voice Agents**: TEN Agent supports full-duplex conversation with natural interruption handling, delivering seamless voice interactions.
 
-The Agents folder is the heart of the project, housing:
+**Modular Architecture**: Extend functionality through self-contained extensions. The core agent logic resides in the "main" extension, which you can customize for your use case.
 
-- Core binaries and examples that define agent behaviors.
-- Scripts and outputs that enable flexible configurations for various AI use cases.
-- Tools for developers to create, modify, and enhance AI agents.
+**Multi-Language Support**: Build extensions in Python, Node.js, Go, or C++. Mix and match languages in a single agent.
 
-With its structured design, the Agents folder allows you to build agents tailored to specific applications, whether it’s voice assistants, chatbots, or task automation.
+**Production-Ready**: TEN Agent provides the infrastructure and patterns needed for deploying conversational AI at scale.
 
-## Demo
+## Related Resources
 
-The Demo folder provides a deployment-ready environment for showcasing TEN Agent in action. It includes:
-
-- Example configurations for running agents in production.
-- Prebuilt agents and workflows to highlight the framework’s capabilities.
-- Tools for demonstrating real-world applications to users, clients, or collaborators.
-
-## Playground
-
-Once the playground is up and running, users can leverage the module picker to:
-
-- Select and configure extensions from a range of prebuilt modules.
-- Experiment with different AI models, TTS/STT systems, and real-time communication tools.
-- Test agent behaviors in a safe, interactive environment.
-
-The playground serves as a hub for innovation, empowering developers to explore and fine-tune their AI systems effortlessly.
+- [TEN Agent Repository](https://github.com/TEN-framework/TEN-Agent) — Source code and examples
+- [TEN Framework Docs](/docs/ten_framework) — Deep dive into the framework
+- [TEN Framework Repository](https://github.com/TEN-framework/ten-framework) — Core framework

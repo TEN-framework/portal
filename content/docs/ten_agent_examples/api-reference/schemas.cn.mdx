@@ -1,0 +1,399 @@
+---
+title: 配置模式
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# 配置模式
+
+TEN Agent 配置在两个关键文件中定义：`property.json`（扩展运行时属性）和 `manifest.json`（元数据和依赖项）。
+
+## property.json
+
+`property.json` 文件定义扩展的运行时可配置属性。
+
+### 架构结构
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "dependencies": [],
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main_control",
+      "addon": "main_control.extension:MainControlExtension",
+      "property": {
+        "greeting": "你好！我是你的 TEN 代理。",
+        "max_history": 50
+      }
+    }
+  ]
+}
+```
+
+### 按扩展类型常见属性
+
+#### 主控制扩展
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| **greeting** | `string` | 空 | 第一个用户加入时的初始问候消息 |
+| **max_history** | `int` | 100 | 要保留的最大对话历史记录消息 |
+| **enable_interrupt** | `bool` | `true` | 允许用户语音中断助手 |
+| **lang** | `string` | "en" | 语言代码（en、cn 等） |
+
+**示例：**
+```json
+{
+  "greeting": "嗨！我能为你做什么？",
+  "max_history": 50,
+  "enable_interrupt": true,
+  "lang": "cn"
+}
+```
+
+#### LLM 扩展（Gemini 2.0 Live）
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| **api_key** | `string` | - | Google Cloud API 密钥 |
+| **model** | `string` | "gemini-2.0-flash-exp" | 模型标识符 |
+| **system_prompt** | `string` | - | 模型的系统级指令 |
+| **temperature** | `float` | 0.7 | 响应随机性（0.0-1.0） |
+| **max_tokens** | `int` | 1024 | 最大响应长度 |
+
+**示例：**
+```json
+{
+  "api_key": "${GOOGLE_API_KEY}",
+  "model": "gemini-2.0-flash-exp",
+  "system_prompt": "你是一个有帮助的助手。",
+  "temperature": 0.7,
+  "max_tokens": 1024
+}
+```
+
+<Callout type="warning">
+**安全性**: 不要直接提交 API 密钥。使用环境变量（`${VAR_NAME}`）并将值存储在 `.env` 文件或部署机密中。
+</Callout>
+
+#### STT 扩展（语音转文本）
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| **provider** | `string` | "google" | STT 提供商（google、deepgram、azure） |
+| **api_key** | `string` | - | 提供商 API 密钥 |
+| **language** | `string` | "zh-CN" | 语言代码 |
+| **model** | `string` | - | 提供商特定的模型 |
+| **chunk_size** | `int` | 1024 | 音频块大小（字节） |
+
+**示例：**
+```json
+{
+  "provider": "google",
+  "api_key": "${GOOGLE_API_KEY}",
+  "language": "zh-CN",
+  "chunk_size": 1024
+}
+```
+
+#### TTS 扩展（文本转语音）
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| **provider** | `string` | "google" | TTS 提供商（google、elevenlabs、azure） |
+| **api_key** | `string` | - | 提供商 API 密钥 |
+| **voice** | `string` | - | 语音标识符（提供商特定） |
+| **language** | `string` | "zh-CN" | 语言代码 |
+| **speed** | `float` | 1.0 | 语速（0.5-2.0） |
+
+**示例：**
+```json
+{
+  "provider": "elevenlabs",
+  "api_key": "${ELEVENLABS_API_KEY}",
+  "voice": "bella",
+  "language": "zh-CN",
+  "speed": 1.0
+}
+```
+
+#### RTC 扩展
+
+| 属性 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| **port** | `int` | 8000 | RTC 连接的服务器端口 |
+| **enable_video** | `bool` | `false` | 启用视频流 |
+| **enable_audio** | `bool` | `true` | 启用音频流 |
+| **max_connections** | `int` | 100 | 最大并发连接数 |
+
+**示例：**
+```json
+{
+  "port": 8000,
+  "enable_video": false,
+  "enable_audio": true,
+  "max_connections": 100
+}
+```
+
+## manifest.json
+
+`manifest.json` 文件定义元数据、版本信息和依赖项。
+
+### 架构结构
+
+```json
+{
+  "type": "extension",
+  "name": "main_control",
+  "version": "0.1.0",
+  "api_version": "0.1",
+  "dependencies": [
+    {
+      "type": "extension",
+      "name": "mllm_in",
+      "version": ">=0.1.0"
+    }
+  ],
+  "api": {
+    "input": [
+      {
+        "name": "on_start_request",
+        "type": "json"
+      }
+    ],
+    "output": [
+      {
+        "name": "mllm_in",
+        "type": "json"
+      }
+    ]
+  }
+}
+```
+
+### 核心字段
+
+| 字段 | 类型 | 描述 |
+|------|------|------|
+| **type** | `string` | 扩展类型（"extension" 或 "addon"） |
+| **name** | `string` | 唯一扩展名称 |
+| **version** | `string` | 语义版本（主.次.补） |
+| **api_version** | `string` | API 兼容性版本 |
+| **description** | `string` | 人类可读的描述 |
+| **author** | `string` | 扩展作者/维护者 |
+| **dependencies** | `array` | 必需的依赖项 |
+| **api** | `object` | 输入/输出规范 |
+
+### 依赖项部分
+
+```json
+"dependencies": [
+  {
+    "type": "extension",
+    "name": "extension_name",
+    "version": ">=0.1.0",
+    "required": true
+  }
+]
+```
+
+| 字段 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| **type** | `string` | - | "extension" 或 "addon" |
+| **name** | `string` | - | 依赖项名称 |
+| **version** | `string` | - | 版本约束（>=0.1.0、~1.0 等） |
+| **required** | `bool` | `true` | 依赖项是否为强制性 |
+
+### API 规范
+
+#### 输入
+
+```json
+"input": [
+  {
+    "name": "on_data",
+    "type": "json",
+    "required": true
+  }
+]
+```
+
+#### 输出
+
+```json
+"output": [
+  {
+    "name": "output_topic",
+    "type": "json"
+  }
+]
+```
+
+## 配置示例
+
+<Tabs items={["实时 V2V", "级联", "最小化"]}>
+  <Tab>
+### 实时 V2V 配置
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main",
+      "addon": "main_extension:MainExtension",
+      "property": {
+        "greeting": "你好！我是语音助手。",
+        "max_history": 50,
+        "lang": "cn"
+      }
+    },
+    {
+      "type": "extension",
+      "name": "mllm_in",
+      "addon": "mllm_in_v2v:MLLMV2VExtension",
+      "property": {
+        "api_key": "${GOOGLE_API_KEY}",
+        "model": "gemini-2.0-flash-exp",
+        "system_prompt": "你是一个有帮助的语音助手。"
+      }
+    },
+    {
+      "type": "extension",
+      "name": "rtc",
+      "addon": "rtc_extension:RTCExtension",
+      "property": {
+        "port": 8000,
+        "enable_audio": true
+      }
+    }
+  ]
+}
+```
+  </Tab>
+  <Tab>
+### 级联配置
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main",
+      "addon": "main_extension:MainExtension",
+      "property": {
+        "greeting": "你好！我能为你做什么？",
+        "max_history": 100
+      }
+    },
+    {
+      "type": "extension",
+      "name": "asr",
+      "addon": "asr_extension:ASRExtension",
+      "property": {
+        "provider": "google",
+        "api_key": "${GOOGLE_API_KEY}",
+        "language": "zh-CN"
+      }
+    },
+    {
+      "type": "extension",
+      "name": "llm",
+      "addon": "llm_extension:LLMExtension",
+      "property": {
+        "api_key": "${OPENAI_API_KEY}",
+        "model": "gpt-4",
+        "temperature": 0.7
+      }
+    },
+    {
+      "type": "extension",
+      "name": "tts",
+      "addon": "tts_extension:TTSExtension",
+      "property": {
+        "provider": "elevenlabs",
+        "api_key": "${ELEVENLABS_API_KEY}",
+        "voice": "bella"
+      }
+    }
+  ]
+}
+```
+  </Tab>
+  <Tab>
+### 最小化配置
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main",
+      "addon": "main_extension:MainExtension",
+      "property": {}
+    }
+  ]
+}
+```
+  </Tab>
+</Tabs>
+
+## 环境变量
+
+<Callout type="tip">
+使用环境变量处理敏感数据和特定于环境的设置。
+</Callout>
+
+### 常见变量
+
+```bash
+# API 密钥
+export GOOGLE_API_KEY="your-google-api-key"
+export OPENAI_API_KEY="your-openai-api-key"
+export ELEVENLABS_API_KEY="your-elevenlabs-key"
+
+# 配置
+export TEN_AGENT_LANG="cn"
+export TEN_AGENT_GREETING="你好！"
+export TEN_AGENT_PORT="8000"
+```
+
+### 加载环境变量
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # 从 .env 文件加载
+
+api_key = os.getenv("GOOGLE_API_KEY")
+```
+
+## 验证提示
+
+<Callout type="warning">
+在启动代理之前始终验证配置。
+</Callout>
+
+1. **检查必需字段**存在
+2. **验证 API 密钥**非空
+3. **验证版本约束**兼容
+4. **测试依赖项连接**存在
+5. **日志配置启动**用于调试
+
+## 参考资源
+
+- [TEN Framework 配置指南](https://github.com/TEN-framework/ten-framework)
+- [属性文件格式](https://github.com/TEN-framework/ten-framework)
+- [清单规范](https://github.com/TEN-framework/ten-framework)
