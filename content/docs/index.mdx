@@ -1,29 +1,102 @@
 ---
-title: 🌟 Welcome to TEN
+title: Welcome to TEN
 description: Discover the foundations of the TEN open-source conversational AI ecosystem.
 ---
 
-Welcome to TEN! TEN stands for Transformative Extensions Network, is a voice agent framework to create conversational AI.
+import { Card, Cards } from 'fumadocs-ui/components/card'
+import { Callout } from 'fumadocs-ui/components/callout'
 
+Welcome to TEN! TEN stands for **Transformative Extensions Network**, an open-source framework for real-time multimodal conversational AI.
 
-TEN framework offers the following advantages:
+## Vision
 
-1. **Native Support for High-Performance, Real-Time Multimodal Interactions**
+The TEN framework is designed to establish a modular, flexible, and scalable platform that enhances development speed, maintainability, and scalability. The framework supports best engineering practices for modular development, enabling you to create robust, efficient, and adaptable applications by leveraging comprehensive mechanisms provided by the platform.
 
-   If your AI applications involve complex audio-visual scenarios, TEN is your go-to solution. It offers high performance and low latency, with extensive optimization of interactions between various extensions to ensure efficient development of AI applications.
+## Get Started
 
-2. **Supports Multiple Languages and Platforms**
+<Cards>
+  <Card
+    title="Quick Start with TEN Agent Examples"
+    description="Get TEN Agent up and running in under 10 minutes"
+    href="/docs/ten_agent_examples/getting_started"
+  />
+  <Card
+    title="TEN Framework Docs"
+    description="Deep dive into the framework's capabilities"
+    href="/docs/ten_framework/getting-started/quick-start"
+  />
+  <Card
+    title="TEN VAD Docs"
+    description="Low-latency, high-performance and lightweight Voice Activity Detector"
+    href="/docs/ten_vad"
+  />
+  <Card
+    title="TEN Turn Detection Docs"
+    description="Turn detection for full-duplex dialogue communication"
+    href="/docs/ten_turn_detection"
+  />
+  <Card
+    title="Examples & Tutorials"
+    description="Learn by building real-world agents"
+    href="https://github.com/TEN-framework/ten-framework/tree/main/ai_agents/agents/examples"
+  />
+</Cards>
 
-   Developers can create modular and reusable extensions using various programming languages, such as C++, Go, and Python (with future support for JavaScript/TypeScript). Moreover, the TEN framework runs seamlessly across platforms, including Windows, Mac, Linux, and mobile devices.
+## Why TEN?
 
-3. **Edge-Cloud Integration**
+<Cards>
+  <Card title="High-Performance Real-Time">
+    Native support for multimodal interactions with low latency. Optimized for complex audio-visual AI applications.
+  </Card>
+  <Card title="Multi-Language Support">
+    Build extensions in C++, Go, Python, or JavaScript/TypeScript. Run seamlessly on Windows, Mac, Linux, and mobile.
+  </Card>
+  <Card title="Edge-Cloud Integration">
+    Combine edge and cloud deployments flexibly. Balance cost, latency, and performance for your use case.
+  </Card>
+  <Card title="Beyond Model Limitations">
+    Create complex AI apps with drag-and-drop simplicity. Integrate LLMs with databases, RAG, audio-visual tools, and more.
+  </Card>
+  <Card title="Real-Time State Management">
+    Dynamic agent state management enables responsive behavior adjustment in real time.
+  </Card>
+  <Card title="Modular & Extensible">
+    Build reusable extensions that work together. No glue code needed.
+  </Card>
+</Cards>
 
-   Through the TEN framework, extensions deployed across edge and cloud environments can be easily combined to create diverse applications and scenarios. For privacy-sensitive edge deployments, small models leverage local compute power for reduced costs and lower latency, while cloud-based large models can be integrated for an optimal balance of cost and performance.
+## Choose Your Path
 
-4. **Flexibility Beyond Model Limitations**
+<Callout type="info" title="New to TEN?">
+  Start with the [Getting Started guide](/docs/ten_agent_examples/getting_started) to run your first voice agent in minutes.
+</Callout>
 
-   The TEN framework allows for the creation of complex AI applications that transcend the limitations of large models alone. Agents can be easily constructed to meet a wide range of needs using a simple drag-and-drop, responsive programming approach. TEN also facilitates the integration of AI with audio-visual tools, databases, monitoring systems, RAG, and more.
+### For Application Developers
 
-5. **Real-Time Agent State Management**
+Build voice agents and conversational AI applications:
 
-   TEN has the ability to manage real-time agent states, enabling dynamic responsiveness and adjustment of agent behavior in real time.
+- [TEN Agent Examples Overview](/docs/ten_agent_examples/overview) - Understand the agent architecture
+- [Getting Started](/docs/ten_agent_examples/getting_started) - Set up and run your first agent
+- [Customize Agent](/docs/ten_agent_examples/customize_agent/modify-main) - Configure and personalize your agent
+
+### For Extension Developers
+
+Create custom extensions and integrations:
+
+- [Extension Development](/docs/ten_agent_examples/extension_dev) - Build your own extensions
+- [API Reference](/docs/ten_agent_examples/api-reference) - Events and configuration schemas
+- [TEN Framework API](/docs/ten_framework/api) - Complete framework API documentation
+- [TEN Cloud Store](/docs/ten_framework/cloud_store) - Share and discover extensions
+
+### For Framework Contributors
+
+Contribute to the TEN ecosystem:
+
+- [TEN Framework Overview](/docs/ten_framework/concept_overview) - Architecture deep dive
+- [Development Guide](/docs/ten_framework/development/development_process) - Development best practices
+- [Testing & Debugging](/docs/ten_framework/testing_and_debugging/for_users_of_ten_framework) - Quality assurance
+
+## Community & Support
+
+- [GitHub: TEN-Framework](https://github.com/TEN-framework/ten-framework) - Core framework repository
+- [FAQs](/docs/ten_agent_examples/faqs) - Common questions and troubleshooting

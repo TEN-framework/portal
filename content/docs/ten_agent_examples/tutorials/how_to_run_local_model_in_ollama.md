@@ -1,5 +1,5 @@
 ---
-title: How to Use a Local LLM with Ollama in TEN Agent
+title: How to Use a Local LLM with Ollama
 ---
 
 Ten Agent enables integration with various LLMs that support the OpenAI request-response format. This guide outlines how to use Ollama models locally with Ten Agent by leveraging OpenAI-compatible endpoints.

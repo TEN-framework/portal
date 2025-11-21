@@ -1,0 +1,139 @@
+---
+title: Project Structure
+description: Understand the folder structure and key files in a TEN Agent project.
+---
+
+import { File, Folder, Files } from 'fumadocs-ui/components/files'
+import { Callout } from 'fumadocs-ui/components/callout'
+
+The TEN Agent project is built on top of the TEN Framework. For basic concepts, see the [TEN Framework Overview](/docs/ten_framework/concept_overview).
+
+## Directory Structure
+
+<Files>
+  <Folder name="TEN-Agent" defaultOpen>
+    <Folder name="agents" defaultOpen>
+      <Folder name="examples" defaultOpen>
+        <Folder name="voice-assistant">
+          <File name="property.json" />
+          <File name="manifest.json" />
+        </Folder>
+        <Folder name="realtime-agent" />
+        <Folder name="story-teller" />
+      </Folder>
+      <Folder name="ten_packages" defaultOpen>
+        <Folder name="extension" defaultOpen>
+          <Folder name="openai_chatgpt" />
+          <Folder name="elevenlabs_tts" />
+          <Folder name="deepgram_asr" />
+          <Folder name="agora_rtc" />
+        </Folder>
+      </Folder>
+    </Folder>
+    <Folder name="server">
+      <File name="main.go" />
+    </Folder>
+    <Folder name="playground">
+      <File name="package.json" />
+    </Folder>
+    <Folder name="demo" />
+    <File name=".env" />
+    <File name="docker-compose.yml" />
+  </Folder>
+</Files>
+
+## Key Components
+
+### Configuration Files
+
+<Callout type="info" title="property.json">
+  The main runtime configuration file that defines how extensions are orchestrated. This is where you configure the graph of extensions and their connections.
+</Callout>
+
+Located in each agent example (e.g., `agents/examples/voice-assistant/property.json`), this file:
+
+- Defines which extensions to load
+- Specifies connections between extensions
+- Sets extension-specific properties and API keys
+
+See [property.json Reference](/docs/ten_agent_examples/project_structure/property_json) for detailed documentation.
+
+### Extensions Directory
+
+```
+agents/ten_packages/extension/
+```
+
+Contains all available extension modules. Each extension is a separate package that can be written in:
+
+- **Python** - For AI/ML integrations (LLMs, TTS, ASR)
+- **Go** - For high-performance networking
+- **C++** - For low-latency audio/video processing
+
+Extensions are modular and reusable across different agent configurations.
+
+See [Extension Structure](/docs/ten_agent_examples/project_structure/extension) for details on creating extensions.
+
+### Server
+
+```
+server/
+```
+
+The backend web server responsible for:
+
+- Handling HTTP/WebSocket requests
+- Managing agent process lifecycle (start/stop)
+- Routing requests to the appropriate agent instance
+
+See [Server Architecture](/docs/ten_agent_examples/project_structure/server) for implementation details.
+
+### Playground
+
+```
+playground/
+```
+
+A web-based UI for interacting with your agent:
+
+- Real-time voice/video communication
+- Extension configuration
+- Debug and monitoring tools
+
+Access at [http://localhost:3000](http://localhost:3000) after starting the agent.
+
+### Demo
+
+```
+demo/
+```
+
+Production-ready deployment configurations showcasing:
+
+- Example agent setups
+- Deployment best practices
+- Integration patterns
+
+## Agent Examples
+
+The `agents/examples/` directory contains ready-to-use agent configurations:
+
+| Example | Description |
+|---------|-------------|
+| `voice-assistant` | Basic voice agent with STT → LLM → TTS pipeline |
+| `realtime-agent` | OpenAI Realtime API integration |
+| `story-teller` | Interactive storytelling agent |
+
+To use an example:
+
+```bash title="Terminal"
+cd agents/examples/voice-assistant
+task install
+task run
+```
+
+## Next Steps
+
+- [property.json Reference](/docs/ten_agent_examples/project_structure/property_json) - Understand the configuration format
+- [Extension Structure](/docs/ten_agent_examples/project_structure/extension) - Learn how extensions are organized
+- [Server Architecture](/docs/ten_agent_examples/project_structure/server) - Dive into the backend implementation

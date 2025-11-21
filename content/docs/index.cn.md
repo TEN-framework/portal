@@ -1,5 +1,5 @@
 ---
-title: 🌟 欢迎使用 TEN
+title: 欢迎使用 TEN
 description: 了解 TEN 开源语音智能框架的核心能力与使用方式。
 ---
 

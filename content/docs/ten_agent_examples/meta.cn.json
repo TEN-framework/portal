@@ -1,6 +1,6 @@
 {
-  "title": "TEN Agent",
-  "description": "TEN Agent",
+  "title": "TEN Agent 示例",
+  "description": "TEN Agent 示例",
   "root": true,
   "pages": [
     "overview",
@@ -13,6 +13,7 @@
     "extension_dev",
     "deploy_ten_agent",
     "tutorials",
+    "api-reference",
     "faqs"
   ]
 }

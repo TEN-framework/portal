@@ -1,5 +1,5 @@
 ---
-title: How does interrupt work in TEN-Agent
+title: How does Interruption Work
 ---
 
 ## Overview

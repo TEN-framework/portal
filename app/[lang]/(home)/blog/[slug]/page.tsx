@@ -128,7 +128,7 @@ export default async function Page(props: {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: <allow here>
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <div className='pb-16'>
+      <div className='blog-theme pb-16'>
         <div className='pt-24 pb-12'>
           <div className='container'>
             <Link

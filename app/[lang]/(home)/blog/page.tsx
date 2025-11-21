@@ -62,7 +62,7 @@ export default async function BlogHomePage(props: {
   }
 
   return (
-    <section className='py-20 md:py-24 lg:py-32'>
+    <section className='blog-theme py-20 md:py-24 lg:py-32'>
       <div className='container mx-auto flex flex-col items-center gap-16 px-4 lg:px-16'>
         <div className='w-full max-w-3xl text-center'>
           <Badge variant='secondary' className='mb-6'>

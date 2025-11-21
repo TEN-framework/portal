@@ -1,0 +1,306 @@
+---
+title: 事件
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# TEN Agent 事件
+
+事件是 RTC 服务器、MLLM 扩展和自定义代理扩展之间的主要通信机制。TEN Agent 使用**服务器→客户端 (S2C)** 模型处理传入事件，以及**客户端→服务器 (C2S)** 原始命令处理传出命令。
+
+## S2C 事件（服务器到客户端）
+
+这些是**从服务器发送**的事件，您的代理扩展接收并处理。
+
+### 用户和会话事件
+
+#### `UserJoinedEvent`
+
+用户加入 RTC 会话时触发。
+
+| 属性 | 类型 | 描述 |
+|------|------|------|
+| **user_id** | `string` | 加入用户的唯一标识符 |
+| **timestamp** | `float` | 事件时间戳（Unix 时代） |
+
+**示例：**
+```python
+case UserJoinedEvent():
+    self._rtc_user_count += 1
+    await self._greeting_if_ready()
+```
+
+#### `UserLeftEvent`
+
+用户离开 RTC 会话时触发。
+
+| 属性 | 类型 | 描述 |
+|------|------|------|
+| **user_id** | `string` | 离开用户的唯一标识符 |
+| **timestamp** | `float` | 事件时间戳 |
+
+**示例：**
+```python
+case UserLeftEvent():
+    self._rtc_user_count -= 1
+```
+
+### 转录事件
+
+#### `InputTranscriptEvent`
+
+ASR 扩展识别的语音（用户语音转换为文本）。
+
+| 属性 | 类型 | 描述 |
+|------|------|------|
+| **text** | `string` | 识别的语音文本 |
+| **final** | `bool` | 是否是最终（完整）转录 |
+| **metadata** | `dict` | 其他上下文（session_id、置信度等） |
+| **stream_id** | `string` | 此语音段的唯一标识符 |
+
+**示例：**
+```python
+case InputTranscriptEvent():
+    self.current_metadata = {"session_id": event.metadata.get("session_id", "100")}
+    self.session_ready = True
+    await self._greeting_if_ready()
+```
+
+<Callout type="info">
+**最终与流式**: `final` 标志表示转录是否完整或仍在识别中。非最终转录不应触发处理。
+</Callout>
+
+#### `OutputTranscriptEvent`
+
+MLLM 生成的助手语音（文本转语音将其转换为音频）。
+
+| 属性 | 类型 | 描述 |
+|------|------|------|
+| **text** | `string` | 助手的语音文本 |
+| **is_final** | `bool` | 是否完成响应 |
+| **stream_id** | `string` | 此语音段的唯一标识符 |
+
+**示例：**
+```python
+case OutputTranscriptEvent():
+    await self._send_transcript("assistant", event.text, event.is_final, event.stream_id)
+```
+
+### 工具和函数事件
+
+#### `ToolRegisterEvent`
+
+工具/函数变为代理可调用。
+
+| 属性 | 类型 | 描述 |
+|------|------|------|
+| **tool** | `str` | 工具/函数标识符 |
+| **source** | `str` | 注册此工具的扩展 |
+| **metadata** | `dict` | 工具架构和参数 |
+
+**示例：**
+```python
+case ToolRegisterEvent():
+    await self.agent.register_tool(event.tool, event.source)
+```
+
+#### `FunctionCallEvent`
+
+MLLM 请求调用工具/函数（函数调用实际执行）。
+
+| 属性 | 类型 | 描述 |
+|------|------|------|
+| **call_id** | `string` | 此函数调用请求的唯一标识符 |
+| **function_name** | `string` | 要调用的函数名称 |
+| **arguments** | `dict` | 函数参数作为键值对 |
+
+**示例：**
+```python
+case FunctionCallEvent():
+    await self.agent.call_tool(event.call_id, event.function_name, event.arguments)
+```
+
+<Callout type="warning">
+处理完 `FunctionCallEvent` 后，必须通过 C2S `SendFunctionCallOutput` 原始命令发送结果以继续对话。
+</Callout>
+
+### 中断事件
+
+#### `ServerInterruptEvent`
+
+MLLM 检测到用户语音开始并发送中断信号。
+
+| 属性 | 类型 | 描述 |
+|------|------|------|
+| **reason** | `string` | 中断原因（例如 "user_speech_detected"） |
+
+**示例：**
+```python
+case ServerInterruptEvent():
+    await self._interrupt()
+```
+
+## C2S 原始命令（客户端到服务器）
+
+这些是您的代理扩展**发送到 MLLM 服务器**的命令。
+
+### 设置消息上下文
+
+使用消息历史初始化或更新对话上下文。
+
+```python
+async def _set_context_messages(self, messages: list[MLLMClientMessageItem]):
+    await _send_data(
+        self.ten_env,
+        DATA_MLLM_IN_SET_MESSAGE_CONTEXT,
+        "v2v",
+        MLLMClientSetMessageContext(messages=messages).model_dump(),
+    )
+```
+
+**参数：**
+- **messages**: 消息项列表（系统、用户、助手）
+
+### 发送消息项
+
+向对话添加单条消息。
+
+```python
+async def _send_message_item(self, message: MLLMClientMessageItem):
+    await _send_data(
+        self.ten_env,
+        DATA_MLLM_IN_SEND_MESSAGE_ITEM,
+        "v2v",
+        MLLMClientSendMessageItem(item=message).model_dump(),
+    )
+```
+
+**参数：**
+- **message**: 单条消息（文本、图像或音频）
+
+### 触发响应
+
+请求 MLLM 生成响应（思考 + 说话）。
+
+```python
+async def _send_create_response(self):
+    await _send_data(
+        self.ten_env,
+        DATA_MLLM_IN_CREATE_RESPONSE,
+        "v2v",
+        MLLMClientCreateResponse().model_dump(),
+    )
+```
+
+<Callout type="tip">
+在设置上下文或发送消息后调用此命令以触发 MLLM 思考和说话。
+</Callout>
+
+### 发送函数调用输出
+
+将工具/函数调用的结果返回给 MLLM。
+
+```python
+async def _send_function_call_output(self, result: str, call_id: str):
+    await _send_data(
+        self.ten_env,
+        DATA_MLLM_IN_FUNCTION_CALL_OUTPUT,
+        "v2v",
+        MLLMClientFunctionCallOutput(
+            output=result,
+            call_id=call_id,
+        ).model_dump(),
+    )
+```
+
+**参数：**
+- **output**: 工具结果作为字符串
+- **call_id**: 原始 `FunctionCallEvent` 中的 call_id
+
+## 事件流程图
+
+<Tabs items={["实时 V2V", "级联"]}>
+  <Tab>
+```
+用户语音
+    ↓
+RTC → ASR 扩展
+    ↓
+InputTranscriptEvent (S2C)
+    ↓
+MainExtension.on_data()
+    ↓
+_set_context_messages() (C2S)
+    ↓
+_send_create_response() (C2S)
+    ↓
+MLLM 处理并生成响应
+    ↓
+OutputTranscriptEvent (S2C)
+    ↓
+TTS 扩展转换为音频
+    ↓
+音频流式传输给用户
+```
+  </Tab>
+  <Tab>
+```
+用户消息（文本/语音）
+    ↓
+MainExtension 处理输入
+    ↓
+发送到 MLLM (C2S)
+    ↓
+MLLM 用文本响应
+    ↓
+OutputTranscriptEvent (S2C)
+    ↓
+TTS 转换并流式传输音频
+    ↓
+用户听到响应
+```
+  </Tab>
+</Tabs>
+
+## 常见模式
+
+### 就绪时问候
+
+```python
+async def _greeting_if_ready(self):
+    if self._rtc_user_count == 1 and self.config.greeting and self.session_ready:
+        await self._send_message_item(
+            MLLMClientMessageItem(
+                role="user",
+                content=self.config.greeting,
+            )
+        )
+        await self._send_create_response()
+```
+
+### 处理工具结果
+
+```python
+case FunctionCallEvent():
+    try:
+        result = await call_tool(event.function_name, event.arguments)
+        await self._send_function_call_output(json.dumps(result), event.call_id)
+    except Exception as e:
+        await self._send_function_call_output(json.dumps({"error": str(e)}), event.call_id)
+```
+
+### 优雅关闭
+
+```python
+case UserLeftEvent():
+    self._rtc_user_count -= 1
+    if self._rtc_user_count == 0:
+        await self._cleanup()
+```
+
+## 参考资源
+
+有关完整的事件定义和类型，请参阅 TEN Framework 中的源代码：
+- [TEN Agent 事件](https://github.com/TEN-framework/TEN-Agent/tree/main/ai_agents/agents/examples)
+- [MLLM 扩展 API](https://github.com/TEN-framework/ten-framework)
