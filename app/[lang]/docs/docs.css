@@ -1,25 +1,46 @@
-/* Override font for docs section only */
-:root {
-  --font-inter: "Inter", system-ui, sans-serif;
-}
-
-/* Apply Inter font to all elements within the docs layout */
-body {
-  font-family: var(--font-inter);
+/* Docs theme overrides */
+.docs-theme {
+  /* Use Geist font for docs */
+  font-family: var(--font-geist);
   font-weight: 400;
+
+  /* Fumadocs tokens (light) */
+  --color-fd-primary: #475569;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-accent: #e5e7eb;
+  --color-fd-accent-foreground: #0f172a;
+
+  /* Tailwind/Shadcn tokens (light) */
+  --primary: #475569;
+  --primary-foreground: #ffffff;
+  --accent: #e5e7eb;
+  --accent-foreground: #0f172a;
+
+  /* Sidebar chip (optional) */
+  --color-sidebar-accent: #f1f5f9;
+  --color-sidebar-accent-foreground: #0f172a;
 }
 
-/* Ensure headings also use Inter */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-inter);
+.dark .docs-theme {
+  /* Fumadocs tokens (dark) */
+  --color-fd-primary: #64748b;
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-accent: #374151;
+  --color-fd-accent-foreground: #e5e7eb;
+
+  /* Tailwind/Shadcn tokens (dark) */
+  --primary: #64748b;
+  --primary-foreground: #ffffff;
+  --accent: #374151;
+  --accent-foreground: #e5e7eb;
+
+  /* Sidebar chip (optional) */
+  --color-sidebar-accent: #0f172a;
+  --color-sidebar-accent-foreground: #e2e8f0;
 }
 
-/* Override any Jokker font usage in docs */
-* {
-  font-family: var(--font-inter);
+/* Blog theme - uses Geist font */
+.blog-theme {
+  font-family: var(--font-geist);
+  font-weight: 400;
 }

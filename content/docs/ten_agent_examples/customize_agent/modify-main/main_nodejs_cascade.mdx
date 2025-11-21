@@ -1,0 +1,207 @@
+---
+title: NodeJS - Cascade Main
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Main Agent Extension for Node.js
+
+The file [`index.ts`](./index.ts) defines the **MainControlExtension** — the entry point for Node.js agents in the TEN Framework.
+
+This is the class that wires together **ASR results**, **LLM responses**, **tool registration**, and **interruption handling**.
+If you're building your own solution on top of TEN (with Node.js), start here.
+
+<Tabs items={['Overview', 'ASR Handling', 'LLM Handling', 'Patterns', 'Summary']}>
+  <Tab>
+## Quick File Layout
+
+```
+.
+├── index.ts          → Main extension: message routing + interruption
+├── helper.ts         → Utilities for sending Cmd/Data, sentence parsing
+└── agent/
+    ├── agent.ts      → Event bus + orchestration
+    ├── events.ts     → Event classes (ASR, LLM, Tools, User)
+    ├── llm_exec.ts   → LLM execution queue and handlers
+    └── struct.ts     → Zod schemas for TTS/ASR/LLM messages
+```
+
+## Architecture Overview
+<img src="https://ten-framework-assets.s3.amazonaws.com/blog/main-control/nine.svg" alt="Architecture" />
+
+## Core Architecture
+
+### MainControlExtension Class
+
+Extends `Extension` from `ten-runtime-nodejs`. Normalizes runtime messages into **typed events** (`ASRResultEvent`, `LLMResponseEvent`, etc.). Routes events into the `Agent` class. Manages **interruption** when users talk over the assistant.
+
+### Key Properties
+
+```ts
+class MainControlExtension extends Extension {
+  tenEnv!: TenEnv;
+  agent!: Agent;
+  config!: MainControlConfig;
+
+  joinedUserCount: number = 0;
+  session_id: string = "0";
+  turn_id: number = 0;
+  sentenceFragment: string = "";
+}
+```
+
+**`session_id` + `turn_id`** track conversation state. **`sentenceFragment`** accumulates partial output for sentence splitting.
+
+  </Tab>
+
+  <Tab>
+## ASR Event Handling
+
+When ASR detects speech, it's turned into an `ASRResultEvent`.
+
+```ts
+if (event.final || event.text.length > 2) {
+  await this._interrupt(); // flush LLM/TTS if user is overlapping
+}
+if (event.final) {
+  this.turn_id += 1;
+  await this.agent.queueLLMInput(event.text);
+}
+await this._sendTranscript("user", event.text, event.final, Number(this.session_id));
+```
+
+### Behavior
+
+**Partial speech** is logged as transcript and may trigger interrupt if overlapping. **Final speech** is queued for LLM input and increments turn counter. **Overlap detection** via `_interrupt()` cancels current LLM/TTS tasks.
+
+<Callout type="tip">
+Adjust interrupt sensitivity in `_onASRResult` based on your use case (stricter vs. looser barge-in).
+</Callout>
+  </Tab>
+
+  <Tab>
+## LLM Response Handling
+
+LLM responses are streamed sentence by sentence, then forwarded to TTS and transcript collectors.
+
+```ts
+if (!event.is_final && event.type === "message") {
+  const [sentences, fragment] = parseSentences(this.sentenceFragment, event.delta);
+  this.sentenceFragment = fragment;
+  for (const s of sentences) {
+    await this._sendToTTS(s, false);
+  }
+}
+
+await this._sendTranscript(
+  "assistant", event.text, event.is_final, 100,
+  event.type === "reasoning" ? "reasoning" : "text"
+);
+```
+
+### Behavior
+
+**Streaming** sends TTS short sentences for natural, fluent speech. **Sentence splitting** via `parseSentences()` breaks output into natural pauses. **Partial transcripts** are logged as they arrive. **Final transcripts** are marked complete with reasoning/text type.
+
+### Tool Registration
+
+The LLM can register tools dynamically.
+
+```ts
+async _onToolRegister(event: ToolRegisterEvent) {
+  await this.agent.registerLLMTool(event.tool, event.source);
+}
+```
+
+Define your tool schema in `events.ts` and handle execution in your `Agent` logic.
+
+### Interruption Handling
+
+Natural barge-in is handled by `_interrupt()`.
+
+```ts
+async _interrupt() {
+  this.sentenceFragment = "";
+  await this.agent.flushLLM();
+  await sendData(this.tenEnv, "tts_flush", "tts", { flush_id: uuidv4() });
+  await sendCmd(this.tenEnv, "flush", "agora_rtc");
+}
+```
+
+Flushes **LLM requests** (cancels pending generations). Cancels **TTS playback** (stops audio playback). Signals **RTC to stop** streaming. This ensures the user can always cut in naturally.
+  </Tab>
+
+  <Tab>
+## Implementation Patterns
+
+### Custom ASR Flow
+
+Edit `_onASRResult` to filter or preprocess speech:
+
+```ts
+async _onASRResult(event: ASRResultEvent) {
+  // Custom preprocessing
+  let text = event.text.toLowerCase().trim();
+
+  // Filter unwanted phrases
+  if (text.includes("ignore")) return;
+
+  // Then continue with normal flow
+  await this._handleASRNormally(text, event.final);
+}
+```
+
+### Custom LLM Output
+
+Modify `_onLLMResponse` to change text before TTS or UI:
+
+```ts
+async _onLLMResponse(event: LLMResponseEvent) {
+  // Transform response
+  event.delta = event.delta.replace("technical_term", "simplified_term");
+
+  // Continue normally
+  await this._handleLLMNormally(event);
+}
+```
+
+### Add a Tool
+
+1. Extend `ToolRegisterEvent` in `events.ts`
+2. Register in `Agent` via `registerLLMTool()`
+3. Handle execution in tool handler
+
+### Tweak Responsiveness
+
+Adjust `_interrupt()` for stricter or looser barge-in:
+
+```ts
+// Stricter (require more speech)
+if (event.text.length > 5) {
+  await this._interrupt();
+}
+
+// Looser (interrupt on any sound)
+if (event.text.length > 0) {
+  await this._interrupt();
+}
+```
+
+<Callout type="warning">
+Node.js extension changes require a build step. Run `task build` to rebuild all Node.js extensions.
+</Callout>
+  </Tab>
+
+  <Tab>
+## Supporting Components
+
+**`agent.ts`** manages event queues for ASR & LLM, plus handler registration. **`llm_exec.ts`** provides async queue that sends requests to LLMs and handles streaming responses, aborts, and tool calls. **`events.ts`** defines event classes like `ASRResultEvent`, `LLMResponseEvent`, `ToolRegisterEvent`. **`helper.ts`** provides `sendCmd`, `sendData`, and `parseSentences` for splitting output into natural phrases.
+
+## Architecture Summary
+
+`index.ts` (`MainControlExtension`) is the **entry point** and **router**. It normalizes runtime messages into **typed events** and controls **interruption**. Supporting files (`agent/`, `helper.ts`) provide queues, event models, and execution helpers. The Cascade pattern flows: **ASR → LLM → TTS** with natural interruption handling.
+
+By following this structure, you can **quickly extend or replace** parts of the flow to build your own Node.js-based conversational agent on TEN.
+  </Tab>
+</Tabs>

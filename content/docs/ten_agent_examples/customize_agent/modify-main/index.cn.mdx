@@ -1,0 +1,109 @@
+---
+title: 通过代码自定义
+---
+
+使用 TMAN Designer 配置扩展，可以帮助你快速完成基础功能的修改与验证。  
+但当你需要实现更复杂的功能，而这些功能并未在可视化界面中直接支持时，就需要通过编写代码来自定义实现。  
+在修改代码之前，建议先熟悉并理解 `main` 扩展的结构与职责。
+
+---
+
+在 TEN 框架中，**连接（connections）** 用于定义视频与音频数据在不同扩展之间的传输方式。  
+这种设计能够最大限度地降低不必要的复杂度，并确保系统在高负载场景下依旧保持优异性能——这也是 TEN 框架的重要优势之一。
+
+对于 **事件与文本类数据**，由于其通常占用资源较少，更适合通过代码直接处理。  
+这种方式不仅具备更高的灵活性，也能够更高效地支持复杂逻辑的实现。
+
+为简化工作流，最新版本的默认 TEN Agent 应用在每个图（graph）中都引入了一个内置的 **“main” 扩展**。  
+该扩展作为核心枢纽，负责组件间的编排与管理。
+
+采用这一设计，你将获得以下收益：
+
+1. **视频/音频数据** 始终通过扩展间的连接传输，从而充分利用框架的性能优化能力，而无需直接处理底层的媒体逻辑。  
+2. **“main” 扩展** 可以与任意扩展交互，并统一收集所需的事件与文本数据：  
+   * 对于 **入站事件/数据**，需要在 `property.json` 文件中注册从源扩展到 “main” 扩展的连接。  
+   * 对于 **出站事件/数据**，则可在运行时调用 `setDests` 方法来动态指定目标扩展，无需在 `property.json` 中预先定义连接。  
+3. **应用层逻辑集中化** —— 所有与业务相关的自定义逻辑均可放置于 “main” 扩展内，确保整体结构清晰。  
+4. **扩展保持无状态与独立性** —— 其他扩展应尽量保持轻量与通用，便于在不同项目或场景中复用。  
+
+此外，**"main" 扩展支持使用 TEN 框架所兼容的任意语言** 来编写。
+例如，你可以使用 Node.js 来实现 "main" 扩展，同时保留其他扩展使用 Python 或 C++。
+这一设计不仅避免了 Node.js 在媒体处理方面的性能瓶颈，也能在生产环境中更好地发挥优势。
+
+---
+
+## Main 扩展变种对比
+
+根据你的具体需求，选择合适的架构方案：
+
+| 方面 | Python Cascade | Python Realtime V2V | Node.js Cascade |
+| --- | --- | --- | --- |
+| **语言** | Python | Python | TypeScript/JavaScript |
+| **适用场景** | 传统语音智能体：ASR → LLM → TTS 管道 | 直连多模态（MLLM）：实时视觉+音频 | 高性能语音智能体：支持媒体流 |
+| **事件模型** | 基于装饰器 `@agent_event_handler()` | 基于匹配/分支的 `on_data()` 方法 | 类方法中的直接事件处理 |
+| **消息流** | **S2C**: 接收运行时类型化事件 | **S2C**: 通过单一 `on_data` 接收所有事件 | **直接**: 消息到达时直接路由 |
+| **LLM 类型** | 标准 LLM（仅文本） | 多模态 LLM（视觉+音频+文本） | 标准 LLM（仅文本） |
+| **流式支持** | 文本流 + 句子分割 | MLLM 流 + 模态支持 | 流式处理 + 句子解析 |
+| **中断处理** | 通过 `_interrupt()` 检测插话 | 基于 `ServerInterruptEvent` 事件 | 通过句子片段重置处理插话 |
+| **工具支持** | 通过 `@tool_handler()` 装饰器 | 通过匹配/分支 `FunctionCallEvent` | 通过直接代理工具注册 |
+| **配置方式** | 通过 Python `config.yaml` | 通过 `config.py` 带 `greeting` | 通过 manifest 和 property.json |
+| **性能** | 适合标准工作负载 | 针对实时多模态优化 | 最适合媒体密集型工作负载 |
+| **复杂度** | 中等（装饰器+事件总线） | 中等（匹配/分支调度） | 中等（直接方法路由） |
+| **最佳选择** | 学习 TEN 基础 | 现代 AI：视觉+语音 | 生产语音智能体 |
+
+### 快速决策指南
+
+**选择 Python Cascade** 如果你想学习 main 扩展的工作原理，或在 Python 中构建标准语音智能体。
+
+**选择 Python Realtime V2V** 如果你需要多模态能力（摄像头输入、视觉处理）或希望使用支持多种模态的高级 LLM。
+
+**选择 Node.js Cascade** 如果你正在构建生产级语音智能体，并希望利用 Node.js 的性能优势，同时通过基于连接的音频流来避免媒体处理瓶颈。
+
+---
+
+## Main 扩展文档
+
+### Python Cascade 模式
+
+传统 ASR → LLM → TTS 管道，采用装饰器风格的事件处理。适合学习 TEN 基础或构建标准语音智能体。
+
+- [Python Cascade Main](./main_python_cascade) — 完整指南，包含装饰器模式、事件路由和 LLM 集成
+- 最佳选择：学习基础、标准语音智能体、纯 Python 环境
+
+### Python Realtime V2V 模式
+
+多模态 MLLM 集成，支持实时视觉和音频。现代 AI 能力的先进方法。
+
+- [Python Realtime V2V Main](./main_python_realtime) — 事件路由（匹配/分支）、C2S 原语、工具处理和函数调用
+- 最佳选择：视觉+语音、多模态 AI、支持视觉的现代 LLM
+
+### Node.js Cascade 模式
+
+使用 TypeScript/JavaScript 构建的高性能语音智能体，具有优化的媒体流处理。
+
+- [Node.js Cascade Main](./main_nodejs_cascade) — ASR 处理、LLM 响应流、工具注册和自然中断
+- 最佳选择：生产级语音智能体、性能关键应用、Node.js 团队
+
+---
+
+## 常见任务
+
+### 理解事件流
+
+- **Python Cascade**: 装饰器风格事件处理器 (`@agent_event_handler()`) - 参见 [ASR 事件处理章节](./main_python_cascade#event-routing)
+- **Python Realtime V2V**: 匹配/分支调度 - 参见 [事件路由章节](./main_python_realtime#event-routing)
+- **Node.js Cascade**: 直接方法处理器 - 参见 [ASR 处理章节](./main_nodejs_cascade)
+
+### 处理工具调用
+
+- **Python Cascade**: 工具装饰器模式
+- **Python Realtime V2V**: 函数调用事件处理 - 参见 [C2S 原语](./main_python_realtime#c2s-primitives-sending-to-mllm)
+- **Node.js Cascade**: 代理工具注册
+
+### 实现中断处理
+
+学习如何在你的模式中处理用户中断（插话）：
+
+- **Python Cascade**: 扩展中的 `_interrupt()` 方法
+- **Python Realtime V2V**: `ServerInterruptEvent` 处理 - 参见 [模式章节](./main_python_realtime#common-implementation-patterns)
+- **Node.js Cascade**: 通过句子片段重置的自然插话 - 参见 [LLM 处理章节](./main_nodejs_cascade)

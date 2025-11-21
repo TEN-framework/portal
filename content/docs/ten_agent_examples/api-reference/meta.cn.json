@@ -1,0 +1,5 @@
+{
+  "title": "API 参考",
+  "description": "TEN Agent 事件和模式 API 参考",
+  "pages": ["events", "schemas"]
+}

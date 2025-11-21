@@ -1,0 +1,144 @@
+---
+title: Getting Started
+description: Get TEN Agent up and running in three simple steps.
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs'
+import { Callout } from 'fumadocs-ui/components/callout'
+import { Step, Steps } from 'fumadocs-ui/components/steps'
+
+Get TEN Agent up and running in just three steps.
+
+<Steps>
+
+<Step>
+## Prerequisites
+
+Before you begin, make sure you have the following ready:
+
+<Tabs items={['API Keys', 'Installations', 'System Requirements']}>
+  <Tab>
+    You'll need accounts and API keys from these services:
+
+    - **Agora** - [App ID](https://docs.agora.io/en/video-calling/get-started/manage-agora-account?platform=web#create-an-agora-project) and [App Certificate](https://docs.agora.io/en/video-calling/get-started/manage-agora-account?platform=web#create-an-agora-project) (free minutes every month)
+    - **OpenAI** - [API key](https://openai.com/index/openai-api/) (or any compatible LLM)
+    - **Deepgram** - [ASR key](https://deepgram.com/) (free credits available with signup)
+    - **ElevenLabs** - [TTS key](https://elevenlabs.io/) (free credits available with signup)
+  </Tab>
+  <Tab>
+    Install these tools on your machine:
+
+    - [Docker](https://www.docker.com/) / [Docker Compose](https://docs.docker.com/compose/)
+    - [Node.js (LTS) v18+](https://nodejs.org/en)
+  </Tab>
+  <Tab>
+    Minimum hardware requirements:
+
+    - **CPU**: 2 cores or more
+    - **RAM**: 4 GB or more
+  </Tab>
+</Tabs>
+
+<Callout title="macOS: Docker setting on Apple Silicon" type="warn">
+  Uncheck "Use Rosetta for x86/amd64 emulation" in Docker settings. This may result in slower build times on ARM, but performance will be normal when deployed to x64 servers.
+</Callout>
+</Step>
+
+<Step>
+## Build the Agent
+
+### Clone and configure
+
+Clone the repository and set up your environment variables:
+
+```bash title="Terminal"
+git clone https://github.com/TEN-framework/TEN-Agent.git
+cd TEN-Agent
+cp ./.env.example ./.env
+```
+
+### Add your API keys
+
+Open `.env` and fill in your API keys:
+
+```bash title=".env"
+# Agora credentials
+AGORA_APP_ID=your_app_id_here
+AGORA_APP_CERTIFICATE=your_certificate_here
+
+# ElevenLabs TTS
+ELEVENLABS_TTS_KEY=your_key_here
+
+# OpenAI
+OPENAI_API_KEY=your_key_here
+
+# Deepgram ASR
+DEEPGRAM_API_KEY=your_key_here
+```
+
+### Start development containers
+
+```bash title="Terminal"
+docker compose up -d
+```
+
+### Build and run the agent
+
+Enter the container and build the default voice assistant:
+
+```bash title="Terminal"
+docker exec -it ten_agent_dev bash
+```
+
+Inside the container:
+
+```bash title="Inside Container"
+# Navigate to the voice assistant example
+cd agents/examples/voice-assistant
+
+# Install dependencies and build (~5-8 minutes)
+task install
+
+# Start the agent
+task run
+```
+
+<Callout type="info">
+  The frontend will be available at [http://localhost:3000](http://localhost:3000)
+</Callout>
+
+<Callout title="Want to try other examples?" type="info">
+  Check the `/examples` folder for more agent configurations:
+  ```bash
+  cd agents/examples/<example_name>
+  task install
+  ```
+</Callout>
+</Step>
+
+<Step>
+## Customize with TMAN Designer
+
+Use the visual designer to customize your agent:
+
+1. Open [localhost:49483](http://localhost:49483) in your browser
+2. Right-click to load a graph (e.g., Voice Assistant)
+3. Configure API keys and preferences for each extension
+4. Right-click and select **Manage Apps** to open the Apps Manager
+5. Click **Run App** to start your customized TEN Agent
+
+<Callout type="info">
+  If you already configured API keys in the `.env` file, you can skip step 3.
+</Callout>
+</Step>
+
+</Steps>
+
+## Next Steps
+
+Now that you have TEN Agent running, explore these resources:
+
+- [Project Structure](/docs/ten_agent_examples/project_structure) - Understand how TEN Agent is organized
+- [Customize Agent](/docs/ten_agent_examples/customize_agent) - Build your own agent configurations
+- [Extension Development](/docs/ten_agent_examples/extension_dev) - Create custom extensions
+- [FAQs](/docs/ten_agent_examples/faqs) - Common questions and troubleshooting

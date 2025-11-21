@@ -1,5 +1,5 @@
 ---
-title: 🔠 Application Scenarios
+title: Application Scenarios
 description: Review real-world scenarios where TEN powers responsive multimodal voice agents.
 ---
 
