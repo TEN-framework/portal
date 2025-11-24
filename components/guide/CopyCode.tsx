@@ -16,15 +16,15 @@ export function CopyCode({ code }: { code: string }) {
 
   return (
     <div className='mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm'>
-      <div className='flex items-center justify-between border-b border-slate-100 bg-slate-50 px-4 py-2'>
+      <div className='flex items-center justify-between border-slate-100 border-b bg-slate-50 px-4 py-2'>
         <div className='flex items-center gap-2 text-slate-500'>
           <Terminal className='h-4 w-4' strokeWidth={1.8} />
-          <span className='text-sm font-semibold text-slate-600'>终端</span>
+          <span className='font-semibold text-slate-600 text-sm'>终端</span>
         </div>
         <button
           onClick={onCopy}
           type='button'
-          className='inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold text-slate-500 transition hover:bg-slate-100'
+          className='inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-semibold text-[11px] text-slate-500 transition hover:bg-slate-100'
           aria-live='polite'
           aria-label='复制代码'
         >
