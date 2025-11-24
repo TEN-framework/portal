@@ -108,11 +108,11 @@ git remote add upstream https://github.com/TEN-framework/portal.git`,
               <span className='text-[9px] font-mono text-slate-400'>REPO</span>
             </div>
             <div className='relative h-[1px] w-20 overflow-hidden bg-slate-200'>
-              <div className='animate-slide absolute inset-0 bg-indigo-600' />
+              <div className='animate-slide absolute inset-0 bg-emerald-600' />
             </div>
-            <div className='flex h-28 w-24 flex-col items-center justify-center rounded border-2 border-indigo-500 bg-indigo-50 shadow-lg'>
-              <span className='text-[10px] font-bold text-indigo-800'>YOU</span>
-              <span className='text-[9px] font-mono text-indigo-400'>FORK</span>
+            <div className='flex h-28 w-24 flex-col items-center justify-center rounded border-2 border-emerald-500 bg-emerald-50 shadow-lg'>
+              <span className='text-[10px] font-bold text-emerald-800'>YOU</span>
+              <span className='text-[9px] font-mono text-emerald-400'>FORK</span>
             </div>
           </div>
         )
@@ -129,12 +129,12 @@ bun dev  # 打开 http://localhost:3000`,
             </div>
             <div className='flex h-56 flex-col items-center justify-center gap-3 p-8 text-center'>
               <p className='text-3xl font-semibold text-white tracking-tight'>
-                TEN <span className='text-indigo-400'>Framework</span>
+                TEN <span className='text-emerald-400'>Framework</span>
               </p>
               <p className='text-xs font-mono text-slate-400'>
                 The Agentic AI Framework
               </p>
-              <span className='animate-pulse rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1 text-[11px] font-mono text-indigo-300'>
+              <span className='animate-pulse rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-[11px] font-mono text-emerald-300'>
                 localhost:3000
               </span>
             </div>
@@ -155,8 +155,8 @@ accentWords: [TEN, AI]`,
               <div className='h-1 w-full bg-slate-100' />
               <div className='h-1 w-3/4 bg-slate-100' />
               <div className='h-1 w-full bg-slate-100' />
-              <div className='rounded border border-indigo-100 bg-indigo-50 p-2'>
-                <div className='text-[10px] font-mono text-indigo-800'>
+              <div className='rounded border border-emerald-100 bg-emerald-50 p-2'>
+                <div className='text-[10px] font-mono text-emerald-800'>
                   accentWords: [TEN]
                 </div>
               </div>
@@ -173,7 +173,7 @@ bun run format`,
         hint: 'bun run check 会一次性跑 lint、typecheck 和链接校验。',
         visual: (
           <div className='flex flex-col items-center gap-4'>
-            <div className='flex items-center gap-2 text-indigo-600'>
+            <div className='flex items-center gap-2 text-emerald-600'>
               <svg
                 className='h-7 w-7 animate-spin'
                 fill='none'
@@ -263,6 +263,14 @@ bun run format`,
   const toggleDrawer = () => setDrawerOpen((prev) => !prev)
   const switchTab = (tab: 'cheat' | 'standards' | 'manual') => setActiveTab(tab)
 
+  const isLikelyCode = (value: string) => {
+    const trimmed = value.trim()
+    return (
+      trimmed.includes('\n') ||
+      /^(`?)(bun|git|npm|pnpm|yarn|cd|mkdir|curl|npx)\b/.test(trimmed)
+    )
+  }
+
   const handleNext = () => {
     if (currentStep < interactiveSteps.length - 1) {
       setCurrentStep((p) => p + 1)
@@ -283,8 +291,10 @@ bun run format`,
     setCurrentStep((p) => Math.max(0, p - 1))
   }
 
+  const isLastStep = currentStep === interactiveSteps.length - 1
+
   return (
-    <div className='relative min-h-screen overflow-hidden bg-slate-50 text-slate-900'>
+    <div className='relative min-h-screen overflow-x-hidden bg-slate-50 text-slate-900'>
       <div
         className='pointer-events-none absolute inset-0 opacity-[0.07]'
         style={{
@@ -300,7 +310,7 @@ bun run format`,
         <div className='flex items-center gap-5 text-xs font-medium uppercase tracking-[0.2em] text-slate-400'>
           <span className='text-slate-900'>Contribution</span>
           <a
-            className='transition hover:text-indigo-600'
+            className='transition hover:text-emerald-600'
             href={t.hero.primaryCta.href}
             target='_blank'
             rel='noreferrer'
@@ -308,12 +318,12 @@ bun run format`,
             GitHub
           </a>
           <a
-            className='flex items-center gap-1 transition hover:text-indigo-500'
+            className='flex items-center gap-1 transition hover:text-emerald-500'
             href={t.hero.secondaryCta.href}
             target='_blank'
             rel='noreferrer'
           >
-            <span className='h-2 w-2 rounded-full bg-indigo-500' />
+            <span className='h-2 w-2 rounded-full bg-emerald-500' />
             Discord
           </a>
         </div>
@@ -322,20 +332,20 @@ bun run format`,
       <main className='relative z-10 grid min-h-[75vh] grid-cols-1 lg:grid-cols-2'>
         <div className='relative flex flex-col justify-center px-6 py-10 sm:px-12 md:px-16'>
           <div className='absolute left-6 top-6 flex items-center gap-3 sm:left-12'>
-            <span className='text-xs font-bold tracking-[0.2em] text-indigo-800'>
+            <span className='text-xs font-bold tracking-[0.2em] text-emerald-800'>
               STEP {String(step.id).padStart(2, '0')}/
               {String(interactiveSteps.length).padStart(2, '0')}
             </span>
             <div className='h-[2px] w-16 bg-slate-200'>
               <div
-                className='h-full bg-indigo-600 transition-all duration-500'
+                className='h-full bg-emerald-600 transition-all duration-500'
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
           <div className='mt-12 space-y-4'>
-            <span className='inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1 text-xs font-medium text-indigo-600'>
+            <span className='inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white px-3 py-1 text-xs font-medium text-emerald-600'>
               <Sparkles className='h-4 w-4' />
               TEN Portal 内部指南
             </span>
@@ -345,28 +355,48 @@ bun run format`,
               </h1>
               <p className='text-lg text-slate-400'>{step.subtitle}</p>
             </div>
-            <p className='max-w-xl border-l-2 border-indigo-100 pl-4 text-base leading-relaxed text-slate-600'>
+            <p className='max-w-xl border-l-2 border-emerald-100 pl-4 text-base leading-relaxed text-slate-600'>
               {step.concept}
             </p>
+            <div className='flex flex-wrap items-center gap-2 text-xs text-slate-500'>
+              <span className='font-semibold text-slate-700'>快速跳转</span>
+              <select
+                value={currentStep}
+                onChange={(e) => setCurrentStep(Number(e.target.value))}
+                className='rounded border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 shadow-sm'
+              >
+                {interactiveSteps.map((s, index) => (
+                  <option key={s.id} value={index}>
+                    Step {String(s.id).padStart(2, '0')} · {s.title}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div
-              className='group relative cursor-pointer rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-lg'
+              className='group relative cursor-pointer rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-lg'
               onClick={handleNext}
             >
-              <div className='absolute -top-3 left-6 rounded-full bg-white px-2 text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-600'>
+              <div className='absolute -top-3 left-6 rounded-full bg-white px-2 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-600'>
                 Action
               </div>
               <div className='font-mono text-[11px] text-slate-400'>// 点击执行指令</div>
-              <pre className='mt-2 whitespace-pre-wrap font-mono text-sm leading-relaxed text-slate-800'>
-                {step.action}
-              </pre>
+              {isLikelyCode(step.action) ? (
+                <div className='mt-3'>
+                  <CopyCode code={step.action} />
+                </div>
+              ) : (
+                <pre className='mt-2 whitespace-pre-wrap font-mono text-sm leading-relaxed text-slate-800'>
+                  {step.action}
+                </pre>
+              )}
               <div className='absolute bottom-4 right-4 text-emerald-500 opacity-0 transition-opacity duration-300 group-active:opacity-100'>
                 <CheckCircle2 className='h-6 w-6' />
               </div>
             </div>
 
             <div className='flex items-start gap-3 text-xs text-slate-400'>
-              <span className='mt-1 h-2 w-2 rounded-full bg-indigo-500 animate-pulse' />
+              <span className='mt-1 h-2 w-2 rounded-full bg-emerald-500 animate-pulse' />
               <p className='italic'>{step.hint}</p>
             </div>
 
@@ -375,10 +405,10 @@ bun run format`,
                 type='button'
                 onClick={handlePrev}
                 disabled={currentStep === 0}
-                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition cursor-pointer ${
                   currentStep === 0
-                    ? 'border-slate-200 text-slate-300'
-                    : 'border-slate-300 text-slate-700 hover:border-indigo-300 hover:text-indigo-600'
+                    ? 'border-slate-200 text-slate-300 cursor-not-allowed'
+                    : 'border-slate-300 text-slate-700 hover:border-emerald-300 hover:text-emerald-600'
                 }`}
               >
                 上一步
@@ -386,19 +416,18 @@ bun run format`,
               <button
                 type='button'
                 onClick={handleNext}
-                disabled={currentStep === interactiveSteps.length - 1}
-                className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold shadow-sm transition ${
-                  currentStep === interactiveSteps.length - 1
-                    ? 'bg-slate-200 text-slate-400'
+                className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold shadow-sm transition cursor-pointer ${
+                  isLastStep
+                    ? 'bg-emerald-600 text-white hover:scale-[1.01]'
                     : 'bg-slate-900 text-white hover:scale-[1.01]'
                 }`}
               >
-                下一步
+                {isLastStep ? '完成' : '下一步'}
                 <ArrowRight className='h-4 w-4' />
               </button>
             </div>
 
-            <div className='flex flex-wrap gap-3 pt-2'>
+            <div className='flex flex-wrap gap-5 pt-3'>
               <a
                 href={t.hero.primaryCta.href}
                 target='_blank'
@@ -412,7 +441,7 @@ bun run format`,
                 href={t.hero.secondaryCta.href}
                 target='_blank'
                 rel='noreferrer'
-                className='inline-flex items-center gap-2 rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:border-indigo-300 hover:text-indigo-600'
+                className='inline-flex items-center gap-2 rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:border-emerald-300 hover:text-emerald-600'
               >
                 <ExternalLink className='h-4 w-4' />
                 {t.hero.secondaryCta.label}
@@ -426,19 +455,24 @@ bun run format`,
             <div className='absolute inset-0 bg-[length:48px_48px] bg-[linear-gradient(#000_1px,transparent_1px),linear-gradient(90deg,#000_1px,transparent_1px)]' />
           </div>
           <div className='relative z-10 flex w-full max-w-xl items-center justify-center p-10'>
-            {step.visual}
+            <div
+              key={step.id}
+              className='flex w-full items-center justify-center animate-visual-in'
+            >
+              {step.visual}
+            </div>
           </div>
         </div>
       </main>
 
-      <section className='relative z-10 border-t border-white/70 bg-white/70 px-6 py-10 backdrop-blur'>
+      <section className='relative z-10 border-t border-white/70 bg-white/70 px-6 py-10 pb-20 backdrop-blur'>
         <div className='mx-auto flex max-w-6xl flex-col gap-4'>
           <p className='text-sm font-medium uppercase tracking-[0.25em] text-slate-400'>
             {t.flow.title}
           </p>
           <p className='text-lg text-slate-600'>{t.flow.description}</p>
-          <div className='flex flex-wrap gap-2'>
-            {t.steps.slice(0, 8).map((s) => (
+          <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'>
+            {t.steps.map((s) => (
               <span
                 key={s.number}
                 className='rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600'
@@ -473,7 +507,7 @@ bun run format`,
                 onClick={() => switchTab(tab as typeof activeTab)}
                 className={`border-b-2 px-4 py-3 font-semibold transition ${
                   activeTab === tab
-                    ? 'border-indigo-500 text-indigo-700'
+                    ? 'border-emerald-500 text-emerald-700'
                     : 'border-transparent text-slate-500 hover:text-slate-800'
                 }`}
               >
@@ -560,7 +594,7 @@ bun run format`,
                     <div className='space-y-2 text-xs text-slate-600'>
                       {t.blogChecklist.map((item) => (
                         <div key={item} className='flex items-start gap-2'>
-                          <span className='mt-1 h-2 w-2 rounded-full bg-indigo-500' />
+                          <span className='mt-1 h-2 w-2 rounded-full bg-emerald-500' />
                           <span>{item}</span>
                         </div>
                       ))}
@@ -616,9 +650,9 @@ bun run format`,
       {showFinale ? (
         <div className='fixed inset-0 z-40 flex items-center justify-center bg-slate-950/90 text-white'>
           <div className='text-center'>
-            <p className='text-4xl font-bold tracking-tight'>SYSTEM LINKED</p>
+            <p className='text-4xl font-bold tracking-tight'>全部步骤完成</p>
             <p className='mt-2 font-mono text-sm tracking-[0.25em] text-slate-400'>
-              ENTERING TEN PORTAL...
+              感谢为 TEN Portal 贡献内容
             </p>
           </div>
         </div>
@@ -635,6 +669,19 @@ bun run format`,
         }
         .animate-slide {
           animation: slide 1.6s linear infinite;
+        }
+        @keyframes visual-in {
+          0% {
+            opacity: 0;
+            transform: translateX(36px) scale(0.98);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+          }
+        }
+        .animate-visual-in {
+          animation: visual-in 320ms ease;
         }
       `}</style>
     </div>
