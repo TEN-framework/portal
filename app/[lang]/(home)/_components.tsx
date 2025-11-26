@@ -126,12 +126,12 @@ export function Hero(props: { className?: string }) {
   return (
     <div className={cn('w-full text-foreground', className)}>
       <div className='container mx-auto'>
-        <div className='flex flex-col items-center justify-center gap-6 py-0 sm:py-1 md:gap-8 md:py-2 lg:py-3 xl:py-4 2xl:py-6'>
+        <div className='flex flex-col items-center justify-center gap-4 py-0 sm:py-1 md:gap-6 md:py-2 lg:py-3 xl:py-4 2xl:py-6'>
           <div>
             <Button
               variant='secondary'
               size='sm'
-              className='h-auto min-h-[3.25rem] gap-2 bg-blue-600/[0.05] px-4 py-3 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:h-8 sm:min-h-0 sm:px-5 sm:py-0'
+              className='h-auto gap-2 bg-blue-600/[0.05] px-3 py-2 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:h-8 sm:px-4 sm:py-0'
               asChild
             >
               <span className='inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 whitespace-normal text-center'>
@@ -158,18 +158,18 @@ export function Hero(props: { className?: string }) {
             </Button>
           </div>
 
-          <div className='relative z-10 flex flex-col items-center gap-6'>
+          <div className='relative z-10 flex flex-col items-center gap-4'>
             <div className='flex flex-wrap items-center justify-center gap-6'>
               <AwardBadge type='github-trending' link={awardLink} />
             </div>
           </div>
 
-          <div className='flex flex-col gap-4'>
-            <h1 className='text-center font-regular text-5xl tracking-tighter md:text-6xl lg:text-7xl'>
+          <div className='flex flex-col gap-3'>
+            <h1 className='text-center font-regular text-4xl tracking-tight md:text-5xl lg:text-6xl'>
               <span className='font-medium text-spektr-cyan-50'>
                 {t('titlePrefix')}
               </span>
-              <span className='relative flex w-full justify-center overflow-hidden text-center leading-tight md:leading-normal'>
+              <span className='relative flex w-full justify-center overflow-hidden text-center leading-tight'>
                 &nbsp;
                 {TITLES.map((title, index) => (
                   <motion.span
@@ -194,7 +194,7 @@ export function Hero(props: { className?: string }) {
               </span>
             </h1>
 
-            <p className='max-w-2xl text-center font-medium text-lg text-muted-foreground leading-relaxed tracking-tight md:text-xl dark:text-gray-300'>
+            <p className='max-w-2xl text-center font-medium text-base text-muted-foreground leading-relaxed tracking-tight md:text-lg dark:text-gray-300'>
               {t('heroDescription')}
             </p>
           </div>
@@ -213,16 +213,6 @@ export function Hero(props: { className?: string }) {
               </Link>
             </Button>
           </div>
-          <p className='max-w-2xl text-center font-normal text-muted-foreground/100 text-sm leading-relaxed tracking-tight md:text-base dark:text-gray-300'>
-            {t('supportedBy')}{' '}
-            <Link
-              href='https://www.agora.io/en/'
-              target='_blank'
-              className='text-spektr-cyan-100 underline decoration-gray-300 underline-offset-5 hover:text-[] hover:decoration-[#13C2FF]'
-            >
-              Agora
-            </Link>
-          </p>
         </div>
       </div>
     </div>
