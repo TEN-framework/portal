@@ -37,166 +37,51 @@ export function Footer({ className }: { className?: string }) {
     }
   ]
 
-  const productLinks = [
-    {
-      name: t('product.framework'),
-      href: 'https://github.com/ten-framework/ten-framework'
-    },
-    { name: t('product.agentExamples'), href: 'https://agent.theten.ai' },
-    {
-      name: t('product.vad'),
-      href: 'https://github.com/ten-framework/ten-vad'
-    },
-    {
-      name: t('product.turnDetection'),
-      href: 'https://github.com/ten-framework/ten-turn-detection'
-    }
-  ]
-
-  const developerLinks = [
-    { name: t('developers.documentation'), href: '/docs' },
-    { name: t('developers.blog'), href: '/blog' },
-    {
-      name: t('developers.huggingFace'),
-      href: 'https://huggingface.co/spaces/TEN-framework/ten-agent-demo',
-      external: true
-    }
-  ]
-
-  const communityLinks = [
-    {
-      name: t('community.github'),
-      href: 'https://github.com/ten-framework/ten-framework',
-      external: true
-    },
-    {
-      name: t('community.discord'),
-      href: 'https://discord.gg/VnPftUzAMJ',
-      external: true
-    },
-    {
-      name: t('community.xTwitter'),
-      href: 'https://twitter.com/TENFramework',
-      external: true
-    }
-  ]
-
   return (
     <footer className={cn('relative z-10 bg-transparent', className)}>
-      <div className='container mx-auto px-4 py-12 md:py-16'>
-        {/* Divider */}
-        <div className='mb-8 h-px bg-gradient-to-r from-transparent via-border to-transparent' />
-
-        {/* Main Content */}
-        <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-5'>
-          {/* Brand Section */}
-          <div className='space-y-4 lg:col-span-2'>
+      <div className='container mx-auto px-4 py-[clamp(12px,3vh,24px)]'>
+        <div className='flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left'>
+          <div className='flex items-center gap-4'>
             <Link href='/' className='inline-block'>
-              <Logo height={40} width={80} />
+              <Logo height={36} width={72} />
             </Link>
-            <p className='max-w-sm text-muted-foreground text-sm leading-relaxed'>
-              {t('tagline')}
-            </p>
-            <div className='flex gap-3'>
-              {socialLinks.map((social) => {
-                const Icon = social.icon
-                return (
-                  <Link
-                    key={social.name}
-                    href={social.href}
-                    target='_blank'
-                    className='flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground'
-                    title={social.name}
-                  >
-                    {social.icon === 'text' ? (
-                      <span className='font-bold text-base'>{social.text}</span>
-                    ) : (
-                      <Icon className='h-4 w-4' />
-                    )}
-                  </Link>
-                )
-              })}
-            </div>
           </div>
-
-          {/* Open-Source Products Links */}
-          <div className='space-y-4'>
-            <h3 className='font-semibold text-foreground text-sm'>
-              {t('product.openSourceTitle')}
-            </h3>
-            <ul className='space-y-3'>
-              {productLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    target='_blank'
-                    className='inline-flex items-center gap-1 text-muted-foreground text-sm transition-colors hover:text-foreground'
-                  >
-                    {link.name}
-                    <ExternalLink className='h-3 w-3' />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Developers Links */}
-          <div className='space-y-4'>
-            <h3 className='font-semibold text-foreground text-sm'>
-              {t('developers.title')}
-            </h3>
-            <ul className='space-y-3'>
-              {developerLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    target={link.external ? '_blank' : undefined}
-                    className='inline-flex items-center gap-1 text-muted-foreground text-sm transition-colors hover:text-foreground'
-                  >
-                    {link.name}
-                    {link.external && <ExternalLink className='h-3 w-3' />}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Community Links */}
-          <div className='space-y-4'>
-            <h3 className='font-semibold text-foreground text-sm'>
-              {t('community.title')}
-            </h3>
-            <ul className='space-y-3'>
-              {communityLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    target='_blank'
-                    className='inline-flex items-center gap-1 text-muted-foreground text-sm transition-colors hover:text-foreground'
-                  >
-                    {link.name}
-                    <ExternalLink className='h-3 w-3' />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className='flex gap-3'>
+            {socialLinks.map((social) => {
+              const Icon = social.icon
+              return (
+                <Link
+                  key={social.name}
+                  href={social.href}
+                  target='_blank'
+                  className='flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground'
+                  title={social.name}
+                >
+                  {social.icon === 'text' ? (
+                    <span className='font-bold text-sm'>{social.text}</span>
+                  ) : (
+                    <Icon className='h-4 w-4' />
+                  )}
+                </Link>
+              )
+            })}
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className='mt-12 flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left'>
-          <p className='text-muted-foreground text-sm'>
+        <div className='mt-6 flex flex-col items-center justify-between gap-2 text-center md:flex-row md:text-left'>
+          <p className='text-muted-foreground text-xs'>
             {t('copyright', { year: new Date().getFullYear() })}
           </p>
-          <p className='text-muted-foreground text-sm'>
-            {t('supportedBy')}{' '}
+          <p className='text-muted-foreground text-xs'>
+            {t('supportedByPrefix')}{' '}
             <Link
               href='https://www.agora.io/en/'
               target='_blank'
               className='text-spektr-cyan-100 underline decoration-gray-300 underline-offset-2 transition-colors hover:decoration-[#13C2FF]'
             >
               Agora
-            </Link>
+            </Link>{' '}
+            {t('supportedBySuffix')}
           </p>
         </div>
       </div>

@@ -208,6 +208,7 @@
       "xTwitter": "X/Twitter"
     },
     "copyright": "© {year} TEN Framework. 版权所有。",
-    "supportedBy": "由 TEN 社区和以下机构支持"
+    "supportedByPrefix": "由",
+    "supportedBySuffix": "和 TEN 社区支持"
   }
 }
