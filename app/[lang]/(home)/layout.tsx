@@ -14,8 +14,12 @@ export default async function Layout({
 
   return (
     <HomeLayout {...baseOptions(lang)}>
-      {children}
-      <Footer />
+      <div className="min-h-[100dvh] flex flex-col">
+        <main className="flex-1 flex items-center justify-center">
+          {children}
+        </main>
+        <Footer />
+      </div>
     </HomeLayout>
   )
 }
