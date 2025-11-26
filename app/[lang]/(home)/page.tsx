@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes'
 import { useEffect, useRef, useState } from 'react'
-import { Hero } from '@/app/[lang]/(home)/_components'
+import { Hero, ProjectsShowcase } from '@/app/[lang]/(home)/_components'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
@@ -24,21 +24,21 @@ const BackgroundVideo = () => {
       window.matchMedia('(pointer: coarse)').matches
     const isSmallViewport =
       typeof window !== 'undefined' && window.innerWidth < 768
+    type NetInfo = { saveData?: boolean; effectiveType?: string }
+    type NavigatorWithConnection = Navigator & { connection?: NetInfo }
     const saveData =
       typeof navigator !== 'undefined' &&
-      (navigator as any).connection?.saveData
+      (navigator as NavigatorWithConnection).connection?.saveData
     const effectiveType =
       typeof navigator !== 'undefined' &&
-      (navigator as any).connection?.effectiveType
+      (navigator as NavigatorWithConnection).connection?.effectiveType
     const isSlowNetwork =
       effectiveType && ['2g', '3g', 'slow-2g'].includes(effectiveType)
 
-    const allowAutoplay =
-      !prefersReducedMotion &&
-      !saveData &&
-      !isSlowNetwork &&
-      !isCoarsePointer &&
-      !isSmallViewport
+    const isMobileLike = isCoarsePointer || isSmallViewport
+    const allowAutoplay = isMobileLike
+      ? !prefersReducedMotion && !saveData && !isSlowNetwork
+      : !prefersReducedMotion
     setShouldRenderVideo(allowAutoplay)
   }, [])
 
@@ -90,9 +90,12 @@ export default function HomePage() {
 
       {/* Content */}
       <div className='relative z-10'>
-        <div className='flex flex-1 flex-col justify-center text-center'>
-          <Hero className='flex h-full w-full items-center justify-center' />
+        <div className='flex flex-1 flex-col text-center'>
+          <div className='pt-6 pb-4 md:pt-8 lg:pt-10'>
+            <Hero className='flex w-full items-center justify-center' />
+          </div>
         </div>
+        <ProjectsShowcase className='mt-2 md:mt-4' />
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { ExternalLink, Github } from 'lucide-react'
+import { Github } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Logo } from '@/components/ui/logo'
 import { Link } from '@/lib/next-intl-navigation'
