@@ -36,7 +36,7 @@
     "titleEdgeCloud": "Low-Latency",
     "titleSuffix": "Voice AI Agents",
     "readLaunchArticle": "Read more on our blog",
-    "heroDescription": "An open-source framework designed for building conversational AI",
+    "heroDescription": "Open-Source Framework for Real-Time Multimodal Conversational AI",
     "supportedBy": "supported by the TEN community and",
     "heroBtnTryTenAgent": "Talk to TEN Agent",
     "huggingFaceSpace": "Try VAD and Turn Detection",
@@ -208,6 +208,7 @@
       "xTwitter": "X/Twitter"
     },
     "copyright": "© {year} TEN Framework. All rights reserved.",
-    "supportedBy": "Supported by the TEN Community and"
+    "supportedByPrefix": "Supported by",
+    "supportedBySuffix": "and TEN Community"
   }
 }

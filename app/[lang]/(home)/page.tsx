@@ -16,14 +16,29 @@ const BackgroundVideo = () => {
   }, [])
 
   useEffect(() => {
-    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isCoarsePointer = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
-    const isSmallViewport = typeof window !== 'undefined' && window.innerWidth < 768
-    const saveData = typeof navigator !== 'undefined' && (navigator as any).connection?.saveData
-    const effectiveType = typeof navigator !== 'undefined' && (navigator as any).connection?.effectiveType
-    const isSlowNetwork = effectiveType && ['2g', '3g', 'slow-2g'].includes(effectiveType)
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isCoarsePointer =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(pointer: coarse)').matches
+    const isSmallViewport =
+      typeof window !== 'undefined' && window.innerWidth < 768
+    const saveData =
+      typeof navigator !== 'undefined' &&
+      (navigator as any).connection?.saveData
+    const effectiveType =
+      typeof navigator !== 'undefined' &&
+      (navigator as any).connection?.effectiveType
+    const isSlowNetwork =
+      effectiveType && ['2g', '3g', 'slow-2g'].includes(effectiveType)
 
-    const allowAutoplay = !prefersReducedMotion && !saveData && !isSlowNetwork && !isCoarsePointer && !isSmallViewport
+    const allowAutoplay =
+      !prefersReducedMotion &&
+      !saveData &&
+      !isSlowNetwork &&
+      !isCoarsePointer &&
+      !isSmallViewport
     setShouldRenderVideo(allowAutoplay)
   }, [])
 

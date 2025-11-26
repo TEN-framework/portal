@@ -37,8 +37,6 @@ export function Footer({ className }: { className?: string }) {
     }
   ]
 
-  
-
   return (
     <footer className={cn('relative z-10 bg-transparent', className)}>
       <div className='container mx-auto px-4 py-[clamp(12px,3vh,24px)]'>
@@ -75,14 +73,15 @@ export function Footer({ className }: { className?: string }) {
             {t('copyright', { year: new Date().getFullYear() })}
           </p>
           <p className='text-muted-foreground text-xs'>
-            {t('supportedBy')}{' '}
+            {t('supportedByPrefix')}{' '}
             <Link
               href='https://www.agora.io/en/'
               target='_blank'
               className='text-spektr-cyan-100 underline decoration-gray-300 underline-offset-2 transition-colors hover:decoration-[#13C2FF]'
             >
               Agora
-            </Link>
+            </Link>{' '}
+            {t('supportedBySuffix')}
           </p>
         </div>
       </div>

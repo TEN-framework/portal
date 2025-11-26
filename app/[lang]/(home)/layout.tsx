@@ -14,10 +14,11 @@ export default async function Layout({
 
   return (
     <HomeLayout {...baseOptions(lang)}>
-      <div className="min-h-[100dvh] flex flex-col">
-        <main className="flex-1 flex items-center justify-center">
+      <div className='flex min-h-[100dvh] flex-col'>
+        <main className='flex flex-1 items-center justify-center'>
           {children}
         </main>
+        <div aria-hidden className='relative z-10 border-border border-t' />
         <Footer />
       </div>
     </HomeLayout>
