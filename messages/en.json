@@ -41,7 +41,12 @@
     "heroBtnTryTenAgent": "Talk to TEN Agent",
     "huggingFaceSpace": "Try VAD and Turn Detection",
     "heroBtnReadDoc": "Documentation",
-    "bannerAnnouncement": "are now part of the TEN open-source ecosystem!"
+    "bannerAnnouncement": "are now part of the TEN open-source ecosystem!",
+    "websocketAnnouncement": {
+      "title": "TEN supports both RTC and WebSocket — build real‑time apps with less boilerplate.",
+      "ctaLearnMore": "Learn more",
+      "ctaQuickStart": "Quick start"
+    }
   },
   "hackathon": {
     "title": "TEN Dev Challenge 2025",

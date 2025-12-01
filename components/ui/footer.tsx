@@ -39,7 +39,7 @@ export function Footer({ className }: { className?: string }) {
 
   return (
     <footer className={cn('relative z-10 bg-transparent', className)}>
-      <div className='container mx-auto px-0 py-[clamp(12px,3vh,24px)]'>
+      <div className='mx-auto max-w-[var(--spacing-fd-container)] px-[var(--site-x-pad)] py-[clamp(12px,3vh,24px)]'>
         <div className='flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left'>
           <div className='flex items-center gap-4'>
             <Link href='/' className='inline-block'>

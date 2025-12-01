@@ -136,24 +136,15 @@ export function Hero(props: { className?: string }) {
             >
               <span className='inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 whitespace-normal text-center'>
                 🎉{' '}
-                <Link
-                  href={URL_TEN_VAD}
-                  className='font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-blue-300'
-                >
-                  TEN VAD
-                </Link>
                 <span className='font-medium text-blue-500 text-sm sm:text-base dark:text-blue-300'>
-                  and
+                  {t('websocketAnnouncement.title')}
                 </span>
                 <Link
-                  href={URL_TEN_TURN_DETECTION}
+                  href={'/blog/building-real-time-voice-ai-with-websockets'}
                   className='font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-blue-300'
                 >
-                  TEN Turn Detection
+                  {t('websocketAnnouncement.ctaLearnMore')}
                 </Link>
-                <span className='font-medium text-blue-500 text-sm sm:text-base dark:text-blue-300'>
-                  are now part of the TEN open-source ecosystem!
-                </span>
               </span>
             </Button>
           </div>

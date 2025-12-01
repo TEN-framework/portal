@@ -41,7 +41,12 @@
     "heroBtnTryTenAgent": "体验 TEN Agent",
     "huggingFaceSpace": "体验 VAD 和 Turn Detection",
     "heroBtnReadDoc": "文档",
-    "bannerAnnouncement": "现在是 TEN 开源生态系统的一部分！"
+    "bannerAnnouncement": "现在是 TEN 开源生态系统的一部分！",
+    "websocketAnnouncement": {
+      "title": "TEN 同时支持 RTC 与 WebSocket",
+      "ctaLearnMore": "了解更多",
+      "ctaQuickStart": "快速开始"
+    }
   },
   "hackathon": {
     "title": "TEN Dev Challenge 2025",

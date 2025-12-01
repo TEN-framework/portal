@@ -125,6 +125,7 @@
   --shadow-offset-y: 1px;
   --letter-spacing: 0em;
   --spacing: 0.25rem;
+  --site-x-pad: clamp(16px, 3vw, 24px);
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-sm:
@@ -148,6 +149,11 @@ body {
 /* Remove header border for transparent effect */
 [data-transparent] {
   border-bottom: none;
+}
+
+header nav[data-orientation="horizontal"] {
+  padding-left: var(--site-x-pad) !important;
+  padding-right: var(--site-x-pad) !important;
 }
 
 /* Animation delay utilities for sparkles effect */
