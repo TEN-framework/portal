@@ -121,7 +121,7 @@ export function GitHubStarButton({
         onClick={handleClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className={`group relative inline-flex cursor-pointer items-center gap-2 rounded-md bg-gradient-to-r from-gray-900 to-black px-3 py-1.5 font-medium text-sm text-white transition-all duration-300 hover:scale-105 hover:from-gray-800 hover:to-gray-900 ${className}`}
+        className={`group relative inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#171717] px-3 py-1.5 font-medium text-sm text-white transition-all duration-300 hover:scale-105 ${className}`}
       >
         {/* GitHub icon */}
         <svg
@@ -139,7 +139,7 @@ export function GitHubStarButton({
           className={`relative z-10 h-4 w-4 transition-all duration-300 ${isHovered ? 'scale-110 fill-transparent stroke-yellow-500' : 'fill-transparent stroke-white'}`}
         />
         <span
-          className={`relative z-10 inline-flex min-w-[2.5rem] justify-center rounded bg-gradient-to-r from-gray-700 to-gray-600 px-2 py-0.5 text-center font-bold text-xs transition-all duration-300 ${isHovered ? 'scale-105 from-yellow-600 to-yellow-500 text-white' : ''} sm:min-w-[4rem]`}
+          className={`relative z-10 inline-flex min-w-[2.5rem] justify-center rounded-full bg-gradient-to-r from-gray-700 to-gray-600 px-2 py-0.5 text-center font-bold text-xs transition-all duration-300 ${isHovered ? 'scale-105 from-yellow-600 to-yellow-500 text-white' : ''} sm:min-w-[4rem]`}
         >
           {formatStarCount(animatedCount)}
         </span>
