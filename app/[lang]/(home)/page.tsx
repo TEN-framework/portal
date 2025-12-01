@@ -19,44 +19,61 @@ const BackgroundVideo = () => {
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isCoarsePointer =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(pointer: coarse)').matches
-    const isSmallViewport =
-      typeof window !== 'undefined' && window.innerWidth < 768
-    const saveData =
-      typeof navigator !== 'undefined' &&
-      (navigator as any).connection?.saveData
-    const effectiveType =
-      typeof navigator !== 'undefined' &&
-      (navigator as any).connection?.effectiveType
-    const isSlowNetwork =
-      effectiveType && ['2g', '3g', 'slow-2g'].includes(effectiveType)
+    const alwaysPlay =
+      typeof process !== 'undefined' &&
+      process.env.NEXT_PUBLIC_ALWAYS_PLAY_BG_VIDEO === 'true'
 
-    const allowAutoplay =
-      !prefersReducedMotion &&
-      !saveData &&
-      !isSlowNetwork &&
-      !isCoarsePointer &&
-      !isSmallViewport
+    const allowAutoplay = alwaysPlay ? true : !prefersReducedMotion
     setShouldRenderVideo(allowAutoplay)
   }, [])
 
   useEffect(() => {
     if (shouldRenderVideo && videoRef.current) {
       setIsLoaded(false)
+      videoRef.current.muted = true
+      // @ts-expect-error playsInline is a valid HTMLVideoElement property in browsers
+      videoRef.current.playsInline = true
+      videoRef.current.autoplay = true
       videoRef.current.currentTime = 0
       videoRef.current.load()
-      videoRef.current.play().catch(() => {})
+      videoRef.current
+        .play()
+        .catch((err) => {
+          if (process.env.NODE_ENV !== 'production') {
+            // eslint-disable-next-line no-console
+            console.warn('Background video autoplay blocked', err)
+          }
+          const handler = () => {
+            const v = videoRef.current
+            if (!v) return
+            v.muted = true
+            // @ts-expect-error playsInline is a valid HTMLVideoElement property in browsers
+            v.playsInline = true
+            v.autoplay = true
+            v.play().finally(() => {
+              window.removeEventListener('pointerdown', handler)
+              window.removeEventListener('touchstart', handler)
+            })
+          }
+          window.addEventListener('pointerdown', handler, { once: true })
+          window.addEventListener('touchstart', handler, { once: true })
+        })
     }
   }, [shouldRenderVideo])
 
   if (!mounted) return null
 
-  const videoSrc =
-    resolvedTheme === 'dark'
-      ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
-      : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
+  const isSmallViewport =
+    typeof window !== 'undefined' && window.innerWidth < 768
+  const baseDark =
+    'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
+  const baseLight =
+    'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
+  const mobileDark = process.env.NEXT_PUBLIC_BG_VIDEO_DARK_MOBILE || ''
+  const mobileLight = process.env.NEXT_PUBLIC_BG_VIDEO_LIGHT_MOBILE || ''
+  const videoSrc = resolvedTheme === 'dark'
+    ? (isSmallViewport && mobileDark ? mobileDark : baseDark)
+    : (isSmallViewport && mobileLight ? mobileLight : baseLight)
 
   if (!shouldRenderVideo) return null
 
@@ -67,12 +84,25 @@ const BackgroundVideo = () => {
       loop
       muted
       playsInline
-      preload='metadata'
-      onLoadedData={() => setIsLoaded(true)}
+      preload='auto'
+      poster={
+        resolvedTheme === 'dark'
+          ? process.env.NEXT_PUBLIC_BG_VIDEO_POSTER_DARK ||
+            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAQAIBAQ=='
+          : process.env.NEXT_PUBLIC_BG_VIDEO_POSTER_LIGHT ||
+            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAQAIBAQ=='
+      }
+      onCanPlay={() => setIsLoaded(true)}
       className={`absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 ${
         isLoaded ? 'opacity-37 dark:opacity-57' : 'opacity-0'
       }`}
     >
+      {resolvedTheme === 'dark' && process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK ? (
+        <source src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK} type='video/webm' />
+      ) : null}
+      {resolvedTheme !== 'dark' && process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT ? (
+        <source src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT} type='video/webm' />
+      ) : null}
       <source src={videoSrc} type='video/mp4' />
     </video>
   )
