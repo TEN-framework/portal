@@ -131,17 +131,17 @@ export function Hero(props: { className?: string }) {
             <Button
               variant='secondary'
               size='sm'
-              className='h-auto gap-2 bg-blue-600/[0.05] px-3 py-2 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:h-8 sm:px-4 sm:py-0'
+              className='h-auto gap-2 bg-blue-600/[0.05] px-3 py-2 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:h-8 sm:px-4 sm:py-0 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:hover:text-white'
               asChild
             >
               <span className='inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 whitespace-normal text-center'>
                 🎉{' '}
-                <span className='font-medium text-blue-500 text-sm sm:text-base dark:text-blue-300'>
+                <span className='font-medium text-blue-500 text-sm sm:text-base dark:text-white'>
                   {t('websocketAnnouncement.title')}
                 </span>
                 <Link
                   href={'/blog/building-real-time-voice-ai-with-websockets'}
-                  className='font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-blue-300'
+                  className='font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-white'
                 >
                   {t('websocketAnnouncement.ctaLearnMore')}
                 </Link>
@@ -156,8 +156,8 @@ export function Hero(props: { className?: string }) {
           </div>
 
           <div className='flex flex-col gap-3'>
-            <h1 className='text-center font-regular text-4xl tracking-tight md:text-5xl lg:text-6xl'>
-              <span className='font-medium text-spektr-cyan-50'>
+            <h1 className='text-center font-regular text-4xl tracking-tight md:text-5xl lg:text-6xl dark:text-white'>
+              <span className='font-medium text-spektr-cyan-50 dark:text-white'>
                 {t('titlePrefix')}
               </span>
               <span className='relative flex w-full justify-center overflow-hidden text-center leading-tight'>
@@ -165,7 +165,7 @@ export function Hero(props: { className?: string }) {
                 {TITLES.map((title, index) => (
                   <motion.span
                     key={`title-${title}`}
-                    className='absolute font-bold'
+                    className='absolute font-bold dark:text-white'
                     initial='hidden'
                     animate={titleNumber === index ? 'visible' : 'hidden'}
                     variants={titleVariants}
@@ -180,24 +180,33 @@ export function Hero(props: { className?: string }) {
                   </motion.span>
                 ))}
               </span>
-              <span className='font-medium text-spektr-cyan-50'>
+              <span className='font-medium text-spektr-cyan-50 dark:text-white'>
                 {t('titleSuffix')}
               </span>
             </h1>
 
-            <p className='max-w-2xl text-center font-medium text-base text-muted-foreground leading-relaxed tracking-tight md:text-lg dark:text-gray-300'>
+            <p className='max-w-2xl text-center font-medium text-base text-muted-foreground leading-relaxed tracking-tight md:text-lg dark:text-white'>
               {t('heroDescription')}
             </p>
           </div>
 
           <div className='flex flex-col gap-3 sm:flex-row'>
-            <Button size='lg' className='gap-4' asChild>
+            <Button
+              size='lg'
+              className='gap-4 dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90'
+              asChild
+            >
               <Link href={URL_TEN_AGENT} target='_blank'>
                 {t('heroBtnTryTenAgent')}
                 <ExternalLink className='size-4' />
               </Link>
             </Button>
-            <Button size='lg' className='gap-4' variant='outline' asChild>
+            <Button
+              size='lg'
+              className='gap-4 dark:border-border dark:text-white dark:hover:border-primary dark:hover:bg-accent/50 dark:hover:text-accent-foreground'
+              variant='outline'
+              asChild
+            >
               <Link href={HUGGING_FACE_SPACE} target='_blank'>
                 {t('huggingFaceSpace')}
                 <ExternalLink className='size-4' />

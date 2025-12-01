@@ -3,6 +3,7 @@
 import { useTheme } from 'next-themes'
 import { useEffect, useRef, useState } from 'react'
 import { Hero } from '@/app/[lang]/(home)/_components'
+import { AsciiBackground } from '@/components/ui/ascii-background'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
@@ -79,6 +80,7 @@ const BackgroundVideo = () => {
 
   return (
     <video
+      key={resolvedTheme}
       ref={videoRef}
       autoPlay
       loop
@@ -109,13 +111,17 @@ const BackgroundVideo = () => {
 }
 
 export default function HomePage() {
+  const { resolvedTheme } = useTheme()
   return (
     <div className='relative'>
       {/* Background Video - Fixed to cover entire viewport */}
       <div className='fixed inset-0 z-0'>
-        <BackgroundVideo />
+        {resolvedTheme === 'dark' ? null : <BackgroundVideo />}
+        {process.env.NEXT_PUBLIC_DARK_ASCII_BG === 'true' && resolvedTheme === 'dark' ? (
+          <AsciiBackground />
+        ) : null}
         {/* Gradient overlay to blend video into footer */}
-        <div className='pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-background/95 via-background/50 to-transparent' />
+        <div className='pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-background/95 via-background/60 to-transparent dark:from-background/98 dark:via-background/80' />
       </div>
 
       {/* Content */}
