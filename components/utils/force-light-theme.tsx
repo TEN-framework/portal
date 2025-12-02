@@ -24,12 +24,14 @@ export function ForceLightTheme() {
       const cookieStore = (
         window as unknown as { cookieStore?: CookieStoreLike }
       ).cookieStore
-      const cookieNames = ['theme', 'fd-theme', 'fumadocs-theme']
-      cookieNames.forEach((name: string) => {
-        try {
-          cookieStore.delete(name)
-        } catch {}
-      })
+      if (cookieStore) {
+        const cookieNames = ['theme', 'fd-theme', 'fumadocs-theme']
+        cookieNames.forEach((name: string) => {
+          try {
+            cookieStore.delete(name)
+          } catch {}
+        })
+      }
     }
   } catch {}
 

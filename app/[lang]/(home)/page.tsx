@@ -32,7 +32,6 @@ const BackgroundVideo = () => {
     if (shouldRenderVideo && videoRef.current) {
       setIsLoaded(false)
       videoRef.current.muted = true
-      // @ts-expect-error playsInline is a valid HTMLVideoElement property in browsers
       videoRef.current.playsInline = true
       videoRef.current.autoplay = true
       videoRef.current.currentTime = 0
@@ -46,7 +45,6 @@ const BackgroundVideo = () => {
           const v = videoRef.current
           if (!v) return
           v.muted = true
-          // @ts-expect-error playsInline is a valid HTMLVideoElement property in browsers
           v.playsInline = true
           v.autoplay = true
           v.play().finally(() => {
