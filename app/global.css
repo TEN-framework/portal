@@ -152,12 +152,12 @@ body {
 }
 
 header nav[data-orientation="horizontal"] {
-  padding-left: var(--site-x-pad) !important;
-  padding-right: var(--site-x-pad) !important;
+  padding-left: var(--site-x-pad);
+  padding-right: var(--site-x-pad);
 }
 
 .dark #nd-nav .text-fd-muted-foreground {
-  color: #ffffff !important;
+  color: #ffffff;
 }
 
 /* Animation delay utilities for sparkles effect */
@@ -238,7 +238,6 @@ header nav[data-orientation="horizontal"] {
 
   --sidebar-ring: oklch(0.708 0 0);
 }
-
 
 .dark {
   --background: oklch(0.2679 0.0036 106.6427);

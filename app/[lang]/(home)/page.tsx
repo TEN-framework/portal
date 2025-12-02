@@ -37,28 +37,26 @@ const BackgroundVideo = () => {
       videoRef.current.autoplay = true
       videoRef.current.currentTime = 0
       videoRef.current.load()
-      videoRef.current
-        .play()
-        .catch((err) => {
-          if (process.env.NODE_ENV !== 'production') {
-            // eslint-disable-next-line no-console
-            console.warn('Background video autoplay blocked', err)
-          }
-          const handler = () => {
-            const v = videoRef.current
-            if (!v) return
-            v.muted = true
-            // @ts-expect-error playsInline is a valid HTMLVideoElement property in browsers
-            v.playsInline = true
-            v.autoplay = true
-            v.play().finally(() => {
-              window.removeEventListener('pointerdown', handler)
-              window.removeEventListener('touchstart', handler)
-            })
-          }
-          window.addEventListener('pointerdown', handler, { once: true })
-          window.addEventListener('touchstart', handler, { once: true })
-        })
+      videoRef.current.play().catch((err) => {
+        if (process.env.NODE_ENV !== 'production') {
+          // eslint-disable-next-line no-console
+          console.warn('Background video autoplay blocked', err)
+        }
+        const handler = () => {
+          const v = videoRef.current
+          if (!v) return
+          v.muted = true
+          // @ts-expect-error playsInline is a valid HTMLVideoElement property in browsers
+          v.playsInline = true
+          v.autoplay = true
+          v.play().finally(() => {
+            window.removeEventListener('pointerdown', handler)
+            window.removeEventListener('touchstart', handler)
+          })
+        }
+        window.addEventListener('pointerdown', handler, { once: true })
+        window.addEventListener('touchstart', handler, { once: true })
+      })
     }
   }, [shouldRenderVideo])
 
@@ -72,9 +70,14 @@ const BackgroundVideo = () => {
     'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
   const mobileDark = process.env.NEXT_PUBLIC_BG_VIDEO_DARK_MOBILE || ''
   const mobileLight = process.env.NEXT_PUBLIC_BG_VIDEO_LIGHT_MOBILE || ''
-  const videoSrc = resolvedTheme === 'dark'
-    ? (isSmallViewport && mobileDark ? mobileDark : baseDark)
-    : (isSmallViewport && mobileLight ? mobileLight : baseLight)
+  const videoSrc =
+    resolvedTheme === 'dark'
+      ? isSmallViewport && mobileDark
+        ? mobileDark
+        : baseDark
+      : isSmallViewport && mobileLight
+        ? mobileLight
+        : baseLight
 
   if (!shouldRenderVideo) return null
 
@@ -99,11 +102,19 @@ const BackgroundVideo = () => {
         isLoaded ? 'opacity-37 dark:opacity-57' : 'opacity-0'
       }`}
     >
-      {resolvedTheme === 'dark' && process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK ? (
-        <source src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK} type='video/webm' />
+      {resolvedTheme === 'dark' &&
+      process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK ? (
+        <source
+          src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK}
+          type='video/webm'
+        />
       ) : null}
-      {resolvedTheme !== 'dark' && process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT ? (
-        <source src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT} type='video/webm' />
+      {resolvedTheme !== 'dark' &&
+      process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT ? (
+        <source
+          src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT}
+          type='video/webm'
+        />
       ) : null}
       <source src={videoSrc} type='video/mp4' />
     </video>
@@ -112,12 +123,29 @@ const BackgroundVideo = () => {
 
 export default function HomePage() {
   const { resolvedTheme } = useTheme()
+  const FORCE_LIGHT = process.env.NEXT_PUBLIC_FORCE_LIGHT_THEME === 'true'
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const update = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768)
+      }
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
   return (
     <div className='relative'>
       {/* Background Video - Fixed to cover entire viewport */}
       <div className='fixed inset-0 z-0'>
-        {resolvedTheme === 'dark' ? null : <BackgroundVideo />}
-        {process.env.NEXT_PUBLIC_DARK_ASCII_BG === 'true' && resolvedTheme === 'dark' ? (
+        {!isMobile && (FORCE_LIGHT || resolvedTheme !== 'dark') ? (
+          <BackgroundVideo />
+        ) : null}
+        {process.env.NEXT_PUBLIC_DARK_ASCII_BG === 'true' &&
+        !FORCE_LIGHT &&
+        resolvedTheme === 'dark' ? (
           <AsciiBackground />
         ) : null}
         {/* Gradient overlay to blend video into footer */}

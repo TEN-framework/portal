@@ -28,7 +28,8 @@ export function AnnouncementBanner({
 
   useEffect(() => {
     try {
-      const closed = typeof window !== 'undefined' && window.localStorage.getItem(storageKey)
+      const closed =
+        typeof window !== 'undefined' && window.localStorage.getItem(storageKey)
       if (closed === 'closed') setVisible(false)
     } catch {}
   }, [storageKey])
@@ -51,20 +52,27 @@ export function AnnouncementBanner({
         className
       )}
     >
-      <div className='flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-2 text-sm shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/60 sm:px-4'>
-        <Wifi className='h-4 w-4 text-muted-foreground' aria-hidden='true' />
-        <span className='flex-1 text-center font-medium'>{title}</span>
-        <div className='flex items-center gap-2'>
+      <div className='flex flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border border-border bg-card/80 px-3 py-2.5 text-sm shadow-sm backdrop-blur supports-[backdrop-filter]:bg-card/60 sm:flex-row sm:gap-3 sm:rounded-full sm:px-4'>
+        <div className='flex items-center justify-center gap-2'>
+          <Wifi
+            className='hidden h-4 w-4 shrink-0 text-muted-foreground sm:block'
+            aria-hidden='true'
+          />
+          <span className='hyphens-auto break-words text-center font-medium leading-tight'>
+            {title}
+          </span>
+        </div>
+        <div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
           <Link
             href={primaryHref}
-            className='inline-flex items-center rounded-full bg-accent px-3 py-1 font-semibold text-xs text-accent-foreground transition-colors hover:bg-accent/80'
+            className='inline-flex items-center rounded-full bg-accent px-3 py-1 font-semibold text-accent-foreground text-xs transition-colors hover:bg-accent/80'
           >
             {primaryLabel}
           </Link>
           {secondaryHref && (
             <Link
               href={secondaryHref}
-              className='inline-flex items-center rounded-full border border-border bg-card px-3 py-1 font-semibold text-xs text-foreground transition-colors hover:bg-accent/60'
+              className='inline-flex items-center rounded-full border border-border bg-card px-3 py-1 font-semibold text-foreground text-xs transition-colors hover:bg-accent/60'
             >
               {secondaryLabel}
             </Link>
@@ -73,7 +81,7 @@ export function AnnouncementBanner({
             type='button'
             aria-label='Dismiss announcement'
             onClick={dismiss}
-            className='inline-flex items-center rounded-full p-1 text-muted-foreground hover:bg-muted'
+            className='inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2.5 text-muted-foreground hover:bg-muted'
           >
             <X className='h-4 w-4' />
           </button>

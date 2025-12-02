@@ -6,7 +6,9 @@ export function AsciiBackground() {
   const ref = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReducedMotion) return
 
     const canvas = ref.current
@@ -29,14 +31,17 @@ export function AsciiBackground() {
       const size = 16
       const cols = Math.ceil(canvas.width / size)
       const rows = Math.ceil(canvas.height / size)
-      ctx.font = '12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+      ctx.font =
+        '12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillStyle = 'rgba(64, 200, 255, 0.12)'
 
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
-          const idx = Math.floor((x * 13 + y * 7 + Math.floor(t / 120)) % chars.length)
+          const idx = Math.floor(
+            (x * 13 + y * 7 + Math.floor(t / 120)) % chars.length
+          )
           const ch = chars[idx]
           ctx.fillText(ch, x * size + size / 2, y * size + size / 2)
         }
@@ -46,7 +51,9 @@ export function AsciiBackground() {
     raf = requestAnimationFrame(draw)
 
     const onBlur = () => cancelAnimationFrame(raf)
-    const onFocus = () => (raf = requestAnimationFrame(draw))
+    const onFocus = () => {
+      raf = requestAnimationFrame(draw)
+    }
     window.addEventListener('blur', onBlur)
     window.addEventListener('focus', onFocus)
 
@@ -65,4 +72,3 @@ export function AsciiBackground() {
     />
   )
 }
-

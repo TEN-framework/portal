@@ -1,6 +1,6 @@
 'use client'
 
-import { ExternalLink, Github } from 'lucide-react'
+import { Github } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Logo } from '@/components/ui/logo'
 import { Link } from '@/lib/next-intl-navigation'
@@ -42,11 +42,14 @@ export function Footer({ className }: { className?: string }) {
       <div className='mx-auto max-w-[var(--spacing-fd-container)] px-[var(--site-x-pad)] py-[clamp(12px,3vh,24px)]'>
         <div className='flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left'>
           <div className='flex items-center gap-4'>
-            <Link href='/' className='inline-block text-foreground dark:text-white'>
+            <Link
+              href='/'
+              className='inline-block text-foreground dark:text-white'
+            >
               <Logo height={36} width={72} />
             </Link>
           </div>
-          <div className='flex gap-3'>
+          <div className='flex flex-wrap gap-3 sm:gap-4'>
             {socialLinks.map((social) => {
               const Icon = social.icon
               return (
@@ -54,7 +57,7 @@ export function Footer({ className }: { className?: string }) {
                   key={social.name}
                   href={social.href}
                   target='_blank'
-                  className='flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground'
+                  className='flex h-11 w-11 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground'
                   title={social.name}
                 >
                   {social.icon === 'text' ? (
