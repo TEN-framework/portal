@@ -1,14 +1,11 @@
 import { defineI18nUI } from 'fumadocs-ui/i18n'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 import Script from 'next/script'
-import { hasLocale, NextIntlClientProvider } from 'next-intl'
+import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import type { ReactNode } from 'react'
 import { LocaleProviders } from '@/app/[lang]/providers'
-import { generateSiteMetadata } from '@/app/metadata.config'
 import { ForceLightTheme } from '@/components/utils/force-light-theme'
-import { i18n, nextIntlRouting } from '@/lib/i18n'
+import { i18n } from '@/lib/i18n'
 import cnMessages from '@/messages/cn.json'
 import enMessages from '@/messages/en.json'
 
@@ -29,30 +26,15 @@ const { provider: I18nUIProvider } = defineI18nUI(i18n, {
   translations: fumaTranslations
 })
 
-export async function generateMetadata({
-  params: paramsPromise
-}: {
-  params: Promise<{ lang: string }>
-}): Promise<Metadata> {
-  const { lang } = await paramsPromise
-  return generateSiteMetadata({ lang })
-}
-
-export default async function Layout({
-  params,
+export default async function GuideLayout({
   children
 }: {
-  params: Promise<{ lang: string }>
   children: ReactNode
 }) {
-  const { lang } = await params
+  const lang = 'cn'
   const messages = await getMessages({
     locale: lang
   })
-
-  if (!hasLocale(nextIntlRouting.locales, lang)) {
-    notFound()
-  }
 
   return (
     <html lang={lang} suppressHydrationWarning>
