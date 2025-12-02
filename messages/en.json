@@ -38,12 +38,12 @@
     "readLaunchArticle": "Read more on our blog",
     "heroDescription": "Open-Source Framework for Real-Time Multimodal Conversational AI",
     "supportedBy": "supported by the TEN community and",
-    "heroBtnTryTenAgent": "Talk to TEN Agent",
+    "heroBtnTryTenAgent": "Talk to TEN Agent Example",
     "huggingFaceSpace": "Try VAD and Turn Detection",
     "heroBtnReadDoc": "Documentation",
     "bannerAnnouncement": "are now part of the TEN open-source ecosystem!",
     "websocketAnnouncement": {
-      "title": "TEN supports both RTC and WebSocket — build real‑time apps with less boilerplate.",
+      "title": "TEN supports both RTC and WebSocket!",
       "ctaLearnMore": "Learn more",
       "ctaQuickStart": "Quick start"
     }

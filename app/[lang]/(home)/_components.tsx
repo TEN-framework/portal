@@ -126,20 +126,20 @@ export function Hero(props: { className?: string }) {
             <Button
               variant='secondary'
               size='sm'
-              className='h-auto w-full max-w-[calc(100vw-2*var(--site-x-pad))] gap-2 bg-blue-600/[0.05] px-4 py-2 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:h-8 sm:px-4 sm:py-0 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:hover:text-white'
+              className='h-auto w-full max-w-[min(28rem,calc(100vw-2*var(--site-x-pad)))] gap-2 whitespace-normal bg-blue-600/[0.05] px-3 py-3 text-center text-blue-600 text-sm leading-snug transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:px-4 sm:py-2 sm:text-base sm:leading-tight dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:hover:text-white'
               asChild
             >
-              <span className='inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 hyphens-auto whitespace-normal break-words text-center'>
+              <span className='inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 hyphens-auto whitespace-normal break-words text-center leading-snug sm:leading-tight'>
                 <span className='hidden sm:inline'>🎉</span>{' '}
                 <span className='hyphens-auto break-words font-medium text-blue-500 text-sm sm:text-base dark:text-white'>
                   {t('websocketAnnouncement.title')}
                 </span>
-                <Link
+                {/* <Link
                   href={'/blog/building-real-time-voice-ai-with-websockets'}
                   className='hyphens-auto break-words font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-white'
                 >
                   {t('websocketAnnouncement.ctaLearnMore')}
-                </Link>
+                </Link> */}
               </span>
             </Button>
           </div>
