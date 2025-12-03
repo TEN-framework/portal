@@ -174,6 +174,7 @@ export type BlogFrontmatterMeta = {
   description?: string
   author?: string
   date?: Date | string
+  featured?: boolean
   coverImage?: string
   coverImageAlt?: string
   accentColor?: string
