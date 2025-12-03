@@ -7,12 +7,7 @@ import * as React from 'react'
 import { AwardBadge } from '@/components/ui/award-badge'
 
 import { Button } from '@/components/ui/button'
-import {
-  HUGGING_FACE_SPACE,
-  URL_TEN_AGENT,
-  URL_TEN_TURN_DETECTION,
-  URL_TEN_VAD
-} from '@/constants'
+import { HUGGING_FACE_SPACE, URL_TEN_AGENT } from '@/constants'
 import { Link } from '@/lib/next-intl-navigation'
 import { cn } from '@/lib/utils'
 import { SAMPLE_PROJECTS } from './sample-projects'
@@ -131,29 +126,20 @@ export function Hero(props: { className?: string }) {
             <Button
               variant='secondary'
               size='sm'
-              className='h-auto gap-2 bg-blue-600/[0.05] px-3 py-2 text-blue-600 transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:h-8 sm:px-4 sm:py-0'
+              className='h-auto w-full max-w-[min(28rem,calc(100vw-2*var(--site-x-pad)))] gap-2 whitespace-normal bg-blue-600/[0.05] px-3 py-3 text-center text-blue-600 text-sm leading-snug transition-all duration-600 hover:scale-105 hover:bg-blue-600/[0.08] hover:text-blue-500 sm:px-4 sm:py-2 sm:text-base sm:leading-tight dark:bg-white/10 dark:text-white dark:hover:bg-white/20 dark:hover:text-white'
               asChild
             >
-              <span className='inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 whitespace-normal text-center'>
-                🎉{' '}
-                <Link
-                  href={URL_TEN_VAD}
-                  className='font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-blue-300'
-                >
-                  TEN VAD
-                </Link>
-                <span className='font-medium text-blue-500 text-sm sm:text-base dark:text-blue-300'>
-                  and
+              <span className='inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 hyphens-auto whitespace-normal break-words text-center leading-snug sm:leading-tight'>
+                <span className='hidden sm:inline'>🎉</span>{' '}
+                <span className='hyphens-auto break-words font-medium text-blue-500 text-sm sm:text-base dark:text-white'>
+                  {t('websocketAnnouncement.title')}
                 </span>
-                <Link
-                  href={URL_TEN_TURN_DETECTION}
-                  className='font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-blue-300'
+                {/* <Link
+                  href={'/blog/building-real-time-voice-ai-with-websockets'}
+                  className='hyphens-auto break-words font-medium text-blue-500 text-sm underline-offset-2 hover:underline sm:text-base dark:text-white'
                 >
-                  TEN Turn Detection
-                </Link>
-                <span className='font-medium text-blue-500 text-sm sm:text-base dark:text-blue-300'>
-                  are now part of the TEN open-source ecosystem!
-                </span>
+                  {t('websocketAnnouncement.ctaLearnMore')}
+                </Link> */}
               </span>
             </Button>
           </div>
@@ -165,16 +151,16 @@ export function Hero(props: { className?: string }) {
           </div>
 
           <div className='flex flex-col gap-3'>
-            <h1 className='text-center font-regular text-4xl tracking-tight md:text-5xl lg:text-6xl'>
-              <span className='font-medium text-spektr-cyan-50'>
+            <h1 className='hyphens-auto break-words px-[var(--site-x-pad)] text-center font-regular text-3xl leading-tight tracking-tight sm:text-4xl md:text-5xl lg:text-6xl dark:text-white'>
+              <span className='font-medium text-spektr-cyan-50 dark:text-white'>
                 {t('titlePrefix')}
               </span>
-              <span className='relative flex w-full justify-center overflow-hidden text-center leading-tight'>
+              <span className='relative flex w-full justify-center overflow-hidden whitespace-normal text-center leading-tight'>
                 &nbsp;
                 {TITLES.map((title, index) => (
                   <motion.span
                     key={`title-${title}`}
-                    className='absolute font-bold'
+                    className='absolute break-words font-bold dark:text-white'
                     initial='hidden'
                     animate={titleNumber === index ? 'visible' : 'hidden'}
                     variants={titleVariants}
@@ -189,24 +175,33 @@ export function Hero(props: { className?: string }) {
                   </motion.span>
                 ))}
               </span>
-              <span className='font-medium text-spektr-cyan-50'>
+              <span className='font-medium text-spektr-cyan-50 dark:text-white'>
                 {t('titleSuffix')}
               </span>
             </h1>
 
-            <p className='max-w-2xl text-center font-medium text-base text-muted-foreground leading-relaxed tracking-tight md:text-lg dark:text-gray-300'>
+            <p className='mx-auto max-w-[min(36rem,calc(100vw-2*var(--site-x-pad)))] hyphens-auto break-words px-[var(--site-x-pad)] text-center font-medium text-base text-muted-foreground leading-relaxed tracking-tight md:text-lg dark:text-white'>
               {t('heroDescription')}
             </p>
           </div>
 
-          <div className='flex flex-col gap-3 sm:flex-row'>
-            <Button size='lg' className='gap-4' asChild>
+          <div className='flex w-full flex-col items-center justify-center gap-3 px-[var(--site-x-pad)] sm:flex-row sm:flex-wrap sm:gap-4'>
+            <Button
+              size='lg'
+              className='w-full gap-4 sm:w-auto dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/90'
+              asChild
+            >
               <Link href={URL_TEN_AGENT} target='_blank'>
                 {t('heroBtnTryTenAgent')}
                 <ExternalLink className='size-4' />
               </Link>
             </Button>
-            <Button size='lg' className='gap-4' variant='outline' asChild>
+            <Button
+              size='lg'
+              className='w-full gap-4 sm:w-auto dark:border-border dark:text-white dark:hover:border-primary dark:hover:bg-accent/50 dark:hover:text-accent-foreground'
+              variant='outline'
+              asChild
+            >
               <Link href={HUGGING_FACE_SPACE} target='_blank'>
                 {t('huggingFaceSpace')}
                 <ExternalLink className='size-4' />
