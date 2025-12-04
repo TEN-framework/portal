@@ -55,6 +55,7 @@ export default defineConfig({
 const blogFrontmatterSchema = frontmatterSchema.extend({
   author: z.string(),
   date: z.coerce.date(),
+  featured: z.boolean().default(false),
   coverImage: z.string().optional(),
   coverImageAlt: z.string().optional(),
   accentColor: z.string().optional(),
