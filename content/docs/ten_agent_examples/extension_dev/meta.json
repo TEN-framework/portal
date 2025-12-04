@@ -1,4 +1,4 @@
 {
   "title": "Extension Development",
-  "pages": ["create_a_hello_world_extension"]
+  "pages": ["create_a_hello_world_extension", "create_asr_extension"]
 }
