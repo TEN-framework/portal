@@ -1,5 +1,5 @@
 ---
-title: 🥅 Goal
+title: Goal
 description: Understand the long-term vision and objectives that guide the TEN framework.
 ---
 

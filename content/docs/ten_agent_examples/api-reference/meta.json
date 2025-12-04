@@ -1,0 +1,5 @@
+{
+  "title": "API Reference",
+  "description": "API Reference for TEN Agent Events and Schemas",
+  "pages": ["events", "schemas"]
+}

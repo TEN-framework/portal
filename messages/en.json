@@ -4,6 +4,10 @@
     "blog": "Blog",
     "hackathon": "Hackathon"
   },
+  "languages": {
+    "cn": "中文",
+    "en": "English"
+  },
   "fuma": {
     "search": "Search",
     "searchNoResult": "No results found",
@@ -30,14 +34,19 @@
     "titleMultimodal": "Customizable",
     "titleHighperformance": "High-performance",
     "titleEdgeCloud": "Low-Latency",
-    "titleSuffix": "Voice AI Agents",
+    "titleSuffix": "Conversational AI",
     "readLaunchArticle": "Read more on our blog",
-    "heroDescription": "An open-source framework designed for building conversational AI",
+    "heroDescription": "Open-Source Framework for Real-Time Multimodal Conversational AI",
     "supportedBy": "supported by the TEN community and",
-    "heroBtnTryTenAgent": "Talk to TEN Agent",
+    "heroBtnTryTenAgent": "Talk to TEN Agent Example",
     "huggingFaceSpace": "Try VAD and Turn Detection",
     "heroBtnReadDoc": "Documentation",
-    "bannerAnnouncement": "are now part of the TEN open-source ecosystem!"
+    "bannerAnnouncement": "are now part of the TEN open-source ecosystem!",
+    "websocketAnnouncement": {
+      "title": "TEN supports both RTC and WebSocket!",
+      "ctaLearnMore": "Learn more",
+      "ctaQuickStart": "Quick start"
+    }
   },
   "hackathon": {
     "title": "TEN Dev Challenge 2025",
@@ -161,5 +170,50 @@
       "communitySupport": "Community Support",
       "socialMedia": "Social Media"
     }
+  },
+  "components": {
+    "version-select": {
+      "label": "Version",
+      "placeholder": "Select a version",
+      "latest": "Latest"
+    },
+    "page-actions": {
+      "copy-markdown": "Copy Markdown",
+      "open-in-vendor": "Open in {vendor}",
+      "open": "Open"
+    }
+  },
+  "footer": {
+    "tagline": "An open-source framework designed for building real-time conversational AI agents",
+    "product": {
+      "title": "Product",
+      "openSourceTitle": "Open-Source Products",
+      "framework": "TEN Framework",
+      "agentExamples": "Agent Examples",
+      "vad": "TEN VAD",
+      "turnDetection": "TEN Turn Detection"
+    },
+    "resources": {
+      "title": "Resources",
+      "documentation": "Documentation",
+      "blog": "Blog",
+      "huggingFace": "Hugging Face Space"
+    },
+    "developers": {
+      "title": "Developers",
+      "documentation": "Documentation",
+      "blog": "Blog",
+      "huggingFace": "Hugging Face Space"
+    },
+    "community": {
+      "title": "Community",
+      "github": "GitHub",
+      "discord": "Discord",
+      "twitter": "Twitter",
+      "xTwitter": "X/Twitter"
+    },
+    "copyright": "© {year} TEN Framework. All rights reserved.",
+    "supportedByPrefix": "Supported by",
+    "supportedBySuffix": "and TEN Community"
   }
 }

@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react'
-
 import Image from 'next/image'
+import type { ReactNode } from 'react'
 
 import { cn } from '@/lib/utils'
 
@@ -14,7 +13,7 @@ export const accentPalette = [
   '#c084fc',
   '#fb7185',
   '#14b8a6',
-  '#fbbf24',
+  '#fbbf24'
 ]
 const hexColorRegex = /^#(?:[0-9a-fA-F]{3}){1,2}$/
 
@@ -47,7 +46,7 @@ function hexToRgb(hex: HexColor): RGB | null {
   return {
     r: (intValue >> 16) & 255,
     g: (intValue >> 8) & 255,
-    b: intValue & 255,
+    b: intValue & 255
   }
 }
 
@@ -61,7 +60,11 @@ function rgbToHex({ r, g, b }: RGB): HexColor {
   return `#${componentToHex(r)}${componentToHex(g)}${componentToHex(b)}`
 }
 
-export function mixHexColors(color: HexColor, mixWith: HexColor, weight: number): HexColor {
+export function mixHexColors(
+  color: HexColor,
+  mixWith: HexColor,
+  weight: number
+): HexColor {
   const ratio = clamp(weight, 0, 1)
   const rgbBase = hexToRgb(color)
   const rgbMix = hexToRgb(mixWith)
@@ -73,7 +76,7 @@ export function mixHexColors(color: HexColor, mixWith: HexColor, weight: number)
   return rgbToHex({
     r: rgbBase.r * (1 - ratio) + rgbMix.r * ratio,
     g: rgbBase.g * (1 - ratio) + rgbMix.g * ratio,
-    b: rgbBase.b * (1 - ratio) + rgbMix.b * ratio,
+    b: rgbBase.b * (1 - ratio) + rgbMix.b * ratio
   })
 }
 
@@ -92,7 +95,7 @@ function getLuminance(hex: HexColor) {
     const normalized = channel / 255
     return normalized <= 0.03928
       ? normalized / 12.92
-      : Math.pow((normalized + 0.055) / 1.055, 2.4)
+      : ((normalized + 0.055) / 1.055) ** 2.4
   }
 
   const r = toLinear(rgb.r)
@@ -133,7 +136,22 @@ export function getInitials(value: string) {
   return `${words[0].charAt(0)}${words[1].charAt(0)}`.toUpperCase()
 }
 
-export function getPrimaryWords(value: string) {
+function parseAccentWords(override?: string | string[]) {
+  if (!override) return []
+
+  const toWords = Array.isArray(override) ? override : override.split(/[|,\n]+/)
+
+  return toWords.map((item) => item.trim()).filter((item) => item.length > 0)
+}
+
+export function getPrimaryWords(value: string, override?: string | string[]) {
+  const parsedOverride = parseAccentWords(override)
+  if (parsedOverride.length > 0) {
+    const primary = parsedOverride[0]
+    const secondary = parsedOverride[1] ?? ''
+    return [primary, secondary]
+  }
+
   const trimmed = value.trim()
   if (!trimmed) return ['TEN', 'Blog']
 
@@ -141,7 +159,7 @@ export function getPrimaryWords(value: string) {
 
   if (words.length === 1) {
     const single = words[0]
-    const parts = single.split(/[\-–—]/).filter(Boolean)
+    const parts = single.split(/[-–—]/).filter(Boolean)
     if (parts.length >= 2) {
       return [parts[0], parts[1]]
     }
@@ -156,9 +174,11 @@ export type BlogFrontmatterMeta = {
   description?: string
   author?: string
   date?: Date | string
+  featured?: boolean
   coverImage?: string
   coverImageAlt?: string
   accentColor?: string
+  accentWords?: string | string[]
   featuredLabel?: string
   articleLabel?: string
 }
@@ -169,6 +189,7 @@ type CoverArtworkProps = {
   coverImage?: string
   coverImageAlt: string
   featured?: boolean
+  accentWords?: string | string[]
   title: string
   showLabel?: boolean
 }
@@ -179,8 +200,9 @@ export function CoverArtwork({
   coverImageAlt,
   featured,
   articleLabel,
+  accentWords,
   title,
-  showLabel = true,
+  showLabel = true
 }: CoverArtworkProps) {
   const highlight = mixHexColors(accentColor, '#ffffff', 0.35)
   const glow = mixHexColors(accentColor, '#ffffff', 0.55)
@@ -189,7 +211,7 @@ export function CoverArtwork({
   const lowlight = mixHexColors(accentColor, '#0f172a', 0.35)
   const gradientTilt = 120 + ((hashString(title) % 40) - 20)
   const softSweep = 45 + ((hashString(`${title}-sweep`) % 35) - 17)
-  const [primaryWord, secondaryWord] = getPrimaryWords(title)
+  const [primaryWord, secondaryWord] = getPrimaryWords(title, accentWords)
   const wordContainerClass = featured
     ? 'relative z-20 flex flex-col items-center gap-2 text-center uppercase tracking-[0.28em] text-white drop-shadow-[0_12px_28px_rgba(15,23,42,0.55)]'
     : 'relative z-10 flex flex-col items-center gap-1 text-center uppercase tracking-[0.35em] text-white/80'
@@ -201,7 +223,7 @@ export function CoverArtwork({
     : 'text-xs font-semibold md:text-sm'
 
   return (
-    <div className="relative flex h-full w-full items-center justify-center overflow-hidden">
+    <div className='relative flex h-full w-full items-center justify-center overflow-hidden'>
       {coverImage ? (
         <>
           <Image
@@ -213,22 +235,22 @@ export function CoverArtwork({
                 ? '(min-width: 1024px) 50vw, 100vw'
                 : '(min-width: 1280px) 25vw, (min-width: 768px) 40vw, 100vw'
             }
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className='object-cover transition-transform duration-700 ease-out group-hover:scale-105'
             priority={featured}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/30 via-transparent to-white/10 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-90" />
+          <div className='pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/30 via-transparent to-white/10 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-90' />
         </>
       ) : (
         <>
           <div
-            className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105"
+            className='absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105'
             style={{
               backgroundColor: accentColor,
-              backgroundImage: `radial-gradient(circle at 20% 20%, ${glow}, transparent 55%), radial-gradient(circle at 80% 0%, ${highlight}, transparent 45%), linear-gradient(${gradientTilt}deg, ${accentColor}, ${deep})`,
+              backgroundImage: `radial-gradient(circle at 20% 20%, ${glow}, transparent 55%), radial-gradient(circle at 80% 0%, ${highlight}, transparent 45%), linear-gradient(${gradientTilt}deg, ${accentColor}, ${deep})`
             }}
           />
           <div
-            className="pointer-events-none absolute inset-0"
+            className='pointer-events-none absolute inset-0'
             style={{
               backgroundImage: `linear-gradient(${softSweep}deg, ${hexToRgba(
                 glow,
@@ -239,27 +261,27 @@ export function CoverArtwork({
               )}, transparent 70%), radial-gradient(circle at 85% -15%, ${hexToRgba(
                 lowlight,
                 0.3
-              )}, transparent 60%)`,
+              )}, transparent 60%)`
             }}
           />
           <div
-            className="pointer-events-none absolute -left-16 top-6 h-36 w-36 rounded-full opacity-60 blur-3xl"
+            className='-left-16 pointer-events-none absolute top-6 h-36 w-36 rounded-full opacity-60 blur-3xl'
             style={{ background: hexToRgba(glow, 0.55) }}
           />
           <div
-            className="pointer-events-none absolute -bottom-20 right-0 h-44 w-44 rounded-full opacity-45 blur-[100px]"
+            className='-bottom-20 pointer-events-none absolute right-0 h-44 w-44 rounded-full opacity-45 blur-[100px]'
             style={{ background: hexToRgba(lowlight, 0.45) }}
           />
           <div
-            className="pointer-events-none absolute inset-0 opacity-15 mix-blend-soft-light"
+            className='pointer-events-none absolute inset-0 opacity-15 mix-blend-soft-light'
             style={{
               backgroundImage:
                 'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADtgGpGvxuugAAAABJRU5ErkJggg==")',
-              backgroundSize: '120px',
+              backgroundSize: '120px'
             }}
           />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-white/25" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] bg-white/10" />
+          <div className='pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-white/25' />
+          <div className='pointer-events-none absolute inset-x-0 bottom-0 h-[2px] bg-white/10' />
           <div className={wordContainerClass}>
             <span className={primaryWordClass}>{primaryWord}</span>
             {secondaryWord && (
@@ -269,7 +291,7 @@ export function CoverArtwork({
         </>
       )}
       {showLabel && (
-        <div className="pointer-events-none absolute left-4 top-4 inline-flex items-center rounded-full bg-white/85 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-gray-700 shadow-sm backdrop-blur">
+        <div className='pointer-events-none absolute top-4 left-4 inline-flex items-center rounded-full bg-white/85 px-3 py-1 font-semibold text-[0.65rem] text-gray-700 uppercase tracking-wide shadow-sm backdrop-blur'>
           {articleLabel}
         </div>
       )}
@@ -281,28 +303,40 @@ type AuthorBadgeProps = {
   accentColor: HexColor
   authorName: string
   published: string
+  tone?: 'light' | 'dark'
 }
 
-export function AuthorBadge({ accentColor, authorName, published }: AuthorBadgeProps) {
+export function AuthorBadge({
+  accentColor,
+  authorName,
+  published,
+  tone = 'dark'
+}: AuthorBadgeProps) {
   const badgeStart = mixHexColors(accentColor, '#ffffff', 0.25)
   const badgeEnd = mixHexColors(accentColor, '#000000', 0.3)
   const textColor = getReadableTextColor(badgeEnd)
   const initials = getInitials(authorName)
+  const primaryTextClass =
+    tone === 'light'
+      ? 'font-medium text-white text-sm'
+      : 'font-medium text-foreground text-sm'
+  const secondaryTextClass =
+    tone === 'light' ? 'text-white/80 text-xs' : 'text-muted-foreground text-xs'
 
   return (
-    <div className="flex items-center gap-3">
+    <div className='flex items-center gap-3'>
       <div
-        className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5"
+        className='group-hover:-translate-y-0.5 flex h-10 w-10 items-center justify-center rounded-full font-semibold text-sm shadow-sm transition-transform duration-300'
         style={{
           backgroundImage: `linear-gradient(135deg, ${badgeStart}, ${badgeEnd})`,
-          color: textColor,
+          color: textColor
         }}
       >
         {initials}
       </div>
-      <div className="flex flex-col leading-tight">
-        <span className="font-medium text-foreground text-sm">{authorName}</span>
-        <span className="text-muted-foreground text-xs">{published}</span>
+      <div className='flex flex-col leading-tight'>
+        <span className={primaryTextClass}>{authorName}</span>
+        <span className={secondaryTextClass}>{published}</span>
       </div>
     </div>
   )
@@ -319,7 +353,7 @@ export function ModernPaintingBanner({
   accentColor,
   children,
   className,
-  height,
+  height
 }: ModernPaintingBannerProps) {
   const highlight = mixHexColors(accentColor, '#ffffff', 0.35)
   const glow = mixHexColors(accentColor, '#ffffff', 0.58)
@@ -331,17 +365,14 @@ export function ModernPaintingBanner({
 
   return (
     <div
-      className={cn(
-        'relative overflow-hidden border-border/60',
-        className
-      )}
+      className={cn('relative overflow-hidden border-border/60', className)}
       style={{
         minHeight: height,
-        backgroundColor: mixHexColors(accentColor, '#0f172a', 0.12),
+        backgroundColor: mixHexColors(accentColor, '#0f172a', 0.12)
       }}
     >
       <div
-        className="pointer-events-none absolute inset-0"
+        className='pointer-events-none absolute inset-0'
         style={{
           backgroundColor: accentColor,
           backgroundImage: `radial-gradient(circle at 15% 18%, ${hexToRgba(
@@ -350,33 +381,33 @@ export function ModernPaintingBanner({
           )}, transparent 58%), radial-gradient(circle at 84% 6%, ${hexToRgba(
             highlight,
             0.48
-          )}, transparent 46%), linear-gradient(${gradientTilt}deg, ${accentColor}, ${deep})`,
+          )}, transparent 46%), linear-gradient(${gradientTilt}deg, ${accentColor}, ${deep})`
         }}
       />
 
       <div
-        className="pointer-events-none absolute -left-20 top-10 h-[18rem] w-[18rem] rounded-full opacity-60 blur-3xl"
+        className='-left-20 pointer-events-none absolute top-10 h-[18rem] w-[18rem] rounded-full opacity-60 blur-3xl'
         style={{ background: hexToRgba(glow, 0.68) }}
       />
       <div
-        className="pointer-events-none absolute -bottom-24 right-0 h-[20rem] w-[20rem] rounded-full opacity-50 blur-[120px]"
+        className='-bottom-24 pointer-events-none absolute right-0 h-[20rem] w-[20rem] rounded-full opacity-50 blur-[120px]'
         style={{ background: hexToRgba(lowlight, 0.6) }}
       />
 
       <div
-        className="pointer-events-none absolute inset-0 opacity-25 mix-blend-soft-light"
+        className='pointer-events-none absolute inset-0 opacity-25 mix-blend-soft-light'
         style={{
           backgroundImage:
             'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADtgGpGvxuugAAAABJRU5ErkJggg==")',
-          backgroundSize: '140px',
+          backgroundSize: '140px'
         }}
       />
 
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-[18%] -skew-x-[12deg] bg-gradient-to-r from-white/15 via-white/4 to-transparent" />
+      <div className='-skew-x-[12deg] pointer-events-none absolute inset-y-0 left-0 w-[18%] bg-gradient-to-r from-white/15 via-white/4 to-transparent' />
 
-      <div className="relative">
+      <div className='relative'>
         <div
-          className="absolute inset-0 mix-blend-overlay"
+          className='absolute inset-0 mix-blend-overlay'
           style={{
             backgroundImage: `linear-gradient(145deg, ${hexToRgba(
               glow,
@@ -384,13 +415,13 @@ export function ModernPaintingBanner({
             )}, transparent 55%), linear-gradient(${sweepTilt}deg, ${hexToRgba(
               ambient,
               0.28
-            )}, transparent 70%)`,
+            )}, transparent 70%)`
           }}
         />
-        <div className="relative flex h-full flex-col justify-center gap-8 px-6 py-12 md:px-12 lg:px-20">
-          <div className="h-[2px] w-14 rounded-full bg-gradient-to-r from-white/70 to-transparent" />
+        <div className='relative flex h-full flex-col justify-center gap-8 px-6 py-12 md:px-12 lg:px-20'>
+          <div className='h-[2px] w-14 rounded-full bg-gradient-to-r from-white/70 to-transparent' />
           {children}
-          <div className="h-[2px] w-24 rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+          <div className='h-[2px] w-24 rounded-full bg-gradient-to-r from-transparent via-white/40 to-transparent' />
         </div>
       </div>
     </div>

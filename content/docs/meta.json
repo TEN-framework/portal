@@ -2,12 +2,12 @@
   "pages": [
     "---Introduction---",
     "index",
-    "goal",
-    "key_concepts",
-    "application_scenarios",
+    "---TEN Agent Examples---",
+    "ten_agent_examples",
     "---TEN Framework---",
-    "ten_framework",
-    "---TEN Agent---",
-    "ten_agent"
+    "...ten_framework",
+    "---TEN Ecosystem---",
+    "ten_vad",
+    "ten_turn_detection"
   ]
 }

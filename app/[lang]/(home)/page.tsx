@@ -1,13 +1,14 @@
 'use client'
 
-import { Hero } from '@/app/[lang]/(home)/_components'
 import { useTheme } from 'next-themes'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import type { CSSProperties } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Hero } from '@/app/[lang]/(home)/_components'
+import { AsciiBackground } from '@/components/ui/ascii-background'
 
 const BackgroundVideo = () => {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [shouldRenderVideo, setShouldRenderVideo] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -16,59 +17,145 @@ const BackgroundVideo = () => {
   }, [])
 
   useEffect(() => {
-    if (videoRef.current) {
-      // Reset loaded state when theme changes
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const alwaysPlay =
+      typeof process !== 'undefined' &&
+      process.env.NEXT_PUBLIC_ALWAYS_PLAY_BG_VIDEO === 'true'
+
+    const allowAutoplay = alwaysPlay ? true : !prefersReducedMotion
+    setShouldRenderVideo(allowAutoplay)
+  }, [])
+
+  useEffect(() => {
+    if (shouldRenderVideo && videoRef.current) {
       setIsLoaded(false)
-      // Reset the video to start playing from beginning
+      videoRef.current.muted = true
+      videoRef.current.playsInline = true
+      videoRef.current.autoplay = true
       videoRef.current.currentTime = 0
       videoRef.current.load()
-      videoRef.current.play()
+      videoRef.current.play().catch((err) => {
+        if (process.env.NODE_ENV !== 'production') {
+          // eslint-disable-next-line no-console
+          console.warn('Background video autoplay blocked', err)
+        }
+        const handler = () => {
+          const v = videoRef.current
+          if (!v) return
+          v.muted = true
+          v.playsInline = true
+          v.autoplay = true
+          v.play().finally(() => {
+            window.removeEventListener('pointerdown', handler)
+            window.removeEventListener('touchstart', handler)
+          })
+        }
+        window.addEventListener('pointerdown', handler, { once: true })
+        window.addEventListener('touchstart', handler, { once: true })
+      })
     }
-  }, [resolvedTheme])
+  }, [shouldRenderVideo])
 
   if (!mounted) return null
 
+  const isSmallViewport =
+    typeof window !== 'undefined' && window.innerWidth < 768
+  const baseDark =
+    'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
+  const baseLight =
+    'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
+  const mobileDark = process.env.NEXT_PUBLIC_BG_VIDEO_DARK_MOBILE || ''
+  const mobileLight = process.env.NEXT_PUBLIC_BG_VIDEO_LIGHT_MOBILE || ''
   const videoSrc =
     resolvedTheme === 'dark'
-      ? 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg-dark.mp4'
-      : 'https://ten-framework-assets.s3.us-east-1.amazonaws.com/bg2.mp4'
+      ? isSmallViewport && mobileDark
+        ? mobileDark
+        : baseDark
+      : isSmallViewport && mobileLight
+        ? mobileLight
+        : baseLight
+
+  if (!shouldRenderVideo) return null
 
   return (
     <video
+      key={resolvedTheme}
       ref={videoRef}
       autoPlay
       loop
       muted
       playsInline
-      onLoadedData={() => setIsLoaded(true)}
+      preload='auto'
+      poster={
+        resolvedTheme === 'dark'
+          ? process.env.NEXT_PUBLIC_BG_VIDEO_POSTER_DARK ||
+            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAQAIBAQ=='
+          : process.env.NEXT_PUBLIC_BG_VIDEO_POSTER_LIGHT ||
+            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAQAIBAQ=='
+      }
+      onCanPlay={() => setIsLoaded(true)}
       className={`absolute inset-0 z-0 h-full w-full object-cover transition-opacity duration-700 ${
         isLoaded ? 'opacity-37 dark:opacity-57' : 'opacity-0'
       }`}
     >
-      <source src={videoSrc} type="video/mp4" />
-      Your browser does not support the video tag.
+      {resolvedTheme === 'dark' &&
+      process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK ? (
+        <source
+          src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_DARK}
+          type='video/webm'
+        />
+      ) : null}
+      {resolvedTheme !== 'dark' &&
+      process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT ? (
+        <source
+          src={process.env.NEXT_PUBLIC_BG_VIDEO_WEBM_URL_LIGHT}
+          type='video/webm'
+        />
+      ) : null}
+      <source src={videoSrc} type='video/mp4' />
     </video>
   )
 }
 
 export default function HomePage() {
-  const heroOffsetStyle = useMemo<CSSProperties>(() => {
-    const navHeightVar = 'var(--fd-nav-height, 3.5rem)'
-    return {
-      marginTop: `calc(${navHeightVar} * -0.5)`,
-    }
-  }, [])
+  const { resolvedTheme } = useTheme()
+  const FORCE_LIGHT = process.env.NEXT_PUBLIC_FORCE_LIGHT_THEME === 'true'
+  const [isMobile, setIsMobile] = useState(false)
 
+  useEffect(() => {
+    const update = () => {
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768)
+      }
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
   return (
-    <>
-      <div
-        className="relative flex min-h-[calc(100dvh-56px)] flex-1 flex-col justify-center overflow-hidden text-center"
-        style={heroOffsetStyle}
-      >
-        <BackgroundVideo />
-        <Hero className="relative z-10" />
-        {/* <ProjectsShowcase /> */}
+    <div className='relative'>
+      {/* Background Video - Fixed to cover entire viewport */}
+      <div className='fixed inset-0 z-0'>
+        {!isMobile && (FORCE_LIGHT || resolvedTheme !== 'dark') ? (
+          <BackgroundVideo />
+        ) : null}
+        {process.env.NEXT_PUBLIC_DARK_ASCII_BG === 'true' &&
+        !FORCE_LIGHT &&
+        resolvedTheme === 'dark' ? (
+          <AsciiBackground />
+        ) : null}
+        {/* Gradient overlay to blend video into footer */}
+        <div className='pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-background/95 via-background/60 to-transparent dark:from-background/98 dark:via-background/80' />
       </div>
-    </>
+
+      {/* Content */}
+      <div className='relative z-10'>
+        <div className='flex flex-1 flex-col justify-center text-center'>
+          <Hero className='flex h-full w-full items-center justify-center' />
+        </div>
+      </div>
+    </div>
   )
 }

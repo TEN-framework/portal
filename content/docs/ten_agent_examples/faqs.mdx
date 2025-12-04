@@ -1,0 +1,169 @@
+---
+title: FAQs
+description: Frequently asked questions and troubleshooting for TEN Agent.
+---
+
+import { Accordion, Accordions } from 'fumadocs-ui/components/accordion'
+import { Callout } from 'fumadocs-ui/components/callout'
+
+Find answers to common questions and solutions to typical issues when working with TEN Agent.
+
+## Installation & Setup
+
+<Accordions>
+  <Accordion title="Why do I see '/app/agent/bin/start: not found'?">
+    This error typically occurs on Windows due to line-ending issues. Git may convert LF (Unix) line endings to CRLF (Windows), which breaks shell scripts.
+
+    **Solution:**
+
+    1. Configure Git to keep LF line endings:
+
+    ```bash title="Terminal"
+    git config --global core.autocrlf false
+    ```
+
+    2. Delete your local copy and re-clone the repository:
+
+    ```bash title="Terminal"
+    git clone https://github.com/TEN-framework/TEN-Agent.git
+    ```
+
+    **Alternative:** Download the ZIP file directly from GitHub instead of cloning.
+  </Accordion>
+
+  <Accordion title="How do I verify my internet connection?">
+    Make sure both HTTPS and general connectivity are working properly.
+
+    **Test HTTPS connection:**
+
+    ```bash title="Terminal"
+    ping www.google.com
+
+    # Expected output:
+    PING google.com (198.18.1.94): 56 data bytes
+    64 bytes from 198.18.1.94: icmp_seq=0 ttl=64 time=0.099 ms
+    64 bytes from 198.18.1.94: icmp_seq=1 ttl=64 time=0.121 ms
+    ```
+
+    **Test HTTP connection:**
+
+    ```bash title="Terminal"
+    curl www.google.com
+
+    # Expected output (redirect response is normal):
+    <html>
+    <head><title>301 Moved Permanently</title></head>
+    <body>
+    <h1>301 Moved Permanently</h1>
+    </body>
+    </html>
+    ```
+
+    <Callout type="info">
+      If you're behind a corporate firewall or proxy, you may need to configure Docker and Git to use your proxy settings.
+    </Callout>
+  </Accordion>
+</Accordions>
+
+## Configuration
+
+<Accordions>
+  <Accordion title="How do I refresh environment variables?">
+    When you update your `.env` file, the running server won't automatically pick up the changes.
+
+    **To apply new environment variables:**
+
+    1. Stop the running server (Ctrl+C)
+    2. Save your changes to the `.env` file
+    3. Restart the server with `task run`
+
+    <Callout type="info">
+      Inside the Docker container, you don't need to run `source .env` - the server will read the file on startup.
+    </Callout>
+  </Accordion>
+
+  <Accordion title="Where do I get the required API keys?">
+    You'll need API keys from these services:
+
+    | Service | Purpose | Get Key |
+    |---------|---------|---------|
+    | Agora | Real-time communication | [Agora Console](https://docs.agora.io/en/video-calling/get-started/manage-agora-account?platform=web#create-an-agora-project) |
+    | OpenAI | LLM processing | [OpenAI Platform](https://platform.openai.com/api-keys) |
+    | Deepgram | Speech-to-text | [Deepgram Console](https://console.deepgram.com/) |
+    | ElevenLabs | Text-to-speech | [ElevenLabs](https://elevenlabs.io/) |
+
+    Most services offer free tiers or trial credits for getting started.
+  </Accordion>
+</Accordions>
+
+## Docker Issues
+
+<Accordions>
+  <Accordion title="Docker build is very slow on Apple Silicon Mac">
+    If you're using an M1/M2/M3 Mac and experiencing slow builds, check your Docker settings.
+
+    **Solution:**
+
+    1. Open Docker Desktop settings
+    2. Go to **General** or **Features in development**
+    3. **Uncheck** "Use Rosetta for x86_64/amd64 emulation"
+
+    <Callout type="warn">
+      This may result in slightly slower build times on ARM, but runtime performance will be better. When you deploy to x64 servers, performance will be normal.
+    </Callout>
+  </Accordion>
+
+  <Accordion title="Container fails to start or exits immediately">
+    If the Docker container exits right after starting, check these common causes:
+
+    1. **Port conflicts**: Make sure ports 3000, 8080, and 49483 are not in use
+    2. **Resource limits**: Ensure Docker has at least 4GB RAM allocated
+    3. **Missing .env file**: Verify `.env` exists and has valid API keys
+
+    **Debug steps:**
+
+    ```bash title="Terminal"
+    # Check container logs
+    docker logs ten_agent_dev
+
+    # Check if ports are in use
+    lsof -i :3000
+    lsof -i :8080
+    ```
+  </Accordion>
+</Accordions>
+
+## Runtime Issues
+
+<Accordions>
+  <Accordion title="Agent doesn't respond to voice input">
+    If the agent starts but doesn't respond to your voice:
+
+    1. **Check microphone permissions** in your browser
+    2. **Verify API keys** are correctly set in `.env`
+    3. **Check browser console** for WebRTC errors
+    4. **Ensure Agora credentials** are valid and the project has RTC enabled
+
+    <Callout type="info">
+      Open your browser's developer tools (F12) and check the Console tab for error messages.
+    </Callout>
+  </Accordion>
+
+  <Accordion title="How do I check if my agent is running correctly?">
+    After running `task run`, verify these endpoints:
+
+    - **Frontend**: [http://localhost:3000](http://localhost:3000)
+    - **TMAN Designer**: [http://localhost:49483](http://localhost:49483)
+    - **API Server**: [http://localhost:8080](http://localhost:8080)
+
+    If any of these don't load, check the container logs for errors.
+  </Accordion>
+</Accordions>
+
+## Still Need Help?
+
+If you can't find an answer to your question:
+
+- Check the [GitHub Issues](https://github.com/TEN-framework/TEN-Agent/issues) for similar problems
+- Join the community discussions on GitHub
+- Review the [Getting Started guide](/docs/ten_agent_examples/getting_started) for proper setup steps

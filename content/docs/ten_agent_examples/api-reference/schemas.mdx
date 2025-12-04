@@ -1,0 +1,399 @@
+---
+title: Configuration Schemas
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+
+# Configuration Schemas
+
+TEN Agent configurations are defined in two key files: `property.json` (extension runtime properties) and `manifest.json` (metadata and dependencies).
+
+## property.json
+
+The `property.json` file defines runtime configurable properties for an extension.
+
+### Schema Structure
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "dependencies": [],
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main_control",
+      "addon": "main_control.extension:MainControlExtension",
+      "property": {
+        "greeting": "Hello! I'm your TEN agent.",
+        "max_history": 50
+      }
+    }
+  ]
+}
+```
+
+### Common Properties by Extension Type
+
+#### Main Control Extension
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| **greeting** | `string` | Empty | Initial greeting message when first user joins |
+| **max_history** | `int` | 100 | Maximum conversation history messages to retain |
+| **enable_interrupt** | `bool` | `true` | Allow interrupting assistant with user speech |
+| **lang** | `string` | "en" | Language code (en, cn, etc.) |
+
+**Example:**
+```json
+{
+  "greeting": "Hi there! How can I help you today?",
+  "max_history": 50,
+  "enable_interrupt": true,
+  "lang": "en"
+}
+```
+
+#### LLM Extension (Gemini 2.0 Live)
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| **api_key** | `string` | - | Google Cloud API key |
+| **model** | `string` | "gemini-2.0-flash-exp" | Model identifier |
+| **system_prompt** | `string` | - | System-level instructions for the model |
+| **temperature** | `float` | 0.7 | Response randomness (0.0-1.0) |
+| **max_tokens** | `int` | 1024 | Maximum response length |
+
+**Example:**
+```json
+{
+  "api_key": "${GOOGLE_API_KEY}",
+  "model": "gemini-2.0-flash-exp",
+  "system_prompt": "You are a helpful assistant.",
+  "temperature": 0.7,
+  "max_tokens": 1024
+}
+```
+
+<Callout type="warning">
+**Security**: Never commit API keys directly. Use environment variables (`${VAR_NAME}`) and store values in `.env` files or deployment secrets.
+</Callout>
+
+#### STT Extension (Speech-to-Text)
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| **provider** | `string` | "google" | STT provider (google, deepgram, azure) |
+| **api_key** | `string` | - | Provider API key |
+| **language** | `string` | "en-US" | Language code |
+| **model** | `string` | - | Provider-specific model |
+| **chunk_size** | `int` | 1024 | Audio chunk size in bytes |
+
+**Example:**
+```json
+{
+  "provider": "google",
+  "api_key": "${GOOGLE_API_KEY}",
+  "language": "en-US",
+  "chunk_size": 1024
+}
+```
+
+#### TTS Extension (Text-to-Speech)
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| **provider** | `string` | "google" | TTS provider (google, elevenlabs, azure) |
+| **api_key** | `string` | - | Provider API key |
+| **voice** | `string` | - | Voice identifier (provider-specific) |
+| **language** | `string` | "en-US" | Language code |
+| **speed** | `float` | 1.0 | Speech speed (0.5-2.0) |
+
+**Example:**
+```json
+{
+  "provider": "elevenlabs",
+  "api_key": "${ELEVENLABS_API_KEY}",
+  "voice": "bella",
+  "language": "en-US",
+  "speed": 1.0
+}
+```
+
+#### RTC Extension
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| **port** | `int` | 8000 | Server port for RTC connections |
+| **enable_video** | `bool` | `false` | Enable video streaming |
+| **enable_audio** | `bool` | `true` | Enable audio streaming |
+| **max_connections** | `int` | 100 | Maximum concurrent connections |
+
+**Example:**
+```json
+{
+  "port": 8000,
+  "enable_video": false,
+  "enable_audio": true,
+  "max_connections": 100
+}
+```
+
+## manifest.json
+
+The `manifest.json` file defines metadata, version information, and dependencies.
+
+### Schema Structure
+
+```json
+{
+  "type": "extension",
+  "name": "main_control",
+  "version": "0.1.0",
+  "api_version": "0.1",
+  "dependencies": [
+    {
+      "type": "extension",
+      "name": "mllm_in",
+      "version": ">=0.1.0"
+    }
+  ],
+  "api": {
+    "input": [
+      {
+        "name": "on_start_request",
+        "type": "json"
+      }
+    ],
+    "output": [
+      {
+        "name": "mllm_in",
+        "type": "json"
+      }
+    ]
+  }
+}
+```
+
+### Core Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| **type** | `string` | Extension type ("extension" or "addon") |
+| **name** | `string` | Unique extension name |
+| **version** | `string` | Semantic version (major.minor.patch) |
+| **api_version** | `string` | API compatibility version |
+| **description** | `string` | Human-readable description |
+| **author** | `string` | Extension author/maintainer |
+| **dependencies** | `array` | Required dependencies |
+| **api** | `object` | Input/output specification |
+
+### Dependencies Section
+
+```json
+"dependencies": [
+  {
+    "type": "extension",
+    "name": "extension_name",
+    "version": ">=0.1.0",
+    "required": true
+  }
+]
+```
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| **type** | `string` | - | "extension" or "addon" |
+| **name** | `string` | - | Dependency name |
+| **version** | `string` | - | Version constraint (>=0.1.0, ~1.0, etc.) |
+| **required** | `bool` | `true` | Whether dependency is mandatory |
+
+### API Specification
+
+#### Input
+
+```json
+"input": [
+  {
+    "name": "on_data",
+    "type": "json",
+    "required": true
+  }
+]
+```
+
+#### Output
+
+```json
+"output": [
+  {
+    "name": "output_topic",
+    "type": "json"
+  }
+]
+```
+
+## Configuration Examples
+
+<Tabs items={["Realtime V2V", "Cascade", "Minimal"]}>
+  <Tab>
+### Realtime V2V Configuration
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main",
+      "addon": "main_extension:MainExtension",
+      "property": {
+        "greeting": "Hello! I'm a voice assistant.",
+        "max_history": 50,
+        "lang": "en"
+      }
+    },
+    {
+      "type": "extension",
+      "name": "mllm_in",
+      "addon": "mllm_in_v2v:MLLMV2VExtension",
+      "property": {
+        "api_key": "${GOOGLE_API_KEY}",
+        "model": "gemini-2.0-flash-exp",
+        "system_prompt": "You are a helpful voice assistant."
+      }
+    },
+    {
+      "type": "extension",
+      "name": "rtc",
+      "addon": "rtc_extension:RTCExtension",
+      "property": {
+        "port": 8000,
+        "enable_audio": true
+      }
+    }
+  ]
+}
+```
+  </Tab>
+  <Tab>
+### Cascade Configuration
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main",
+      "addon": "main_extension:MainExtension",
+      "property": {
+        "greeting": "Hi! What can I do for you?",
+        "max_history": 100
+      }
+    },
+    {
+      "type": "extension",
+      "name": "asr",
+      "addon": "asr_extension:ASRExtension",
+      "property": {
+        "provider": "google",
+        "api_key": "${GOOGLE_API_KEY}",
+        "language": "en-US"
+      }
+    },
+    {
+      "type": "extension",
+      "name": "llm",
+      "addon": "llm_extension:LLMExtension",
+      "property": {
+        "api_key": "${OPENAI_API_KEY}",
+        "model": "gpt-4",
+        "temperature": 0.7
+      }
+    },
+    {
+      "type": "extension",
+      "name": "tts",
+      "addon": "tts_extension:TTSExtension",
+      "property": {
+        "provider": "elevenlabs",
+        "api_key": "${ELEVENLABS_API_KEY}",
+        "voice": "bella"
+      }
+    }
+  ]
+}
+```
+  </Tab>
+  <Tab>
+### Minimal Configuration
+
+```json
+{
+  "extension_group": "ten_agent_extensions",
+  "api_version": "0.1",
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "main",
+      "addon": "main_extension:MainExtension",
+      "property": {}
+    }
+  ]
+}
+```
+  </Tab>
+</Tabs>
+
+## Environment Variables
+
+<Callout type="tip">
+Use environment variables for sensitive data and environment-specific settings.
+</Callout>
+
+### Common Variables
+
+```bash
+# API Keys
+export GOOGLE_API_KEY="your-google-api-key"
+export OPENAI_API_KEY="your-openai-api-key"
+export ELEVENLABS_API_KEY="your-elevenlabs-key"
+
+# Configuration
+export TEN_AGENT_LANG="en"
+export TEN_AGENT_GREETING="Hello!"
+export TEN_AGENT_PORT="8000"
+```
+
+### Loading Environment Variables
+
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load from .env file
+
+api_key = os.getenv("GOOGLE_API_KEY")
+```
+
+## Validation Tips
+
+<Callout type="warning">
+Always validate configuration before starting the agent.
+</Callout>
+
+1. **Check required fields** are present
+2. **Validate API keys** are non-empty
+3. **Verify version constraints** are compatible
+4. **Test dependency connections** exist
+5. **Log configuration on startup** for debugging
+
+## References
+
+- [TEN Framework Configuration Guide](https://github.com/TEN-framework/ten-framework)
+- [Property File Format](https://github.com/TEN-framework/ten-framework)
+- [Manifest Specification](https://github.com/TEN-framework/ten-framework)

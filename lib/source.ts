@@ -1,13 +1,11 @@
-import { createElement } from 'react'
-
 import {
-  InferMetaType,
-  InferPageType,
-  loader,
+  type InferMetaType,
+  type InferPageType,
+  loader
 } from 'fumadocs-core/source'
-import { createMDXSource } from 'fumadocs-mdx'
+import { createMDXSource } from 'fumadocs-mdx/runtime/next'
 import { icons } from 'lucide-react'
-
+import { createElement } from 'react'
 import { blogPosts, docs } from '@/.source'
 import { i18n } from '@/lib/i18n'
 
@@ -21,14 +19,31 @@ export const source = loader({
     if (name && name in icons) {
       return createElement(icons[name as keyof typeof icons])
     }
-  },
+  }
 })
 
 export const blog = loader({
   baseUrl: '/blog',
   source: createMDXSource(blogPosts),
-  i18n,
+  i18n
 })
 
 export type DocPage = InferPageType<typeof source>
 export type DocMeta = InferMetaType<typeof source>
+export function getDocPageImage(page: DocPage) {
+  const segments = [...page.slugs, 'image.png']
+  return {
+    segments,
+    url: `/og/docs/${segments.join('/')}`
+  }
+}
+
+export type BlogPage = InferPageType<typeof blog>
+export type BlogMeta = InferMetaType<typeof blog>
+export function getBlogPageImage(page: BlogPage) {
+  const segments = [...page.slugs, 'image.png']
+  return {
+    segments,
+    url: `/og/blog/${segments.join('/')}`
+  }
+}

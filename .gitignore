@@ -29,3 +29,8 @@ next-env.d.ts
 
 # Claude Code
 .claude
+
+# custom
+.tmp
+/.trae/
+/.trae

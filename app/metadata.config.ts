@@ -11,11 +11,11 @@ export const KEYWORDS = [
   'Multimodal AI',
   'Real-time AI',
   'Voice AI',
-  'AI Agents',
+  'AI Agents'
 ]
 
 export const SOCIAL_HANDLES = {
-  twitter: '@TenFramework',
+  twitter: '@TenFramework'
 }
 
 interface GenerateMetadataProps {
@@ -27,13 +27,13 @@ interface GenerateMetadataProps {
 export function generateSiteMetadata({
   title = DEFAULT_TITLE,
   description = DEFAULT_DESCRIPTION,
-  lang,
+  lang
 }: GenerateMetadataProps): Metadata {
   return {
     metadataBase: new URL(SITE_URL),
     title: {
       template: '%s | TEN Framework',
-      default: title,
+      default: title
     },
     description,
     keywords: KEYWORDS,
@@ -44,13 +44,13 @@ export function generateSiteMetadata({
       url: SITE_URL,
       siteName: 'TEN Framework',
       locale: lang,
-      type: 'website',
+      type: 'website'
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      creator: SOCIAL_HANDLES.twitter,
+      creator: SOCIAL_HANDLES.twitter
     },
     robots: {
       index: true,
@@ -60,15 +60,15 @@ export function generateSiteMetadata({
         follow: true,
         'max-video-preview': -1,
         'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
+        'max-snippet': -1
+      }
     },
     alternates: {
       canonical: `${SITE_URL}/${lang}`,
       languages: {
         'en-US': `${SITE_URL}/en`,
-        'zh-CN': `${SITE_URL}/cn`,
-      },
-    },
+        'zh-CN': `${SITE_URL}/cn`
+      }
+    }
   }
 }

@@ -1,0 +1,105 @@
+---
+title: "RTM Transport: Dual RTC + RTM Voice Agent"
+description: "Build a TEN agent that streams audio over Agora RTC while sending low-latency text/data over Agora RTM."
+author: Elliot Chen
+date: 2025-11-25
+featuredLabel: Example
+articleLabel: Example
+accentWords: Agora RTC | Agora RTM | RTM Transport
+---
+
+Shipping a real-time voice agent means keeping audio flowing while text and control messages move independently. The new `rtm-transport` example pairs Agora RTC for audio with Agora RTM for reliable data so you can keep STT -> LLM -> TTS fully duplex without blocking.
+
+> TL;DR -- The new `rtm-transport` example shows how to run Agora RTC (audio + data channel) and Agora RTM (messaging) together. It routes per-user audio with `streamid_adapter`, chunks outbound text with `message_collector2`, and keeps STT -> LLM -> TTS fully real-time.
+
+## Why this update matters
+
+- Dual transport: RTC handles audio while RTM carries text/data without blocking the audio pipeline.
+- Multi-user safe: `streamid_adapter` maps each RTC `stream_id` to a unique `session_id`, so ASR sessions do not collide.
+- Reliable messaging: `message_collector2` chunks text to base64 and sends it via both RTC data channel and RTM with pacing.
+- Drop-in pipeline: STT -> LLM -> TTS stays real-time; you can swap providers in TMAN Designer.
+
+## Architecture at a glance
+
+```text
+Agora RTC (incoming audio)
+  -> streamid_adapter (stream_id -> session_id)
+    -> STT
+      -> LLM
+        -> TTS
+          -> Agora RTC (outgoing audio)
+
+message_collector2 ("message" input)
+  -> chunk to base64
+    -> RTC data channel
+    -> Agora RTM emits rtm_message_event -> main_control
+```
+
+Key extensions: `agora_rtc`, `agora_rtm`, `streamid_adapter`, `message_collector2`, `main_control`.
+
+## Run it locally
+
+```bash
+cd ai_agents/agents/examples/rtm-transport
+
+# 1) Configure env vars (required)
+cat <<'EOF' > .env
+AGORA_APP_ID=your_agora_app_id_here
+AGORA_APP_CERTIFICATE=your_agora_certificate_here
+DEEPGRAM_API_KEY=your_deepgram_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4o
+ELEVENLABS_TTS_KEY=your_elevenlabs_api_key_here
+EOF
+
+# Optional extras
+export OPENAI_PROXY_URL=...
+export WEATHERAPI_API_KEY=...
+
+# 2) Install & run
+task install
+task run
+```
+
+What you get:
+
+- Frontend: http://localhost:3000
+- API server: http://localhost:8080
+- TMAN Designer: http://localhost:49483
+
+## Configuration highlights
+
+- `agora_rtc`: `publish_audio`, `publish_data`, `stream_id` (local), `remote_stream_id` (subscribe), optional `app_certificate`.
+- `agora_rtm`: `channel`, `user_id`, `token`, `rtm_enabled` flag.
+- `message_collector2`: chunks outbound text at ~40 ms intervals to keep latency low.
+- `streamid_adapter`: translates RTC `stream_id` into per-user `session_id` for ASR separation.
+
+Edit `tenapp/property.json` or use TMAN Designer (right-click extensions → Properties) to swap STT/LLM/TTS providers or change stream IDs.
+
+## When to use this pattern
+
+- Chat + voice apps that need low-latency text commands alongside audio.
+- Multi-speaker experiences where each RTC stream should map to its own ASR session.
+- Live streaming or gaming where RTM carries state/commands while RTC carries voice.
+- Collaborative tools combining voice chat with reliable data delivery.
+
+## Release as a Docker image
+
+```bash
+cd ai_agents
+docker build -f agents/examples/rtm-transport/Dockerfile -t rtm-transport-app .
+docker run --rm -it --env-file .env -p 8080:8080 -p 3000:3000 rtm-transport-app
+```
+
+## Troubleshooting tips
+
+- No audio back? Verify `remote_stream_id` matches the publisher and `publish_audio`/`subscribe_audio` are true.
+- Missing RTM messages? Check `rtm_enabled`, `user_id`, and token; watch the `rtm_message_event` in logs.
+- Mixed-up transcripts? Confirm `streamid_adapter` is in the chain so each RTC stream gets its own `session_id`.
+
+## Links
+
+- Example source: https://github.com/TEN-framework/ten-framework/tree/main/ai_agents/agents/examples/rtm-transport
+- TMAN Designer docs: https://theten.ai/docs/ten_agent/customize_agent/tman-designer
+- Agora RTC: https://docs.agora.io/en/rtc/overview/product-overview
+- Agora RTM: https://docs.agora.io/en/Real-time-Messaging/product_rtm

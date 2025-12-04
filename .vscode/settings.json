@@ -1,0 +1,18 @@
+{
+  "biome.configurationPath": "./biome.json",
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "biome.lsp.bin": "node_modules/.bin/biome",
+  "biome.enabled": true,
+  "biome.requireConfiguration": true,
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "i18n-ally.localesPaths": ["messages", "src/i18n"],
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  }
+}

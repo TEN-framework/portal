@@ -1,0 +1,56 @@
+<svg width="1200" height="520" viewBox="0 0 1200 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">博客与文档修改清单</title>
+  <desc id="desc">并列展示编辑 blog 与 docs 的注意事项</desc>
+  <defs>
+    <linearGradient id="grid" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fdf2f8" />
+      <stop offset="100%" stop-color="#ecfeff" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="520" fill="url(#grid)" rx="28" />
+  <style>
+    text { font-family: Inter, 'Noto Sans SC', Arial, sans-serif; fill: #0f172a; }
+    .title { font-size: 28px; font-weight: 700; }
+    .subtitle { font-size: 16px; fill: #475569; }
+    .panel { fill: #ffffff; stroke: #c4b5fd; stroke-width: 1; rx: 24; }
+    .panel-title { font-size: 20px; font-weight: 600; }
+    .list-item { font-size: 16px; fill: #334155; }
+    .bullet { font-size: 18px; fill: #8b5cf6; }
+  </style>
+  <text class="title" x="60" y="70">Blog vs. Docs 修改清单</text>
+  <text class="subtitle" x="60" y="105">对照确认 Frontmatter、文件命名、预览路径等关键动作</text>
+
+  <g transform="translate(60,140)">
+    <rect class="panel" width="500" height="320" />
+    <text class="panel-title" x="32" y="60">Blog（content/blog）</text>
+    <text class="bullet" x="40" y="105">•</text>
+    <text class="list-item" x="70" y="105">文件以 `.mdx` 结尾，例：`my-story.mdx`</text>
+    <text class="bullet" x="40" y="145">•</text>
+    <text class="list-item" x="70" y="145">必填 Frontmatter：`title`、`description`、`author`、`date`</text>
+    <text class="bullet" x="40" y="185">•</text>
+    <text class="list-item" x="70" y="185">封面标签可选：`articleLabel`、`accentWords`</text>
+    <text class="bullet" x="40" y="225">•</text>
+    <text class="list-item" x="70" y="225">插图需托管在公网（S3 / GitHub / CDN）</text>
+    <text class="bullet" x="40" y="265">•</text>
+    <text class="list-item" x="70" y="265">使用 MDX，可直接写 React 组件或导入 UI</text>
+    <text class="bullet" x="40" y="305">•</text>
+    <text class="list-item" x="70" y="305">本地预览：`http://localhost:3000/blog/slug`</text>
+  </g>
+
+  <g transform="translate(640,140)">
+    <rect class="panel" width="500" height="320" />
+    <text class="panel-title" x="32" y="60">Docs（content/docs）</text>
+    <text class="bullet" x="40" y="105">•</text>
+    <text class="list-item" x="70" y="105">中文文件：`xxx.cn.md`；英文：`xxx.md`</text>
+    <text class="bullet" x="40" y="145">•</text>
+    <text class="list-item" x="70" y="145">Frontmatter 至少包含 `title` 与 `description`</text>
+    <text class="bullet" x="40" y="185">•</text>
+    <text class="list-item" x="70" y="185">更新 `content/docs/meta.json` 把页面挂到导航</text>
+    <text class="bullet" x="40" y="225">•</text>
+    <text class="list-item" x="70" y="225">内容为 Markdown，支持 Fumadocs 组件与提示块</text>
+    <text class="bullet" x="40" y="265">•</text>
+    <text class="list-item" x="70" y="265">引用图片：放在 `public/` 后用 `/images/...` 引用</text>
+    <text class="bullet" x="40" y="305">•</text>
+    <text class="list-item" x="70" y="305">本地预览：侧边栏「Docs」中找到对应条目</text>
+  </g>
+</svg>

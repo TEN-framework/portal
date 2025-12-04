@@ -1,12 +1,14 @@
-import { DocsLayout } from 'fumadocs-ui/layouts/notebook'
+import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import type { ReactNode } from 'react'
-
-import { baseOptions } from '@/app/layout.config'
+import { Banner } from '@/components/layout/sidebar'
+import { baseOptions } from '@/lib/layout.shared'
 import { source } from '@/lib/source'
+
+import './docs.css'
 
 export default async function Layout({
   params,
-  children,
+  children
 }: {
   params: Promise<{ lang: string }>
   children: ReactNode
@@ -16,13 +18,25 @@ export default async function Layout({
   const { nav, ...layoutProps } = baseOptions(lang)
 
   return (
-    <DocsLayout
-      {...layoutProps}
-      nav={{ ...nav, mode: 'top' }}
-      tabMode="sidebar"
-      tree={source.pageTree[lang]}
-    >
-      {children}
-    </DocsLayout>
+    <div className='docs-theme'>
+      <DocsLayout
+        {...layoutProps}
+        links={[]}
+        githubUrl='https://github.com/TEN-framework/ten-framework'
+        nav={{ ...nav, transparentMode: 'top' }}
+        tree={source.pageTree[lang]}
+        sidebar={{
+          banner: <Banner />,
+          tabs: {
+            transform: (option) => {
+              if (option?.description?.toString().startsWith('v')) return null
+              return option
+            }
+          }
+        }}
+      >
+        {children}
+      </DocsLayout>
+    </div>
   )
 }

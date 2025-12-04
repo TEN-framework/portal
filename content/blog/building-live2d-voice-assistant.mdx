@@ -1,0 +1,311 @@
+---
+title: Build a Live2D Voice Assistant with Real-Time Lip Sync
+description: Create an interactive anime character voice assistant with synchronized mouth movement using TEN Framework, Live2D, and PixiJS.
+author: Plutoless
+date: 2025-10-20
+articleLabel: use case
+accentWords: Live2D | Voice Assistant | Frontend
+---
+
+## Build a Live2D Voice Assistant with TEN Framework
+
+Imagine building a **voice assistant that's more than just audio** — one with an **animated anime character** that moves its lips in perfect sync with speech, reacts naturally, and brings conversations to life.
+
+With the TEN Framework, you can create exactly that: a **real-time Live2D voice assistant** where animated characters respond to your voice with **audio-driven mouth movement** and seamless interaction.
+
+In this tutorial, we'll show you how to integrate **Live2D models** with **TEN's voice pipeline** to create an immersive conversational experience.
+
+---
+
+## What is this article all about?
+
+TEN Framework provides the **real-time audio pipeline** (STT → LLM → TTS), and your job is to create a **beautiful frontend** that brings it to life:
+
+* **Real-time lip sync** → mouth movements synchronized with TTS audio output.
+* **Interactive Live2D characters** → 2D anime models that react and animate naturally.
+* **Seamless audio integration** → Agora RTC streams audio directly to Live2D MotionSync.
+* **Modular backend** → reuse the standard voice assistant backend, focus on frontend magic.
+
+This means you get **all the power of TEN's voice pipeline** while delivering a **visually engaging user experience** that goes beyond traditional chatbots.
+
+---
+
+## Project Structure
+
+You don't need to build everything from scratch — TEN Framework provides a **ready-to-use Live2D voice assistant example** in the repository.
+
+👉 Find it here: [**voice-assistant-live2d example on GitHub**](https://github.com/TEN-framework/ten-framework/tree/main/ai_agents/agents/examples/voice-assistant-live2d)
+
+### Backend (tenapp)
+
+The backend is essentially the **same as other TEN voice assistant examples**:
+
+```
+tenapp/
+├── property.json       → TEN graph configuration
+└── ten_packages/
+    └── extension/
+        └── main_python/ → Main control extension
+```
+
+By default, it uses:
+- **Agora RTC** for real-time audio streaming
+- **Deepgram** for speech-to-text
+- **OpenAI LLM** for conversation
+- **ElevenLabs** for text-to-speech
+
+Just like other TEN examples, **you can easily swap in different vendors** (e.g., use Google ASR, Azure TTS, Anthropic Claude, etc) using the **graph designer at [http://localhost:49483](http://localhost:49483)** (TMAN Designer) — no code changes needed. This gives you full flexibility to mix and match components to fit your needs.
+
+
+The real innovation is in the **frontend**.
+
+### Frontend (Next.js + Live2D)
+
+The frontend is where the magic happens:
+
+```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── Live2DCharacter.tsx    → Main Live2D rendering component
+│   │   ├── ClientOnlyLive2D.tsx   → SSR-safe wrapper
+│   │   ├── ConnectionPanel.tsx    → RTC connection controls
+│   │   └── TranscriptPanel.tsx    → Conversation display
+│   ├── lib/
+│   │   ├── pixi-setup.ts          → PixiJS global initialization
+│   │   ├── live2d-loader.ts       → Live2D model loader
+│   │   └── request.ts             → API client
+│   └── app/
+│       └── page.tsx               → Main application
+└── public/
+    └── models/
+        └── kei_vowels_pro/        → Live2D model assets
+```
+
+This structure keeps **rendering logic**, **audio processing**, and **RTC integration** cleanly separated.
+
+---
+
+## Frontend Implementation
+
+The frontend brings the Live2D character to life. Let's break down the key parts:
+
+---
+
+### 1. PixiJS Setup
+
+Before loading Live2D models, we need to **initialize PixiJS globally** because `pixi-live2d-display` expects it.
+
+[`pixi-setup.ts`](https://github.com/TEN-framework/ten-framework/blob/main/ai_agents/agents/examples/voice-assistant-live2d/frontend/src/lib/pixi-setup.ts) handles this:
+
+```ts
+import * as PIXI from 'pixi.js';
+
+// Set up PIXI globally for pixi-live2d-display compatibility
+if (typeof window !== 'undefined') {
+    window.PIXI = PIXI;
+    globalThis.PIXI = PIXI;
+}
+
+export { PIXI };
+export default PIXI;
+```
+
+👉 This ensures PixiJS is available before any Live2D operations begin.
+
+---
+
+### 2. Loading Live2D Models
+
+[`live2d-loader.ts`](https://github.com/TEN-framework/ten-framework/blob/main/ai_agents/agents/examples/voice-assistant-live2d/frontend/src/lib/live2d-loader.ts) dynamically imports the Live2D library after PixiJS is ready:
+
+```ts
+import PIXI from './pixi-setup';
+
+export async function loadLive2DModel() {
+    // Wait for PIXI to be fully set up
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    // Now dynamically import Live2D
+    const { Live2DModel } = await import('pixi-live2d-display/cubism4');
+
+    return { Live2DModel, PIXI };
+}
+```
+
+👉 This **lazy-loading strategy** prevents SSR issues and ensures proper initialization order.
+
+---
+
+### 3. The Live2DCharacter Component
+
+[`Live2DCharacter.tsx`](https://github.com/TEN-framework/ten-framework/blob/main/ai_agents/agents/examples/voice-assistant-live2d/frontend/src/components/Live2DCharacter.tsx) is the heart of the frontend. It handles:
+
+#### **Model Initialization**
+
+```ts
+const initLive2D = async () => {
+    // Create PIXI application with canvas renderer
+    const app = new PIXI.Application({
+        view: canvasRef.current!,
+        autoStart: true,
+        resizeTo: canvasRef.current?.parentElement || window,
+        backgroundColor: 0x000000,
+        backgroundAlpha: 0,
+        forceCanvas: true,  // Use canvas for stability
+    });
+
+    // Load Live2D model
+    const { Live2DModel } = await import('@/lib/live2d-loader')
+        .then(loader => loader.loadLive2DModel());
+
+    const model = await Live2DModel.from(modelPath);
+    app.stage.addChild(model);
+
+    // Position and scale the model
+    model.scale.set(parent.clientHeight / model.height);
+    model.x = (parent.clientWidth - model.width) / 2;
+};
+```
+
+#### **MotionSync for Lip Sync**
+
+The component uses **Live2D MotionSync** to synchronize mouth movements with audio:
+
+```ts
+// Initialize MotionSync
+const motionSyncUrl = modelPath.replace('.model3.json', '.motionsync3.json');
+const motionSync = new MotionSync(model.internalModel);
+await motionSync.loadMotionSyncFromUrl(motionSyncUrl);
+
+// When audio track arrives from Agora...
+if (audioTrack && audioTrack.getMediaStreamTrack) {
+    const stream = new MediaStream([audioTrack.getMediaStreamTrack()]);
+
+    // Start lip sync playback
+    motionSync.play(stream);
+
+    // Also play actual audio
+    const audio = document.createElement("audio");
+    audio.autoplay = true;
+    audio.srcObject = stream;
+    audio.play();
+}
+```
+
+👉 This creates **perfectly synchronized lip movements** — the character's mouth moves exactly as it "speaks".
+
+---
+
+### 4. Agora RTC Integration
+
+The main page ([`page.tsx`](https://github.com/TEN-framework/ten-framework/blob/main/ai_agents/agents/examples/voice-assistant-live2d/frontend/src/app/page.tsx)) connects everything:
+
+```ts
+// When remote audio arrives from TTS
+rtcClient.on("user-published", async (user, mediaType) => {
+    if (mediaType === "audio") {
+        await rtcClient.subscribe(user, "audio");
+        const remoteAudioTrack = user.audioTrack;
+
+        // Pass audio to Live2D component for lip sync
+        setRemoteAudioTrack(remoteAudioTrack);
+
+        // Play the audio
+        remoteAudioTrack?.play();
+    }
+});
+```
+
+Then pass it to the Live2D component:
+
+```tsx
+<ClientOnlyLive2D
+    modelPath={currentModel.path}
+    audioTrack={remoteAudioTrack}
+    onModelLoaded={() => console.log("Model loaded!")}
+/>
+```
+
+👉 The character **automatically syncs its mouth** whenever the voice assistant speaks.
+
+---
+
+### 5. SSR Handling
+
+Since Live2D requires browser APIs, we use **dynamic imports** to prevent SSR issues:
+
+```tsx
+const ClientOnlyLive2D = dynamicImport(
+    () => import("@/components/ClientOnlyLive2D"),
+    {
+        ssr: false,
+        loading: () => <div>Loading Live2D Model...</div>
+    }
+);
+```
+
+👉 This ensures the Live2D component **only renders on the client side**.
+
+---
+
+## Test It Out
+
+Ready to build your own Live2D voice assistant? Let's set it up.
+
+### Prerequisites
+
+Follow the [TEN Framework Getting Started guide](https://doc.theten.ai/ten-agent/getting_started) for basic docker dev environment setup.
+
+For detailed setup instructions specific to this example, refer to the [**README.md in the voice-assistant-live2d folder on GitHub**](https://github.com/TEN-framework/ten-framework/tree/main/ai_agents/agents/examples/voice-assistant-live2d#readme).
+
+### Environment Variables
+
+You'll need an environment file for the backend:
+
+**Backend (`ai_agents/.env`)**
+```bash
+AGORA_APP_ID=your_agora_app_id
+DEEPGRAM_API_KEY=your_deepgram_key
+OPENAI_API_KEY=your_openai_key
+OPENAI_MODEL=gpt-4o-mini
+ELEVENLABS_TTS_KEY=your_elevenlabs_key
+```
+
+### Installation & Running
+
+1. Navigate to the example directory:
+
+```bash
+cd agents/examples/voice-assistant-live2d
+```
+
+2. Install dependencies:
+
+```bash
+task install
+```
+
+3. Run all services (in separate terminals):
+
+```bash
+task run
+```
+
+4. Open http://localhost:3000
+5. Click **Connect** to start the RTC session
+6. Start speaking — watch your **Live2D character respond with perfectly synced lip movement**!
+
+---
+
+✨ That's it — you now have a **Live2D voice assistant powered by TEN Framework**!
+
+---
+
+## Learn More
+
+- [Live2D Documentation](https://docs.live2d.com/)
+- [PixiJS Documentation](https://pixijs.com/)
+- [Live2D MotionSync](https://www.live2d.com/en/cubism/products/motionsync/)
+- [Agora RTC Documentation](https://docs.agora.io/)
+- [TEN Framework Documentation](https://doc.theten.ai)

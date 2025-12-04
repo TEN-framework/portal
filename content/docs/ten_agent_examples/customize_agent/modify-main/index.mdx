@@ -1,0 +1,104 @@
+---
+title: Customize via Code
+---
+
+Configuring extensions via TMAN Designer should well help you get started with basic modifications. But what happens when you need to implement more complex changes that aren't supported by the visual interface?
+Before making any code changes, it's essential to understand the existing structure and functionality of the `main` extension.
+
+---
+
+In the TEN Framework, **connections** are used to define how video and audio data flow between extensions. This approach reduces unnecessary complexity and ensures high performance—a core strength of TEN.
+
+For **events and text-based data**, which are typically less resource-intensive, handling them directly in code offers greater flexibility and efficiency for implementing complex logic.
+
+To make this workflow easier, the latest version of the default TEN Agent app introduces a built-in **“main” extension** in every graph. This extension acts as a central hub for orchestrating components and managing their connections.
+
+With this design:
+
+1. **Video/audio data** always flows through connections between extensions. This lets you take advantage of the framework’s performance optimizations without touching low-level media processing logic.
+2. **The “main” extension** can communicate with any other extension and collect the event/text data it needs.
+
+   * For **inbound events/data**, you must register connections from the source extensions to the “main” extension in the `property.json` file.
+   * For **outbound events/data**, you can call `setDests` at runtime to specify destination extensions, without needing predefined connections in `property.json`.
+3. **All application-specific logic** can reside inside the “main” extension.
+4. **Other extensions** should remain stateless and independent, making them easy to reuse.
+
+The "main" extension can be written in **any language supported by the TEN Framework**. For example, you could implement the main extension in Node.js while keeping other extensions in Python or C++. This design neatly avoids Node.js performance bottlenecks with media processing, particularly in production environments.
+
+---
+
+## Comparison of Main Extension Variants
+
+Choose the right architecture for your use case:
+
+| Aspect | Python Cascade | Python Realtime V2V | Node.js Cascade |
+| --- | --- | --- | --- |
+| **Language** | Python | Python | TypeScript/JavaScript |
+| **Use Case** | Traditional voice agent with ASR → LLM → TTS pipeline | Direct multimodal (MLLM) with real-time vision/audio | High-performance voice agent with media streaming |
+| **Event Model** | Decorator-based `@agent_event_handler()` | Match/case with `on_data()` method | Direct event handlers in class methods |
+| **Message Flow** | **S2C**: Receives typed events from runtime | **S2C**: Receives all events via single `on_data` | **Direct**: Routes messages as they arrive |
+| **LLM Type** | Standard LLM (text-only) | Multimodal LLM (vision + audio + text) | Standard LLM (text-only) |
+| **Streaming Support** | Text streaming with sentence splitting | MLLM streaming with modality support | Streaming with sentence parsing |
+| **Interruption** | Barge-in detection via `_interrupt()` | Event-based via `ServerInterruptEvent` | Barge-in with sentence fragment reset |
+| **Tool Support** | Via `@tool_handler()` decorator | Via match/case `FunctionCallEvent` | Via direct agent tool registration |
+| **Configuration** | Via `config.yaml` in Python | Via `config.py` with `greeting` | Via manifest and property.json |
+| **Performance** | Good for standard workloads | Optimized for real-time multimodal | Best for media-heavy workloads |
+| **Complexity** | Moderate (decorators + event bus) | Moderate (match/case dispatch) | Moderate (direct method routing) |
+| **Best For** | Learning TEN fundamentals | Modern AI with vision + speech | Production voice agents |
+
+### Quick Decision Guide
+
+**Choose Python Cascade** if you want to learn how the main extension works or build a standard voice agent in Python.
+
+**Choose Python Realtime V2V** if you need multimodal capabilities (camera input, vision processing) alongside voice, or want to experiment with advanced LLMs that support multiple modalities.
+
+**Choose Node.js Cascade** if you're building a production voice agent and want the performance benefits of Node.js while avoiding media processing bottlenecks through the connection-based audio flow.
+
+---
+
+## Main Extension Documentation
+
+### Python Cascade Pattern
+
+Traditional ASR → LLM → TTS pipeline with decorator-based event handling. Ideal for learning TEN fundamentals or building standard voice agents.
+
+- [Python Cascade Main](./main_python_cascade) — Complete guide with decorator patterns, event routing, and LLM integration
+- Best for: Learning, standard voice agents, Python-only environments
+
+### Python Realtime V2V Pattern
+
+Multimodal MLLM integration with real-time vision and audio. Modern approach for advanced AI capabilities.
+
+- [Python Realtime V2V Main](./main_python_realtime) — Event routing with match/case, C2S primitives, tool handling, and function calls
+- Best for: Vision + speech, multimodal AI, modern LLMs with vision
+
+### Node.js Cascade Pattern
+
+High-performance voice agent using TypeScript/JavaScript with optimized media streaming.
+
+- [Node.js Cascade Main](./main_nodejs_cascade) — ASR handling, LLM response streaming, tool registration, and natural interruption
+- Best for: Production voice agents, performance-critical applications, Node.js teams
+
+---
+
+## Common Tasks
+
+### Understanding Event Flow
+
+- **Python Cascade**: Decorator-based event handlers (`@agent_event_handler()`) - See [ASR event handling section](./main_python_cascade#event-routing)
+- **Python Realtime V2V**: Match/case dispatch - See [Event routing section](./main_python_realtime#event-routing)
+- **Node.js Cascade**: Direct method handlers - See [ASR handling section](./main_nodejs_cascade)
+
+### Handling Tool Calls
+
+- **Python Cascade**: Tool decorator pattern
+- **Python Realtime V2V**: Function call event handling - See [C2S primitives](./main_python_realtime#c2s-primitives-sending-to-mllm)
+- **Node.js Cascade**: Agent tool registration
+
+### Implementing Interruption
+
+Learn how to handle user interruption (barge-in) in your pattern:
+
+- **Python Cascade**: `_interrupt()` method in extension
+- **Python Realtime V2V**: `ServerInterruptEvent` handling - See [Patterns section](./main_python_realtime#common-implementation-patterns)
+- **Node.js Cascade**: Natural barge-in with sentence fragment reset - See [LLM handling section](./main_nodejs_cascade)

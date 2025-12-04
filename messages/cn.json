@@ -4,6 +4,10 @@
     "blog": "博客",
     "hackathon": "黑客松"
   },
+  "languages": {
+    "cn": "中文",
+    "en": "English"
+  },
   "fuma": {
     "search": "搜索",
     "searchNoResult": "未找到结果",
@@ -34,10 +38,15 @@
     "readLaunchArticle": "阅读我们的博客了解更多",
     "heroDescription": "一个专为构建对话式 AI 而设计的开源框架",
     "supportedBy": "由 TEN 社区支持，以及",
-    "heroBtnTryTenAgent": "体验 TEN Agent",
+    "heroBtnTryTenAgent": "体验 TEN Agent 示例",
     "huggingFaceSpace": "体验 VAD 和 Turn Detection",
     "heroBtnReadDoc": "文档",
-    "bannerAnnouncement": "现在是 TEN 开源生态系统的一部分！"
+    "bannerAnnouncement": "现在是 TEN 开源生态系统的一部分！",
+    "websocketAnnouncement": {
+      "title": "TEN 同时支持 RTC 与 WebSocket",
+      "ctaLearnMore": "了解更多",
+      "ctaQuickStart": "快速开始"
+    }
   },
   "hackathon": {
     "title": "TEN Dev Challenge 2025",
@@ -161,5 +170,50 @@
       "communitySupport": "社区支持",
       "socialMedia": "社交媒体"
     }
+  },
+  "components": {
+    "version-select": {
+      "label": "版本",
+      "placeholder": "选择一个版本",
+      "latest": "最新"
+    },
+    "page-actions": {
+      "copy-markdown": "复制 Markdown",
+      "open-in-vendor": "在 {vendor} 上打开",
+      "open": "打开"
+    }
+  },
+  "footer": {
+    "tagline": "一个专为构建实时对话式 AI Agent 而设计的开源框架",
+    "product": {
+      "title": "产品",
+      "openSourceTitle": "开源产品",
+      "framework": "TEN Framework",
+      "agentExamples": "Agent 示例",
+      "vad": "TEN VAD",
+      "turnDetection": "TEN Turn Detection"
+    },
+    "resources": {
+      "title": "资源",
+      "documentation": "文档",
+      "blog": "博客",
+      "huggingFace": "Hugging Face Space"
+    },
+    "developers": {
+      "title": "开发者",
+      "documentation": "文档",
+      "blog": "博客",
+      "huggingFace": "Hugging Face Space"
+    },
+    "community": {
+      "title": "社区",
+      "github": "GitHub",
+      "discord": "Discord",
+      "twitter": "Twitter",
+      "xTwitter": "X/Twitter"
+    },
+    "copyright": "© {year} TEN Framework. 版权所有。",
+    "supportedByPrefix": "由",
+    "supportedBySuffix": "和 TEN 社区支持"
   }
 }
