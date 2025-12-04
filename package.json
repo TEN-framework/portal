@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "next build",
-    "dev": "next dev",
+    "build": "next build --webpack",
+    "dev": "next dev --webpack",
     "start": "next start",
     "postinstall": "fumadocs-mdx",
     "lint": "biome check --write",
@@ -45,6 +45,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@types/three": "^0.180.0",
+    "baseline-browser-mapping": "^2.8.32",
     "gray-matter": "^4.0.3",
     "next-validate-link": "^1.6.3",
     "postcss": "^8.5.6",

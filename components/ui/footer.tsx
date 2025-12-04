@@ -1,6 +1,6 @@
 'use client'
 
-import { ExternalLink, Github } from 'lucide-react'
+import { Github } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { Logo } from '@/components/ui/logo'
 import { Link } from '@/lib/next-intl-navigation'
@@ -39,14 +39,17 @@ export function Footer({ className }: { className?: string }) {
 
   return (
     <footer className={cn('relative z-10 bg-transparent', className)}>
-      <div className='container mx-auto px-4 py-[clamp(12px,3vh,24px)]'>
+      <div className='mx-auto max-w-[var(--spacing-fd-container)] px-[var(--site-x-pad)] py-[clamp(12px,3vh,24px)]'>
         <div className='flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left'>
           <div className='flex items-center gap-4'>
-            <Link href='/' className='inline-block'>
+            <Link
+              href='/'
+              className='inline-block text-foreground dark:text-white'
+            >
               <Logo height={36} width={72} />
             </Link>
           </div>
-          <div className='flex gap-3'>
+          <div className='flex flex-wrap gap-3 sm:gap-4'>
             {socialLinks.map((social) => {
               const Icon = social.icon
               return (
@@ -54,7 +57,7 @@ export function Footer({ className }: { className?: string }) {
                   key={social.name}
                   href={social.href}
                   target='_blank'
-                  className='flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground'
+                  className='flex h-11 w-11 items-center justify-center rounded-md border border-border bg-card text-muted-foreground transition-colors hover:border-primary hover:bg-accent hover:text-foreground'
                   title={social.name}
                 >
                   {social.icon === 'text' ? (
@@ -69,15 +72,15 @@ export function Footer({ className }: { className?: string }) {
         </div>
 
         <div className='mt-6 flex flex-col items-center justify-between gap-2 text-center md:flex-row md:text-left'>
-          <p className='text-muted-foreground text-xs'>
+          <p className='text-muted-foreground text-xs dark:text-white'>
             {t('copyright', { year: new Date().getFullYear() })}
           </p>
-          <p className='text-muted-foreground text-xs'>
+          <p className='text-muted-foreground text-xs dark:text-white'>
             {t('supportedByPrefix')}{' '}
             <Link
               href='https://www.agora.io/en/'
               target='_blank'
-              className='text-spektr-cyan-100 underline decoration-gray-300 underline-offset-2 transition-colors hover:decoration-[#13C2FF]'
+              className='text-spektr-cyan-100 underline decoration-gray-300 underline-offset-2 transition-colors hover:decoration-[#13C2FF] dark:text-white'
             >
               Agora
             </Link>{' '}
