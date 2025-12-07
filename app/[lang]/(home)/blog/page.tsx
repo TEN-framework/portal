@@ -29,7 +29,12 @@ export default async function BlogHomePage(props: {
     return dateB.getTime() - dateA.getTime()
   })
 
-  const [featuredPost, ...standardPosts] = sortedPosts
+  const featuredPost =
+    sortedPosts.find(
+      (p) => (p.data as BlogFrontmatterMeta).featured === true
+    ) ?? sortedPosts[0]
+
+  const standardPosts = sortedPosts.filter((p) => p !== featuredPost)
 
   const isChinese = locale === 'cn'
   const badgeText = isChinese ? '博客' : 'Blog'

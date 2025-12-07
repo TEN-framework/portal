@@ -7,6 +7,7 @@ import { getMessages } from 'next-intl/server'
 import type { ReactNode } from 'react'
 import { LocaleProviders } from '@/app/[lang]/providers'
 import { generateSiteMetadata } from '@/app/metadata.config'
+import { ForceLightTheme } from '@/components/utils/force-light-theme'
 import { i18n, nextIntlRouting } from '@/lib/i18n'
 import cnMessages from '@/messages/cn.json'
 import enMessages from '@/messages/en.json'
@@ -87,6 +88,7 @@ export default async function Layout({
       <body className='flex min-h-screen flex-col'>
         <NextIntlClientProvider locale={lang} messages={messages}>
           <LocaleProviders i18n={I18nUIProvider(lang)}>
+            <ForceLightTheme />
             {children}
           </LocaleProviders>
         </NextIntlClientProvider>
