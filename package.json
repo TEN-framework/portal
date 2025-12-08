@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/postinstall.js",
     "build": "next build --webpack",
     "dev": "next dev --webpack",
     "start": "next start",
