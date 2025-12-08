@@ -6,7 +6,7 @@
     "build": "next build --webpack",
     "dev": "next dev --webpack",
     "start": "next start",
-    "postinstall": "fumadocs-mdx",
+    "postinstall": "node scripts/postinstall.js",
     "lint": "biome check --write",
     "lint:links": "bun run scripts/validate-links.ts",
     "check": "bun run lint && bun run lint:links",
