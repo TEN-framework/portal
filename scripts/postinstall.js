@@ -7,11 +7,12 @@ const nodeModules = path.join(repoRoot, "node_modules");
 const npmExecPath = process.env.npm_execpath;
 
 const installPackage = (pkgName, version) => {
+  const command = npmExecPath ? process.execPath : "npm";
   const args = npmExecPath
     ? [npmExecPath, "install", "--no-save", `${pkgName}@${version}`]
-    : ["npm", "install", "--no-save", `${pkgName}@${version}`];
+    : ["install", "--no-save", `${pkgName}@${version}`];
 
-  const result = spawnSync(process.execPath, args, { stdio: "inherit" });
+  const result = spawnSync(command, args, { stdio: "inherit" });
   if (result.status !== 0) {
     console.warn(
       `[postinstall] Failed to install ${pkgName}. Exit code: ${result.status}`,
@@ -29,6 +30,17 @@ const resolveVersion = (pkg, fallback) => {
   }
   return fallback;
 };
+
+const libcFamily = (() => {
+  try {
+    // eslint-disable-next-line global-require
+    const libc = require("detect-libc");
+    const family = libc.familySync?.();
+    return family === libc.MUSL ? "musl" : "gnu";
+  } catch {
+    return "gnu";
+  }
+})();
 
 // Ensure esbuild binary matches the current platform/arch.
 (() => {
@@ -54,17 +66,6 @@ const resolveVersion = (pkg, fallback) => {
 
 // Ensure lightningcss native binary matches the current platform/arch/libc.
 (() => {
-  const libcFamily = (() => {
-    try {
-      // eslint-disable-next-line global-require
-      const libc = require("detect-libc");
-      const family = libc.familySync?.();
-      return family === libc.MUSL ? "musl" : "gnu";
-    } catch {
-      return "gnu";
-    }
-  })();
-
   const resolveTarget = () => {
     if (process.platform === "linux") {
       if (process.arch === "x64") return `linux-x64-${libcFamily}`;
@@ -99,6 +100,45 @@ const resolveVersion = (pkg, fallback) => {
   const pkgName = `lightningcss-${target}`;
   if (!fs.existsSync(path.join(nodeModules, pkgName))) {
     installPackage(pkgName, resolveVersion("lightningcss", "1.30.2"));
+  }
+})();
+
+// Ensure tailwindcss oxide native binary is present.
+(() => {
+  const resolveTarget = () => {
+    if (process.platform === "linux") {
+      if (process.arch === "x64") return `linux-x64-${libcFamily}`;
+      if (process.arch === "arm64") return `linux-arm64-${libcFamily}`;
+      if (process.arch === "arm") return "linux-arm-gnueabihf";
+    }
+    if (process.platform === "darwin") {
+      if (process.arch === "arm64") return "darwin-arm64";
+      if (process.arch === "x64") return "darwin-x64";
+    }
+    if (process.platform === "freebsd" && process.arch === "x64") {
+      return "freebsd-x64";
+    }
+    if (process.platform === "android" && process.arch === "arm64") {
+      return "android-arm64";
+    }
+    if (process.platform === "win32") {
+      if (process.arch === "x64") return "win32-x64-msvc";
+      if (process.arch === "arm64") return "win32-arm64-msvc";
+    }
+    return null;
+  };
+
+  const target = resolveTarget();
+  if (!target) {
+    console.warn(
+      `[postinstall] Skipping tailwindcss oxide check for ${process.platform}/${process.arch}`,
+    );
+    return;
+  }
+
+  const pkgName = `@tailwindcss/oxide-${target}`;
+  if (!fs.existsSync(path.join(nodeModules, pkgName))) {
+    installPackage(pkgName, resolveVersion("@tailwindcss/oxide", "4.1.16"));
   }
 })();
 
