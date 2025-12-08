@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 export const SITE_URL = 'https://theten.ai'
-export const DEFAULT_TITLE = 'Open-source framework for all AI agents.'
+export const DEFAULT_TITLE = 'Open-source framework for Voice Agent & Conversational AI.'
 export const DEFAULT_DESCRIPTION =
   'TEN is an open-source framework designed for building multimodal conversational AI'
 
