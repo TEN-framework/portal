@@ -5,6 +5,16 @@ const { spawnSync } = require('child_process')
 const repoRoot = path.join(__dirname, '..')
 const nodeModules = path.join(repoRoot, 'node_modules')
 const npmExecPath = process.env.npm_execpath
+const libcFamily = (() => {
+  try {
+    // eslint-disable-next-line global-require
+    const libc = require('detect-libc')
+    const family = libc.familySync?.()
+    return family === libc.MUSL ? 'musl' : 'gnu'
+  } catch {
+    return 'gnu'
+  }
+})()
 
 const installPackage = (pkgName, version) => {
   const args = npmExecPath
@@ -57,17 +67,6 @@ const resolveVersion = (pkg, fallback) => {
 
 // Ensure lightningcss native binary matches the current platform/arch/libc.
 ;(() => {
-  const libcFamily = (() => {
-    try {
-      // eslint-disable-next-line global-require
-      const libc = require('detect-libc')
-      const family = libc.familySync?.()
-      return family === libc.MUSL ? 'musl' : 'gnu'
-    } catch {
-      return 'gnu'
-    }
-  })()
-
   const resolveTarget = () => {
     if (process.platform === 'linux') {
       if (process.arch === 'x64') return `linux-x64-${libcFamily}`
