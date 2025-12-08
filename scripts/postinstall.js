@@ -2,52 +2,12 @@ const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
-// Map the current platform/arch to the esbuild binary package name.
-const targets = {
-  linux: {
-    x64: "linux-x64",
-    arm64: "linux-arm64",
-  },
-  darwin: {
-    x64: "darwin-x64",
-    arm64: "darwin-arm64",
-  },
-  win32: {
-    x64: "win32-x64",
-    arm64: "win32-arm64",
-    ia32: "win32-ia32",
-  },
-};
+const repoRoot = path.join(__dirname, "..");
+const nodeModules = path.join(repoRoot, "node_modules");
+const npmExecPath = process.env.npm_execpath;
 
-const target = targets[process.platform]?.[process.arch];
-
-if (!target) {
-  console.warn(
-    `[postinstall] Skipping esbuild binary check for ${process.platform}/${process.arch}`,
-  );
-  process.exit(0);
-}
-
-const pkgName = `@esbuild/${target}`;
-const pkgPath = path.join(__dirname, "..", "node_modules", pkgName);
-
-// Install the platform-specific esbuild binary when it's missing (e.g., cached node_modules from another OS).
-if (!fs.existsSync(pkgPath)) {
-  let version = "0.25.11";
-
-  try {
-    const esbuildPkg = require("esbuild/package.json");
-    if (typeof esbuildPkg.version === "string") {
-      version = esbuildPkg.version;
-    }
-  } catch {
-    // Use the default version from the lockfile if esbuild isn't resolvable yet.
-  }
-
-  const npmExecPath = process.env.npm_execpath;
-  console.log(
-    `[postinstall] Installing missing esbuild binary "${pkgName}@${version}"`,
-  );
+const installPackage = (pkgName, version) => {
+  console.log(`[postinstall] Installing missing binary "${pkgName}@${version}"`);
 
   let installResult;
   if (npmExecPath) {
@@ -70,6 +30,109 @@ if (!fs.existsSync(pkgPath)) {
     );
     process.exit(installResult.status ?? 1);
   }
+};
+
+const resolveVersion = (pkg, fallback) => {
+  try {
+    const loaded = require(`${pkg}/package.json`);
+    if (typeof loaded.version === "string") {
+      return loaded.version;
+    }
+  } catch {
+    // ignore
+  }
+  return fallback;
+};
+
+// Map the current platform/arch to the esbuild binary package name.
+const esbuildTargets = {
+  linux: {
+    x64: "linux-x64",
+    arm64: "linux-arm64",
+  },
+  darwin: {
+    x64: "darwin-x64",
+    arm64: "darwin-arm64",
+  },
+  win32: {
+    x64: "win32-x64",
+    arm64: "win32-arm64",
+    ia32: "win32-ia32",
+  },
+};
+
+const esbuildTarget = esbuildTargets[process.platform]?.[process.arch];
+if (esbuildTarget) {
+  const pkgName = `@esbuild/${esbuildTarget}`;
+  const pkgPath = path.join(nodeModules, pkgName);
+
+  if (!fs.existsSync(pkgPath)) {
+    installPackage(pkgName, resolveVersion("esbuild", "0.25.11"));
+  }
+} else {
+  console.warn(
+    `[postinstall] Skipping esbuild binary check for ${process.platform}/${process.arch}`,
+  );
+}
+
+// lightningcss also ships platform-specific binaries; ensure the right one is present.
+const getLightningcssTarget = () => {
+  const libcFamily = (() => {
+    try {
+      // eslint-disable-next-line global-require
+      const libc = require("detect-libc");
+      const family = libc.familySync?.();
+      return family === libc.MUSL ? "musl" : "gnu";
+    } catch {
+      return "gnu";
+    }
+  })();
+
+  if (process.platform === "linux") {
+    if (process.arch === "x64") {
+      return `linux-x64-${libcFamily}`;
+    }
+    if (process.arch === "arm64") {
+      return `linux-arm64-${libcFamily}`;
+    }
+    if (process.arch === "arm") {
+      return "linux-arm-gnueabihf";
+    }
+  }
+
+  if (process.platform === "darwin") {
+    if (process.arch === "arm64") return "darwin-arm64";
+    if (process.arch === "x64") return "darwin-x64";
+  }
+
+  if (process.platform === "freebsd" && process.arch === "x64") {
+    return "freebsd-x64";
+  }
+
+  if (process.platform === "android" && process.arch === "arm64") {
+    return "android-arm64";
+  }
+
+  if (process.platform === "win32") {
+    if (process.arch === "x64") return "win32-x64-msvc";
+    if (process.arch === "arm64") return "win32-arm64-msvc";
+  }
+
+  return null;
+};
+
+const lightningTarget = getLightningcssTarget();
+if (lightningTarget) {
+  const pkgName = `lightningcss-${lightningTarget}`;
+  const pkgPath = path.join(nodeModules, pkgName);
+
+  if (!fs.existsSync(pkgPath)) {
+    installPackage(pkgName, resolveVersion("lightningcss", "1.30.2"));
+  }
+} else {
+  console.warn(
+    `[postinstall] Skipping lightningcss binary check for ${process.platform}/${process.arch}`,
+  );
 }
 
 // Run the original postinstall step for fumadocs-mdx.
