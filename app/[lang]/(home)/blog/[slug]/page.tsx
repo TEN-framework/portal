@@ -6,7 +6,6 @@ import type { CSSProperties } from 'react'
 import { SITE_URL } from '@/app/metadata.config'
 import { getMDXComponents } from '@/components/mdx'
 import { SITE_META } from '@/constants'
-import { i18n } from '@/lib/i18n'
 import { Link } from '@/lib/next-intl-navigation'
 import { blog } from '@/lib/source'
 import { cn } from '@/lib/utils'
@@ -218,9 +217,4 @@ export default async function Page(props: {
   )
 }
 
-export function generateStaticParams(): { slug: string; lang: string }[] {
-  return blog.getPages().map((page) => ({
-    slug: page.slugs[0],
-    lang: page.locale ?? i18n.defaultLanguage
-  }))
-}
+export const revalidate = 300

@@ -69,9 +69,7 @@ export default async function Page(props: {
   )
 }
 
-export async function generateStaticParams() {
-  return source.generateParams()
-}
+export const revalidate = 300
 
 export async function generateMetadata(props: {
   params: Promise<{ lang: string; slug?: string[] }>

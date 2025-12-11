@@ -3,6 +3,9 @@
   publish = ".next"
   [build.environment]
     NODE_VERSION = "22"
+    BASELINE_BROWSER_MAPPING_IGNORE_OLD_DATA = "true"
+    BROWSERSLIST_IGNORE_OLD_DATA = "true"
+    NODE_OPTIONS = "--max_old_space_size=4096"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
