@@ -1,9 +1,16 @@
 [build]
-  command = "bun run build"
+  command = "npm run build"
   publish = ".next"
+  [build.environment]
+    NODE_VERSION = "22"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+  [[plugins.inputs.audits]]
+    path = "/"
 
 ## Redirect doc.theten.ai root to the main docs
 [[redirects]]
