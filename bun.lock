@@ -1,6 +1,5 @@
 {
   "lockfileVersion": 1,
-  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "portal",
@@ -37,13 +36,18 @@
         "@types/react": "^19.2.2",
         "@types/react-dom": "^19.2.2",
         "@types/three": "^0.180.0",
-        "baseline-browser-mapping": "^2.8.32",
+        "baseline-browser-mapping": "^2.9.6",
         "gray-matter": "^4.0.3",
         "next-validate-link": "^1.6.3",
         "postcss": "^8.5.6",
         "tailwindcss": "^4.1.16",
         "tailwindcss-motion": "^1.1.1",
         "typescript": "^5.9.3",
+      },
+      "optionalDependencies": {
+        "@esbuild/linux-x64": "0.25.11",
+        "@tailwindcss/oxide-linux-x64-gnu": "4.1.16",
+        "lightningcss-linux-x64-gnu": "1.30.2",
       },
     },
   },
@@ -396,7 +400,7 @@
 
     "bail": ["bail@2.0.2", "", {}, "sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw=="],
 
-    "baseline-browser-mapping": ["baseline-browser-mapping@2.8.32", "", { "bin": { "baseline-browser-mapping": "dist/cli.js" } }, "sha512-OPz5aBThlyLFgxyhdwf/s2+8ab3OvT7AdTNvKHBwpXomIYeXqpUUuT8LrdtxZSsWJ4R4CU1un4XGh5Ez3nlTpw=="],
+    "baseline-browser-mapping": ["baseline-browser-mapping@2.9.6", "", { "bin": { "baseline-browser-mapping": "dist/cli.js" } }, "sha512-v9BVVpOTLB59C9E7aSnmIF8h7qRsFpx+A2nugVMTszEOMcfjlZMsXRm4LF23I3Z9AJxc8ANpIvzbzONoX9VJlg=="],
 
     "caniuse-lite": ["caniuse-lite@1.0.30001751", "", {}, "sha512-A0QJhug0Ly64Ii3eIqHu5X51ebln3k4yTUkY1j8drqpWHVreg/VLijN48cZ1bYPiqOQuqpkIKnzr/Ul8V+p6Cw=="],
 
