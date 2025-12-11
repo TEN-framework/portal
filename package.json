@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prebuild": "node scripts/postinstall.js",
-    "build": "next build --webpack",
+    "build": "next build",
     "dev": "next dev --webpack",
     "start": "next start",
     "postinstall": "node scripts/postinstall.js",
@@ -46,7 +46,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@types/three": "^0.180.0",
-    "baseline-browser-mapping": "^2.8.32",
+    "baseline-browser-mapping": "^2.9.6",
     "gray-matter": "^4.0.3",
     "next-validate-link": "^1.6.3",
     "postcss": "^8.5.6",
