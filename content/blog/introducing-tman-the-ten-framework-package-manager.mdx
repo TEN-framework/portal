@@ -1,0 +1,355 @@
+---
+title: "Introducing TMAN: The TEN Framework Package Manager"
+description: "Meet TMAN, the command-line tool that simplifies building real-time multimodal AI applications with the TEN Framework"
+author: "Elliot Chen"
+date: 2025-12-10
+articleLabel: feature
+accentWords: TMAN | BREW INSTALL
+---
+
+# Introducing TMAN: The TEN Framework Package Manager
+
+Building real-time multimodal AI applications shouldn't require juggling multiple package managers, complex dependency chains, and fragmented tooling. That's why we created **TMAN** (TEN Manager) — the all-in-one command-line tool that makes developing with the TEN Framework fast, simple, and enjoyable.
+
+Released last week, TMAN brings together project scaffolding, dependency management, visual development, and deployment into a single, powerful CLI tool. Whether you're building a voice assistant, transcription service, or complex multi-agent system, TMAN streamlines your entire workflow.
+
+## What is TMAN?
+
+TMAN is the official package manager and development tool for the TEN Framework. Think of it as npm for Node.js, cargo for Rust, or pip for Python — but specifically designed for building multimodal AI agents.
+
+At its core, TMAN handles:
+
+- **Package Management**: Install and manage 60+ pre-built extensions (ASR, TTS, LLM, tools)
+- **Project Scaffolding**: Create new apps and extensions from battle-tested templates
+- **Dependency Resolution**: Automatically resolve complex dependency trees with version constraints
+- **Visual Development**: Launch an integrated graph designer for building agent workflows
+- **Build & Deploy**: Package and publish your extensions to the TEN registry
+
+## Getting Started in 60 Seconds
+
+Installing TMAN is a breeze. Choose your preferred method:
+
+### macOS (via Homebrew)
+
+```bash
+brew install TEN-framework/ten-framework/tman
+```
+
+### Linux (Ubuntu/Debian)
+
+```bash
+sudo add-apt-repository ppa:ten-framework/ten-framework
+sudo apt update
+sudo apt install tman
+```
+
+### Universal Install Script
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/TEN-framework/ten-framework/main/tools/tman/install_tman.sh)
+```
+
+The install script automatically detects your OS and architecture (x64, ARM64) and downloads the correct binary. Within seconds, you're ready to go.
+
+Verify your installation:
+
+```bash
+tman --version
+```
+
+## Creating Your First AI Agent
+
+Let's build a real-time transcription app in less than 5 minutes:
+
+```bash
+# Create a new app from the transcriber template
+tman create app my-transcriber --template transcriber_demo
+
+# Navigate to your app
+cd my-transcriber
+
+# Install dependencies (extensions, systems, addons)
+tman install
+
+# Install Python/npm dependencies
+tman run install_deps
+
+# Build the application
+tman run build
+
+# Start your AI agent
+tman run start
+```
+
+That's it! You now have a fully functional real-time transcription service running locally. TMAN handled:
+
+- Scaffolding the project structure
+- Resolving and installing extension dependencies
+- Setting up the build environment
+- Launching the application server
+
+## Key Features That Make TMAN Special
+
+### 1. Smart Dependency Resolution
+
+TMAN uses a sophisticated constraint solver to resolve complex dependency graphs. It supports:
+
+- **Semantic versioning**: `tman install extension openai_llm2_python@^1.0.0`
+- **Lock files**: Generates `manifest-lock.json` for reproducible builds
+- **Development vs Production**: Separate dev dependencies with `--production` flag
+- **Local development**: Link local packages with `--local-install-mode link`
+
+```bash
+# Install all dependencies from manifest.json
+tman install
+
+# Install a specific extension
+tman install extension deepgram_asr_python
+
+# Install with version constraint
+tman install extension openai_llm2_python@1.0.0
+
+# Link a local extension for development
+tman install ./my-custom-extension
+```
+
+### 2. Visual Graph Designer
+
+One of TMAN's killer features is the built-in visual designer. Launch it with:
+
+```bash
+tman designer
+```
+
+This opens a web interface at `http://localhost:49483` where you can:
+
+- **Drag-and-drop extensions** to build agent workflows
+- **Configure properties** with a visual editor
+- **Browse the extension marketplace** with 60+ pre-built components
+- **Live preview** your agent graphs
+- **Export configurations** directly to `property.json`
+
+The designer bridges the gap between code and visual development, making it easy for both developers and non-developers to collaborate on AI agent architectures.
+
+### 3. Multi-Language Support
+
+TMAN handles extensions written in multiple languages seamlessly:
+
+- **Python**: For AI/ML libraries and rapid prototyping
+- **Go**: For high-performance, concurrent processing
+- **TypeScript/JavaScript**: For web integrations and Node.js ecosystems
+- **C++**: For low-level performance and custom audio/video processing
+
+Each language has its own addon loader, but TMAN abstracts away the complexity. Install a Python extension alongside a Go extension, and TMAN ensures everything works together.
+
+### 4. Custom Scripts and Automation
+
+Define custom scripts in your `manifest.json`:
+
+```json
+{
+  "scripts": {
+    "start": "python3 start.py",
+    "build": "npm run build && python3 build_extensions.py",
+    "test": "pytest tests/",
+    "deploy": "docker build -t my-agent . && docker push my-agent"
+  }
+}
+```
+
+Then run them with:
+
+```bash
+tman run start
+tman run build
+tman run test -- --verbose  # Pass extra args after --
+```
+
+This standardizes your workflow across different projects and team members.
+
+### 5. Package Publishing
+
+Built a reusable extension? Share it with the community:
+
+```bash
+# Package your extension
+tman package
+# Creates .ten/package/my_extension.tpkg
+
+# Publish to the TEN registry
+tman publish
+```
+
+Your extension becomes available for anyone to install with `tman install`.
+
+## Real-World Use Cases
+
+### Voice Assistant Development
+
+```bash
+# Create a voice assistant with turn detection
+tman create app voice-agent --template voice-assistant-with-turn-detection
+
+cd voice-agent
+tman install
+
+# Launch the designer to customize the pipeline
+tman designer
+
+# Run the agent
+tman run start
+```
+
+### Extension Development Workflow
+
+```bash
+# Create a custom extension
+tman create extension my_sentiment_analyzer --template default_extension_python
+
+cd my_sentiment_analyzer
+
+# Edit your extension code
+# ... implement your logic ...
+
+# Test locally by linking to an app
+cd ../my-app
+tman install ../my_sentiment_analyzer
+
+# Package and publish when ready
+cd ../my_sentiment_analyzer
+tman package
+tman publish
+```
+
+### CI/CD Integration
+
+TMAN works great in automated pipelines:
+
+```dockerfile
+FROM ubuntu:22.04
+
+# Install tman
+RUN curl -fsSL https://github.com/TEN-framework/ten-framework/releases/download/0.11.42/tman-linux-release-x64.zip -o tman.zip \
+    && unzip tman.zip \
+    && cp ten_manager/bin/tman /usr/local/bin/
+
+# Install dependencies
+COPY manifest.json .
+RUN tman install --production
+
+# Build and run
+COPY . .
+RUN tman run build
+CMD ["tman", "run", "start"]
+```
+
+## Under the Hood
+
+TMAN is built with Rust, giving it exceptional performance and reliability. Here's what powers it:
+
+- **clap**: For intuitive command-line parsing
+- **actix-web**: Serves the designer web interface
+- **tokio**: Asynchronous runtime for concurrent operations
+- **semver**: Handles semantic versioning logic
+- **reqwest**: Communicates with the TEN package registry
+
+The result? A blazingly fast CLI that handles complex operations in milliseconds.
+
+## Platform Support
+
+TMAN runs everywhere you need it:
+
+- Linux x64 (Ubuntu, Debian, Fedora, etc.)
+- Linux ARM64 (Raspberry Pi, ARM servers)
+- macOS Intel (x64)
+- macOS Apple Silicon (ARM64)
+- Windows x64
+
+Pre-built binaries are available for all platforms on our [GitHub Releases](https://github.com/TEN-framework/ten-framework/releases).
+
+## Command Reference
+
+Here's a quick reference of the most commonly used commands:
+
+| Command | Description |
+|---------|-------------|
+| `tman --version` | Check version and updates |
+| `tman create <type> <name>` | Create new app/extension from template |
+| `tman install` | Install all dependencies |
+| `tman install <pkg>` | Install specific package |
+| `tman uninstall <pkg>` | Remove a package |
+| `tman designer` | Launch visual graph designer |
+| `tman run <script>` | Execute custom script |
+| `tman package` | Create distributable .tpkg file |
+| `tman publish` | Publish to TEN registry |
+| `tman check env` | Validate environment setup |
+| `tman completion <shell>` | Generate shell completions |
+
+For detailed usage, run:
+
+```bash
+tman --help
+tman <command> --help
+```
+
+## Shell Completion
+
+TMAN supports shell completions for a better CLI experience:
+
+```bash
+# Bash
+tman completion bash > ~/.local/share/bash-completion/completions/tman
+
+# Zsh
+tman completion zsh > /usr/local/share/zsh/site-functions/_tman
+
+# Fish
+tman completion fish > ~/.config/fish/completions/tman.fish
+
+# PowerShell
+tman completion powershell | Out-String | Invoke-Expression
+```
+
+## What's Next?
+
+TMAN is just getting started. Here's what we're working on:
+
+- **Extension templates marketplace**: Browse and use community templates
+- **Improved conflict resolution**: Better error messages when dependencies conflict
+- **Plugin system**: Extend TMAN with custom commands
+- **Performance optimizations**: Even faster dependency resolution
+- **Enhanced designer**: More visual features and integrations
+
+## Get Involved
+
+TMAN is open-source and we'd love your contributions! Here's how to get started:
+
+1. **Try it out**: Install TMAN and build your first AI agent
+2. **Share feedback**: Open issues on [GitHub](https://github.com/TEN-framework/ten-framework/issues)
+3. **Contribute**: Submit PRs for features or bug fixes
+4. **Build extensions**: Create and publish extensions to grow the ecosystem
+
+## Conclusion
+
+TMAN brings professional-grade package management to the TEN Framework, making it easier than ever to build real-time multimodal AI applications. Whether you're prototyping a voice assistant or deploying a production-grade multi-agent system, TMAN handles the complexity so you can focus on building amazing experiences.
+
+Ready to get started? Install TMAN today:
+
+```bash
+# macOS
+brew install TEN-framework/ten-framework/tman
+
+# Linux
+sudo add-apt-repository ppa:ten-framework/ten-framework
+sudo apt install tman
+
+# Universal
+bash <(curl -fsSL https://raw.githubusercontent.com/TEN-framework/ten-framework/main/tools/tman/install_tman.sh)
+```
+
+Join our community:
+- [GitHub](https://github.com/TEN-framework/ten-framework)
+- [Documentation](https://doc.theten.ai)
+- [Discord](https://discord.gg/VnPftUzAMJ)
+
+Happy building! 🚀
