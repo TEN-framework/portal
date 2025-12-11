@@ -2,14 +2,7 @@ import { generate as DefaultImage } from 'fumadocs-ui/og'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { SITE_META } from '@/constants'
-import {
-  type BlogPage,
-  blog,
-  type DocPage,
-  getBlogPageImage,
-  getDocPageImage,
-  source
-} from '@/lib/source'
+import { type BlogPage, blog, type DocPage, source } from '@/lib/source'
 
 export const revalidate = false
 
@@ -43,14 +36,5 @@ export async function GET(
   )
 }
 
-export function generateStaticParams() {
-  const docs = source.getPages().map((page) => ({
-    lang: page.locale,
-    slug: getDocPageImage(page).segments
-  }))
-  const blogs = blog.getPages().map((page) => ({
-    lang: page.locale,
-    slug: getBlogPageImage(page).segments
-  }))
-  return [...docs, ...blogs]
-}
+// Generate OG images on-demand to avoid heavy static pre-rendering
+export const dynamic = 'force-dynamic'
