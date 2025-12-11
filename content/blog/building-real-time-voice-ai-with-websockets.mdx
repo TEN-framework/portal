@@ -37,11 +37,11 @@ The WebSocket implementation follows a clean, modular architecture that separate
 └────────┬────────┘
          │ {"audio": "<base64>"}
          ▼
-┌─────────────────┐  pcm_frame  ┌─────┐  asr_result  ┌──────────────┐
-│ websocket_server├────────────►│ STT ├─────────────►│ main_control │
-└────────┬────────┘              └─────┘              └──────┬───────┘
+┌─────────────────┐  pcm_frame   ┌─────┐  asr_result  ┌───────────────┐
+│ websocket_server├─────────────►│ STT ├─────────────►│ main_control  │
+└────────┬────────┘              └─────┘              └───────┬───────┘
          │                                                    │
-         │ {"type": "audio|data|cmd"}                        │
+         │ {"type": "audio|data|cmd"}                         │
          │                                                    ▼
          │                                                 ┌─────┐
          │                                                 │ LLM │
