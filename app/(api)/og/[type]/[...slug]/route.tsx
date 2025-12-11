@@ -43,14 +43,5 @@ export async function GET(
   )
 }
 
-export function generateStaticParams() {
-  const docs = source.getPages().map((page) => ({
-    lang: page.locale,
-    slug: getDocPageImage(page).segments
-  }))
-  const blogs = blog.getPages().map((page) => ({
-    lang: page.locale,
-    slug: getBlogPageImage(page).segments
-  }))
-  return [...docs, ...blogs]
-}
+// Generate OG images on-demand to avoid heavy static pre-rendering
+export const dynamic = 'force-dynamic'

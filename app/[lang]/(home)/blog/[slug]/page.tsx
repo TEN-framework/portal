@@ -218,9 +218,4 @@ export default async function Page(props: {
   )
 }
 
-export function generateStaticParams(): { slug: string; lang: string }[] {
-  return blog.getPages().map((page) => ({
-    slug: page.slugs[0],
-    lang: page.locale ?? i18n.defaultLanguage
-  }))
-}
+export const revalidate = 300
