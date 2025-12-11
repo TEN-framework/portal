@@ -2,14 +2,7 @@ import { generate as DefaultImage } from 'fumadocs-ui/og'
 import { notFound } from 'next/navigation'
 import { ImageResponse } from 'next/og'
 import { SITE_META } from '@/constants'
-import {
-  type BlogPage,
-  blog,
-  type DocPage,
-  getBlogPageImage,
-  getDocPageImage,
-  source
-} from '@/lib/source'
+import { type BlogPage, blog, type DocPage, source } from '@/lib/source'
 
 export const revalidate = false
 
