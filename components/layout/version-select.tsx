@@ -78,7 +78,7 @@ const TenFrameworkVersionSelectorDynamic = (props: { className?: string }) => {
         <div>{TenFrameworkVersionSelectorTitle || productName}</div>
       )}
       <Select onValueChange={handleVersionChange} value={selectedVersion}>
-        <SelectTrigger className='w-full bg-fd-secondary/50 text-fd-secondary-foreground hover:bg-fd-accent data-[state=open]:bg-fd-accent'>
+        <SelectTrigger className='h-9.5! w-full rounded-lg bg-fd-secondary/50 px-2 text-fd-secondary-foreground shadow-none hover:bg-fd-accent data-[state=open]:bg-fd-accent'>
           <SelectValue placeholder={t('placeholder')} />
         </SelectTrigger>
         <SelectContent className=''>
