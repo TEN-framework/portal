@@ -30,6 +30,9 @@ next-env.d.ts
 # Claude Code
 .claude
 
+.netlify/
+deno.lock
+
 # custom
 .tmp
 /.trae/
