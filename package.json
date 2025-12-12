@@ -11,7 +11,8 @@
     "lint": "biome check --write",
     "lint:links": "bun run scripts/validate-links.ts",
     "check": "bun run lint && bun run lint:links",
-    "scripts:sync-remote-docs": "bun run scripts/sync-remote-docs/index.ts"
+    "scripts:sync-remote-docs": "bun run scripts/sync-remote-docs/index.ts",
+    "netlify": "netlify"
   },
   "dependencies": {
     "@orama/orama": "^3.1.16",
@@ -48,6 +49,7 @@
     "@types/three": "^0.180.0",
     "baseline-browser-mapping": "^2.9.6",
     "gray-matter": "^4.0.3",
+    "netlify-cli": "^23.12.3",
     "next-validate-link": "^1.6.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.16",

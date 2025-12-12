@@ -1,76 +1,76 @@
 name: Netlify Deploy
 
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        # ✅ Only run for PRs targeting main
-        branches:
-            - main
+  push:
+    branches:
+      - main
+  pull_request:
+    # ✅ Only run for PRs targeting main
+    branches:
+      - main
 
 jobs:
-    build-and-deploy:
-        runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: macos-latest
 
-        env:
-            NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-            NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+    env:
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-            - name: Setup Bun
-              uses: oven-sh/setup-bun@v2
-              with:
-                  bun-version: latest
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
 
-            - name: Install dependencies
-              run: bun install --frozen-lockfile
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
-            - name: Build (Next / Fumadocs)
-              run: bun run build
+      - name: Build (Next / Fumadocs)
+        run: bun run build
 
-            - name: Install Netlify CLI
-              run: bun add -g netlify-cli
+      - name: Install Netlify CLI
+        run: bun add -g netlify-cli
 
-            # ========= PR: deploy preview =========
-            - name: Deploy Preview to Netlify
-              # ✅ Only for PRs whose base is main (double guard)
-              if: github.event_name == 'pull_request' && github.base_ref == 'main'
-              id: netlify_preview
-              run: |
-                  OUTPUT=$(netlify deploy \
-                    --auth "$NETLIFY_AUTH_TOKEN" \
-                    --site "$NETLIFY_SITE_ID" \
-                    --dir ".next" \
-                    --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}" \
-                    --draft \
-                    --json)
+      # ========= PR: deploy preview =========
+      - name: Deploy Preview to Netlify
+        # ✅ Only for PRs whose base is main (double guard)
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
+        id: netlify_preview
+        run: |
+          OUTPUT=$(netlify deploy \
+            --auth "$NETLIFY_AUTH_TOKEN" \
+            --site "$NETLIFY_SITE_ID" \
+            --dir ".next" \
+            --message "PR #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}" \
+            --draft \
+            --json)
 
-                  echo "$OUTPUT"
-                  echo "NETLIFY_OUTPUT<<EOF" >> $GITHUB_OUTPUT
-                  echo "$OUTPUT" >> $GITHUB_OUTPUT
-                  echo "EOF" >> $GITHUB_OUTPUT
+          echo "$OUTPUT"
+          echo "NETLIFY_OUTPUT<<EOF" >> $GITHUB_OUTPUT
+          echo "$OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-            - name: Comment Preview URL on PR
-              if: github.event_name == 'pull_request' && github.base_ref == 'main'
-              uses: marocchino/sticky-pull-request-comment@v2
-              with:
-                  header: netlify-preview
-                  message: |
-                      ✅ Netlify Preview deployed successfully.
+      - name: Comment Preview URL on PR
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: netlify-preview
+          message: |
+            ✅ Netlify Preview deployed successfully.
 
-                      Preview URL: ${{ fromJson(steps.netlify_preview.outputs.NETLIFY_OUTPUT).deploy_url }}
+            Preview URL: ${{ fromJson(steps.netlify_preview.outputs.NETLIFY_OUTPUT).deploy_url }}
 
-            # ========= main: deploy production =========
-            - name: Deploy Production to Netlify
-              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-              run: |
-                  netlify deploy \
-                    --auth "$NETLIFY_AUTH_TOKEN" \
-                    --site "$NETLIFY_SITE_ID" \
-                    --dir ".next" \
-                    --message "Production deploy - ${{ github.sha }}" \
-                    --prod
+      # ========= main: deploy production =========
+      - name: Deploy Production to Netlify
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          netlify deploy \
+            --auth "$NETLIFY_AUTH_TOKEN" \
+            --site "$NETLIFY_SITE_ID" \
+            --dir ".next" \
+            --message "Production deploy - ${{ github.sha }}" \
+            --prod

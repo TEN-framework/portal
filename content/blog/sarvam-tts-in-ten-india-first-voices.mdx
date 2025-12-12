@@ -1,0 +1,118 @@
+---
+title: "Sarvam TTS in TEN: India-first voices in minutes"
+description: "Plug Sarvam's low-latency Bulbul voices into TEN with the bundled HTTP TTS extension."
+author: "Elliot Chen"
+date: 2025-12-11
+articleLabel: TTS
+accentWords: Sarvam TTS | Bulbul | India-first
+tags:
+  - tts
+  - sarvam
+  - voice
+  - india
+  - ten
+---
+
+Sarvam just shipped an India-native text-to-speech experience: **11 Indian languages
+with authentic accents**, a **low-latency API built for real-time calls**, and
+pronunciation tuned for real-world, domain-heavy content (all straight from
+their [official TTS page](https://www.sarvam.ai/apis/text-to-speech)). New
+sign-ups even get **₹1000 in free credits** to try it.
+
+Good news: TEN already includes a drop-in Sarvam HTTP TTS extension at
+`ai_agents/agents/ten_packages/extension/sarvam_http_tts`. You can wire it into
+any TEN agent in a couple of minutes.
+
+## Why Sarvam + TEN
+
+- India-first voices: one memorable voice across 11 Indian languages with
+  authentic accents.
+- Real-time ready: low-latency API for live assistants and IVRs.
+- Domain-aware: trained on real-world Indian data to handle names, abbreviations,
+  and numerics cleanly.
+- Friendly onboarding: free ₹1000 credits, with custom pricing once you scale.
+
+## What ships in TEN
+
+- **Extension**: `ai_agents/agents/ten_packages/extension/sarvam_http_tts`
+  (manifest + tests).
+- **Voices & controls**: BCP-47 language codes, speakers (`anushka`, `manisha`,
+  `vidya`, `arya`, `abhilash`, `karun`, `hitesh`), `pitch`, `pace`, `loudness`,
+  and `speech_sample_rate` (8000/16000/22050/24000).
+- **Model**: Bulbul (`model: "bulbul:v2"`) with base64 WAV decoding to PCM,
+  built-in retries, optional dumping for debugging.
+
+## Quick start
+
+### 1) Point your app at the extension
+
+Add the Sarvam extension path to your TEN manifest (pattern used in
+`ai_agents/agents/examples/voice-assistant/tenapp/manifest.json`):
+
+```json
+{
+  "extensions": [
+    { "path": "../../../ten_packages/extension/sarvam_http_tts" }
+  ]
+}
+```
+
+### 2) Configure TTS in your app property
+
+Swap your TTS block to Sarvam (or add a new one) and set your API key
+(`SARVAM_TTS_KEY`):
+
+```json
+{
+  "type": "extension",
+  "name": "tts",
+  "addon": "sarvam_http_tts",
+  "extension_group": "tts",
+  "property": {
+    "dump": false,
+    "dump_path": "./",
+    "params": {
+      "api_subscription_key": "${env:SARVAM_TTS_KEY}",
+      "target_language_code": "en-IN",
+      "speaker": "anushka",
+      "model": "bulbul:v2",
+      "pitch": 0.0,
+      "pace": 1.0,
+      "loudness": 1.0,
+      "speech_sample_rate": 22050,
+      "enable_preprocessing": false
+    }
+  }
+}
+```
+
+Other knobs you can set: `output_audio_codec`, `endpoint` (defaults to
+`https://api.sarvam.ai/text-to-speech`), and `enable_preprocessing` to normalize
+English words/numbers before synthesis.
+
+### 3) Run your agent
+
+Restart your TEN agent (or the sample voice assistant) and the TTS interface
+will stream Sarvam audio back to your transport. If you want debug dumps, set
+`dump: true` and inspect the PCM at `dump_path`.
+
+## Tips for great output
+
+- Use BCP-47 language codes (`hi-IN`, `bn-IN`, `en-IN`, etc.) to match Sarvam's
+  language routing.
+- Keep inputs under ~1500 characters and add commas in long numbers for clean
+  pronunciation (`10,000` instead of `10000`).
+- Tune `pitch`, `pace`, and `loudness` per voice; Bulbul responds naturally to
+  moderate adjustments.
+- For domain-heavy text, set `enable_preprocessing: true` and supply
+  domain-specific terms directly—Sarvam is trained to keep them intact.
+
+## Where to learn more
+
+- Sarvam TTS docs: https://docs.sarvam.ai/api-reference-docs/text-to-speech-rest/convert
+- TEN extension source: `ai_agents/agents/ten_packages/extension/sarvam_http_tts`
+- Example manifest wiring: `ai_agents/agents/examples/voice-assistant/tenapp/manifest.json`
+
+India-first voices with low latency and a generous trial: a perfect fit for TEN
+agents that need to sound local, fast, and trustworthy. Give Sarvam a spin and
+ship a truly multilingual voice experience today.
