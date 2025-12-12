@@ -138,6 +138,8 @@ jobs:
           bun i
           # run scripts
           bun run scripts:sync-remote-docs --new-version ${{ github.event.inputs.target_tag }} --diff-json ${{ github.workspace }}/portal/.tmp/diff.json --prev-repo ${{ github.workspace }}/ten_framework/${{ steps.previous_docs_version.outputs.latest }} --latest-repo ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }} --doc-config ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }}/docs/_portal_config.json
+          # bun lint
+          bun run lint
           # git status
           git status
           # git add all files under content/docs/ten_framework
