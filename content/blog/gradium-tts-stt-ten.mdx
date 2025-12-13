@@ -1,0 +1,131 @@
+---
+title: "Real-time voice with Gradium TTS & STT in TEN"
+description: "How TEN now pairs Gradium's low-latency speech-to-text and ultrarealistic text-to-speech for fast, human-sounding voice experiences."
+author: Elliot Chen
+date: 2025-12-16
+featuredLabel: Example
+articleLabel: STT & TTS
+accentWords: Gradium STT | Gradium TTS
+---
+
+# Real-time voice with Gradium TTS & STT in TEN
+
+We just shipped two new voice integrations for TEN: **Gradium speech-to-text (STT/ASR)** and **Gradium text-to-speech (TTS)**. They unlock low-latency, ultrarealistic audio for assistants, copilots, and any product that needs to sound human while responding in real time. Explore Gradium at [gradium.ai](https://gradium.ai/).
+
+## TL;DR
+- Gradium STT streams transcriptions over WebSockets with interim and final results, plus VAD support to keep latency low.
+- Gradium TTS generates lifelike PCM audio (48 kHz by default) and streams it back instantly for smooth turn-taking.
+- Both ship as TEN extensions (`gradium_asr_python` and `gradium_tts_python`) with simple JSON config and region-aware endpoints (US/EU).
+- Designed for real-time loops: microphone -> Gradium STT -> reasoning -> Gradium TTS -> speaker, all under one TEN app graph.
+
+## Why Gradium voice inside TEN
+TEN already handles streaming I/O, session state, and routing between extensions. Gradium fits perfectly into that pipeline: its WebSocket APIs keep round trips tight, while the voice quality feels natural enough for production-grade customer experiences. Combining the two lets you prototype and ship responsive voice agents without gluing together separate services.
+
+## What we shipped
+
+### Gradium STT (ASR)
+- WebSocket streaming for real-time transcription with interim and final results.
+- Multi-region endpoints (`wss://us.api.gradium.ai/api/speech/asr`, `wss://eu.api.gradium.ai/api/speech/asr`).
+- VAD-aware flow so you can trim silence and speed up responses.
+- Flexible inputs: PCM, WAV, or Opus with 16-bit mono audio (24 kHz recommended).
+
+### Gradium TTS
+- Streaming TTS that emits 16-bit PCM audio at 48 kHz by default, with options for 16 kHz and 24 kHz PCM.
+- Works with any Gradium voice ID and model name; keep the style consistent across product surfaces.
+- Region-aware WebSocket endpoint (`wss://<region>.api.gradium.ai/api/speech/tts`) plus simple `GRADIUM_API_KEY` auth.
+
+## Quick start: wire both into a TEN app
+
+1) Set your API key:
+
+```bash
+export GRADIUM_API_KEY=your_gradium_key
+```
+
+2) Add Gradium STT and TTS nodes to your TEN graph (simplified example):
+
+```json
+{
+  "nodes": [
+    {
+      "type": "extension",
+      "name": "gradium_asr",
+      "addon": "gradium_asr_python",
+      "extension_group": "gradium_asr_group",
+      "property": {
+        "params": {
+          "api_key": "${env:GRADIUM_API_KEY|}",
+          "region": "us",
+          "model_name": "default",
+          "input_format": "pcm",
+          "sample_rate": 24000
+        }
+      }
+    },
+    {
+      "type": "extension",
+      "name": "gradium_tts",
+      "addon": "gradium_tts_python",
+      "extension_group": "gradium_tts_group",
+      "property": {
+        "params": {
+          "api_key": "${env:GRADIUM_API_KEY}",
+          "region": "us",
+          "model_name": "default",
+          "voice_id": "YOUR_GRADIUM_VOICE_ID",
+          "output_format": "pcm"
+        }
+      }
+    }
+  ],
+  "connections": [
+    {
+      "extension_group": "microphone_group",
+      "extension": "microphone",
+      "audio_frame_out": [
+        {
+          "name": "pcm_frame",
+          "dest": [
+            {
+              "extension_group": "gradium_asr_group",
+              "extension": "gradium_asr"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "extension_group": "llm_router_group",
+      "extension": "llm_router",
+      "text_out": [
+        {
+          "name": "reply_text",
+          "dest": [
+            {
+              "extension_group": "gradium_tts_group",
+              "extension": "gradium_tts"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+3) Start your TEN app and you have a full duplex loop: mic -> Gradium STT -> LLM/tooling -> Gradium TTS -> speakers.
+
+## Optimization tips for low latency
+- **Match sample rates**: keep STT input at 24 kHz mono PCM and TTS output at 48 kHz PCM for fidelity; downsample only once at the edge.
+- **Use VAD**: let Gradium STT handle silence trimming to shorten end-of-utterance delays.
+- **Cache voices**: pick a single Gradium `voice_id` per session to avoid extra lookups.
+- **Stay regional**: choose the closest Gradium region (US/EU) for lower round-trip time.
+- **Stream small chunks**: send ~80 ms PCM chunks (1,920 samples at 24 kHz) to keep transcripts flowing smoothly.
+
+## Where to use it
+- Customer support and sales agents that need natural prosody and tight response loops.
+- Real-time copilots in productivity or creative tools where hands-free operation matters.
+- Multilingual kiosks, IVRs, and embedded devices that rely on reliable ASR plus high-quality playback.
+
+## Ready to try?
+Gradium voice is live in TEN today. Grab an API key from [gradium.ai](https://gradium.ai/), drop your config into `property.json`, and ship a voice experience that sounds human and responds fast. If you build something cool with Gradium TTS or STT, let us know; we'd love to feature it next.
