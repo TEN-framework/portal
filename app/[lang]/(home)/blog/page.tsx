@@ -19,11 +19,16 @@ export default async function BlogHomePage(props: {
   const locale = await params.lang
 
   const posts = blog.getPages(locale || i18n.defaultLanguage)
+  const now = new Date()
+  const publishedPosts = posts.filter((post) => {
+    const date = new Date((post.data as BlogFrontmatterMeta).date ?? 0)
+    return date.getTime() <= now.getTime()
+  })
 
   const t = await getTranslations({ locale, namespace: 'blog' })
   const formatter = await getFormatter({ locale })
 
-  const sortedPosts = [...posts].sort((a, b) => {
+  const sortedPosts = [...publishedPosts].sort((a, b) => {
     const dateA = new Date((a.data as BlogFrontmatterMeta).date ?? 0)
     const dateB = new Date((b.data as BlogFrontmatterMeta).date ?? 0)
     return dateB.getTime() - dateA.getTime()
