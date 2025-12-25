@@ -1,0 +1,205 @@
+---
+title: "Microsoft VibeVoice in TEN Framework: Extension Implementation and Outcomes"
+date: "2025-12-25"
+description: "A deep dive into the VibeVoice realtime TTS websocket extension in TEN Framework, including architecture, configuration, flow, and expected results."
+author: "Elliot Chen"
+---
+
+# Microsoft VibeVoice in TEN Framework: Extension Implementation and Outcomes
+
+This post walks through the **VibeVoice TTS websocket extension** in the TEN Framework, focusing on how it is implemented, how it integrates into the TEN graph, and what outcomes you can expect when running it. The extension targets the VibeVoice-Realtime demo server (`microsoft/VibeVoice-Realtime-0.5B`) and streams PCM audio back into TEN in real time.
+
+## What the extension is
+
+The implementation lives at:
+- `ai_agents/agents/ten_packages/extension/vibevoice_tts_websocket_python/`
+
+It exposes a TTS extension that connects to a **websocket-based VibeVoice realtime server** and streams audio frames to TEN as they arrive.
+
+Key files:
+- `manifest.json`: declares the extension, API interface, and schema
+- `extension.py`: runtime logic for websocket streaming and TTS events
+- `config.py`: config parsing and parameter handling
+- `addon.py`: registers the extension with TEN runtime
+- `README.md`: quick start and configuration notes
+
+## Architecture at a glance
+
+The extension implements `AsyncTTS2BaseExtension` and follows the standard TEN flow:
+1. TEN sends incremental text input (`TTSTextInput`).
+2. The extension buffers text until `text_input_end = true`.
+3. It builds a websocket URL with query parameters (`text`, `cfg`, `steps`, `voice`).
+4. It opens a websocket stream to VibeVoice.
+5. Binary frames (PCM16) are forwarded to TEN as audio chunks.
+6. It emits TTS lifecycle events and metrics (TTFB, duration, usage).
+
+## Extension registration
+
+`addon.py` registers the extension name:
+
+```python
+@register_addon_as_extension("vibevoice_tts_websocket_python")
+class VibeVoiceTTSWebsocketExtensionAddon(Addon):
+    def on_create_instance(self, ten_env: TenEnv, name: str, context) -> None:
+        from .extension import VibeVoiceTTSWebsocketExtension
+        ten_env.on_create_instance_done(VibeVoiceTTSWebsocketExtension(name), context)
+```
+
+This is the name you reference in your graph config.
+
+## Configuration model
+
+`config.py` provides typed configuration with defaults:
+
+- `url`: websocket endpoint (`ws://127.0.0.1:3000/stream` by default)
+- `cfg_scale`: classifier-free guidance scale (default `1.5`)
+- `steps`: optional inference steps
+- `voice`: optional voice preset key
+- `sample_rate`: expected sample rate (default `24000`)
+- `channels`: expected channels (default `1`)
+- `sample_width`: bytes per sample (default `2` for PCM16)
+- `dump`: optional PCM dump to disk
+- `dump_path`: directory for PCM dump files
+
+The `update_params()` method pulls known fields out of `params` and removes them so they are not forwarded as vendor params later. This keeps the config consistent and avoids duplicate values.
+
+## Manifest schema
+
+The `manifest.json` exposes the extension as a TEN TTS interface and describes the configurable properties:
+
+```json
+"params": {
+  "type": "object",
+  "properties": {
+    "url": {"type": "string"},
+    "cfg_scale": {"type": "float64"},
+    "steps": {"type": "int64"},
+    "voice": {"type": "string"},
+    "sample_rate": {"type": "int64"},
+    "channels": {"type": "int64"},
+    "sample_width": {"type": "int64"}
+  }
+}
+```
+
+This schema drives runtime validation and UI forms in TEN tooling.
+
+## Runtime flow in `extension.py`
+
+### Initialization
+
+On init, the extension:
+- Loads config from `property.json`
+- Parses JSON into `VibeVoiceTTSConfig`
+- Calls `update_params()` to normalize the config
+- Logs the config for tracing
+
+### Request buffering and dispatch
+
+The request flow buffers text until the full input arrives:
+
+```python
+buffer = self._text_buffers.setdefault(t.request_id, [])
+if t.text:
+    buffer.append(t.text)
+
+if not t.text_input_end:
+    return
+
+text = "".join(buffer)
+```
+
+Only once `text_input_end` is true will it open the websocket and begin streaming. This matches the VibeVoice server expectation: **full text is passed in the websocket URL query**.
+
+### Websocket connection and stream handling
+
+The websocket URL includes runtime parameters:
+
+```python
+query["text"] = text
+query["cfg"] = str(self.config.cfg_scale)
+query["steps"] = str(self.config.steps) if self.config.steps is not None else None
+query["voice"] = self.config.voice if self.config.voice else None
+```
+
+The extension then connects via `websockets.connect(...)` and processes incoming frames:
+
+- **Binary frames**: treated as PCM audio chunks and forwarded via `send_tts_audio_data`
+- **JSON frames**: parsed for `backend_busy` or `generation_error`
+
+On the first audio chunk, it emits:
+- `send_tts_audio_start()`
+- `send_tts_ttfb_metrics()`
+
+### End-of-request handling
+
+On completion or error:
+- Computes total audio duration from byte count
+- Sends `send_tts_audio_end()` with reason (`REQUEST_END` or `ERROR`)
+- Sends usage metrics
+
+The extension also supports cancellation via `cancel_tts()`, which closes the websocket and emits an interrupted end event.
+
+## Integration in a TEN graph
+
+From `README.md`, here is the TTS node definition:
+
+```json
+{
+  "type": "extension",
+  "name": "tts",
+  "addon": "vibevoice_tts_websocket_python",
+  "extension_group": "tts",
+  "property": {
+    "dump": false,
+    "dump_path": "./",
+    "params": {
+      "url": "ws://127.0.0.1:3000/stream",
+      "cfg_scale": 1.5,
+      "steps": 5,
+      "voice": "",
+      "sample_rate": 24000,
+      "channels": 1,
+      "sample_width": 2
+    }
+  }
+}
+```
+
+You also need to add the extension dependency in the app manifest:
+
+```
+../../../ten_packages/extension/vibevoice_tts_websocket_python
+```
+
+## Expected outcomes
+
+When running the extension with the VibeVoice realtime server:
+
+- **Streaming audio**: PCM16 chunks stream into TEN as the model generates speech.
+- **Consistent sample format**: audio is 24kHz, mono, 16-bit PCM by default.
+- **TTFB metrics**: first-byte latency is reported, useful for performance profiling.
+- **Error propagation**: backend busy or generation errors are converted into TEN TTS error events.
+- **Optional PCM dump**: enable `dump` to inspect raw audio per request.
+
+## Practical considerations
+
+- **Text buffering**: the extension waits for `text_input_end`, so upstream components must finalize input.
+- **URL query size**: the full text is sent as a query parameter; very long input may hit URL length limits.
+- **Server availability**: the extension depends on a running VibeVoice realtime server and will emit non-fatal errors if it is unavailable.
+- **Sample rate alignment**: if your downstream pipeline expects a different sample rate, add a resampler elsewhere in your graph.
+
+## Quick start recap
+
+1. Start the VibeVoice realtime server:
+
+```bash
+python demo/vibevoice_realtime_demo.py --model_path microsoft/VibeVoice-Realtime-0.5B --port 3000
+```
+
+2. Add the extension to your TEN app manifest and graph.
+3. Run your TEN app and verify streaming audio output.
+
+## Closing thoughts
+
+This extension is a clean example of how TEN's TTS interface can wrap a websocket-based streaming model. The implementation focuses on **simple configuration**, **robust streaming**, and **first-byte latency metrics**, making it a strong fit for realtime demos and voice agents that need low-latency synthesis.
