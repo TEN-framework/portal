@@ -1,5 +1,6 @@
 ---
 title: Complete Guide to TEN Extension Development
+_portal_target: development/how_to_develop_with_ext.md
 ---
 
 TEN Framework provides rich extension templates to help developers quickly create extensions and complete the entire process from development to testing. This guide will demonstrate in detail how to use C++, Go, Python, and Node.js for the complete extension development workflow through practical operations.
@@ -20,7 +21,7 @@ Under normal circumstances, you should see version information output similar to
 TEN Framework version: <version>
 ```
 
-> **Important Note**: Please ensure you are using `tman` version >= 0.10.12. If your version is too low, please go to [GitHub Releases](https://github.com/TEN-framework/ten-framework/releases) to download the latest version.
+> **Important Note**: Please ensure you are using `tman` version >= 0.10.12. If your version is too low, please refer to the [Quick Start Guide](https://theten.ai/docs/ten_framework/getting-started/quick-start) to install the latest version.
 
 ### Development Workflow Overview
 
@@ -79,7 +80,7 @@ tgn --version
 0.1.0
 ```
 
-If the command cannot be executed, please check whether the TEN Framework development environment is correctly installed.
+If the command cannot be executed, please refer to the [Quick Start Guide](https://theten.ai/docs/ten_framework/getting-started/quick-start) to check whether the TEN Framework development environment is correctly installed.
 
 ### Dependency Package Installation
 
