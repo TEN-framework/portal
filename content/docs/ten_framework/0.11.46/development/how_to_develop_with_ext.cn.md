@@ -1,8 +1,9 @@
 ---
 title: TEN 扩展开发完整指南
+_portal_target: development/how_to_develop_with_ext.cn.md
 ---
 
-TEN Framework 提供了丰富的扩展模板，帮助开发者快速创建扩展并完成从开发到测试的完整流程。本指南将通过实际操作演示，详细介绍如何使用 C++，Go 和 Python 三种语言进行扩展开发的全流程。
+TEN Framework 提供了丰富的扩展模板，帮助开发者快速创建扩展并完成从开发到测试的完整流程。本指南将通过实际操作演示，详细介绍如何使用 C++，Go，Python，Node.js 四种语言进行扩展开发的全流程。
 
 ## 开发前准备
 
@@ -20,7 +21,7 @@ tman --version
 TEN Framework version: <version>
 ```
 
-> **重要提示**：请确保您使用的 `tman` 版本 >= 0.10.12，如果版本过低，请前往 [GitHub Releases](https://github.com/TEN-framework/ten-framework/releases) 下载最新版本。
+> **重要提示**：请确保您使用的 `tman` 版本 >= 0.10.12，如果版本过低，请参考 [快速入门指南](https://theten.ai/cn/docs/ten_framework/getting-started/quick-start) 安装最新版本。
 
 ### 开发流程概览
 
@@ -79,7 +80,7 @@ tgn --version
 0.1.0
 ```
 
-如果命令无法执行，请检查 TEN Framework 开发环境是否正确安装。
+如果命令无法执行，请参考 [快速入门指南](https://theten.ai/cn/docs/ten_framework/getting-started/quick-start) 检查 TEN Framework 开发环境是否正确安装。
 
 ### 依赖包安装
 
