@@ -26,7 +26,15 @@
     "readMore": "阅读更多",
     "backToBlog": "返回博客",
     "writtenBy": "作者",
-    "publishedOn": "发布于"
+    "publishedOn": "发布于",
+    "categories": {
+      "all": "全部",
+      "releases": "发布",
+      "tutorials": "教程",
+      "community": "社区",
+      "events": "活动"
+    },
+    "noPostsInCategory": "该分类暂无文章。"
   },
   "homePage": {
     "titlePrefix": "构建",
