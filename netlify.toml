@@ -22,6 +22,19 @@
   status = 200
   force = true
 
+## QC for article content
+[[redirects]]
+  from = "/article"
+  to = "https://aaovlaipwgpttqi.myquickcreator.com/article"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/article/*"
+  to = "https://aaovlaipwgpttqi.myquickcreator.com/article/:splat"
+  status = 200
+  force = true
+
 ## Redirect doc.theten.ai root to the main docs
 [[redirects]]
   from = "http://doc.theten.ai/"
