@@ -1,4 +1,9 @@
 {
+  "cookieConsent": {
+    "message": "We use cookies and analytics to improve your experience.",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
   "nav": {
     "docs": "Documentation",
     "blog": "Blog",

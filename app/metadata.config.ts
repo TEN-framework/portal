@@ -18,6 +18,8 @@ export const KEYWORDS = [
 export const SOCIAL_HANDLES = {
   twitter: '@TenFramework'
 }
+export const GOOGLE_SITE_VERIFICATION =
+  '3kMPjbUWbU3SEjEdvASRTx2-wpK85ISyZ_qAj6kEc_A'
 
 interface GenerateMetadataProps {
   title?: string
@@ -52,6 +54,9 @@ export function generateSiteMetadata({
       title,
       description,
       creator: SOCIAL_HANDLES.twitter
+    },
+    verification: {
+      google: GOOGLE_SITE_VERIFICATION
     },
     robots: {
       index: true,
