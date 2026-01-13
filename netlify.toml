@@ -19,6 +19,8 @@
 [[redirects]]
   from = "/blog/*"
   to = "https://aaalcgvofqftgw7p.myquickcreator.com/:splat" 
+  status = 200
+  force = true
 
 ## Redirect doc.theten.ai root to the main docs
 [[redirects]]
