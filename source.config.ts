@@ -61,7 +61,8 @@ const blogFrontmatterSchema = frontmatterSchema.extend({
   accentColor: z.string().optional(),
   accentWords: z.union([z.string(), z.array(z.string())]).optional(),
   featuredLabel: z.string().optional(),
-  articleLabel: z.string().optional()
+  articleLabel: z.string().optional(),
+  category: z.enum(['releases', 'tutorials', 'community', 'events']).optional()
 })
 
 export const blogPosts = defineCollections({

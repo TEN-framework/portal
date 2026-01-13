@@ -2,8 +2,10 @@ import NextLink from 'next/link'
 import { getFormatter, getTranslations } from 'next-intl/server'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { type BlogCategory, blogCategories } from '@/lib/blog-categories'
 import { i18n } from '@/lib/i18n'
 import { blog } from '@/lib/source'
+import { CategoryTabs } from './components/category-tabs'
 import {
   AuthorBadge,
   accentPalette,
@@ -14,9 +16,17 @@ import {
 
 export default async function BlogHomePage(props: {
   params: Promise<{ lang: string }>
+  searchParams: Promise<{ category?: string }>
 }) {
   const params = await props.params
+  const searchParams = await props.searchParams
   const locale = await params.lang
+
+  const categoryParam = searchParams.category
+  const activeCategory: BlogCategory | 'all' =
+    categoryParam && blogCategories.includes(categoryParam as BlogCategory)
+      ? (categoryParam as BlogCategory)
+      : 'all'
 
   const posts = blog.getPages(locale || i18n.defaultLanguage)
   const now = new Date()
@@ -34,12 +44,19 @@ export default async function BlogHomePage(props: {
     return dateB.getTime() - dateA.getTime()
   })
 
-  const featuredPost =
-    sortedPosts.find(
-      (p) => (p.data as BlogFrontmatterMeta).featured === true
-    ) ?? sortedPosts[0]
+  const filteredPosts =
+    activeCategory === 'all'
+      ? sortedPosts
+      : sortedPosts.filter(
+          (p) => (p.data as BlogFrontmatterMeta).category === activeCategory
+        )
 
-  const standardPosts = sortedPosts.filter((p) => p !== featuredPost)
+  const featuredPost =
+    filteredPosts.find(
+      (p) => (p.data as BlogFrontmatterMeta).featured === true
+    ) ?? filteredPosts[0]
+
+  const standardPosts = filteredPosts.filter((p) => p !== featuredPost)
 
   const isChinese = locale === 'cn'
   const badgeText = isChinese ? '博客' : 'Blog'
@@ -84,8 +101,25 @@ export default async function BlogHomePage(props: {
           <p className='mb-8 text-muted-foreground md:text-base lg:text-lg'>
             {t('discoverLatestArticles')}
           </p>
-          {/* Removed the view-all link button per request */}
         </div>
+
+        <CategoryTabs
+          activeCategory={activeCategory}
+          locale={locale}
+          translations={{
+            all: t('categories.all'),
+            releases: t('categories.releases'),
+            tutorials: t('categories.tutorials'),
+            community: t('categories.community'),
+            events: t('categories.events')
+          }}
+        />
+
+        {filteredPosts.length === 0 ? (
+          <p className='text-center text-muted-foreground'>
+            {t('noPostsInCategory')}
+          </p>
+        ) : null}
 
         {featuredPost &&
           (() => {

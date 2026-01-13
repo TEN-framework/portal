@@ -181,6 +181,7 @@ export type BlogFrontmatterMeta = {
   accentWords?: string | string[]
   featuredLabel?: string
   articleLabel?: string
+  category?: 'releases' | 'tutorials' | 'community' | 'events'
 }
 
 type CoverArtworkProps = {
