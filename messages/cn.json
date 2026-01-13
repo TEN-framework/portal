@@ -1,4 +1,9 @@
 {
+  "cookieConsent": {
+    "message": "我们使用 Cookie 和分析工具来改善您的体验。",
+    "accept": "接受",
+    "decline": "拒绝"
+  },
   "nav": {
     "docs": "文档",
     "blog": "博客",

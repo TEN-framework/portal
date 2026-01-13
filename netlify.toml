@@ -15,6 +15,11 @@
   [[plugins.inputs.audits]]
     path = "/"
 
+## QC for blog content
+[[redirects]]
+  from = "/blog/*"
+  to = "https://aaalcgvofqftgw7p.myquickcreator.com/:splat" 
+
 ## Redirect doc.theten.ai root to the main docs
 [[redirects]]
   from = "http://doc.theten.ai/"
