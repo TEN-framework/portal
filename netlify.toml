@@ -15,23 +15,16 @@
   [[plugins.inputs.audits]]
     path = "/"
 
-## QC for blog content
-[[redirects]]
-  from = "/blog/*"
-  to = "https://aaalcgvofqftgw7p.myquickcreator.com/:splat" 
-  status = 200
-  force = true
-
 ## QC for article content
 [[redirects]]
   from = "/article"
-  to = "https://aaovlaipwgpttqi.myquickcreator.com/article"
+  to = "https://aaam5byplvnk2vai.myquickcreator.com/article"
   status = 200
   force = true
 
 [[redirects]]
   from = "/article/*"
-  to = "https://aaovlaipwgpttqi.myquickcreator.com/article/:splat"
+  to = "https://aaam5byplvnk2vai.myquickcreator.com/article/:splat"
   status = 200
   force = true
 
