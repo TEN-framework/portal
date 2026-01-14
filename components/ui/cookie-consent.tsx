@@ -66,7 +66,7 @@ export function CookieConsent({
       role='alert'
       aria-live='polite'
       className={cn(
-        'fixed bottom-20 right-4 z-50 max-w-xs md:bottom-24 md:right-6',
+        'fixed bottom-8 right-4 z-50 max-w-xs md:bottom-10 md:right-6',
         className
       )}
     >
