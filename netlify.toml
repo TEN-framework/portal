@@ -15,18 +15,22 @@
   [[plugins.inputs.audits]]
     path = "/"
 
-## QC for article content
-[[redirects]]
-  from = "/article"
-  to = "https://aaam5byplvnk2vai.myquickcreator.com/article"
-  status = 200
-  force = true
+## QC article proxy (Edge)
+[[edge_functions]]
+  path = "/article"
+  function = "proxy-article"
 
-[[redirects]]
-  from = "/article/*"
-  to = "https://aaam5byplvnk2vai.myquickcreator.com/article/:splat"
-  status = 200
-  force = true
+[[edge_functions]]
+  path = "/article/*"
+  function = "proxy-article"
+
+[[edge_functions]]
+  path = "/assets/*"
+  function = "proxy-article"
+
+[[edge_functions]]
+  path = "/category/*"
+  function = "proxy-article"
 
 ## Redirect doc.theten.ai root to the main docs
 [[redirects]]
