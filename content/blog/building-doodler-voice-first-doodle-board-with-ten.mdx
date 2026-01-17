@@ -1,0 +1,80 @@
+---
+title: "Building Doodler: A voice-first doodle board with TEN"
+description: "A behind-the-scenes look at Doodler, the TEN agent gallery demo that turns voice prompts into playful hand-drawn sketches in real time."
+author: Elliot Chen
+date: 2026-01-17
+articleLabel: Behind the Scenes
+accentWords: Doodler | Voice-First | Real-Time
+category: tutorials
+---
+
+# Building Doodler: A voice-first doodle board with TEN
+
+Doodler is a playful example in the TEN agent gallery: speak or type a prompt, and the agent turns it into a hand-drawn sketch on a toy-like drawing board. We built it to feel like a real creative toy while still showing off the full real-time pipeline (RTC, ASR, LLM, image tool, and TTS) in a single, teachable example.
+
+Below is a behind-the-scenes walk-through of what made the project challenging, what we layered in for UX and developer experience, how the agent talks to users, and how the visual design of the doodle board came together.
+
+## The difficult parts
+
+### 1) Keeping the real-time pipeline in sync
+The project lives at the intersection of streaming audio, streaming text, and image generation. We had to keep the system responsive while the agent is speaking or drawing.
+
+- The `main_control` extension interrupts ongoing LLM/TTS work as soon as new user speech arrives, then flushes audio and input queues (`_interrupt` in `main_python/extension.py`).
+- The agent queues ASR results and LLM responses separately so text appears in order even when the model streams tokens (`Agent` + `LLMExec`).
+- We had to guard against partial transcripts spamming the UI; the transcript panel shows partials with a subtle style, and final messages lock in the draw request.
+
+### 2) Forcing a consistent doodle style
+Image models are very good at being too good. To keep everything in a crayon style, we tightened the prompt from two places:
+
+- The system prompt in `tenapp/property.json` instructs the agent to request simple line art on white paper and to avoid shading, gradients, or realism.
+- The UI also adds a style suffix in `ImmersiveShell.buildDoodlePrompt` so the selected crayon color flows into the actual prompt.
+
+### 3) Making the board feel alive without distracting
+We wanted the board to feel like a real toy rather than a static image viewer. This meant coordinating a lot of subtle motion without making the UI noisy.
+
+- The draw reveal uses a mask, animated strokes, and a stylus animation so the image appears to be sketched in (`BoardStage.DoodleRevealImage`).
+- A simple phase state machine (`queued` → `sketch` → `color` → `complete`) drives the board animations and the “Sketching your doodle…” placeholder.
+- Reduced motion support is honored so the board falls back to a still view if the user prefers less animation.
+
+## UX and developer experience features we added
+
+### UX highlights
+- **Crayon palette with real color control**: the swatches drive both the pen art and the prompt so what you pick is what you get.
+- **Live microphone meter + device selector**: Doodler shows per-band levels and lets you switch mics on the fly.
+- **Transcript panel with partials**: users can follow along with live recognition and agent replies, and also type a prompt directly.
+- **Connection feedback**: toasts confirm connection success/failure and explain if messaging is disabled.
+- **Gentle “sketching” placeholder**: while an image is generating, the board swaps in a friendly progress state.
+
+### DX highlights
+- **Graph-first wiring** in `tenapp/property.json` makes the entire pipeline readable and easy to swap out.
+- **Event-driven agent**: `Agent` and `LLMExec` provide a clean queue-based pattern for ASR, LLM streaming, and tool calls.
+- **Simple configuration**: `.env.example` and Taskfile commands keep setup fast.
+- **Isolated UI components**: the board stage, transcript, and controls are modular so you can iterate without touching the core pipeline.
+
+## How the agent interacts with users
+
+Doodler uses a friendly, kid-safe agent personality defined in the LLM prompt and greeting. The flow looks like this:
+
+1. **User speaks or types** → audio is captured by Agora RTC and sent to ASR.
+2. **ASR result arrives** → `main_control` flushes previous tasks if needed, then queues the final utterance to the LLM.
+3. **LLM responds** → first sentence is sent to TTS for instant feedback, while the rest streams into the transcript.
+4. **Tool call triggers image generation** → the image tool returns a URL, and the message collector forwards it to the UI.
+5. **UI reveals the sketch** → the board animates a stylus reveal and shows the final doodle.
+
+The result feels conversational: the agent reacts quickly, says “drawing” instead of “generating,” and celebrates creativity once the image lands.
+
+## The design process for the “Doodle board”
+
+The goal was to make the app feel like a physical toy without losing clarity or usability. The board design is built in layers:
+
+- **Base board shell**: the frame uses stacked gradients, soft highlights, and an inset shadow to mimic plastic (`.toy-board-frame`).
+- **Bezel + screen**: the screen is slightly inset with a dashed border and soft glow so it feels like a real display window.
+- **Paper texture + grid**: the canvas sits on a watercolor-like paper background with a faint grid, giving a sketchbook vibe.
+- **Animated stylus**: the pen appears in the slot, then moves over the screen while drawing for a toy-like flourish.
+- **Dreamy finishing wash**: when a doodle completes, a soft gradient glow fades in so the image feels “revealed.”
+
+We purposely kept the palette warm and playful, avoided flat single-color backgrounds, and used light motion as feedback rather than decoration. The end result looks like a tactile toy, yet behaves like a modern real-time agent demo.
+
+---
+
+If you want to extend this example, try swapping the image tool, adding new crayon swatches, or customizing the prompt style notes to explore different drawing aesthetics.
