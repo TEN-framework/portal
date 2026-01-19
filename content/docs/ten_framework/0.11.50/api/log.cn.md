@@ -1,5 +1,6 @@
 ---
 title: 日志
+_portal_target: api/log.cn.md
 ---
 
 TEN framework 允许使用不同语言开发的 extension 在同一进程中运行。这使得需要以统一的日志格式和信息在统一的日志中查看所有这些 extension 的日志，从而简化调试。
@@ -32,7 +33,7 @@ public:
         TEN_ENV_LOG_ERROR(ten_env, "Error occurred");
 
         // 直接调用方法，支持 category 和 fields 参数
-        ten_env.log(TEN_LOG_LEVEL_INFO, __func__, __FILE__, __LINE__, 
+        ten_env.log(TEN_LOG_LEVEL_INFO, __func__, __FILE__, __LINE__,
                    "Direct log call", nullptr, nullptr);
     }
 };
@@ -61,7 +62,7 @@ class MyExtension(Extension):
         # 支持格式化字符串和额外参数
         test_value = "example"
         ten_env.log_info(f"处理命令，测试值: {test_value}")
-        
+
         # 支持 category 和 fields 参数
         ten_env.log_info("带分类的日志", category="my_extension")
 ```
@@ -94,7 +95,7 @@ func (ext *MyExtension) OnCmd(tenEnv ten.TenEnv, cmd ten.Cmd) {
     // 支持格式化
     cmdName := cmd.GetName()
     tenEnv.LogInfo("处理命令: " + cmdName)
-    
+
     // 使用完整的 Log 方法支持更多参数
     category := "my_extension"
     tenEnv.Log(ten.LogLevelInfo, "带分类的日志", &category, nil, nil)
@@ -125,7 +126,7 @@ class MyExtension extends Extension {
         // 支持字符串拼接
         const cmdName = cmd.getName();
         tenEnv.logInfo("处理命令: " + cmdName);
-        
+
         // 支持 category 和 fields 参数
         tenEnv.logInfo("带分类的日志", "my_extension");
     }
@@ -275,6 +276,7 @@ TEN framework 支持通过 `property.json` 文件配置高级日志功能。这�
 ```
 
 支持的日志级别：
+
 - `"off"`: 关闭日志
 - `"debug"`: 调试级别
 - `"info"`: 信息级别
@@ -336,6 +338,32 @@ TEN framework 支持通过 `property.json` 文件配置高级日志功能。这�
   }
 }
 ```
+
+##### OTLP 输出
+
+OTLP (OpenTelemetry Protocol) 输出允许您将日志发送到支持 OpenTelemetry 的后端系统，如 Jaeger、Prometheus、Grafana 等。
+
+```json
+{
+  "type": "otlp",
+  "config": {
+    "endpoint": "http://localhost:4317",  // OTLP 接收端点地址
+    "protocol": "grpc",                   // 可选：传输协议，"grpc"（默认）或 "http"
+    "headers": {                          // 可选：自定义 HTTP 头
+      "Authorization": "Bearer token",
+      "X-Custom-Header": "value"
+    },
+    "service_name": "my-service"          // 可选：服务名称，用于标识日志来源
+  }
+}
+```
+
+配置参数说明：
+
+- **endpoint**: OTLP 接收端点的 URL（必需）
+- **protocol**: 传输协议，支持 `"grpc"` 或 `"http"`，默认为 `"grpc"`
+- **headers**: 自定义 HTTP 请求头，用于认证或其他元数据传递（可选）
+- **service_name**: 服务名称，用于在日志聚合系统中标识不同的服务（可选）
 
 ### 配置示例
 
@@ -469,6 +497,59 @@ TEN framework 支持通过 `property.json` 文件配置高级日志功能。这�
 }
 ```
 
+#### 示例 4: OTLP 日志输出到 OpenTelemetry 收集器
+
+```json
+{
+  "ten": {
+    "log": {
+      "handlers": [
+        {
+          "matchers": [
+            {
+              "level": "info"
+            }
+          ],
+          "formatter": {
+            "type": "json"
+          },
+          "emitter": {
+            "type": "otlp",
+            "config": {
+              "endpoint": "http://localhost:4317",
+              "protocol": "grpc",
+              "service_name": "ten-framework-app"
+            }
+          }
+        },
+        {
+          "matchers": [
+            {
+              "level": "error"
+            }
+          ],
+          "formatter": {
+            "type": "json"
+          },
+          "emitter": {
+            "type": "otlp",
+            "config": {
+              "endpoint": "https://api.monitoring.example.com/v1/logs",
+              "protocol": "http",
+              "headers": {
+                "Authorization": "Bearer your-api-token",
+                "X-Environment": "production"
+              },
+              "service_name": "ten-framework-app"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
 ### 配置注意事项
 
 1. **多个处理器**: 可以定义多个处理器来实现复杂的日志路由策略
@@ -476,6 +557,11 @@ TEN framework 支持通过 `property.json` 文件配置高级日志功能。这�
 3. **加密安全**: 加密密钥和 nonce 应该安全存储，不要硬编码在配置文件中
 4. **文件权限**: 确保日志文件路径具有适当的写入权限
 5. **性能考虑**: JSON 格式可能会比 plain 格式产生更大的日志文件
+6. **OTLP 端点**:
+   - 使用 gRPC 协议时，默认端口通常为 4317
+   - 使用 HTTP 协议时，默认端口通常为 4318
+   - 确保 OTLP 收集器端点可访问且配置正确
+7. **认证**: 使用 OTLP 时，如果后端需要认证，请在 headers 中添加相应的认证信息
 
 ## 最佳实践
 
@@ -505,6 +591,8 @@ TEN framework 支持通过 `property.json` 文件配置高级日志功能。这�
    - 对敏感日志使用加密功能
    - 定期轮转日志文件以控制磁盘使用
    - 使用 JSON 格式便于与日志分析工具集成
+   - 考虑使用 OTLP 输出将日志集成到现代可观测性平台（如 Grafana、Jaeger、Datadog 等）
+   - OTLP 输出与 OpenTelemetry 生态系统无缝集成，便于实现分布式追踪和日志关联
 
 整体效果如下图所示：
 
