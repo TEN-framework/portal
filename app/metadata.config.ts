@@ -19,7 +19,7 @@ export const SOCIAL_HANDLES = {
   twitter: '@TenFramework'
 }
 export const GOOGLE_SITE_VERIFICATION =
-  '3kMPjbUWbU3SEjEdvASRTx2-wpK85ISyZ_qAj6kEc_A'
+  'nDSxtruvfDDr1XcCyiF1LRRm2o6WXDI5q4PpQ6wY3y8'
 
 interface GenerateMetadataProps {
   title?: string
