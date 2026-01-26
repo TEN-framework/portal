@@ -25,7 +25,6 @@ export function baseOptions(locale: string): BaseLayoutProps {
         <div className='mt-0.5 flex items-center gap-2'>
           <Logo
             height={33}
-            width={66}
             className='text-foreground dark:text-white'
           />
         </div>
