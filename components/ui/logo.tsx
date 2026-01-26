@@ -12,7 +12,6 @@ interface LogoProps {
   height?: number
   width?: number
   className?: string
-  variant?: 'full' | 'mark'
 }
 
 export const Logo = ({ height, width, className }: LogoProps) => {
