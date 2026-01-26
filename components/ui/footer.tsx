@@ -46,7 +46,7 @@ export function Footer({ className }: { className?: string }) {
               href='/'
               className='inline-block text-foreground dark:text-white'
             >
-              <Logo height={36} width={72} />
+              <Logo height={36} />
             </Link>
           </div>
           <div className='flex flex-wrap gap-3 sm:gap-4'>

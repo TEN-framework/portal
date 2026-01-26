@@ -45,7 +45,7 @@ export function FooterSection({ className }: { className?: string }) {
               {t('footer.organizer')}
             </h3>
             <Link href='/' className='inline-block'>
-              <Logo height={40} width={80} />
+              <Logo height={40} />
             </Link>
           </div>
 
