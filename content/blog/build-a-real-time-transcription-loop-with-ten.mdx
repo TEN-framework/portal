@@ -211,4 +211,4 @@ When the graph spins up it stays idle until the Agora client joins, so you’re 
 - **Persist transcripts**: mirror the collector payloads into a database or send them to a webhook alongside Agora stream metadata.
 - **Expose tools**: register custom LLM tools (via `tool_register`) so corrections can call domain-specific APIs before presenting text.
 
-The transcription example is intentionally lean, but every piece is production ready: the runtime graph keeps latency predictable, the Python control extension deals with post-processing, and the browser client demonstrates a simple, vendor-agnostic UI surface. Use it as a template for live captioning, meeting notes, or any workflow where polished text needs to trail the spoken word by only a heartbeat.
+The example ships lean yet battle-tested: a low-latency runtime graph, a Python control extension that polishes text on the fly, and a browser client that stays vendor-neutral. Fork it for live captions, meeting notes, or any use-case where the transcript should lag speech by a blink.
