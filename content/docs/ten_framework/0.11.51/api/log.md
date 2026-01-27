@@ -1,5 +1,6 @@
 ---
 title: Log
+_portal_target: api/log.md
 ---
 
 The TEN framework allows extensions developed in different languages to run within the same process. This creates a need to view logs from all these extensions in a unified log with a consistent format and information, making debugging easier.
@@ -32,7 +33,7 @@ public:
         TEN_ENV_LOG_ERROR(ten_env, "Error occurred");
 
         // Direct method call with category and fields support
-        ten_env.log(TEN_LOG_LEVEL_INFO, __func__, __FILE__, __LINE__, 
+        ten_env.log(TEN_LOG_LEVEL_INFO, __func__, __FILE__, __LINE__,
                    "Direct log call", nullptr, nullptr);
     }
 };
@@ -61,7 +62,7 @@ class MyExtension(Extension):
         # Supports formatted strings and additional parameters
         test_value = "example"
         ten_env.log_info(f"Processing command, test value: {test_value}")
-        
+
         # Supports category and fields parameters
         ten_env.log_info("Log with category", category="my_extension")
 ```
@@ -94,7 +95,7 @@ func (ext *MyExtension) OnCmd(tenEnv ten.TenEnv, cmd ten.Cmd) {
     // Supports formatting
     cmdName := cmd.GetName()
     tenEnv.LogInfo("Processing command: " + cmdName)
-    
+
     // Using the full Log method for additional parameters
     category := "my_extension"
     tenEnv.Log(ten.LogLevelInfo, "Log with category", &category, nil, nil)
@@ -125,7 +126,7 @@ class MyExtension extends Extension {
         // Supports string concatenation
         const cmdName = cmd.getName();
         tenEnv.logInfo("Processing command: " + cmdName);
-        
+
         // Supports category and fields parameters
         tenEnv.logInfo("Log with category", "my_extension");
     }
@@ -275,6 +276,7 @@ Matchers are used to filter log messages:
 ```
 
 Supported log levels:
+
 - `"off"`: Disable logging
 - `"debug"`: Debug level
 - `"info"`: Info level
@@ -336,6 +338,32 @@ Defines the log output destination:
   }
 }
 ```
+
+##### OTLP Output
+
+OTLP (OpenTelemetry Protocol) output allows you to send logs to OpenTelemetry-compatible backend systems, such as Jaeger, Prometheus, Grafana, and more.
+
+```json
+{
+  "type": "otlp",
+  "config": {
+    "endpoint": "http://localhost:4317",  // OTLP receiver endpoint URL
+    "protocol": "grpc",                   // Optional: transport protocol, "grpc" (default) or "http"
+    "headers": {                          // Optional: custom HTTP headers
+      "Authorization": "Bearer token",
+      "X-Custom-Header": "value"
+    },
+    "service_name": "my-service"          // Optional: service name for identifying log source
+  }
+}
+```
+
+Configuration parameters:
+
+- **endpoint**: OTLP receiver endpoint URL (required)
+- **protocol**: Transport protocol, supports `"grpc"` or `"http"`, defaults to `"grpc"`
+- **headers**: Custom HTTP request headers for authentication or metadata (optional)
+- **service_name**: Service name for identifying different services in log aggregation systems (optional)
 
 ### Configuration Examples
 
@@ -469,6 +497,59 @@ Defines the log output destination:
 }
 ```
 
+#### Example 4: OTLP Log Output to OpenTelemetry Collector
+
+```json
+{
+  "ten": {
+    "log": {
+      "handlers": [
+        {
+          "matchers": [
+            {
+              "level": "info"
+            }
+          ],
+          "formatter": {
+            "type": "json"
+          },
+          "emitter": {
+            "type": "otlp",
+            "config": {
+              "endpoint": "http://localhost:4317",
+              "protocol": "grpc",
+              "service_name": "ten-framework-app"
+            }
+          }
+        },
+        {
+          "matchers": [
+            {
+              "level": "error"
+            }
+          ],
+          "formatter": {
+            "type": "json"
+          },
+          "emitter": {
+            "type": "otlp",
+            "config": {
+              "endpoint": "https://api.monitoring.example.com/v1/logs",
+              "protocol": "http",
+              "headers": {
+                "Authorization": "Bearer your-api-token",
+                "X-Environment": "production"
+              },
+              "service_name": "ten-framework-app"
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
 ### Configuration Notes
 
 1. **Multiple Handlers**: You can define multiple handlers to implement complex log routing strategies
@@ -476,6 +557,11 @@ Defines the log output destination:
 3. **Encryption Security**: Encryption keys and nonces should be stored securely, not hardcoded in configuration files
 4. **File Permissions**: Ensure log file paths have appropriate write permissions
 5. **Performance Considerations**: JSON format may produce larger log files than plain format
+6. **OTLP Endpoints**:
+   - When using gRPC protocol, the default port is typically 4317
+   - When using HTTP protocol, the default port is typically 4318
+   - Ensure the OTLP collector endpoint is accessible and properly configured
+7. **Authentication**: When using OTLP, if the backend requires authentication, add appropriate credentials in the headers
 
 ## Best Practices
 
@@ -505,6 +591,8 @@ Defines the log output destination:
    - Use encryption functionality for sensitive logs
    - Regularly rotate log files to control disk usage
    - Use JSON format for easier integration with log analysis tools
+   - Consider using OTLP output to integrate logs into modern observability platforms (e.g., Grafana, Jaeger, Datadog)
+   - OTLP output seamlessly integrates with the OpenTelemetry ecosystem, enabling distributed tracing and log correlation
 
 The overall effect is shown in the image below:
 
