@@ -5,12 +5,17 @@ const rewriteHtml = (html, siteOrigin) => {
   let output = html.replaceAll(UPSTREAM_ORIGIN, siteOrigin)
   output = output.replaceAll('href="/"', 'href="/article/"')
   output = output.replaceAll('href="/#', 'href="/article/#')
+  output = output.replaceAll('href="/article', 'href="/blog')
+  output = output.replaceAll('src="/article', 'src="/blog')
   return output
 }
 
 export default async (request) => {
   const url = new URL(request.url)
-  const targetUrl = new URL(url.pathname + url.search, UPSTREAM_ORIGIN)
+  const upstreamPath = url.pathname.startsWith('/blog')
+    ? url.pathname.replace('/blog', '/article')
+    : url.pathname
+  const targetUrl = new URL(upstreamPath + url.search, UPSTREAM_ORIGIN)
 
   const headers = new Headers(request.headers)
   headers.delete('host')
