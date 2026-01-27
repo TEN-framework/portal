@@ -25,6 +25,14 @@
   function = "proxy-article"
 
 [[edge_functions]]
+  path = "/blog"
+  function = "proxy-article"
+
+[[edge_functions]]
+  path = "/blog/*"
+  function = "proxy-article"
+
+[[edge_functions]]
   path = "/assets/*"
   function = "proxy-article"
 

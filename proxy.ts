@@ -55,6 +55,6 @@ export default function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|article(?:/.*)?|assets(?:/.*)?|category(?:/.*)?|.*\\.(?:js|css|png|jpg|jpeg|gif|svg|webp|ico|woff2)).*)'
+    '/((?!api|_next/static|_next/image|favicon.ico|article(?:/.*)?|blog(?:/.*)?|assets(?:/.*)?|category(?:/.*)?|.*\\.(?:js|css|png|jpg|jpeg|gif|svg|webp|ico|woff2)).*)'
   ]
 }
