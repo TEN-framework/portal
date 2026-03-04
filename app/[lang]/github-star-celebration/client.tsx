@@ -127,7 +127,7 @@ export function GitHubStarCelebrationClient({ lang }: ClientProps) {
           </span>
           <div className='flex flex-col items-center gap-4'>
             <div className='relative flex flex-col items-center gap-3 text-center'>
-              <div className='-inset-8 absolute rounded-full bg-amber-200/25 blur-3xl' />
+              <div className='absolute -inset-8 rounded-full bg-amber-200/25 blur-3xl' />
               <div className='relative flex flex-col items-center gap-3 text-center md:gap-5 lg:gap-1'>
                 <span
                   className={cn(

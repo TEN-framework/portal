@@ -87,7 +87,7 @@ export function GuideSteps({
           return (
             <div
               key={step.number}
-              className='guide-panel hover:-translate-y-0.5 rounded-3xl p-6 transition-transform'
+              className='guide-panel rounded-3xl p-6 transition-transform hover:-translate-y-0.5'
             >
               <div className='guide-text-muted flex items-center gap-3 font-semibold text-sm'>
                 <button

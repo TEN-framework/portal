@@ -108,7 +108,7 @@ export function GitHubStarButton({
     <div className='relative'>
       {/* Sparkles effect - only on hover */}
       {isHovered && (
-        <div className='-inset-2 pointer-events-none absolute hidden sm:block'>
+        <div className='pointer-events-none absolute -inset-2 hidden sm:block'>
           <Sparkles className='absolute top-0 left-0 h-3 w-3 animate-ping text-yellow-400' />
           <Sparkles className='animation-delay-300 absolute top-0 right-0 h-2 w-2 animate-ping text-blue-400' />
           <Sparkles className='animation-delay-500 absolute bottom-0 left-2 h-2 w-2 animate-ping text-purple-400' />
@@ -146,7 +146,7 @@ export function GitHubStarButton({
 
         {/* Tooltip */}
         {isHovered && (
-          <div className='-bottom-8 -translate-x-1/2 pointer-events-none absolute left-1/2 z-50 transform whitespace-nowrap rounded bg-black px-2 py-1 text-white text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
+          <div className='pointer-events-none absolute -bottom-8 left-1/2 z-50 -translate-x-1/2 transform whitespace-nowrap rounded bg-black px-2 py-1 text-white text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100'>
             ⭐ Star this repo!
           </div>
         )}

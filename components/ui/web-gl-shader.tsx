@@ -144,7 +144,7 @@ export function WebGLShader() {
   return (
     <canvas
       ref={canvasRef}
-      className='-translate-x-1/2 pointer-events-none fixed top-0 left-1/2 h-full w-full md:w-[120vw]'
+      className='pointer-events-none fixed top-0 left-1/2 h-full w-full -translate-x-1/2 md:w-[120vw]'
     />
   )
 }

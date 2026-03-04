@@ -137,7 +137,7 @@ export default async function BlogHomePage(props: {
               frontmatter.featuredLabel ?? featuredLabel
 
             return (
-              <Card className='group hover:-translate-y-2 w-full overflow-hidden border-border/60 bg-background/80 shadow-lg transition-all duration-500 hover:shadow-2xl'>
+              <Card className='group w-full overflow-hidden border-border/60 bg-background/80 shadow-lg transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl'>
                 <div className='grid gap-0 md:grid-cols-[1.6fr_1fr]'>
                   <NextLink
                     href={featuredPost.url}
@@ -213,7 +213,7 @@ export default async function BlogHomePage(props: {
               return (
                 <Card
                   key={post.url}
-                  className='group hover:-translate-y-2 flex h-full flex-col overflow-hidden border-border/60 bg-background/70 shadow-sm transition-all duration-300 hover:shadow-xl'
+                  className='group flex h-full flex-col overflow-hidden border-border/60 bg-background/70 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl'
                 >
                   <NextLink
                     href={post.url}

@@ -266,11 +266,11 @@ export function CoverArtwork({
             }}
           />
           <div
-            className='-left-16 pointer-events-none absolute top-6 h-36 w-36 rounded-full opacity-60 blur-3xl'
+            className='pointer-events-none absolute top-6 -left-16 h-36 w-36 rounded-full opacity-60 blur-3xl'
             style={{ background: hexToRgba(glow, 0.55) }}
           />
           <div
-            className='-bottom-20 pointer-events-none absolute right-0 h-44 w-44 rounded-full opacity-45 blur-[100px]'
+            className='pointer-events-none absolute right-0 -bottom-20 h-44 w-44 rounded-full opacity-45 blur-[100px]'
             style={{ background: hexToRgba(lowlight, 0.45) }}
           />
           <div
@@ -327,7 +327,7 @@ export function AuthorBadge({
   return (
     <div className='flex items-center gap-3'>
       <div
-        className='group-hover:-translate-y-0.5 flex h-10 w-10 items-center justify-center rounded-full font-semibold text-sm shadow-sm transition-transform duration-300'
+        className='flex h-10 w-10 items-center justify-center rounded-full font-semibold text-sm shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5'
         style={{
           backgroundImage: `linear-gradient(135deg, ${badgeStart}, ${badgeEnd})`,
           color: textColor
@@ -387,11 +387,11 @@ export function ModernPaintingBanner({
       />
 
       <div
-        className='-left-20 pointer-events-none absolute top-10 h-[18rem] w-[18rem] rounded-full opacity-60 blur-3xl'
+        className='pointer-events-none absolute top-10 -left-20 h-[18rem] w-[18rem] rounded-full opacity-60 blur-3xl'
         style={{ background: hexToRgba(glow, 0.68) }}
       />
       <div
-        className='-bottom-24 pointer-events-none absolute right-0 h-[20rem] w-[20rem] rounded-full opacity-50 blur-[120px]'
+        className='pointer-events-none absolute right-0 -bottom-24 h-[20rem] w-[20rem] rounded-full opacity-50 blur-[120px]'
         style={{ background: hexToRgba(lowlight, 0.6) }}
       />
 
@@ -404,7 +404,7 @@ export function ModernPaintingBanner({
         }}
       />
 
-      <div className='-skew-x-[12deg] pointer-events-none absolute inset-y-0 left-0 w-[18%] bg-gradient-to-r from-white/15 via-white/4 to-transparent' />
+      <div className='pointer-events-none absolute inset-y-0 left-0 w-[18%] -skew-x-[12deg] bg-gradient-to-r from-white/15 via-white/4 to-transparent' />
 
       <div className='relative'>
         <div

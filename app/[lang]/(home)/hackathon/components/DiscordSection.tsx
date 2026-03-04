@@ -21,7 +21,7 @@ export function DiscordSection({ className }: { className?: string }) {
         >
           <div className='relative'>
             {/* Background decoration (static, no animation) */}
-            <div className='-m-4 pointer-events-none absolute inset-0 z-0'>
+            <div className='pointer-events-none absolute inset-0 z-0 -m-4'>
               <div className='absolute top-0 left-1/4 h-32 w-32 rounded-full bg-purple-400/20 blur-3xl' />
               <div className='absolute right-1/4 bottom-0 h-40 w-40 rounded-full bg-indigo-400/20 blur-3xl' />
             </div>

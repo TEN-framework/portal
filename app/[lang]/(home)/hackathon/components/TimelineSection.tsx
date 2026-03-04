@@ -60,7 +60,7 @@ export function TimelineSection({ className }: { className?: string }) {
         {/* Timeline */}
         <div className='relative mx-auto max-w-4xl'>
           {/* Vertical Line */}
-          <div className='-translate-x-1/2 absolute top-0 left-1/2 hidden h-full w-px bg-gray-200 md:block dark:bg-gray-700'></div>
+          <div className='absolute top-0 left-1/2 hidden h-full w-px -translate-x-1/2 bg-gray-200 md:block dark:bg-gray-700'></div>
 
           {/* Timeline Items */}
           <div className='space-y-12'>
@@ -105,7 +105,7 @@ export function TimelineSection({ className }: { className?: string }) {
                   </div>
                   {/* Connecting dots for mobile */}
                   {index < timeline.length - 1 && (
-                    <div className='-translate-x-1/2 absolute top-12 left-1/2 h-8 w-px bg-gray-300 md:hidden dark:bg-gray-600' />
+                    <div className='absolute top-12 left-1/2 h-8 w-px -translate-x-1/2 bg-gray-300 md:hidden dark:bg-gray-600' />
                   )}
                 </div>
 

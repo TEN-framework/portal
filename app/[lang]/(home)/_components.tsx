@@ -48,7 +48,7 @@ export function ProjectsShowcase(props: { className?: string }) {
             <Link
               key={project.id}
               href={project.href}
-              className='group hover:-translate-y-1 relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800'
+              className='group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-gray-700 dark:bg-gray-800'
             >
               <div className='aspect-video w-full overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20'>
                 <div className='flex h-full items-center justify-center text-gray-400'>
