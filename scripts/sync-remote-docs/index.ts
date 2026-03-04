@@ -16,12 +16,26 @@ function getArg(flag: string): string | undefined {
   return idx !== -1 ? process.argv[idx + 1] : undefined
 }
 
+function parseBooleanArg(
+  value: string | undefined,
+  defaultValue: boolean
+): boolean {
+  if (value === undefined) {
+    return defaultValue
+  }
+  return value.toLowerCase() === 'true'
+}
+
 async function main() {
   const newVersion = getArg('--new-version') // 0.11.27
   const diffJsonPath = getArg('--diff-json') // .tmp/diff.json
   const previousRepoPath = getArg('--prev-repo') // .tmp/ten_framework/0.11.26
   const latestRepoPath = getArg('--latest-repo') // .tmp/ten_framework/0.11.27
   const docConfigPath = getArg('--doc-config') // .tmp/ten_framework/0.11.27/docs/_portal_config.json
+  const enforceVersionContinuity = parseBooleanArg(
+    getArg('--enforce-version-continuity'),
+    true
+  )
 
   if (
     !newVersion ||
@@ -36,7 +50,8 @@ async function main() {
       '\n  --diff-json <diff.json> \\',
       '\n  --prev-repo <path> \\',
       '\n  --latest-repo <path> \\',
-      '\n  --doc-config <path>'
+      '\n  --doc-config <path> \\',
+      '\n  [--enforce-version-continuity <true|false>]'
     )
     process.exit(1)
   }
@@ -49,12 +64,16 @@ async function main() {
   console.log(LOG_INDENTIFIER, `Previous repo     : ${previousRepoPath}`)
   console.log(LOG_INDENTIFIER, `Latest repo       : ${latestRepoPath}`)
   console.log(LOG_INDENTIFIER, `Doc config        : ${docConfigPath}`)
+  console.log(
+    LOG_INDENTIFIER,
+    `Enforce continuity: ${enforceVersionContinuity}`
+  )
   console.log(LOG_INDENTIFIER, `========================================`)
 
   // main logic
   // 0. versioning docs
   console.debug('\n\n', LOG_INDENTIFIER, `=== Step 0: Versioning docs ===`)
-  await versioningDocs(newVersion)
+  await versioningDocs(newVersion, { enforceVersionContinuity })
   // 1. get diff
   console.debug('\n\n', LOG_INDENTIFIER, `=== Step 1: Getting diff ===`)
   const rawDiffJson = await getDiff(diffJsonPath)

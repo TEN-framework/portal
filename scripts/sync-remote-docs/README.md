@@ -16,7 +16,8 @@ bun run scripts:sync-remote-docs \
   --diff-json <path/to/diff.json> \
   --prev-repo <path/to/ten-framework/<previous_tag>> \
   --latest-repo <path/to/ten-framework/<new_tag>> \
-  --doc-config <path/to/ten-framework/<new_tag>/docs/_portal_config.json>
+  --doc-config <path/to/ten-framework/<new_tag>/docs/_portal_config.json> \
+  [--enforce-version-continuity <true|false>]
 ```
 
 ### Arguments
@@ -25,6 +26,7 @@ bun run scripts:sync-remote-docs \
 - `--prev-repo`: Absolute path to the `ten-framework` checkout for the previously published tag.
 - `--latest-repo`: Absolute path to the `ten-framework` checkout for the target tag being synced.
 - `--doc-config`: Path to the remote `_portal_config.json` that lists matcher rules for filtering which files are allowed to sync into the portal.
+- `--enforce-version-continuity`: Optional, defaults to `true`. When enabled, the script fails fast unless `--new-version` is the immediate next semantic version after current local `latest` (supports patch/minor/major next step: `x.y.z -> x.y.(z+1)`, `x.(y+1).0`, or `(x+1).0.0`).
 
 The script logs progress with the `[sync-remote-docs]` prefix, validates inputs, and exits non-zero if any step fails.
 
@@ -83,4 +85,3 @@ Running locally mirrors this workflow: produce the diff JSON (e.g. via `git diff
 - Set `DEBUG=*` or run with `bun --inspect` for additional diagnostics if needed.
 - Inspect the logs for `[sync-remote-docs] Action failure logs:`; these are collected failures that caused the script to exit.
 - Ensure the remote files include a `_portal_target` frontmatter field; missing targets cause the script to terminate.
-

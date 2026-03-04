@@ -136,7 +136,7 @@ export default async function Page(props: {
               className='group mb-8 inline-flex items-center font-medium text-fd-muted-foreground text-sm transition-colors hover:text-primary'
             >
               <svg
-                className='group-hover:-translate-x-1 mr-2 h-4 w-4 transition-transform duration-300'
+                className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1'
                 fill='none'
                 viewBox='0 0 24 24'
                 stroke='currentColor'

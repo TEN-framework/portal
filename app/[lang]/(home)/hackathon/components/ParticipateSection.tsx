@@ -82,7 +82,7 @@ export function ParticipateSection({ className }: { className?: string }) {
                 >
                   {step.icon}
                 </div>
-                <div className='-top-2 -right-2 pointer-events-none absolute flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-900 text-sm shadow-md dark:bg-gray-800 dark:text-white'>
+                <div className='pointer-events-none absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-900 text-sm shadow-md dark:bg-gray-800 dark:text-white'>
                   {index + 1}
                 </div>
               </div>

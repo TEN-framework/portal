@@ -119,8 +119,8 @@ export default function WorkshopPage() {
   return (
     <div className='flex flex-col'>
       <section className='relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white'>
-        <div className='-top-24 -left-24 absolute size-[420px] rounded-full bg-sky-500/10 blur-3xl' />
-        <div className='-bottom-32 -right-6 absolute size-[520px] rounded-full bg-emerald-400/10 blur-3xl' />
+        <div className='absolute -top-24 -left-24 size-[420px] rounded-full bg-sky-500/10 blur-3xl' />
+        <div className='absolute -right-6 -bottom-32 size-[520px] rounded-full bg-emerald-400/10 blur-3xl' />
 
         <div className='relative mx-auto w-full max-w-5xl px-6 py-20 sm:py-24'>
           <div className='inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1 text-sm text-white/80 backdrop-blur'>
@@ -172,7 +172,7 @@ export default function WorkshopPage() {
             {prerequisites.map((item) => (
               <div
                 key={item.title}
-                className='hover:-translate-y-1 flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900'
+                className='flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-800 dark:bg-slate-900'
               >
                 <div className='inline-flex size-10 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-200'>
                   <CheckCircle2 className='size-5' />

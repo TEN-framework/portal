@@ -44,7 +44,7 @@ export default async (request) => {
 
   const headersOut = new Headers(response.headers)
   const location = headersOut.get('location')
-  if (location && location.startsWith(UPSTREAM_ORIGIN)) {
+  if (location?.startsWith(UPSTREAM_ORIGIN)) {
     headersOut.set('location', location.replace(UPSTREAM_ORIGIN, url.origin))
   }
 

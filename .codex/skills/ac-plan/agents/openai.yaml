@@ -1,0 +1,4 @@
+interface:
+  display_name: "AC Plan"
+  short_description: "Plan and freeze workflow execution contracts"
+  default_prompt: "Use $ac-plan to create and freeze an Execution Contract for this workflow task."

@@ -66,19 +66,17 @@ export function CookieConsent({
       role='alert'
       aria-live='polite'
       className={cn(
-        'fixed bottom-8 right-4 z-50 max-w-xs md:bottom-10 md:right-6',
+        'fixed right-4 bottom-8 z-50 max-w-xs md:right-6 md:bottom-10',
         className
       )}
     >
       <div className='flex flex-col gap-2 rounded-lg border border-border/50 bg-background/70 p-3 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/55'>
-        <p className='text-muted-foreground text-xs leading-snug'>
-          {message}
-        </p>
+        <p className='text-muted-foreground text-xs leading-snug'>{message}</p>
         <div className='flex gap-2'>
           <Button
             size='sm'
             onClick={handleAccept}
-            className='flex-1 h-7 px-2 text-xs'
+            className='h-7 flex-1 px-2 text-xs'
           >
             {acceptLabel}
           </Button>
@@ -86,7 +84,7 @@ export function CookieConsent({
             variant='ghost'
             size='sm'
             onClick={handleDecline}
-            className='flex-1 h-7 px-2 text-muted-foreground text-xs hover:text-foreground'
+            className='h-7 flex-1 px-2 text-muted-foreground text-xs hover:text-foreground'
           >
             {declineLabel}
           </Button>

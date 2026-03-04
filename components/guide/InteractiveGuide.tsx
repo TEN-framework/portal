@@ -385,10 +385,10 @@ bun run format`,
 
             <button
               type='button'
-              className='group hover:-translate-y-0.5 relative w-full cursor-pointer rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:border-emerald-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 focus:ring-offset-slate-50'
+              className='group relative w-full cursor-pointer rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:ring-offset-2 focus:ring-offset-slate-50'
               onClick={handleNext}
             >
-              <div className='-top-3 absolute left-6 rounded-full bg-white px-2 font-bold text-[11px] text-emerald-600 uppercase tracking-[0.2em]'>
+              <div className='absolute -top-3 left-6 rounded-full bg-white px-2 font-bold text-[11px] text-emerald-600 uppercase tracking-[0.2em]'>
                 Action
               </div>
               <div className='font-mono text-[11px] text-slate-400'>

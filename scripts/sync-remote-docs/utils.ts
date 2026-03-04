@@ -137,6 +137,46 @@ const _sortAndDedupVersions = (versions: string[]): string[] => {
     .sort((a, b) => a.localeCompare(b))
     .filter((version, index, self) => self.indexOf(version) === index)
 }
+
+const _parseSemver = (version: string): [number, number, number] => {
+  const match = version.match(/^(\d+)\.(\d+)\.(\d+)$/)
+  if (!match) {
+    throw new Error(
+      `${LOG_INDENTIFIER} Invalid version format "${version}". Expected x.y.z`
+    )
+  }
+  return [Number(match[1]), Number(match[2]), Number(match[3])]
+}
+
+const _isImmediateNextVersion = (previous: string, next: string): boolean => {
+  const [prevMajor, prevMinor, prevPatch] = _parseSemver(previous)
+  const [nextMajor, nextMinor, nextPatch] = _parseSemver(next)
+
+  // patch bump: x.y.z -> x.y.(z+1)
+  if (
+    nextMajor === prevMajor &&
+    nextMinor === prevMinor &&
+    nextPatch === prevPatch + 1
+  ) {
+    return true
+  }
+
+  // minor bump: x.y.z -> x.(y+1).0
+  if (
+    nextMajor === prevMajor &&
+    nextMinor === prevMinor + 1 &&
+    nextPatch === 0
+  ) {
+    return true
+  }
+
+  // major bump: x.y.z -> (x+1).0.0
+  if (nextMajor === prevMajor + 1 && nextMinor === 0 && nextPatch === 0) {
+    return true
+  }
+
+  return false
+}
 // #endregion
 
 // #region Public Functions
@@ -169,7 +209,12 @@ export const copyFolderWithFiles = async (
   }
 }
 
-export const versioningDocs = async (newVersion: string) => {
+export const versioningDocs = async (
+  newVersion: string,
+  {
+    enforceVersionContinuity = true
+  }: { enforceVersionContinuity?: boolean } = {}
+) => {
   const localLatestDocsPath = resolve(
     process.cwd(),
     ...DEFAULT_LOCAL_LATEST_DOCS_RELATIVE_PATH
@@ -185,6 +230,16 @@ export const versioningDocs = async (newVersion: string) => {
     const localVersionJsonData: LocalVersionJson = LocalVersionJson.parse(
       JSON.parse(localVersionJson)
     )
+    if (
+      enforceVersionContinuity &&
+      !_isImmediateNextVersion(localVersionJsonData.latest, newVersion)
+    ) {
+      throw new Error(
+        `${LOG_INDENTIFIER} Version continuity check failed: current latest is ` +
+          `${localVersionJsonData.latest}, but target is ${newVersion}. ` +
+          `Expected the immediate next semver version.`
+      )
+    }
     // 2. versioning docs
     // 2.0 prepare new local version json data
     const allVersions = _sortAndDedupVersions([

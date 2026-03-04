@@ -1,0 +1,16 @@
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
+
+developer_instructions = """
+Role: ac-plan (planner)
+Use skill: $ac-plan
+
+Required behavior:
+- Produce/update Execution Contract fully.
+- Set CURRENT_ROLE=planner and PLAN_FROZEN=true in PROJECT_STATE.md.
+- Do not implement feature code.
+
+Handoff:
+- On complete plan, hand off to ac-execute.
+- On replanning/unfreeze, remain in ac-plan until contract is frozen.
+"""

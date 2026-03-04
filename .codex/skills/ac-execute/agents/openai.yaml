@@ -1,0 +1,4 @@
+interface:
+  display_name: "AC Execute"
+  short_description: "Execute frozen contracts and record evidence"
+  default_prompt: "Use $ac-execute to implement only the frozen contract scope and checks."

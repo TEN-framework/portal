@@ -72,7 +72,7 @@ export function WorkshopSchedule({
 
             return (
               <li key={session.id} className='relative ml-4'>
-                <span className='-left-8 absolute top-2 flex size-4 items-center justify-center rounded-full border border-emerald-400 bg-white dark:border-emerald-500 dark:bg-slate-950' />
+                <span className='absolute top-2 -left-8 flex size-4 items-center justify-center rounded-full border border-emerald-400 bg-white dark:border-emerald-500 dark:bg-slate-950' />
                 <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-emerald-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-500/50'>
                   <div className='mb-4 flex flex-wrap items-center gap-3 text-slate-500 text-sm dark:text-slate-300'>
                     <span className='rounded-full bg-emerald-50 px-3 py-1 font-medium text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200'>
