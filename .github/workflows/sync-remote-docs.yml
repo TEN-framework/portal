@@ -7,6 +7,11 @@ on:
         description: "Target Tag"
         required: true
         default: "0.11.26"
+      enforce_version_continuity:
+        description: "Fail if target tag is not the immediate next semver after current latest"
+        required: true
+        type: boolean
+        default: true
 
 jobs:
   main:
@@ -137,7 +142,7 @@ jobs:
           # install dependencies
           bun i
           # run scripts
-          bun run scripts:sync-remote-docs --new-version ${{ github.event.inputs.target_tag }} --diff-json ${{ github.workspace }}/portal/.tmp/diff.json --prev-repo ${{ github.workspace }}/ten_framework/${{ steps.previous_docs_version.outputs.latest }} --latest-repo ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }} --doc-config ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }}/docs/_portal_config.json
+          bun run scripts:sync-remote-docs --new-version ${{ github.event.inputs.target_tag }} --diff-json ${{ github.workspace }}/portal/.tmp/diff.json --prev-repo ${{ github.workspace }}/ten_framework/${{ steps.previous_docs_version.outputs.latest }} --latest-repo ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }} --doc-config ${{ github.workspace }}/ten_framework/${{ github.event.inputs.target_tag }}/docs/_portal_config.json --enforce-version-continuity ${{ github.event.inputs.enforce_version_continuity }}
           # bun lint
           bun run lint
           # git status
