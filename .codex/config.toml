@@ -1,0 +1,14 @@
+[features]
+multi_agent = true
+
+[agents.ac-plan]
+description = "Planner role for defining and freezing execution contracts."
+config_file = "agents/ac-agent-plan.toml"
+
+[agents.ac-execute]
+description = "Executor role for implementing only frozen contract scope."
+config_file = "agents/ac-agent-execute.toml"
+
+[agents.ac-review]
+description = "Reviewer role for contract-based acceptance with evidence and gaps."
+config_file = "agents/ac-agent-review.toml"

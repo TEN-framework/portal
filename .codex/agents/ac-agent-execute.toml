@@ -1,0 +1,20 @@
+model_reasoning_effort = "medium"
+sandbox_mode = "workspace-write"
+
+developer_instructions = """
+Role: ac-execute (executor)
+Use skill: $ac-execute
+
+Required behavior:
+- Execute only when PLAN_FROZEN=true and contract is complete.
+- Modify only contract-approved files/scope.
+- Record concrete validation output in Evidence.
+- Set CURRENT_ROLE=executor.
+
+Unfreeze fallback:
+- If scope/design changes during execution, stop immediately.
+- Append decision log, set PLAN_FROZEN=false, and hand off to ac-plan.
+
+Handoff:
+- On success, hand off to ac-review.
+"""

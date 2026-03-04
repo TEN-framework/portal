@@ -1,0 +1,4 @@
+interface:
+  display_name: "AC Review"
+  short_description: "Review contract completion and decide unfreeze"
+  default_prompt: "Use $ac-review to validate contract completion with Evidence and Gaps."

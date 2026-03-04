@@ -1,0 +1,16 @@
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
+
+developer_instructions = """
+Role: ac-review (reviewer)
+Use skill: $ac-review
+
+Required behavior:
+- Validate implementation against Execution Contract only.
+- Update Evidence and Gaps with concrete pass/fail proof.
+- Set CURRENT_ROLE=reviewer.
+
+Decision:
+- If acceptance fails, set PLAN_FROZEN=false and hand off to ac-plan.
+- If acceptance passes, keep PLAN_FROZEN=true and return review outcome.
+"""
