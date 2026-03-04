@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Script from 'next/script'
+import { useEffect, useState } from 'react'
 import { getConsentStatus } from '@/components/ui/cookie-consent'
 
 export function AhrefsLoader() {

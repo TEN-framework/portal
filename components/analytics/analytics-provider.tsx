@@ -1,8 +1,8 @@
 'use client'
 
 import { useCallback, useState } from 'react'
-import { CookieConsent } from '@/components/ui/cookie-consent'
 import { AhrefsLoader } from '@/components/analytics/ahrefs-loader'
+import { CookieConsent } from '@/components/ui/cookie-consent'
 import { PostHogLoader } from './posthog-loader'
 
 interface AnalyticsProviderProps {
