@@ -1,0 +1,4 @@
+interface:
+  display_name: "Biome Lint Guard"
+  short_description: "Enforce bun lint after edits and before commits."
+  default_prompt: "Run `bun run lint` after any file change and once more immediately before `git commit`; treat lint failures as blocking and re-run until clean."
