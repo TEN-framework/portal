@@ -1,0 +1,2509 @@
+---
+title: Create a TTS Extension
+description: Build, develop, test, and publish a complete TTS extension from scratch
+---
+
+# Create a TTS Extension - Complete Guide
+
+This guide walks you through building a production-grade TTS (Text-to-Speech) Extension from scratch, covering the full workflow from project setup and core development to testing, validation, and publishing.
+
+## What Is a TTS Extension
+
+The TTS Extension is a **standard extension building block** in the TEN Framework ecosystem, designed specifically for text-to-speech functionality.
+
+### Core Responsibilities
+
+The TTS Extension is mainly responsible for:
+
+1. **Receiving text**: Continuously receiving text from upstream extensions that needs to be turned into speech, usually from an LLM.
+2. **Real-time synthesis**: Converting the text into an audio stream in real time.
+3. **Sending audio**: Passing the synthesized audio to downstream extensions for further processing.
+
+### Position in the Conversation Flow
+
+As a standard building block, the TTS Extension plays the key role of converting text into audio inside a TEN Agent conversation flow:
+
+```
+[Upstream Extension]  ──text stream──>  [TTS Extension]  ──audio stream──>  [Downstream Extension]
+```
+
+**Typical upstream extensions**:
+- **LLM Extension**: Generates reply text.
+- **Translation Extension**: Produces translated text.
+- **Text Processing Extension**: Outputs preprocessed text.
+
+**Typical downstream extensions**:
+- **RTC Extension**: Pushes audio into an RTC channel.
+- **Audio Playback Extension**: Plays audio locally.
+- **Audio Processing Extension**: Applies post-processing such as mixing or effects.
+
+## 📚 Implementation Modes
+
+TTS implementations usually fall into two categories: the [HTTP mode](#http-mode) and the [WebSocket mode](#websocket-mode). Most TTS vendors support one or both of these. Some vendors also provide SDKs, but the underlying behavior is still usually HTTP or WebSocket, so you should choose the implementation path based on how the SDK actually works.
+
+HTTP is the more basic implementation approach. If this is your first TTS Extension, it is recommended to start with the [HTTP mode](#http-mode), and then move on to the more advanced [WebSocket mode](#websocket-mode).
+
+### Architecture Overview
+
+Two base classes are available today for developers: `AsyncTTS2BaseExtension` and `AsyncTTS2HttpExtension`. Inheriting from these classes makes TTS Extension implementation much easier.
+
+### Basic Implementation Paths
+
+**Path 1: Inherit directly from `AsyncTTS2BaseExtension` (WebSocket mode)**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    AsyncTTS2BaseExtension                  │
+│  [Generic base class] Provides TTS Extension infrastructure│
+│  - Message queue management                                │
+│  - Lifecycle management                                    │
+│  - Audio data sending                                      │
+│  - Metrics reporting                                       │
+│  - Error handling                                          │
+└─────────────────────────────────────────────────────────────┘
+                              ↑ Inheritance (Path 1)
+┌─────────────────────────────────────────────────────────────┐
+│        VendorTTSExtension (WebSocket/SDK subclass)         │
+│  [Subclass implementation] Vendor-specific logic           │
+│  - Full request_tts() implementation                       │
+│  - WebSocket/SDK client implementation                     │
+│  - Config class implementation                             │
+│  - Vendor metadata                                         │
+│  - Sample rate configuration                               │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Path 2: Inherit from `AsyncTTS2HttpExtension` (HTTP mode)**
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    AsyncTTS2BaseExtension                  │
+│  [Generic base class] Provides TTS Extension infrastructure│
+│  - Message queue management                                │
+│  - Lifecycle management                                    │
+│  - Audio data sending                                      │
+│  - Metrics reporting                                       │
+│  - Error handling                                          │
+└─────────────────────────────────────────────────────────────┘
+                              ↑ Inheritance
+┌─────────────────────────────────────────────────────────────┐
+│               AsyncTTS2HttpExtension (HTTP mode)           │
+│  [Mode base class] Full HTTP-mode implementation           │
+│  - Config loading and validation                           │
+│  - Client management                                       │
+│  - Request handling logic (full request_tts())             │
+│  - TTFB calculation and reporting                          │
+│  - PCMWriter management                                    │
+└─────────────────────────────────────────────────────────────┘
+                              ↑ Inheritance (Path 2)
+┌─────────────────────────────────────────────────────────────┐
+│              VendorTTSExtension (HTTP subclass)            │
+│  [Subclass implementation] Vendor-specific logic           │
+│  - Config class implementation (create_config())           │
+│  - Client implementation (create_client())                 │
+│  - Vendor metadata (vendor())                              │
+│  - Sample rate config (synthesize_audio_sample_rate())     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+For a more detailed breakdown of base-class and subclass responsibilities, see [TTS Base Classes and Subclasses](#tts-base-classes-and-subclasses).
+
+## 🚀 Project Initialization
+
+### Create the Extension Project
+
+Use the TMan TTS template to quickly create a project skeleton:
+
+```bash title="Terminal"
+# Enter the extensions directory
+cd ten-framework/ai_agents/agents/ten_packages/extension
+
+# Create a TTS extension project
+tman create extension my_tts_extension --template default_tts_python --template-data class_name_prefix=MyTts
+```
+
+When it succeeds, you will see:
+
+```bash title="Output"
+Package 'extension:my_tts_extension' created successfully in 'my_tts_extension' in 2 seconds.
+```
+
+### Install Project Dependencies
+
+#### Add Third-Party Library Dependencies
+
+First add the third-party dependencies you need to `requirements.txt`:
+
+```text title="requirements.txt"
+websockets~=14.0
+pydantic
+requests
+httpx
+aiofiles
+```
+
+#### Install TEN Dependencies
+
+Enter the newly created extension directory and install dependencies:
+
+```bash title="Terminal"
+cd my_tts_extension
+tman install --standalone
+```
+
+This command builds the dependency tree from `manifest.json` and installs everything under the `.ten` directory.
+
+## Project Structure Overview
+
+```
+my_tts_extension/
+├── .vscode/               # VS Code debug configuration
+│   └── launch.json        # Debug launch settings
+├── manifest.json          # Extension metadata and dependency declarations
+├── property.json          # Default config parameters, see [property.json Contents](#propertyjson-contents)
+├── requirements.txt       # Python dependencies
+├── config.py              # Config management class, see [Configuration Management Design](#configuration-management-design)
+├── {vendor}_tts.py        # Core TTS client implementation
+├── extension.py           # Main implementation file
+└── tests/                 # Test files
+    ├── bin/start          # Test startup script
+    ├── test_basic.py      # Unit tests
+    └── configs/           # Test configuration
+```
+
+## HTTP Mode
+
+### Characteristics
+
+HTTP mode uses standard HTTP streaming requests. It is suitable for traditional REST API based TTS services. It is easier to implement and maintain, but the latency is usually higher. Rime TTS is a typical example.
+
+### Core Architecture
+
+```
+┌─────────────────┐    HTTP Request  ┌─────────────────┐
+│   Extension     │─────────────────►│  TTS Provider   │
+│                 │  POST request    │                 │
+│ - HTTP client   │                  │ - REST API      │
+│ - Stream parser │◄─────────────────│ - Streamed audio │
+│ - Retry logic   │  HTTP Response   │ - Error handling │
+└─────────────────┘                  └─────────────────┘
+```
+
+### Implementation Rules
+
+HTTP mode is built on `AsyncTTS2HttpExtension`, which already provides full request handling, TTFB reporting, and audio data handling. Developers only need to implement the client interface and the config class.
+
+#### 1. Implement the HTTP Client Interface
+
+**The client must implement the `AsyncTTS2HttpClient` interface:**
+
+```python
+from ten_ai_base.tts2_http import AsyncTTS2HttpClient
+from ten_ai_base.struct import TTS2HttpResponseEventType
+from httpx import AsyncClient, Timeout, Limits
+
+class VendorTTSClient(AsyncTTS2HttpClient):
+    """HTTP TTS client implementing the AsyncTTS2HttpClient interface"""
+
+    def __init__(self, config: VendorTTSConfig, ten_env: AsyncTenEnv):
+
+        # API endpoint configuration (through an abstract method)
+        self.endpoint = self._get_api_endpoint()
+
+        # Request header configuration (through an abstract method)
+        self.headers = self._create_headers()
+
+        # HTTP client configuration
+        self.client = AsyncClient(
+            http2=True,  # Enable HTTP/2
+            follow_redirects=True,
+        )
+
+    def _get_api_endpoint(self) -> str:
+        """Get the API endpoint - implemented by the subclass"""
+        raise NotImplementedError("Subclasses must implement _get_api_endpoint")
+
+    def _create_headers(self) -> dict:
+        """Create request headers - implemented by the subclass"""
+        raise NotImplementedError("Subclasses must implement _create_headers")
+```
+
+**Resource management methods:**
+
+```python
+async def clean(self) -> None:
+    """Clean up resources - required by AsyncTTS2HttpClient"""
+    if self.client:
+        self.ten_env.log_debug("Cleaning HTTP client")
+        # Depending on your implementation, you may only need to clear the client
+        # Or call await self.client.aclose()
+        self.client = None
+
+async def cancel(self) -> None:
+    """Cancel the current request - required by AsyncTTS2HttpClient"""
+    self.ten_env.log_debug("VendorTTS: cancel() called.")
+    self._is_cancelled = True
+```
+
+#### 2. Request Handling
+
+**TTS request handling (implementing the `AsyncTTS2HttpClient` interface):**
+
+```python
+from typing import AsyncIterator, Tuple
+from ten_ai_base.struct import TTS2HttpResponseEventType
+
+async def get(
+    self, text: str, request_id: str
+) -> AsyncIterator[Tuple[bytes | None, TTS2HttpResponseEventType]]:
+    """Process a single TTS request - required by AsyncTTS2HttpClient
+
+    Note: use the TTS2HttpResponseEventType enum instead of integers.
+    """
+    self._is_cancelled = False
+
+    if not self.client:
+        return
+
+    try:
+        # Build request data (through an abstract method)
+        request_data = self._create_request_data(text)
+
+        # Send the streaming request
+        async with self.client.stream(
+            "POST",
+            self.endpoint,
+            headers=self.headers,
+            json=request_data,
+        ) as response:
+            # Handle the response
+            async for chunk in response.aiter_bytes(chunk_size=4096):
+                # Process the response and prepare audio
+                pass
+
+            # Request completed
+            if not self._is_cancelled:
+                yield None, TTS2HttpResponseEventType.END
+
+    except Exception as e:
+        # Error handling
+        pass
+
+def _create_request_data(self, text: str) -> dict:
+    """Create request data - implemented by the subclass"""
+    raise NotImplementedError("Subclasses must implement _create_request_data")
+```
+
+#### 3. Implement the Extension
+
+**The extension must inherit from `AsyncTTS2HttpExtension`:**
+
+```python
+from ten_ai_base.tts2_http import AsyncTTS2HttpExtension, AsyncTTS2HttpConfig, AsyncTTS2HttpClient
+
+class VendorTTSExtension(AsyncTTS2HttpExtension):
+    """TTS extension implementation based on AsyncTTS2HttpExtension"""
+
+    async def create_config(self, config_json_str: str) -> AsyncTTS2HttpConfig:
+        """Create the config object - required by AsyncTTS2HttpExtension"""
+        return VendorTTSConfig.model_validate_json(config_json_str)
+
+    async def create_client(
+        self, config: AsyncTTS2HttpConfig, ten_env: AsyncTenEnv
+    ) -> AsyncTTS2HttpClient:
+        """Create the client object - required by AsyncTTS2HttpExtension"""
+        return VendorTTSClient(config=config, ten_env=ten_env)
+
+    def vendor(self) -> str:
+        """Return the vendor name"""
+        return "vendor_name"
+
+    def synthesize_audio_sample_rate(self) -> int:
+        """Return the audio sample rate"""
+        return self.config.sample_rate if self.config else 16000
+```
+
+**Note**: The `AsyncTTS2HttpExtension` base class already implements the full `request_tts()` method, including:
+
+- Request handling logic
+- TTFB calculation and reporting
+- Audio data handling
+- Error handling
+- PCM file writing
+
+Developers only need to implement the abstract methods shown above.
+
+#### 4. Request Optimization
+
+Some HTTP request parameters can be optimized depending on the TTS vendor. See [HTTP Request Optimization](#http-request-optimization).
+
+### Best Practices
+
+1. **Use the base class**: Inherit from `AsyncTTS2HttpExtension` to avoid re-implementing request handling.
+2. **Implement interfaces strictly**: Follow the `AsyncTTS2HttpClient` contract exactly.
+3. **Use event enums**: Use `TTS2HttpResponseEventType` for type safety.
+4. **Separate vendor-specific logic**: Use abstract helper methods such as `_get_api_endpoint()` and `_create_headers()`.
+5. **Use a connection pool**: Reduce connection setup overhead.
+6. **Set reasonable timeouts**: Avoid requests hanging for too long.
+7. **Return error events correctly**: Let the base class handle them consistently.
+8. **Report extra metadata**: Implement `get_extra_metadata()` to support TTFB reporting.
+9. **Log properly**: Include vendor errors, state changes, request flow, and response flow. See [Logging Specifications](#logging-specifications).
+
+## WebSocket Mode
+
+### Characteristics
+
+WebSocket mode supports bidirectional WebSocket communication and allows streaming audio responses with the lowest latency. ElevenLabs TTS2 is a typical example.
+
+### Core Architecture
+
+```
+┌─────────────────┐    WebSocket     ┌─────────────────┐
+│   Extension     │─────────────────►│  TTS Provider   │
+│                 │  Send requests   │                 │
+│ - Request mgmt  │                  │ - Streamed audio │
+│ - Response mgmt │◄─────────────────│ - Task state mgmt│
+│ - Conn reuse    │  Receive responses│ - Error handling│
+└─────────────────┘                  └─────────────────┘
+```
+
+### Implementation Rules
+
+#### 1. Connection Management Strategy
+
+**Connection lifecycle management:**
+
+```python
+class VendorTTS2Synthesizer:
+    def __init__(self, config, ten_env, error_callback, response_msgs):
+        # Connection state management
+        self._session_closing = False
+        self._connect_exp_cnt = 0
+        self.websocket_task = None
+        self.channel_tasks = []
+        self._session_started = False
+
+        # Event synchronization
+        self._connection_event = asyncio.Event()
+        self._connection_success = False
+        self._receive_ready_event = asyncio.Event()
+
+        # Start WebSocket connection monitoring
+        self.websocket_task = asyncio.create_task(self._process_websocket())
+```
+
+**Automatic reconnection mechanism:**
+
+```python
+async def _process_websocket(self) -> None:
+    """Main WebSocket monitor and reconnection loop"""
+    try:
+        # Use websockets.connect automatic reconnection support
+        async for ws in websockets.connect(
+            uri=self.uri,
+            ...
+        ):
+            self.ws = ws
+            try:
+                # Start send and receive tasks
+                self.channel_tasks = [
+                    # For vendors supporting bidirectional streaming, both loops can be used.
+                    # If a vendor only supports one request at a time, don't loop on sends.
+                    asyncio.create_task(self._send_loop(ws)),
+                    asyncio.create_task(self._receive_loop(ws)),
+                ]
+
+                # Wait until the receive loop is ready
+                await self._receive_ready_event.wait()
+                await self.start_connection()
+
+                await self._await_channel_tasks()
+
+            except websockets.ConnectionClosed as e:
+                if not self._session_closing:
+                    # Reset all event states
+                    self._receive_ready_event.clear()
+                    self._connection_event.clear()
+                    self._connection_success = False
+                    self._session_started = False
+                    continue
+    except Exception as e:
+        self.ten_env.log_error(f"WebSocket connection error: {e}")
+```
+
+#### 2. Message Queue Handling
+
+**Text input queue:**
+
+```python
+async def _send_loop(self, ws: ClientConnection) -> None:
+    """Text sending loop"""
+    try:
+        # Send the initialization message
+        init_msg = ...
+        await ws.send(json.dumps(init_msg))
+
+        while not self._session_closing:
+            # Send text
+            pass
+
+    except asyncio.CancelledError:
+        raise
+    except Exception as e:
+        self.ten_env.log_error(f"Exception in send_loop: {e}")
+        raise
+```
+
+**Audio receive loop:**
+
+```python
+async def _receive_loop(self, ws: ClientConnection) -> None:
+    """Message receive loop"""
+    try:
+        self._receive_ready_event.set()
+
+        while self._session_closing == False:
+            message = await ws.recv()
+            # Parse response
+            pass
+
+    except asyncio.CancelledError:
+        raise
+    except Exception as e:
+        self.ten_env.log_error(f"Exception in receive_loop: {e}")
+        raise
+```
+
+#### 3. Error Handling and Reconnection Strategy
+
+**Exception handling strategy:**
+
+```python
+def _process_ws_exception(self, exp) -> None | Exception:
+    """Handle a WebSocket exception and decide whether to reconnect"""
+    self.ten_env.log_debug(f"Websocket internal error: {exp}")
+    self._connect_exp_cnt += 1
+
+    if self._connect_exp_cnt > 5:  # Maximum retry count
+        self.ten_env.log_error(f"Max retries exceeded: {str(exp)}")
+        return exp
+    return None  # Continue reconnecting
+```
+
+**Error callback handling:**
+
+```python
+if self.error_callback:
+    module_error = ModuleError(
+        message=data["error"],
+        module=ModuleType.TTS,
+        code=error_code,
+        vendor_info=error_info,
+    )
+    await self.error_callback("", module_error)
+```
+
+#### 4. Resource Management and Cleanup
+
+**Connection cancellation and cleanup:**
+
+```python
+def cancel(self) -> None:
+    """Cancel the current connection, used for flush scenarios"""
+
+def _clear_queues(self) -> None:
+    """Clear all queues to avoid processing stale data after a flush"""
+```
+
+### Best Practices
+
+1. **Warm up the connection**: Establish the WebSocket connection during initialization to reduce first-request latency.
+2. **Reconnect automatically**: Implement exponential backoff for reconnection.
+3. **Clean up promptly**: Dispose of canceled synthesizers promptly to avoid memory leaks.
+4. **Classify errors**: Distinguish network, authentication, and business logic errors.
+5. **Use bounded queues**: Prevent memory growth under load.
+6. **Set timeouts**: Avoid long blocking periods.
+7. **Log properly**: Include vendor errors, state changes, request flow, and response flow. See [Logging Specifications](#logging-specifications).
+
+## Extension Structure and Supporting Files
+
+The overall directory structure can be referenced from [Project Structure Overview](#project-structure-overview).
+
+For config file implementation, see [Configuration Management Design](#configuration-management-design).
+
+For required functionality, see [Required Functionality](#required-functionality).
+
+For mode-specific details, refer to [HTTP Mode](#http-mode) and [WebSocket Mode](#websocket-mode).
+
+## 🧪 Unit Tests
+
+### Test File Structure
+
+The TTS Extension test directory should contain a complete test suite to ensure correctness and code quality.
+
+```
+tests/
+├── __init__.py                    # Test package initialization
+├── conftest.py                    # pytest configuration and fixtures
+├── test_basic.py                  # Basic functionality tests
+├── test_error_msg.py              # Error handling tests, mainly validating error messages
+├── test_params.py                 # Parameter config tests, mainly validating parameter checks
+├── test_robustness.py             # Robustness tests for exceptional situations
+├── test_metrics.py                # Metrics tests
+└── configs/                       # Test config files
+    ├── test_config.json           # Test config
+    ├── invalid_config.json        # Invalid config test
+    └── mock_config.json           # Mock config
+```
+
+### Unit Test Best Practices
+
+1. **Cover all major flows**: Make sure every primary path is tested.
+2. **Use mocks wisely**: Avoid unnecessary dependency on external services.
+3. **Handle async tests correctly**: Await tasks and asynchronous setup properly.
+4. **Clean up resources**: Ensure resources are released after tests.
+5. **Test failure scenarios**: Cover a variety of error and exception paths.
+6. **Test boundaries**: Cover edge conditions and extreme inputs.
+7. **Test concurrency**: Validate concurrent request handling when relevant.
+8. **Test configuration combinations**: Validate different parameter combinations.
+
+## 🔗 Integration Tests (Guarder)
+
+### Environment Variable Setup
+
+Create a `.env` file with a real API key:
+
+```bash title=".env"
+# TTS Vendor Services API Key
+VENDOR_TTS_API_KEY=your_api_key_here
+# Example:
+ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+```
+
+### Test Configurations
+
+Create the following config files under `tests/configs/`. Guarder tests will use them.
+
+#### 1. Basic Audio Setting Config
+
+**`property_basic_audio_setting1.json`** - Used by the basic audio setting test, boundary input test, metrics test, and invalid text handling test:
+
+```json title="tests/configs/property_basic_audio_setting1.json"
+{
+  "dump": true,
+  "dump_path": "./tests/keep_dump_output/",
+  "params": {
+    "output_format": "pcm_44100",
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+**`property_basic_audio_setting2.json`** - Used by the basic audio setting test to compare different sample-rate settings:
+
+```json title="tests/configs/property_basic_audio_setting2.json"
+{
+  "dump": true,
+  "dump_path": "./tests/keep_dump_output/",
+  "params": {
+    "output_format": "pcm_44100",
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+**Note**: Depending on your TTS vendor, you may need to adjust parameter names such as `key`, `api_key`, `sample_rate`, or `output_format`.
+
+#### 2. Dump Feature Test Config
+
+**`property_dump.json`** - Used for dump tests, flush tests, and per-request-ID dump tests:
+
+```json title="tests/configs/property_dump.json"
+{
+  "dump": true,
+  "dump_path": "./tests/dump_output/",
+  "params": {
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+#### 3. Error Handling Test Config
+
+**`property_invalid.json`** - Used to test invalid required parameters, such as an invalid API key:
+
+```json title="tests/configs/property_invalid.json"
+{
+  "params": {
+    "key": "invalid"
+  }
+}
+```
+
+**`property_miss_required.json`** - Used to test missing required parameters, such as a missing API key:
+
+```json title="tests/configs/property_miss_required.json"
+{
+  "params": {
+    "key": ""
+  }
+}
+```
+
+#### 4. Full Config Example (Optional)
+
+**`property_bechmarl.json`** - A full config example with multiple parameters, suitable for benchmark testing:
+
+```json title="tests/configs/property_bechmarl.json"
+{
+  "dump": true,
+  "dump_path": "./tests/keep_dump_output/",
+  "params": {
+    "output_format": "pcm_44100",
+    "language": "en",
+    "voice_id": "your_voice_id",
+    "model_id": "your_model_id",
+    "key": "${env:VENDOR_TTS_API_KEY}"
+  }
+}
+```
+
+### Config File Notes
+
+**Key config items**:
+
+- **`params.key`** or **`params.api_key`**: The vendor API key. Use `${env:VENDOR_TTS_API_KEY}` to read it from environment variables.
+- **`dump`**: Whether to enable audio dump (`true` or `false`).
+- **`dump_path`**: The path where dumped audio files are saved.
+- **`params.sample_rate`** or **`params.output_format`**: The audio sample-rate setting, depending on the vendor.
+
+**Environment variable support**:
+
+You can use `${env:VARIABLE_NAME}` in config files to read values from the environment, allowing you to switch API keys without modifying the config itself.
+
+### Run Guarder Tests
+
+Run the full integration tests with a real API key:
+
+```bash title="Terminal"
+cd ai_agents
+task tts-guarder-test EXTENSION=your_extension_name CONFIG_DIR=tests/configs
+```
+
+### Guarder Test Coverage
+
+Guarder integration tests include the following checks to ensure the extension complies with TEN Framework standards.
+
+#### 1. **Basic Audio Setting Test** (`test_basic_audio_setting.py`)
+
+**Goal**: Verify that the extension correctly applies audio parameters from config.
+
+**Checks**:
+- Verify sample-rate settings from different config files.
+- Verify that the extension correctly reads and responds to different sample-rate configs.
+- Verify that the audio frames match the configured sample rate.
+
+**Expected result**:
+- Different configs produce different sample-rate outputs.
+- All audio frames keep a consistent sample rate.
+- No errors or unexpected exceptions occur.
+
+#### 2. **Boundary Input Test** (`test_corner_input.py`)
+
+**Goal**: Verify extension behavior with boundary inputs.
+
+**Checks**:
+- Verify that the extension can handle boundary inputs.
+- Verify that it reports metrics correctly.
+- Verify that metrics are reported before `tts_audio_end`.
+
+**Expected result**:
+- The extension handles boundary inputs and produces audio.
+- Metrics are received.
+- Metrics are sent before `tts_audio_end`.
+
+#### 3. **PCM Dump Feature Test** (`test_dump.py`)
+
+**Goal**: Verify PCM dump export behavior.
+
+**Checks**:
+- Verify that PCM files are generated when dump is enabled.
+- Verify that PCM files are saved to the configured path.
+- Verify that dumped PCM files are not empty.
+
+**Expected result**:
+- When `dump=true`, PCM files are created under `dump_path`.
+- The PCM files contain audio data.
+- File naming follows the expected convention.
+
+#### 4. **Per-Request-ID Dump Test** (`test_dump_each_request_id.py`)
+
+**Goal**: Verify that each request ID produces an independent dump file.
+
+**Checks**:
+- Verify that multiple requests produce multiple dump files.
+- Verify that each request ID maps to one dump file.
+- Verify that the dump file count is correct.
+
+**Expected result**:
+- Sending N requests generates N dump files.
+- Each dump file corresponds to one `request_id`.
+- File names include the request ID.
+
+#### 5. **Flush Feature Test** (`test_flush.py`)
+
+**Goal**: Verify handling of flush requests.
+
+**Checks**:
+- Verify that a flush request interrupts the current request correctly.
+- Verify that the `tts_audio_end` event sent during flush uses `reason=2` (`INTERRUPTED`).
+- Verify that `tts_flush_end` is sent after flush completes.
+- Verify event ordering: `tts_audio_end` must come before `tts_flush_end`.
+
+**Expected result**:
+- TTS synthesis is interrupted after a flush request.
+- A `tts_audio_end` event is sent with `reason=2` (`INTERRUPTED`).
+- A `tts_flush_end` event is sent.
+- Event order is correct.
+
+#### 6. **Metrics Reporting Test** (`test_metrics.py`)
+
+**Goal**: Verify metrics reporting correctness.
+
+**Checks**:
+- Verify that the extension reports metrics.
+- Verify that metrics are sent before `tts_audio_end`.
+- Verify that metrics include required fields such as `module`, `vendor`, and `metrics`.
+
+**Expected result**:
+- Metrics data is received.
+- Metrics are sent before `tts_audio_end`.
+- Metrics format is correct and contains required fields.
+
+#### 7. **Invalid Required Parameter Test** (`test_invalid_required_params.py`)
+
+**Goal**: Verify error handling for invalid required parameters.
+
+**Checks**:
+- Verify that invalid config parameters such as an invalid API key return an error.
+- Verify that the error code is `FATAL_ERROR` (`-1000`).
+- Verify that the error message is clear enough to locate the problem.
+
+**Expected result**:
+- The extension detects invalid required parameters.
+- It returns an error with code `-1000` (`FATAL_ERROR`).
+- The error message describes the issue clearly.
+
+#### 8. **Invalid Text Handling Test** (`test_invalid_text_handling.py`)
+
+**Goal**: Verify how the extension handles invalid text inputs.
+
+**Checks**:
+- Verify that invalid text such as empty strings, punctuation-only text, or whitespace-only text is handled correctly.
+- Verify that the returned error code is `NON_FATAL_ERROR` (`1000`).
+- Verify that the error includes `vendor_info`.
+- Verify that valid text still works after an invalid input.
+
+**Invalid text types under test**:
+- Empty string
+- Spaces, tabs, and line breaks only
+- Punctuation only, in both Chinese and English
+- Emojis and special characters
+- Mathematical expressions and chemical equations
+- Mixed invalid character sequences
+
+**Expected result**:
+- Invalid text returns an error with code `1000` (`NON_FATAL_ERROR`).
+- The error includes `vendor_info` with vendor name, code, and message.
+- A subsequent valid text input can still generate audio normally.
+
+#### 9. **Missing Required Parameter Test** (`test_miss_required_params.py`)
+
+**Goal**: Verify error handling for missing required parameters.
+
+**Checks**:
+- Verify that missing required parameters such as an absent API key return an error.
+- Verify that the error code is `FATAL_ERROR` (`-1000`).
+- Verify that the error message identifies the missing parameter clearly.
+
+**Expected result**:
+- The extension detects missing required parameters.
+- It returns an error with code `-1000` (`FATAL_ERROR`).
+- The error message clearly states which parameter is missing.
+
+### Testing Notes
+
+1. **Prepare the environment**: Make sure required environment variables such as API keys are set correctly.
+2. **Prepare the configs**: Ensure test config files are correct and contain valid credentials.
+3. **Check network connectivity**: Make sure the TTS vendor API is reachable.
+4. **Isolate tests**: Clean dump directories before each run to avoid false positives.
+5. **Analyze failures carefully**: If a test fails, inspect logs carefully to locate the cause.
+6. **Respect test order when needed**: Some tests may have dependencies.
+7. **Clean up resources**: Remove temporary files and release resources after testing.
+
+## 🌐 End-to-End Testing
+
+After development is complete, you can quickly replace the TTS node in a TEN Agent graph with TMan Designer to validate it in a real conversation scenario.
+
+### Replace the TTS Extension with TMan Designer
+
+```bash title="Terminal"
+# Start it from your TEN Agent project directory
+cd /path/to/your/ten-agent-project
+tman designer
+```
+
+TMan Designer opens a visual interface where you can:
+
+1. **Select the TTS node**: Click the existing TTS extension block.
+2. **Replace it with your extension**: Choose `my_tts_extension`.
+3. **Configure parameters**: Set API key, voice ID, and other parameters.
+4. **Apply in one click**: Finish the replacement and start testing.
+
+After replacement, validate the audio quality, response speed, and stability through real conversations.
+
+## Pre-Pull-Request Checklist
+
+Before you submit a pull request, make sure all items below are complete.
+
+### 1. Feature Implementation ✅
+
+**Requirement**: All core functionality is implemented.
+
+**Checklist**:
+- [ ] Implement `request_tts()` to process text input and generate audio.
+- [ ] Implement `vendor()` and return the correct vendor name.
+- [ ] Implement `synthesize_audio_sample_rate()` and return the correct sample rate.
+- [ ] If using HTTP mode, implement `create_config()` and `create_client()`.
+- [ ] If using HTTP mode, implement all required methods in the config and client classes.
+- [ ] If using WebSocket mode, include an automatic reconnection mechanism.
+- [ ] Handle errors correctly and distinguish `FATAL_ERROR` from `NON_FATAL_ERROR`.
+- [ ] Handle flush requests correctly and implement `cancel_tts()`.
+- [ ] Send `tts_audio_start` and `tts_audio_end` correctly.
+- [ ] Calculate and report TTFB correctly.
+- [ ] Calculate and report total audio duration correctly.
+- [ ] Send metrics correctly.
+- [ ] Ensure logging meets the requirements.
+
+### 2. Files Included in the Submission ✅
+
+- [ ] **Vendor interaction code**: Usually `xxx_tts.py`.
+- [ ] **Main controller code**: Usually `extension.py`.
+- [ ] **Unit test code**: Usually under the `tests` directory.
+- [ ] **Guarder test config files**: Usually under `tests/configs`.
+- [ ] **Minimal startup parameter file**: `property.json`.
+- [ ] **Version, dependency, and interface definition file**: `manifest.json`.
+
+### 3. Unit Tests (UT) ✅
+
+**Requirement**: Complete all unit tests to ensure code quality.
+
+**Checklist**:
+- [ ] All unit tests pass.
+- [ ] All major functionality paths are covered.
+- [ ] Error handling logic is tested.
+- [ ] Boundary conditions are tested.
+- [ ] Parameter validation logic is tested.
+- [ ] Config loading and validation are tested.
+
+**Commands**:
+
+```bash
+# Option 1: use the task command (recommended)
+# Run from the project root (ten-framework/ai_agents)
+task test-extension EXTENSION=agents/ten_packages/extension/your_extension_name
+
+# Option 2: run manually
+cd agents/ten_packages/extension/your_extension_name
+tman -y install --standalone
+./tests/bin/start
+
+# Option 3: run tests for all extensions
+task test-agent-extensions
+```
+
+**Notes**:
+- Run `task` commands from the project root (`ten-framework/ai_agents`).
+- If the extension has not installed dependencies yet, the `task` command installs them automatically.
+- Test config files should be under `tests/configs/`.
+
+### 4. TEN Agent Self-Test ✅
+
+**Requirement**: Validate the extension in TEN Agent to ensure it works in a real graph.
+
+**Checklist**:
+- [ ] The extension loads successfully in TEN Agent.
+- [ ] You can hear the agent's voice.
+- [ ] Multi-turn conversation works normally.
+- [ ] Conversation interruption works normally.
+
+### 5. Guarder Integration Tests ✅
+
+**Requirement**: Pass all Guarder integration tests and paste the test results into the PR comments.
+
+**Test location**: `ten-framework/ai_agents/agents/integration_tests/tts_guarder`
+
+**Commands**:
+
+```bash
+# Option 1: use the task command (recommended)
+# Run from the project root (ten-framework/ai_agents)
+task tts-guarder-test EXTENSION=your_extension_name CONFIG_DIR=tests/configs
+
+# Option 2: run manually
+cd agents/integration_tests/tts_guarder
+./scripts/install_deps_and_build.sh linux x64
+./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs
+
+# Run a single test file
+./tests/bin/start --extension_name your_extension_name --config_dir agents/ten_packages/extension/your_extension_name/tests/configs tests/test_basic_audio_setting.py
+```
+
+**Environment variable setup**:
+
+```bash
+# Create a .env file in the project root, or set environment variables directly
+# Set the API key according to your vendor
+export VENDOR_TTS_API_KEY=your_api_key_here
+# Example:
+export ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+# Or in the .env file:
+# ELEVENLABS_TTS_API_KEY=your_elevenlabs_api_key
+```
+
+**Notes**:
+- Run `task` commands from the project root (`ten-framework/ai_agents`).
+- Test config files should live under the extension's `tests/configs/` directory.
+- When you use the `task` command, environment variables are loaded automatically from `.env`.
+- Make sure the extension dependencies have been installed correctly.
+
+**Required test results**:
+- [ ] All Guarder tests pass.
+- [ ] Paste Guarder test results into the PR comments.
+- [ ] If any test fails, explain the reason and provide a fix or mitigation.
+
+### PR Checklist Summary
+
+Before opening the PR, confirm all of the following:
+
+- [ ] **Feature implementation**: All core functionality is implemented and self-tested.
+- [ ] **All required files are included**: Everything needed to run the extension is committed.
+- [ ] **Unit tests**: All UTs pass with acceptable coverage.
+- [ ] **TEN Agent self-test**: The feature works inside TEN Agent.
+- [ ] **Guarder tests**: All Guarder tests pass.
+- [ ] **Test results**: Guarder results are pasted into the PR comments.
+- [ ] **Code review**: The code has been self-reviewed and follows coding conventions.
+- [ ] **Commit message / PR description**: The change description is clear and includes test results.
+
+## Spec
+
+### HTTP Request Optimization
+
+**Connection reuse:**
+
+```python
+class VendorTTSClient:
+    def __init__(self, config, ten_env):
+        # Use a connection pool
+        self.client = AsyncClient(
+            timeout=Timeout(
+                connect=10.0,  # Connection timeout
+                read=30.0,     # Read timeout
+                write=10.0,    # Write timeout
+                pool=5.0       # Connection pool timeout
+            ),
+            limits=Limits(
+                max_connections=100,
+                max_keepalive_connections=20,
+                keepalive_expiry=600.0,
+            ),
+            http2=True,
+            follow_redirects=True,
+        )
+```
+
+**Request compression:**
+
+```python
+def _get_headers(self) -> dict:
+    """Get optimized request headers"""
+    return {
+        "Authorization": f"Bearer {self.api_key}",
+        "Content-Type": "application/json",
+        "Accept": "audio/pcm",
+        "Accept-Encoding": "gzip, deflate",  # Enable compression
+        "User-Agent": "TEN-Framework-TTS/1.0",
+    }
+```
+
+### TTS Base Classes and Subclasses
+
+#### Base Class `AsyncTTS2BaseExtension`
+
+TTS Extensions are built on top of `AsyncTTS2BaseExtension`, which itself inherits from `AsyncExtension` and provides the full infrastructure for TTS extensions.
+
+```python
+class AsyncTTS2BaseExtension(AsyncExtension, ABC):
+    """Base class for TTS extensions"""
+
+    # Abstract methods - must be implemented by subclasses
+    @abstractmethod
+    async def request_tts(self, t: TTSTextInput) -> None:
+        """Handle a TTS request - must be implemented by subclasses
+        - Receive text input from the queue
+        - Call the TTS service to generate audio
+        - Use send_tts_audio_data() to send audio data
+        """
+
+    @abstractmethod
+    def vendor(self) -> str:
+        """Return the vendor name - must be implemented by subclasses
+        - Used for metrics reporting and error tracing
+        """
+
+    @abstractmethod
+    def synthesize_audio_sample_rate(self) -> int:
+        """Return the audio sample rate - must be implemented by subclasses
+        - Used for audio frame formatting and duration calculation
+        """
+
+    # Optional override
+    async def cancel_tts(self) -> None:
+        """Cancel a TTS request - optional override for subclasses
+        - Called when a flush request is received
+        - Used for TTS-specific cancellation logic
+        - Should complete quickly to avoid blocking the main thread
+        """
+
+    # Full functionality already implemented
+
+    # Lifecycle management
+    async def on_init(self, ten_env: AsyncTenEnv) -> None:
+        """Extension initialization - implemented in the base class
+        - Initialize message queue
+        - Initialize metrics counters
+        """
+
+    async def on_start(self, ten_env: AsyncTenEnv) -> None:
+        """Extension start - implemented in the base class
+        - Start the queue processing task
+        """
+
+    async def on_stop(self, ten_env: AsyncTenEnv) -> None:
+        """Extension stop - implemented in the base class
+        - Send the final batch of metrics
+        - Clear the message queue
+        - Cancel running tasks
+        """
+
+    async def on_deinit(self, ten_env: AsyncTenEnv) -> None:
+        """Extension deinitialization - implemented in the base class"""
+
+    # Message queue handling
+    async def on_data(self, ten_env: AsyncTenEnv, data: Data) -> None:
+        """Handle incoming data - implemented in the base class
+        - Handle tts_text_input by enqueueing it
+        - Handle tts_flush by clearing the queue and canceling the current task
+        - Use locks to avoid concurrency issues
+        """
+
+    async def _process_input_queue(self, ten_env: AsyncTenEnv) -> None:
+        """Asynchronously process items in the queue - implemented in the base class
+        - Pull messages one by one
+        - Call request_tts() for each request
+        """
+
+    async def _flush_input_items(self) -> None:
+        """Clear the input queue - implemented in the base class
+        - Clear the input queue
+        - Cancel the current processing task
+        - Call cancel_tts() for TTS-specific cancellation logic
+        """
+
+    # Audio send helpers
+    async def send_tts_audio_data(self, audio_data: bytes, timestamp: int = 0) -> None:
+        """Send audio data - implemented in the base class
+        - Automatically handle incomplete frames (leftover_bytes)
+        - Format frames with sample rate, channels, and sample width
+        - Send to downstream extensions
+        """
+
+    async def send_tts_audio_start(self, request_id: str, turn_id: int = -1,
+                                   extra_metadata: dict | None = None) -> None:
+        """Send the audio-start event - implemented in the base class
+        - Notify downstream extensions that audio is starting
+        - Support extra metadata
+        """
+
+    async def send_tts_audio_end(self, request_id: str, request_event_interval_ms: int,
+                                  request_total_audio_duration_ms: int, turn_id: int = -1,
+                                  reason: TTSAudioEndReason = TTSAudioEndReason.REQUEST_END,
+                                  extra_metadata: dict | None = None) -> None:
+        """Send the audio-end event - implemented in the base class
+        - Notify downstream extensions that audio is finished
+        - Include request interval and total audio duration
+        - Support different end reasons such as REQUEST_END and INTERRUPTED
+        - Clean up request metadata
+        """
+
+    # Metrics helpers
+    async def send_tts_ttfb_metrics(self, request_id: str, ttfb_ms: int,
+                                    turn_id: int = -1, extra_metadata: dict | None = None) -> None:
+        """Send TTFB metrics - implemented in the base class
+        - Report Time To First Byte metrics
+        - Support extra metadata
+        """
+
+    async def send_usage_metrics(self, request_id: str = "",
+                                 extra_metadata: dict | None = None) -> None:
+        """Send usage metrics - implemented in the base class
+        - Input character count, output character count
+        - Received audio duration
+        - Total usage statistics
+        """
+
+    async def send_metrics(self, metrics: ModuleMetrics, request_id: str = "") -> None:
+        """Send generic metrics - implemented in the base class
+        - Send a ModuleMetrics object
+        """
+
+    # Error handling
+    async def send_tts_error(self, request_id: str | None, error: ModuleError,
+                             turn_id: int = -1, extra_metadata: dict | None = None) -> None:
+        """Send an error message - implemented in the base class
+        - Standardized error reporting format
+        - Includes vendor info, error code, and error message
+        - Supports metadata passthrough
+        """
+
+    # Helper methods
+    def synthesize_audio_channels(self) -> int:
+        """Return channel count - implemented in the base class (default 1)"""
+        return 1
+
+    def synthesize_audio_sample_width(self) -> int:
+        """Return sample width in bytes - implemented in the base class (default 2, 16-bit)"""
+        return 2
+
+    def get_uuid(self) -> str:
+        """Generate a unique identifier - implemented in the base class"""
+
+    def update_metadata(self, request_id: str | None, metadata: dict | None) -> dict:
+        """Update metadata - implemented in the base class
+        - Merge request metadata and extra metadata
+        """
+
+    # Metrics helper methods
+    def metrics_add_output_characters(self, characters: int) -> None:
+        """Add output character count - implemented in the base class"""
+
+    def metrics_add_input_characters(self, characters: int) -> None:
+        """Add input character count - implemented in the base class"""
+
+    def metrics_add_recv_audio_chunks(self, chunks: bytes) -> None:
+        """Add received audio chunks - implemented in the base class"""
+
+    async def metrics_calculate_duration(self) -> None:
+        """Calculate audio duration - implemented in the base class"""
+
+    def metrics_reset(self) -> None:
+        """Reset metrics counters - implemented in the base class"""
+```
+
+##### Full Functionality Already Provided by the Base Class
+
+`AsyncTTS2BaseExtension` already provides the following complete functionality, so developers do not need to re-implement it:
+
+1. **Lifecycle management**
+   - `on_init()`: initialize the message queue and metrics counters
+   - `on_start()`: start the queue processing task
+   - `on_stop()`: send the final metrics, clear the queue, and cancel tasks
+   - `on_deinit()`: perform deinitialization
+
+2. **Asynchronous queue processing**
+   - `on_data()`: process upstream `tts_text_input` and `tts_flush`
+   - `_process_input_queue()`: process queued messages and call `request_tts()`
+   - `_flush_input_items()`: clear the queue and cancel the current task after a flush
+   - Locking is used to avoid concurrency issues so flush does not race with new requests
+
+3. **Audio data management**
+   - `send_tts_audio_data()`: automatically handle incomplete frames, format them, and send them
+   - `send_tts_audio_start()`: send the audio start event
+   - `send_tts_audio_end()`: send the audio end event with duration and reason
+
+4. **Metrics reporting**
+   - `send_tts_ttfb_metrics()`: report TTFB
+   - `send_usage_metrics()`: report usage such as character counts and audio duration
+   - `send_metrics()`: report general metrics
+   - Audio duration and usage totals are calculated automatically
+
+5. **Error handling**
+   - `send_tts_error()`: standardized error reporting
+   - Includes vendor name, error code, and error message
+
+6. **Helper functionality**
+   - Audio parameter access (channel count and sample width)
+   - Metadata management
+   - UUID generation
+   - Metrics accumulation and reset
+
+##### Methods the Subclass Must Implement
+
+Developers only need to implement the following three abstract methods, plus optionally `cancel_tts()`:
+
+1. **`async def request_tts(t: TTSTextInput) -> None`**
+   - Implement the core TTS request logic
+   - Fetch or generate audio data
+   - Use `send_tts_audio_data()` to stream audio
+   - Use `send_tts_audio_start()` and `send_tts_audio_end()` for lifecycle events
+   - Use `send_tts_ttfb_metrics()` to report TTFB
+   - Use `send_tts_error()` to report failures
+
+2. **`def vendor() -> str`**
+   - Return the vendor name for metrics and error tracing
+
+3. **`def synthesize_audio_sample_rate() -> int`**
+   - Return the sample rate used to format outgoing audio frames
+
+4. **`async def cancel_tts() -> None`** (optional)
+   - Implement TTS-specific cancellation logic
+   - For example: close connections or cancel in-flight requests
+   - Should complete quickly and avoid blocking
+
+#### Base Class `AsyncTTS2HttpExtension`
+
+HTTP mode is built on top of `AsyncTTS2HttpExtension`, which inherits from `AsyncTTS2BaseExtension` and provides the full HTTP-mode implementation.
+
+```python
+class AsyncTTS2HttpExtension(AsyncTTS2BaseExtension):
+    """Base class for HTTP-mode TTS extensions"""
+
+    # Abstract methods - must be implemented by subclasses
+    @abstractmethod
+    async def create_config(self, config_json_str: str) -> AsyncTTS2HttpConfig:
+        """Create a config object from a JSON string - must be implemented by subclasses"""
+
+    @abstractmethod
+    async def create_client(self, config: AsyncTTS2HttpConfig, ten_env: AsyncTenEnv) -> AsyncTTS2HttpClient:
+        """Create the client object - must be implemented by subclasses"""
+
+    @abstractmethod
+    def vendor(self) -> str:
+        """Return the vendor name - must be implemented by subclasses"""
+
+    @abstractmethod
+    def synthesize_audio_sample_rate(self) -> int:
+        """Return the audio sample rate - must be implemented by subclasses"""
+
+    async def request_tts(self, t: TTSTextInput) -> None:
+        """Handle a TTS request - fully implemented in the base class
+        Includes the complete request pipeline:
+        - Request state management (request_id, turn_id, etc.)
+        - Automatic client recreation
+        - PCMWriter management (create and clean up)
+        - Calling client.get() to fetch audio
+        - Audio handling and sending
+        - TTFB calculation and reporting on the first audio chunk
+        - Audio duration calculation
+        - Audio start/end events
+        - Error handling and reporting
+        """
+
+    def _calculate_audio_duration_ms(self) -> int:
+        """Calculate audio duration in milliseconds - implemented in the base class"""
+```
+
+##### Full Functionality Already Provided by the HTTP Base Class
+
+`AsyncTTS2HttpExtension` already implements the following functionality:
+
+1. **Lifecycle management**
+   - `on_init()`: load and validate config, create the client
+   - `on_stop()`: clean up resources
+   - `on_deinit()`: deinitialize
+
+2. **Request handling logic** in `request_tts()`
+   - Track request state such as `request_id`, `turn_id`, and `first_chunk`
+   - Recreate the client automatically if needed
+   - Manage PCMWriter lifecycle
+   - Fetch audio streams from the client
+   - Process audio streaming data
+   - Compute and report TTFB when the first audio chunk arrives
+   - Compute audio duration
+   - Send audio start/end events
+   - Handle and report errors
+
+3. **Resource management**
+   - Automatically manage PCMWriter instances by `request_id`
+   - Clean up client resources
+   - Reset internal state
+
+##### Methods the Subclass Must Implement
+
+Developers only need to implement these four abstract methods:
+
+1. **`create_config(config_json_str: str) -> AsyncTTS2HttpConfig`**
+   - Create a config object from a JSON string
+
+2. **`create_client(config: AsyncTTS2HttpConfig, ten_env: AsyncTenEnv) -> AsyncTTS2HttpClient`**
+   - Create the client object
+
+3. **`vendor() -> str`**
+   - Return the vendor name
+
+4. **`synthesize_audio_sample_rate() -> int`**
+   - Return the audio sample rate
+
+##### Config Interface `AsyncTTS2HttpConfig`
+
+The config class must inherit from `AsyncTTS2HttpConfig` and implement these abstract methods:
+
+```python
+class AsyncTTS2HttpConfig(BaseModel):
+    """Base config class for HTTP mode"""
+
+    dump: bool = False
+    dump_path: str = "/tmp"
+
+    @abstractmethod
+    def update_params(self) -> None:
+        """Update config parameters - must be implemented by subclasses
+        - Extract fields from the params dictionary
+        - Handle mapping and conversion
+        - Remove blacklisted parameters
+        """
+
+    @abstractmethod
+    def to_str(self, sensitive_handling: bool = True) -> str:
+        """Convert config to a string - must be implemented by subclasses
+        - Support masking sensitive information
+        - Used for logging
+        """
+
+    @abstractmethod
+    def validate(self) -> None:
+        """Validate the config - must be implemented by subclasses
+        - Check required parameters
+        - Validate ranges and formats
+        """
+```
+
+##### Client Interface `AsyncTTS2HttpClient`
+
+The client class must implement the `AsyncTTS2HttpClient` interface:
+
+```python
+class AsyncTTS2HttpClient:
+    """HTTP-mode client interface"""
+
+    @abstractmethod
+    async def clean(self) -> None:
+        """Clean up resources - must be implemented by subclasses
+        - Clean up HTTP client connections
+        - Release related resources
+        """
+
+    @abstractmethod
+    async def cancel(self) -> None:
+        """Cancel the current request - must be implemented by subclasses
+        - Set the cancellation flag
+        - Interrupt the ongoing request
+        """
+
+    @abstractmethod
+    async def get(
+        self, text: str, request_id: str
+    ) -> AsyncIterator[Tuple[bytes | None, TTS2HttpResponseEventType]]:
+        """Get an audio stream - must be implemented by subclasses
+        - Send an HTTP POST request
+        - Handle the streaming response
+        - Return audio chunks and event types
+        - Use the TTS2HttpResponseEventType enum
+        """
+
+    @abstractmethod
+    def get_extra_metadata(self) -> dict[str, Any]:
+        """Return extra metadata - must be implemented by subclasses
+        - Return extra data beyond passthrough metadata
+        - Used for TTFB reporting
+        - Examples: voice_id, model_id
+        """
+```
+
+#### Responsibilities of Base Classes and Subclasses
+
+##### Detailed Breakdown
+
+**1. `AsyncTTS2BaseExtension` (generic base class)**
+
+**Responsibility**: Provide common TTS infrastructure shared by all TTS extensions.
+
+**Responsible for**:
+- ✅ Full message queue management (receive, process, flush)
+- ✅ Extension lifecycle management (init, start, stop, deinit)
+- ✅ Audio data sending and formatting
+- ✅ Metrics reporting (TTFB, usage, etc.)
+- ✅ Error handling and reporting
+- ✅ Metadata management
+
+**Not responsible for**:
+- ❌ Calling a specific TTS service
+- ❌ Config loading
+- ❌ Client management
+- ❌ Vendor-specific logic
+
+**2. `AsyncTTS2HttpExtension` (HTTP-mode base class)**
+
+**Responsibility**: Provide the complete implementation shared by all HTTP-mode TTS extensions.
+
+**Responsible for**:
+- ✅ Loading and validating config via `create_config()`
+- ✅ Creating and managing the client via `create_client()`
+- ✅ HTTP request handling through a full `request_tts()` implementation
+- ✅ TTFB calculation and reporting
+- ✅ **PCMWriter lifecycle management when dump is enabled**
+  - **Initialization**: created automatically for a new request ID inside `request_tts()`
+  - **Writing**: audio is written automatically during stream processing
+  - **Flushing**: automatically flushed when the request finishes
+- ✅ Tracking request state such as `request_id` and `turn_id`
+- ✅ Audio stream processing via `client.get()`
+- ✅ Error handling and event sending
+
+**Not responsible for**:
+- ❌ Vendor-specific config structure
+- ❌ Vendor-specific HTTP communication logic
+- ❌ Vendor identity
+
+**3. `VendorTTSExtension` (subclass implementation)**
+
+**Responsibility**: Implement vendor-specific logic and integrate with the concrete TTS provider.
+
+Responsibilities differ depending on the inheritance path.
+
+**Path 1: Inherit directly from `AsyncTTS2BaseExtension` (WebSocket)**
+
+**Responsible for**:
+- ✅ **A full `request_tts()` implementation**
+  - Request state management (`request_id`, `turn_id`, etc.)
+  - WebSocket connection management or SDK calls
+  - Audio stream processing and sending
+  - TTFB calculation and reporting
+  - Audio start/end events
+  - Error handling and reporting
+  - **PCMWriter management when dump is enabled**
+    - **Initialize**: create a `PCMWriter` when a new `request_id` is seen and clean old writers
+    - **Write**: call `PCMWriter.write()` before `send_tts_audio_data()`
+    - **Flush**: call `PCMWriter.flush()` before `audio_end` on normal completion or interruption
+- ✅ **Client class implementation**
+  - WebSocket connection management
+  - Or SDK wrapper implementation
+  - Resource cleanup
+  - Request cancellation
+- ✅ **Config class implementation**
+  - Parameter extraction and mapping
+  - Log output formatting
+  - Parameter validation
+- ✅ **Extension class implementation**
+  - `vendor()`: return the vendor name
+  - `synthesize_audio_sample_rate()`: return the sample rate
+  - `cancel_tts()`: optionally implement cancellation logic
+
+**Not responsible for**:
+- ❌ Message queue management
+- ❌ Audio data sending
+- ❌ Metrics reporting
+- ❌ Error formatting
+
+**Path 2: Inherit from `AsyncTTS2HttpExtension` (HTTP mode)**
+
+**Responsible for**:
+- ✅ **Config class implementation (`VendorTTSConfig`)**
+  - `update_params()`: extract and map parameters
+  - `to_str()`: format logs
+  - `validate()`: validate parameters
+- ✅ **Client class implementation (`VendorTTSClient`)**
+  - `get()`: send HTTP requests and process responses
+  - `clean()`: clean up resources
+  - `cancel()`: cancel requests
+  - `get_extra_metadata()`: return extra metadata
+- ✅ **Extension class implementation**
+  - `create_config()`: create the config object
+  - `create_client()`: create the client object
+  - `vendor()`: return the vendor name
+  - `synthesize_audio_sample_rate()`: return the sample rate
+
+**Not responsible for**:
+- ❌ Message queue management
+- ❌ Audio data sending
+- ❌ Metrics reporting
+- ❌ Error formatting
+- ❌ **Request pipeline implementation**, because the HTTP base class already provides it
+- ❌ **PCMWriter management**, because the HTTP base class already provides it
+
+**Note**: Both paths should support `dump` and `dump_path` in the config class so PCM dump can be enabled consistently.
+
+### TTS Extension Interfaces
+
+#### Input and Output Data Formats
+
+In addition to property config, the standard TTS interface (`tts-interface.json`) defines the input and output data schemas:
+
+**Input data**:
+- **Text input** (`tts_text_input`): text stream received from upstream
+- **Flush request** (`tts_flush`): cancel the current request and clear the queue
+
+**Output data**:
+- **Text result** (`tts_text_result`): timestamped text result when `enable_words=true`
+- **Audio start** (`tts_audio_start`): audio start event
+- **Audio end** (`tts_audio_end`): audio end event, including duration statistics
+- **Flush complete** (`tts_flush_end`): notification that flush handling is done
+- **Error** (`error`): error details when a failure occurs
+- **Metrics** (`metrics`): performance data such as TTFB and audio duration
+- **PCM audio frame** (`pcm_frame`): outgoing audio stream sent downstream
+
+See `tts-interface.json` for the full field definitions.
+
+#### Upstream Input Interface (`data_in`)
+
+##### 1. `tts_text_input` - TTS Text Input
+
+**Purpose**: Receive text from an upstream extension, typically an LLM Extension, for speech synthesis.
+
+**Required fields**:
+- `request_id` (string): unique request identifier for tracking
+- `text` (string): the text content to synthesize
+
+**Optional fields**:
+- `text_input_end` (bool): whether the current text input is complete
+  - `true`: text input for the current turn is complete
+  - `false` or unset: more text is coming
+- `metadata` (object): metadata
+  - `session_id` (string): session ID used to associate multiple requests in one session
+  - `turn_id` (int64): turn ID used to identify a conversation turn
+  - Any other fields that need to be passed downstream
+
+**Processing notes**:
+- The extension should enqueue the received text.
+- Streaming text input is supported, so multiple `tts_text_input` messages may arrive.
+- When `text_input_end=true`, the full input should be synthesized.
+
+##### 2. `tts_flush` - Flush Request
+
+**Purpose**: Cancel the TTS request currently being processed and clear the request queue.
+
+**Fields**:
+- `flush_id` (string): unique identifier for the flush request
+- `metadata` (object): metadata
+  - `session_id` (string): session ID
+  - Any fields that need to be passed downstream after the flush completes
+
+**Processing notes**:
+- When a flush request arrives, the extension must:
+  1. Clear all pending requests in the input queue
+  2. Cancel the TTS request currently in progress
+  3. Call the client's `cancel()` method to interrupt the vendor request
+  4. Send `tts_flush_end` to notify downstream extensions that flushing has completed
+
+#### Downstream Output Interface (`data_out`)
+
+##### 1. `tts_text_result` - TTS Text Result (for subtitle alignment)
+
+**Purpose**: Output text with timestamps when `enable_words=true`.
+
+**Required fields**:
+- `request_id` (string): matches `tts_text_input.request_id`
+- `text` (string): text corresponding to the synthesized audio
+- `start_ms` (int64): text start timestamp in milliseconds
+- `duration_ms` (int64): text duration in milliseconds
+- `words` (array): word-level timestamp array
+  - `word` (string): word content
+  - `start_ms` (int64): word start timestamp in milliseconds
+  - `duration_ms` (int64): word duration in milliseconds
+
+**Optional fields**:
+- `text_result_end` (bool): whether the text result stream has ended
+- `metadata` (object): metadata
+  - `session_id` (string): session ID
+  - `turn_id` (int64): turn ID
+  - Any fields that need to be passed through
+
+**Sending notes**:
+- Only send this message when `enable_words=true`.
+- If the vendor supports word-level timestamps, extract them and send them.
+- If word-level timestamps are not supported, this message can be omitted.
+
+##### 2. `tts_flush_end` - Flush Complete
+
+**Purpose**: Respond to `tts_flush` and notify downstream extensions that flushing is complete.
+
+**Fields**:
+- `flush_id` (string): matches `tts_flush.flush_id`
+- `metadata` (object): passthrough metadata from `tts_flush`
+
+**Sending notes**:
+- This message must be sent after flush handling finishes.
+
+##### 3. `tts_audio_start` - Audio Start Event
+
+**Purpose**: Notify downstream extensions that audio data is about to start.
+
+**Fields**:
+- `request_id` (string): matches `tts_text_input.request_id`
+- `metadata` (object): metadata copied from `tts_text_input`
+  - `session_id` (string): session ID
+  - `turn_id` (int64): turn ID
+  - Any other passthrough data
+
+**Sending notes**:
+- Send this before the first audio chunk.
+- Downstream extensions can use it to prepare playback.
+
+##### 4. `tts_audio_end` - Audio End Event
+
+**Purpose**: Notify downstream extensions that audio transmission is complete.
+
+**Required fields**:
+- `request_id` (string): matches `tts_text_input.request_id`
+- `request_event_interval_ms` (int64): interval from the first `tts_text_input` to the first audio chunk
+- `request_total_audio_duration_ms` (int64): total audio duration generated for the request
+- `reason` (int64): end reason
+  - `1`: normal completion (`REQUEST_END`)
+  - `2`: interruption (`INTERRUPTED`)
+  - Other values can be defined as needed
+
+**Optional fields**:
+- `metadata` (object): metadata copied from `tts_text_input`
+  - `session_id` (string): session ID
+  - `turn_id` (int64): turn ID
+
+**Sending notes**:
+- Send this after all audio chunks have been delivered.
+- `request_event_interval_ms` and `request_total_audio_duration_ms` must be calculated accurately.
+- If a request is interrupted by flush, set `reason` to the interrupted value.
+
+##### 5. `error` - Error Information
+
+**Purpose**: Report errors to upstream or downstream extensions.
+
+**Required fields**:
+- `module` (string): must be `"tts"`
+- `code` (int64): error code
+  - `-1000`: fatal error (`FATAL_ERROR`)
+  - `1000`: non-fatal error (`NON_FATAL_ERROR`)
+- `message` (string): human-readable error description
+
+**Optional fields**:
+- `id` (string): unique error ID
+- `vendor_info` (object): vendor-specific error data
+  - `vendor` (string): vendor name
+  - `code` (string): vendor error code
+  - `message` (string): vendor error message
+- `metadata` (object): metadata copied from `tts_text_input`
+  - `session_id` (string): session ID
+  - `turn_id` (int64): turn ID
+  - Any additional passthrough fields
+
+**Sending notes**:
+- This must be sent when an error occurs during synthesis.
+- `NON_FATAL_ERROR` refers to recoverable request-scoped failures.
+- `FATAL_ERROR` refers to non-recoverable issues, usually basic configuration problems.
+
+##### 6. `metrics` - Metrics Data
+
+**Purpose**: Report performance and usage metrics for the TTS extension.
+
+**Required fields**:
+- `module` (string): usually `"tts"`
+- `vendor` (string): vendor name
+- `metrics` (object): metrics payload
+  - Can include TTFB, audio duration, character count, request count, and more
+
+**Optional fields**:
+- `id` (string): unique metrics identifier
+- `metadata` (object): metadata copied from `tts_text_input`
+  - `session_id` (string): session ID
+  - `turn_id` (int64): turn ID
+  - Any other passthrough content
+
+**Sending notes**:
+- Used for monitoring and statistics.
+- Usually reported when the request completes.
+
+#### Audio Output Interface (`audio_frame_out`)
+
+##### `pcm_frame` - PCM Audio Frame
+
+**Purpose**: Send PCM audio data downstream.
+
+**Fields**:
+- `metadata` (object): metadata
+  - `session_id` (string): session ID
+  - `turn_id` (int64): turn ID
+
+**Audio format requirements**:
+- Format: PCM
+- Sample rate: returned by `synthesize_audio_sample_rate()` (common values: 16000, 24000, 44100, 48000 Hz)
+- Channels: returned by `synthesize_audio_channels()` (default 1, mono)
+- Sample width: returned by `synthesize_audio_sample_width()` (default 2 bytes, 16-bit)
+- Endianness: Little-endian
+
+**Sending notes**:
+- Audio is streamed frame by frame.
+- The base class automatically handles incomplete frames using `leftover_bytes`.
+- If `dump` is enabled, audio is also saved to files.
+
+#### Example Interface Flow
+
+##### Normal Request Flow
+
+```
+Upstream Extension               TTS Extension                 Downstream Extension                Vendor TTS Server
+     |                                  |                                 |                                 |
+     |---- tts_text_input ------------->|                                 |                                 |
+     |    (text="Hello")                |                                 |                                 |
+     |                                  |------------------------------ call TTS service -------------------->|
+     |                                  |                                 |                                 |
+     |                                  |<----------------------------- receive audio data -------------------|
+     |                                  |                                 |                                 |
+     |                                  |-----tts_ttfb(metrics)---------->|                                 |
+     |                                  |                                 |                                 |
+     |                                  |---- tts_audio_start ----------->|                                 |
+     |                                  |                                 |                                 |
+     |                                  |---- pcm_frame ----------------->|                                 |
+     |                                  |---- pcm_frame ----------------->|                                 |
+     |                                  |---- pcm_frame ----------------->|                                 |
+     |                                  |    ...                          |                                 |
+     |                                  |---- tts_audio_end ------------->|                                 |
+     |                                  |                                 |                                 |
+     |                                  |---- input,output metrics ------>|                                 |
+```
+
+##### Flush Request Flow
+
+```
+Upstream Extension               TTS Extension                 Downstream Extension
+     |                                  |                                 |
+     |---- tts_flush ------------------>|                                 |
+     |                                  | [Internal handling]             |
+     |                                  |   1. Cancel current request     |
+     |                                  |   2. Clear queue                |
+     |                                  |   3. Call client.cancel()       |
+     |                                  |                                 |
+     |                                  |---- tts_flush_end ------------->|
+```
+
+### `manifest.json` Contents
+
+The `manifest.json` file defines the TTS extension metadata, dependencies, API interfaces, and property declarations.
+
+#### Basic Structure
+
+```json title="manifest.json"
+{
+  "type": "extension",
+  "name": "vendor_tts_python",
+  "version": "0.1.0"
+}
+```
+
+**Key fields**:
+- `type`: must be `"extension"`
+- `name`: the unique identifier of the extension, recommended format `{vendor}_tts_python`
+- `version`: semantic version number; update it whenever code changes so the package can be published to the TEN Extension Store
+
+#### Dependency Declarations
+
+```json
+"dependencies": [
+  {
+    "type": "system",
+    "name": "ten_runtime_python",
+    "version": "0.11"
+  },
+  {
+    "type": "system",
+    "name": "ten_ai_base",
+    "version": "0.7"
+  }
+]
+```
+
+**Required dependencies**:
+- `ten_runtime_python`: TEN Framework Python runtime
+- `ten_ai_base`: TEN AI Base system package that provides TTS base classes and interface definitions
+
+#### Package Include Configuration
+
+```json
+"package": {
+  "include": [
+    "manifest.json",
+    "property.json",
+    "BUILD.gn",
+    "**.tent",
+    "**.py",
+    "README.md",
+    "requirements.txt"
+  ]
+}
+```
+
+This defines which files should be included when packaging the extension, using glob patterns.
+
+#### API Interface Configuration
+
+**1. Interface inheritance**
+
+```json
+"api": {
+  "interface": [
+    {
+      "import_uri": "../../system/ten_ai_base/api/tts-interface.json"
+    }
+  ]
+}
+```
+
+**Notes**:
+- You must inherit the standard TTS interface from the `ten_ai_base` system package.
+- The standard interface defines the required properties shared by all TTS extensions:
+  - `dump`: boolean flag for audio dump
+  - `dump_path`: string path where dumped audio is stored
+
+**2. Property declarations**
+
+```json
+"api": {
+  "property": {
+    "properties": {
+      "dump": {
+          "type": "bool"
+      },
+      "dump_path": {
+          "type": "string"
+      },
+      "params": {
+        "type": "object",
+        "properties": {
+             ...
+        }
+      }
+    }
+  }
+}
+```
+
+**Notes**:
+- Declare extension-specific config fields under `api.property.properties`.
+- `params` contains the vendor-specific parameters needed for the minimum viable TTS setup. You do not need to enumerate every possible vendor field.
+
+**Full ElevenLabs TTS example**:
+
+```json title="manifest.json"
+{
+  "type": "extension",
+  "name": "vendor_tts_python",
+  "version": "0.1.0",
+  "dependencies": [
+    {
+      "type": "system",
+      "name": "ten_runtime_python",
+      "version": "0.11"
+    },
+    {
+      "type": "system",
+      "name": "ten_ai_base",
+      "version": "0.7"
+    }
+  ],
+  "package": {
+    "include": [
+      "manifest.json",
+      "property.json",
+      "BUILD.gn",
+      "**.tent",
+      "**.py",
+      "README.md",
+      "requirements.txt"
+    ]
+  },
+  "api": {
+    "interface": [
+      {
+        "import_uri": "../../system/ten_ai_base/api/tts-interface.json"
+      }
+    ],
+    "property": {
+      "properties": {
+        "params": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            },
+            "model_id": {
+              "type": "string"
+            },
+            "voice_id": {
+              "type": "string"
+            },
+            "output_format": {
+              "type": "string"
+            }
+          }
+        },
+        "dump": {
+          "type": "bool"
+        },
+        "dump_path": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+```
+
+### `property.json` Contents
+
+Provide the minimum default configuration required to make TTS work in `property.json`:
+
+```json title="property.json"
+{
+  "params": {
+    "api_key": "your_tts_api_key_here",
+    "voice_id": "default_voice",
+    "model": "default_model",
+    "sample_rate": "24000"
+  },
+  "extra_params": {
+    "extra_key": "extra_value"
+  },
+  "dump": false,
+  "dump_path": "/tmp/tts_audio_dump"
+}
+```
+
+Here `dump` enables audio dump, meaning all audio generated by TTS is also saved to files. Text belonging to the same `request_id` is saved sequentially in one file, while different `request_id` values are saved into separate files. `dump_path` controls where those files are written.
+
+`params` contains vendor parameters that can be passed through directly to the TTS provider.
+
+The exact parameter names and values depend on the vendor's official documentation.
+
+If you have additional custom parameters that are not part of the vendor's official API, place them under `extra_params`. Just like `params`, `extra_params` is a JSON object.
+
+### Configuration Management Design
+
+#### Design the Config Class
+
+Create a flexible config class that supports required parameters as well as optional passthrough parameters:
+
+```python title="config.py"
+from pydantic import BaseModel
+from typing import Dict, Optional
+
+class MyTTSConfig(BaseModel):
+    # All vendor parameters live in params, including required and optional ones
+    params: Dict[str, Optional[str]] = {}
+
+    # Non-vendor parameters used only by this TTS extension
+    extra_params: Dict[str, Optional[str]] = {}
+
+    # Standard dump configuration shared by TTS extensions
+    dump: bool = False
+    dump_path: Optional[str] = None
+```
+
+#### Read Extension Config
+
+Load and initialize config during `on_init`:
+
+```python title="extension.py"
+from ten_ai_base.const import LOG_CATEGORY_KEY_POINT, LOG_CATEGORY_VENDOR
+from ten_ai_base.message import ModuleError, ModuleErrorCode
+
+@override
+async def on_init(self, ten_env: AsyncTenEnv) -> None:
+    await super().on_init(ten_env)
+
+    # Read the complete extension configuration
+    config_json, _ = await ten_env.get_property_to_json("")
+
+    try:
+        # Deserialize into the config class
+        self.config = MyTTSConfig.model_validate_json(config_json)
+
+        # Print config info with sensitive values masked
+        ten_env.log_info(
+            f"config: {self.config.to_json(sensitive_handling=True)}",
+            category=LOG_CATEGORY_KEY_POINT,
+        )
+
+    except Exception as e:
+        ten_env.log_error(
+            f"invalid property: {e}",
+            category=LOG_CATEGORY_KEY_POINT
+        )
+        # Fall back to the default config when parsing fails
+        self.config = MyTTSConfig.model_validate_json("{}")
+        # Send a fatal error
+        await self.send_tts_error(
+            ModuleError(
+                module=MODULE_NAME_TTS,
+                code=ModuleErrorCode.FATAL_ERROR.value,
+                message=str(e),
+            ),
+        )
+```
+
+#### Mask Sensitive Config Information
+
+Add a masking helper to the config class so sensitive information is protected in logs:
+
+```python title="config.py"
+from ten_ai_base.utils import encrypt
+
+class MyTTSConfig(BaseModel):
+    params: Dict[str, Optional[str]] = {}
+    dump: bool = False
+    dump_path: Optional[str] = None
+
+    def to_json(self, sensitive_handling: bool = False) -> str:
+        """
+        Serialize configuration to JSON with optional masking
+
+        Args:
+            sensitive_handling: Whether to mask sensitive fields
+        """
+        if not sensitive_handling:
+            return self.model_dump_json()
+
+        # Deep copy the config object
+        config = self.model_copy(deep=True)
+
+        # Mask sensitive fields in params
+        if config.params:
+            encrypted_params = {}
+            for key, value in config.params.items():
+                # Encrypt fields containing sensitive words such as key/token/secret
+                if (key in ['api_key', 'key', 'token', 'secret', 'password']
+                    and isinstance(value, str) and value):
+                    encrypted_params[key] = encrypt(value)
+                else:
+                    encrypted_params[key] = value
+            config.params = encrypted_params
+
+        return config.model_dump_json()
+```
+
+#### Config Best Practices
+
+1. **Type safety**: Use pydantic validation to ensure parameter types are correct.
+2. **Required parameter checks**: Validate required parameters inside `validate()`.
+3. **Range validation**: Verify valid ranges for sample rate, channels, and similar values.
+4. **Sensitive data protection**: Use the safe mode of `to_str()` when logging.
+5. **Reasonable defaults**: Provide reasonable defaults for the minimum parameter set.
+6. **Clear error messages**: Return clear, debuggable configuration errors.
+
+### Required Functionality
+
+**Note**: In addition to the functions below, you also need the required logs. See [Logging Specifications](#logging-specifications).
+
+#### 1. Initialization Methods
+
+- **`__init__(config, ten_env, error_callback)`**: Initialize the client with the config object, environment object, and error callback.
+- **`_initialize_client()`**: Initialize the underlying client connection, such as WebSocket, HTTP, or SDK client.
+
+#### 2. Core Request Handling
+
+**WebSocket mode:**
+- **`async def get(text, request_id) -> AsyncIterator[tuple[bytes | None, int, int | None]]`**: Process a TTS request and return an async iterator that yields audio chunks, event types, and TTFB on the first audio chunk.
+  - Return value: `(audio_data, event_type, ttfb_ms)`
+  - Event types: `EVENT_TTS_RESPONSE`, `EVENT_TTS_REQUEST_END`, `EVENT_TTS_ERROR`, `EVENT_TTS_INVALID_KEY_ERROR`
+
+**HTTP mode:**
+- **`async def get(text, request_id) -> AsyncIterator[Tuple[bytes | None, TTS2HttpResponseEventType]]`**: Process a TTS request and return an async iterator using `TTS2HttpResponseEventType`.
+  - Return value: `(audio_data, event_type)`
+  - Event types: `TTS2HttpResponseEventType.RESPONSE`, `END`, `ERROR`, `INVALID_KEY_ERROR`, and `FLUSH`
+
+#### 3. Abstract Methods for Vendor Decoupling
+
+**WebSocket mode:**
+- **`_get_websocket_uri() -> str`**: Return the WebSocket URI.
+- **`_create_request_data(text) -> dict`**: Build the request payload.
+- **`_parse_response(data) -> tuple`**: Parse vendor responses and return audio data plus event type.
+- **`_receive_responses() -> AsyncIterator`**: Receive the WebSocket response stream.
+
+**HTTP mode (when inheriting from `AsyncTTS2HttpClient`):**
+- **`_get_api_endpoint() -> str`**: Return the API endpoint URL.
+- **`_create_headers() -> dict`**: Create HTTP request headers including authentication.
+- **`_create_request_data(text) -> dict`**: Create the HTTP request body.
+- **`_is_authentication_error(error_message) -> bool`**: Decide whether an error is an authentication error.
+
+**SDK mode:**
+- **`_parse_credentials()`**: Parse authentication information such as credential files or service accounts.
+- **`_create_streaming_config()`**: Create the streaming config object.
+- **`_create_request_generator(text)`**: Create the request generator. Usually the first request contains config and later requests carry text.
+- **`_call_streaming_api(request_generator)`**: Call the SDK streaming API.
+- **`_extract_audio_content(response)`**: Extract audio content from SDK responses.
+
+#### 4. Resource Management Methods
+
+- **`async def stop()`**: Stop the client, close connections, and clean up resources.
+- **`def cancel()`**: Cancel the current request, set the cancel flag, clear queues, and close connections.
+- **`async def clean()`** (HTTP mode): Clean up HTTP client resources.
+- **`async def reset()`** (WebSocket/SDK mode, optional): Reset the client connection.
+
+#### 5. Helper Methods
+
+**HTTP mode:**
+- **`def get_extra_metadata() -> dict[str, Any]`**: Return vendor-specific metadata such as `voice_id` or `model_id` for TTFB reporting.
+
+**WebSocket/SDK mode (optional):**
+- **`async def start()`**: Start the client connection. In one-way WebSocket streaming mode, the connection may already be started in `__init__`.
+- **`_process_ws_exception(exception)`**: Handle WebSocket exceptions.
+- **`_await_connection_tasks()`**: Wait for connection tasks to finish.
+
+### Logging Specifications
+
+TTS Extensions must implement the logs below for debugging, monitoring, and troubleshooting. All logs should use the logging methods on `ten_env` with the correct level and category.
+
+#### Log Categories
+
+TTS Extensions use the following log categories:
+
+- **`LOG_CATEGORY_KEY_POINT`**: Key extension events such as config loading and text filtering.
+- **`LOG_CATEGORY_VENDOR`**: Vendor-related logs such as vendor errors, status changes, and request/response behavior.
+
+#### Logs Already Implemented by the Base Class
+
+The following logs are already implemented in `AsyncTTS2BaseExtension`, so subclasses **do not** need to repeat them.
+
+##### 1. Text Input Logs
+
+**Receive TTS text input** (`get_tts_text_input`)
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `get tts_text_input: {}`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_info(
+    f"get tts_text_input: {tts_text_input_object}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+##### 2. Flush Logs
+
+**Receive flush** (`receive tts flush`)
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `receive tts flush`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_info(
+    "receive tts flush ",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+**Send flush_end** (`send tts_flush_end`)
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `send tts_flush_end`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_info(
+    "send tts_flush_end",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+##### 3. Error Logs
+
+**Send error information** (`tts_error`)
+
+**Log level**: `error`
+
+**Log category**: `key_point`
+
+**Log format**: `tts_error: {}`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_error(
+    f"tts_error: msg: {error_msg}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+##### 4. Audio Event Logs
+
+**Audio start** (`tts_audio_start`)
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `tts_audio_start: {}`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_info(
+    f"tts_audio_start: {tts_audio_start} of request_id: {request_id}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+**Audio end** (`tts_audio_end`)
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `tts_audio_end: {}`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_info(
+    f"tts_audio_end: {tts_audio_end} of request_id: {request_id}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+##### 5. Metrics Logs
+
+**TTFB metric** (`tts_ttfb`)
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `tts_ttfb: {}`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_info(
+    f"tts_ttfb: {ttfb} of request_id: {request_id}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+**Metrics output** (`tts_metrics`)
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `tts_metrics: {}`
+
+**Base class implementation**:
+
+```python
+self.ten_env.log_info(
+    f"tts_metrics: {tts_metrics} of request_id: {request_id}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+**Note**: All logs above are emitted automatically by `AsyncTTS2BaseExtension`. Subclasses only need to implement the logs below.
+
+#### Required Logs
+
+##### 1. Config Parameter Log
+
+**Type**: Config parameter log
+
+**When to print / what to print**: After reading `property` and deserializing it into the config struct in `on_init`, log the masked config.
+
+**Log level**: `info`
+
+**Log category**: `key_point`
+
+**Log format**: `config: {}`
+
+**Example**:
+
+```python
+from ten_ai_base.const import LOG_CATEGORY_KEY_POINT
+
+ten_env.log_info(
+    f"config: {self.config.to_str(sensitive_handling=True)}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+**Notes**:
+- You must use `sensitive_handling=True` to mask sensitive fields.
+- Config should be logged during initialization to support troubleshooting.
+
+##### 2. Vendor-Related Logs
+
+###### 2.1 `vendor_error` - Vendor Error Log
+
+**Type**: Vendor log
+
+**When to print / what to print**: When the vendor returns an error, print the raw error content.
+
+**Log level**: `error`
+
+**Log category**: `vendor`
+
+**Log format**: `vendor_error: {}`
+
+**Example**:
+
+```python
+from ten_ai_base.const import LOG_CATEGORY_VENDOR
+
+self.ten_env.log_error(
+    f"vendor_error: code: {code} reason: {cancellation_details.reason}, error_details: {cancellation_details.error_details}",
+    category=LOG_CATEGORY_VENDOR,
+)
+```
+
+**Notes**:
+- Detailed vendor error information must be recorded whenever the vendor returns an error.
+- Include error code, reason, and detailed error payload.
+
+###### 2.2 `vendor_status` - Vendor Status Change Log
+
+**Type**: Vendor log
+
+**When to print / what to print**: Log status changes between the client and the vendor server.
+
+**Log level**: `debug`
+
+**Log category**: `vendor`
+
+**Log format**: `vendor_status: {}`
+
+**Example**:
+
+```python
+from ten_ai_base.const import LOG_CATEGORY_VENDOR
+
+self.ten_env.log_debug(
+    f"vendor_status: connected to: {url}",
+    category=LOG_CATEGORY_VENDOR,
+)
+```
+
+**Notes**:
+- Record connection state changes with the vendor.
+- Include connect, disconnect, and reconnect transitions.
+
+###### 2.3 `send_text_to_tts_server` - Sent Text Log
+
+**Type**: Vendor log
+
+**When to print / what to print**: Log the text sent to the TTS server.
+
+**Log level**: `debug`
+
+**Log category**: `vendor`
+
+**Log format**: `send_text_to_tts_server`
+
+**Example**:
+
+```python
+from ten_ai_base.const import LOG_CATEGORY_VENDOR
+
+self.ten_env.log_debug(
+    f"send_text_to_tts_server: {text} of request_id: {request_id}",
+    category=LOG_CATEGORY_VENDOR,
+)
+```
+
+**Notes**:
+- Record the outgoing text content along with `request_id`.
+- This helps trace the request lifecycle.
+
+###### 2.4 `receive_audio` - Received Audio Log
+
+**Type**: Vendor log
+
+**When to print / what to print**: Log received audio chunks.
+
+**Log level**: `debug`
+
+**Log category**: `vendor`
+
+**Log format**: `receive_audio: {}`
+
+**Example**:
+
+```python
+from ten_ai_base.const import LOG_CATEGORY_VENDOR
+
+self.ten_env.log_debug(
+    f"receive_audio: duration: {ms} of request id: {request_id}",
+    category=LOG_CATEGORY_VENDOR,
+)
+```
+
+**Notes**:
+- Record received audio information including duration and `request_id`.
+- Useful for monitoring the receive path.
+
+##### 3. Key Extension Logs
+
+###### 3.1 `skip_tts_text_input` - Skipped Text Log
+
+**Type**: Filtered-out content log
+
+**When to print / what to print**: When certain text input is intentionally filtered and not sent.
+
+**Log level**: `debug`
+
+**Log category**: `key_point`
+
+**Log format**: `skip_tts_text_input`
+
+**Example**:
+
+```python
+from ten_ai_base.const import LOG_CATEGORY_KEY_POINT
+
+self.ten_env.log_debug(
+    f"skip_tts_text_input: {text} of request id: {request_id}",
+    category=LOG_CATEGORY_KEY_POINT,
+)
+```
+
+**Notes**:
+- If the vendor has special behavior for certain input content and you intentionally skip it, log that fact.
+- Record the skipped text and its `request_id`.
+
+#### Logging Best Practices
+
+1. **Protect sensitive information**: Logs containing config parameters or secrets must use `sensitive_handling=True`.
+2. **Choose log levels carefully**:
+   - `error`: vendor or runtime errors
+   - `info`: key milestones such as config loading
+   - `debug`: debugging details such as status changes and request/response traces
+3. **Use the right category**:
+   - `LOG_CATEGORY_KEY_POINT`: key extension events
+   - `LOG_CATEGORY_VENDOR`: all vendor-related logs
+4. **Keep log formats consistent**: Consistent structure makes analysis and troubleshooting easier.
+5. **Include key identifiers**: Include `request_id` and similar identifiers so request tracing stays easy.
