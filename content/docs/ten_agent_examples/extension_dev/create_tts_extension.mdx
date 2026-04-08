@@ -553,6 +553,18 @@ EVENT_TTS_TTFB_METRIC = 5  # Time-to-first-byte measurement
 WS_RECV_TIMEOUT = 8.0  # Seconds before giving up on a response
 
 
+class VendorTTSConnectionException(Exception):
+    """Typed connection failure that preserves the HTTP status code.
+
+    The extension uses status_code to distinguish fatal errors (e.g. 401)
+    from transient ones, mapping them to the correct TEN error code.
+    """
+    def __init__(self, status_code: int, body: str):
+        self.status_code = status_code
+        self.body = body
+        super().__init__(f"Connection failed (code: {status_code}): {body}")
+
+
 class VendorTTSClient:
     """Serial WebSocket TTS client.
 
@@ -685,11 +697,11 @@ class VendorTTSClient:
                 self._ws_url, additional_headers=headers
             )
         except InvalidStatus as e:
-            # Surface auth / HTTP status failures explicitly so the
-            # extension can map them to the correct TEN error code.
-            status_code = e.response.status_code
-            raise RuntimeError(
-                f"WebSocket connection failed with status {status_code}"
+            # Preserve the HTTP status code so the extension can
+            # distinguish 401 (FATAL_ERROR) from transient failures
+            raise VendorTTSConnectionException(
+                status_code=e.response.status_code,
+                body=str(e),
             ) from e
 
     async def _ensure_connection(self) -> None:
@@ -730,7 +742,8 @@ from ten_ai_base.struct import TTSTextInput
 from ten_ai_base.const import LOG_CATEGORY_VENDOR, LOG_CATEGORY_KEY_POINT
 from .config import VendorTTSConfig
 from .vendor_tts import (
-    VendorTTSClient, EVENT_TTS_RESPONSE, EVENT_TTS_END,
+    VendorTTSClient, VendorTTSConnectionException,
+    EVENT_TTS_RESPONSE, EVENT_TTS_END,
     EVENT_TTS_TTFB_METRIC, EVENT_TTS_ERROR,
 )
 
@@ -781,6 +794,32 @@ class VendorTTSExtension(AsyncTTS2BaseExtension):
 
     async def request_tts(self, t: TTSTextInput) -> None:
         """Called by the base class for each queued text input."""
+        try:
+            await self._do_request_tts(t)
+        except VendorTTSConnectionException as e:
+            # Map HTTP status to TEN error code:
+            # 401 → FATAL_ERROR (bad credentials, won't recover)
+            # anything else → NON_FATAL_ERROR (transient)
+            code = (
+                ModuleErrorCode.FATAL_ERROR
+                if e.status_code == 401
+                else ModuleErrorCode.NON_FATAL_ERROR
+            )
+            error = ModuleError(
+                message=e.body,
+                module=ModuleType.TTS,
+                code=code,
+                vendor_info=ModuleErrorVendorInfo(
+                    vendor=self.vendor(),
+                    code=str(e.status_code),
+                    message=e.body,
+                ),
+            )
+            await self._finalize_request(TTSAudioEndReason.ERROR, error=error)
+
+    async def _do_request_tts(self, t: TTSTextInput) -> None:
+        """Core request logic, separated so connection errors
+        can be caught and mapped in request_tts()."""
         # --- New request setup ---
         if t.request_id != self.current_request_id:
             if self.client:
@@ -972,13 +1011,12 @@ tests/
 ├── test_robustness.py             # Robustness tests for exceptional situations
 ├── test_metrics.py                # Metrics tests
 ├── test_state_machine.py          # Sequential/interleaved request lifecycle tests
-└── configs/                       # Test config files
-    ├── property.json              # Default valid config
-    ├── property_basic_audio_setting1.json
-    ├── property_basic_audio_setting2.json
-    ├── property_dump.json
-    ├── property_invalid.json
-    └── property_miss_required.json
+└── configs/                       # Guarder test config files
+    ├── property_basic_audio_setting1.json  # Basic audio + boundary + metrics + invalid text tests
+    ├── property_basic_audio_setting2.json  # Second sample-rate variant for comparison
+    ├── property_dump.json                  # Dump, flush, and per-request-ID dump tests
+    ├── property_invalid.json              # Invalid required params (e.g. bad API key)
+    └── property_miss_required.json        # Missing required params (e.g. empty API key)
 ```
 
 If your vendor supports subtitle or word-timestamp alignment, also add:
