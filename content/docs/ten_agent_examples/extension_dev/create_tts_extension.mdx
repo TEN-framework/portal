@@ -7,6 +7,20 @@ description: Build, develop, test, and publish a complete TTS extension from scr
 
 This guide walks you through building a production-grade TTS (Text-to-Speech) Extension from scratch, covering the full workflow from project setup and core development to testing, validation, and publishing.
 
+## Definition of Done
+
+Before calling a new TTS extension complete, verify all of these:
+
+- Vendor wire contract is confirmed: endpoint, event names, payload encoding, output framing.
+- Correct base class is used for the transport mode.
+- Config is validated and secrets are redacted in logs.
+- `config:` log output is present.
+- Fatal vs non-fatal errors are classified intentionally.
+- Reconnect behavior is bounded and auth failures are fatal.
+- Standalone tests are present and green.
+- Guarder tests are green.
+- README and example configuration are accurate.
+
 ## What Is a TTS Extension
 
 The TTS Extension is a **standard extension building block** in the TEN Framework ecosystem, designed specifically for text-to-speech functionality.
@@ -192,6 +206,54 @@ HTTP mode uses standard HTTP streaming requests. It is suitable for traditional 
 ### Implementation Rules
 
 HTTP mode is built on `AsyncTTS2HttpExtension`, which already provides full request handling, TTFB reporting, and audio data handling. Developers only need to implement the client interface and the config class.
+
+## WebSocket Mode
+
+For streaming TTS, verify the provider contract before implementation:
+
+- Exact WebSocket endpoint
+- Outbound event names for text chunks and end-of-input
+- Inbound event names for audio, end-of-audio, and errors
+- Whether audio payloads are raw bytes or base64-encoded fields
+- Whether the connection is long-lived or should be reconnected per request
+
+Do not guess the wire protocol from examples of other vendors.
+
+### Connection Lifecycle Expectations
+
+Production-ready WebSocket TTS extensions should define:
+
+- Preheat or initial connect behavior
+- Cancel behavior
+- Reconnect behavior after transient failures
+- Exponential backoff and retry ceiling
+- Fatal auth/config failure handling
+- Lifecycle logs emitted at `info` level if automation depends on them
+
+### Input Validation Notes
+
+Validate edge cases explicitly:
+
+- Empty or whitespace-only input should follow the actual guarder expectation
+- Punctuation-only input should be tested explicitly
+- Very long input should be bounded intentionally
+
+Guarder behavior should win over assumptions about what seems cleaner.
+
+### Minimum Required Standalone Tests
+
+Production-ready TTS extensions should include at least:
+
+- `test_basic_audio`
+- `test_flush`
+- `test_invalid_api_key`
+- `test_metrics`
+- `test_state_machine`
+- `test_robustness`
+- `test_dump`
+
+If subtitle or word alignment is unsupported, document that explicitly rather
+than faking support.
 
 #### 1. Implement the HTTP Client Interface
 
