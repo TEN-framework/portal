@@ -402,6 +402,8 @@ Define the connection lifecycle up front:
 - Exponential backoff and retry ceiling
 - Fatal auth/config failure handling
 - Lifecycle logs at `info` level when automation depends on them
+- Reuse the same WebSocket connection across multiple `tts_text_input` chunks
+  that share a `request_id`; do not open and close the connection per chunk
 
 #### 1. Connection Management Strategy
 
@@ -571,8 +573,11 @@ requirements the same regardless of which shape you implement:
   state reset stay consistent.
 - Measure TTFB explicitly in WebSocket mode and report it through
   `send_tts_ttfb_metrics()`.
-- Make invalid-input behavior intentional and aligned with the guarder
-  expectations for empty, whitespace-only, punctuation-only, and oversized text.
+- If the vendor does not reject invalid input cleanly, validate it before
+  sending or add timeout/error handling in the client. In all cases, keep
+  behavior aligned with the guarder expectations for empty, whitespace-only,
+  punctuation-only, and oversized text, and ensure
+  `test_invalid_text_handling` passes.
 - Treat auth/config failures as fatal and transient transport failures as
   recoverable until the retry ceiling is reached.
 - Ensure `tts_audio_start` is emitted before `tts_audio_end`, including early
