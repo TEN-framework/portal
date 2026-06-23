@@ -7,6 +7,20 @@ description: Build, develop, test, and publish a complete TTS extension from scr
 
 This guide walks you through building a production-grade TTS (Text-to-Speech) Extension from scratch, covering the full workflow from project setup and core development to testing, validation, and publishing.
 
+## Definition of Done
+
+Before calling a new TTS extension complete, verify all of these:
+
+- Vendor wire contract is confirmed: endpoint, event names, payload encoding, output framing.
+- Correct base class is used for the transport mode.
+- Config is validated and secrets are redacted in logs.
+- `config:` log output is present.
+- Fatal vs non-fatal errors are classified intentionally.
+- Reconnect behavior is bounded and auth failures are fatal.
+- Standalone tests are present and green.
+- Guarder tests are green.
+- README and example configuration are accurate.
+
 ## What Is a TTS Extension
 
 The TTS Extension is a **standard extension building block** in the TEN Framework ecosystem, designed specifically for text-to-speech functionality.
@@ -369,6 +383,28 @@ WebSocket mode supports bidirectional WebSocket communication and allows streami
 
 ### Implementation Rules
 
+Before implementing a WebSocket TTS extension, verify the provider wire
+contract:
+
+- Exact WebSocket endpoint
+- Outbound event names for text chunks and end-of-input
+- Inbound event names for audio, end-of-audio, and errors
+- Whether audio payloads are raw bytes or base64-encoded fields
+- Whether the connection is long-lived or should be reconnected per request
+
+Do not infer the wire protocol from another vendor's example.
+
+Define the connection lifecycle up front:
+
+- Preheat or initial connect behavior
+- Cancel behavior
+- Reconnect behavior after transient failures
+- Exponential backoff and retry ceiling
+- Fatal auth/config failure handling
+- Lifecycle logs at `info` level when automation depends on them
+- Reuse the same WebSocket connection across multiple `tts_text_input` chunks
+  that share a `request_id`; do not open and close the connection per chunk
+
 #### 1. Connection Management Strategy
 
 **Connection lifecycle management:**
@@ -525,6 +561,28 @@ def _clear_queues(self) -> None:
 6. **Set timeouts**: Avoid long blocking periods.
 7. **Log properly**: Include vendor errors, state changes, request flow, and response flow. See [Logging Specifications](#logging-specifications).
 
+### Additional WebSocket Requirements
+
+The full duplex example above is only one pattern. Some vendors support a
+simpler serial model over a persistent connection. Keep the guide-level
+requirements the same regardless of which shape you implement:
+
+- Call `finish_request()` on every exit path when inheriting from
+  `AsyncTTS2BaseExtension` directly.
+- Use one cleanup/finalization path so `tts_audio_end`, queue completion, and
+  state reset stay consistent.
+- Measure TTFB explicitly in WebSocket mode and report it through
+  `send_tts_ttfb_metrics()`.
+- If the vendor does not reject invalid input cleanly, validate it before
+  sending or add timeout/error handling in the client. In all cases, keep
+  behavior aligned with the guarder expectations for empty, whitespace-only,
+  punctuation-only, and oversized text, and ensure
+  `test_invalid_text_handling` passes.
+- Treat auth/config failures as fatal and transient transport failures as
+  recoverable until the retry ceiling is reached.
+- Ensure `tts_audio_start` is emitted before `tts_audio_end`, including early
+  error paths.
+
 ## Extension Structure and Supporting Files
 
 The overall directory structure can be referenced from [Project Structure Overview](#project-structure-overview).
@@ -550,11 +608,30 @@ tests/
 ├── test_params.py                 # Parameter config tests, mainly validating parameter checks
 ├── test_robustness.py             # Robustness tests for exceptional situations
 ├── test_metrics.py                # Metrics tests
-└── configs/                       # Test config files
-    ├── test_config.json           # Test config
-    ├── invalid_config.json        # Invalid config test
-    └── mock_config.json           # Mock config
+├── test_state_machine.py          # Sequential/interleaved request lifecycle tests
+└── configs/                       # Guarder test config files
+    ├── property_basic_audio_setting1.json  # Basic audio + boundary + metrics + invalid text tests
+    ├── property_basic_audio_setting2.json  # Second sample-rate variant for comparison
+    ├── property_dump.json                  # Dump, flush, and per-request-ID dump tests
+    ├── property_invalid.json              # Invalid required params (e.g. bad API key)
+    └── property_miss_required.json        # Missing required params (e.g. empty API key)
 ```
+
+If your vendor supports subtitle or word-timestamp alignment, also add:
+
+```text
+tests/configs/property_subtitle_alignment.json
+```
+
+At minimum, the standalone suite should cover:
+
+- `test_basic_audio`
+- `test_flush`
+- `test_invalid_api_key`
+- `test_metrics`
+- `test_state_machine`
+- `test_robustness`
+- `test_dump`
 
 ### Unit Test Best Practices
 
@@ -840,6 +917,86 @@ Guarder integration tests include the following checks to ensure the extension c
 5. **Analyze failures carefully**: If a test fails, inspect logs carefully to locate the cause.
 6. **Respect test order when needed**: Some tests may have dependencies.
 7. **Clean up resources**: Remove temporary files and release resources after testing.
+
+## 🔌 Wiring into a Voice Assistant Graph
+
+After unit tests and guarder tests pass, wire your extension into a real agent graph to validate it end-to-end.
+
+### 1. Add the Dependency
+
+In the voice-assistant example's `manifest.json`, add your extension as a local dependency:
+
+```json title="examples/voice-assistant/tenapp/manifest.json"
+{
+  "dependencies": [
+    ...existing dependencies...,
+    {
+      "type": "extension",
+      "name": "my_tts_extension",
+      "version": "0.1.0",
+      "path": "../../../ten_packages/extension/my_tts_extension"
+    }
+  ]
+}
+```
+
+### 2. Add a Graph Variant
+
+In the voice-assistant `property.json`, add a new graph that uses your TTS extension. Copy an existing graph (e.g., `voice_assistant`) and change the TTS extension name:
+
+```json title="examples/voice-assistant/tenapp/property.json (excerpt)"
+{
+  "name": "voice_assistant_my_tts",
+  "auto_start": false,
+  "graph": {
+    "nodes": [
+      {
+        "type": "extension",
+        "name": "tts",
+        "addon": "my_tts_extension",
+        "extension_group": "tts",
+        "property": {
+          "params": {
+            "api_key": "${env:MY_TTS_API_KEY}",
+            "model": "default-model",
+            "encoding": "linear16",
+            "sample_rate": 24000
+          }
+        }
+      }
+      // ...other nodes (agora_rtc, main, stt, llm, etc.)
+    ],
+    "connections": [
+      // Copy the full connections block from a known-good
+      // voice_assistant graph and change only the TTS addon/node.
+      // Do not assume routing is implicit unless you have verified
+      // that exact graph implementation.
+    ]
+  }
+}
+```
+
+For best results, copy a confirmed working graph variant and modify only:
+- the TTS dependency in `manifest.json`
+- the TTS node's `addon`
+- the TTS node's `property.params`
+
+Avoid hand-reconstructing the connections block from memory. A working voice
+pipeline must still route ASR results into the main controller, text from LLM
+back through the main controller, TTS input into the TTS node, and PCM audio
+back to `agora_rtc`.
+
+### 3. Test Live
+
+Start the agent with your new graph:
+- In the playground, select `voice_assistant_my_tts` from the graph dropdown
+- Or set `auto_start: true` on your graph and restart the agent
+
+Validate:
+- Audio plays back clearly
+- Multi-turn conversation works
+- Interruptions (flush) work correctly
+- TTFB feels responsive
 
 ## 🌐 End-to-End Testing
 
@@ -1999,20 +2156,75 @@ If you have additional custom parameters that are not part of the vendor's offic
 Create a flexible config class that supports required parameters as well as optional passthrough parameters:
 
 ```python title="config.py"
-from pydantic import BaseModel
-from typing import Dict, Optional
+from pydantic import BaseModel, Field
+from typing import Any
 
 class MyTTSConfig(BaseModel):
     # All vendor parameters live in params, including required and optional ones
-    params: Dict[str, Optional[str]] = {}
-
-    # Non-vendor parameters used only by this TTS extension
-    extra_params: Dict[str, Optional[str]] = {}
+    params: dict[str, Any] = Field(default_factory=dict)
 
     # Standard dump configuration shared by TTS extensions
     dump: bool = False
-    dump_path: Optional[str] = None
+    dump_path: str | None = None
 ```
+
+#### Params Passthrough Pattern
+
+Every TTS extension in the repo follows the same convention: `config.params` is a flat dict containing both well-known keys (like `api_key`, `model`) and arbitrary vendor-specific keys. The `update_params()` method extracts the well-known keys onto named fields and leaves the rest in `params` for forwarding to the vendor API.
+
+```python title="config.py"
+from pydantic import BaseModel, Field
+from typing import Any
+import copy
+from ten_ai_base import utils
+
+
+class VendorTTSConfig(BaseModel):
+    api_key: str = ""
+    base_url: str = "wss://api.vendor.com/v1/speak"
+    model: str = "default-model"
+    encoding: str = "linear16"
+    sample_rate: int = 24000
+
+    dump: bool = False
+    dump_path: str = "/tmp"
+    params: dict[str, Any] = Field(default_factory=dict)
+
+    def update_params(self) -> None:
+        """Extract well-known keys from params onto named fields.
+
+        After this call, self.params contains only the extra
+        vendor-specific keys that should be forwarded to the API.
+        """
+        params = self.params if isinstance(self.params, dict) else {}
+        self.params = params
+
+        # Each known key is extracted and removed from params
+        for attr in ("api_key", "base_url", "model", "encoding", "sample_rate"):
+            if attr in params:
+                setattr(self, attr, params.pop(attr))
+
+    def to_str(self, sensitive_handling: bool = True) -> str:
+        if not sensitive_handling:
+            return f"{self}"
+        config = copy.deepcopy(self)
+        if config.api_key:
+            config.api_key = utils.encrypt(config.api_key)
+        return f"{config}"
+```
+
+The client then forwards remaining `params` to the vendor. For WebSocket APIs, this means query string parameters:
+
+```python
+# In the client's _build_ws_url()
+for key, value in self.config.params.items():
+    if key not in {"api_key", "base_url"} and value is not None:
+        query_params[key] = value
+```
+
+For HTTP APIs, these would be merged into the request JSON body. For SDK-based vendors, they become keyword arguments.
+
+This pattern is consistent across all TTS extensions: Cartesia, ElevenLabs, Minimax, OpenAI, Cosy, Fish Audio, Bytedance, and Deepgram all use it.
 
 #### Read Extension Config
 
@@ -2061,12 +2273,14 @@ async def on_init(self, ten_env: AsyncTenEnv) -> None:
 Add a masking helper to the config class so sensitive information is protected in logs:
 
 ```python title="config.py"
+from pydantic import BaseModel, Field
+from typing import Any
 from ten_ai_base.utils import encrypt
 
 class MyTTSConfig(BaseModel):
-    params: Dict[str, Optional[str]] = {}
+    params: dict[str, Any] = Field(default_factory=dict)
     dump: bool = False
-    dump_path: Optional[str] = None
+    dump_path: str | None = None
 
     def to_json(self, sensitive_handling: bool = False) -> str:
         """
